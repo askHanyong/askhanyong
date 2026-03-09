@@ -844,7 +844,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 </div>
 
 <!-- Bottom Tab Navigation -->
-<nav class="tab-nav" style="display:flex;flex-direction:row;">
+<nav class="tab-nav" style="display:flex;flex-direction:row;position:fixed;bottom:0;left:0;right:0;z-index:50;">
   <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')">
     <span class="tab-icon">💬</span>Ask HAN
   </button>
@@ -2298,7 +2298,15 @@ switchTab = function(tab) {
   if (tab === 'practice') initPractice();
   if (tab === 'mock') initMock();
   if (tab === 'progress') {
-    if (!currentUser) {
+    if (!currentUser && !isAdmin) {
+      document.getElementById('progressSignInPrompt').style.display = 'block';
+      document.getElementById('progressContent').style.display = 'none';
+    } else {
+      document.getElementById('progressSignInPrompt').style.display = 'none';
+      document.getElementById('progressContent').style.display = 'block';
+      renderProgress();
+    }
+  }
       document.getElementById('progressSignInPrompt').style.display = 'block';
       document.getElementById('progressContent').style.display = 'none';
     } else {
