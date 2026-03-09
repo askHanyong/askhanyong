@@ -121,54 +121,6 @@ header {
   border: none; border-radius: 12px; font-size: 11px; font-weight: 600;
   cursor: pointer; font-family: 'DM Sans', sans-serif;
 }
-<!-- ── PROGRESS VIEW ──────────────────────────────────── -->
-<div class="view-panel" id="view-progress">
-  <div class="practice-scroll">
-    <div style="padding:16px">
-      <div class="section-header" style="margin-bottom:20px">
-        <h2 style="font-size:19px;font-weight:700;font-family:'Playfair Display',serif">📊 My Progress</h2>
-        <p style="font-size:12px;color:var(--text-soft);margin-top:2px">Track your IB Math practice journey</p>
-      </div>
-      <div id="progressSignInPrompt" style="text-align:center;padding:40px 20px;display:none">
-        <div style="font-size:40px;margin-bottom:12px">🔐</div>
-        <div style="font-weight:700;font-size:15px;margin-bottom:6px">Sign in to track progress</div>
-        <div style="font-size:13px;color:var(--text-soft);margin-bottom:18px">Your question history and weak topics are saved when you sign in.</div>
-        <button onclick="showLogin()" style="padding:10px 24px;background:var(--blue);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Sign In</button>
-      </div>
-      <div id="progressContent">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
-          <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center">
-            <div style="font-size:28px;font-weight:800;color:var(--blue)" id="statTotalAsked">0</div>
-            <div style="font-size:11px;color:var(--text-soft);margin-top:3px">Questions Asked</div>
-          </div>
-          <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center">
-            <div style="font-size:28px;font-weight:800;color:var(--green)" id="statTopicsExplored">0</div>
-            <div style="font-size:11px;color:var(--text-soft);margin-top:3px">Topics Explored</div>
-          </div>
-          <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center">
-            <div style="font-size:28px;font-weight:800;color:var(--gold)" id="statStreak">0</div>
-            <div style="font-size:11px;color:var(--text-soft);margin-top:3px">Day Streak 🔥</div>
-          </div>
-        </div>
-        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px">
-          <div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px">Questions by Topic</div>
-          <div id="topicBreakdown"></div>
-        </div>
-        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px">
-          <div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">🎯 Focus Areas</div>
-          <div id="weakAreas" style="font-size:13px;color:var(--text-mid)">Ask more questions to see your focus areas.</div>
-        </div>
-        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px">
-          <div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Recent Activity</div>
-          <div id="recentActivity" style="font-size:13px;color:var(--text-mid)">No activity yet. Start asking HAN questions!</div>
-        </div>
-        <div style="text-align:center;margin-top:20px">
-          <button onclick="resetProgress()" style="padding:8px 18px;background:none;border:1.5px solid var(--border);border-radius:10px;font-size:12px;color:var(--text-soft);cursor:pointer;font-family:'DM Sans',sans-serif">Reset Progress</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 /* ── Bottom Tab Navigation ───────────────────────────── */
 .tab-nav {
   display: flex;
@@ -2308,16 +2260,6 @@ switchTab = function(tab) {
       renderProgress();
     }
   }
-      document.getElementById('progressSignInPrompt').style.display = 'block';
-      document.getElementById('progressContent').style.display = 'none';
-    } else {
-      document.getElementById('progressSignInPrompt').style.display = 'none';
-      document.getElementById('progressContent').style.display = 'block';
-      renderProgress();
-    }
-  }
-};
-
 // Patch sendMessage to track questions
 const _origSend = sendMessage;
 sendMessage = async function() {
