@@ -868,6 +868,7 @@ const GOOGLE_CLIENT_ID = '328753347113-pm103e847sq15r21d1tj5rpu2vubg4dh.apps.goo
 const FREE_DAILY_LIMIT = 5;
 
 // ── State ───────────────────────────────────────────────
+const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'hanyong';
 let currentUser = null;
 let selectedLevel = 'MAA HL';
 let selectedPaper = 'Paper 1';
@@ -935,7 +936,7 @@ function updateLimitBar(count) {
   if(txt) txt.textContent = rem+' free question'+(rem!==1?'s':'')+' remaining today';
   if(count>=FREE_DAILY_LIMIT && fill) fill.style.background='linear-gradient(90deg,#dc2626,#f87171)';
 }
-function canAskQuestion() { return !!(currentUser && getQuestionCount()<FREE_DAILY_LIMIT); }
+function canAskQuestion() { if (isAdmin) return true; return !!(currentUser && getQuestionCount()<FREE_DAILY_LIMIT); }
 
 // ── Auth ────────────────────────────────────────────────
 function showLogin() { document.getElementById('loginOverlay').classList.add('open'); }
@@ -1350,9 +1351,9 @@ async function sendMessage() {
   const input=document.getElementById('userInput');
   const text=input.value.trim();
   if(!text&&!uploadedImageBase64) return;
-  if(!currentUser){showLogin();return;}
+  if(!isAdmin && !currentUser){showLogin();return;}
   if(!canAskQuestion()){showUpgrade();return;}
-  incrementQuestionCount();
+  if(!isAdmin) incrementQuestionCount();
   isLoading=true;
   document.getElementById('sendBtn').disabled=true;
 
