@@ -38,7 +38,7 @@
   --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+* { margin:0; :0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
   background: var(--bg);
@@ -180,14 +180,14 @@ header {
 .tab-btn {
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 9px 4px 7px; gap: 3px;
+  padding: 6px 4px 5px; gap: 2px;
   border: none; background: none; cursor: pointer;
-  color: var(--text-soft); font-size: 10px; font-weight: 600;
+  color: var(--text-soft); font-size: 9px; font-weight: 600;
   font-family: 'DM Sans', sans-serif; transition: color 0.2s;
   position: relative;
 }
 .tab-btn.active { color: var(--blue); }
-.tab-btn .tab-icon { font-size: 19px; line-height:1; }
+.tab-btn .tab-icon { font-size: 17px; line-height:1; }
 .tab-btn.active::after {
   content:''; position:absolute; top:0; left:25%; right:25%;
   height: 2.5px; background: var(--blue); border-radius: 0 0 3px 3px;
