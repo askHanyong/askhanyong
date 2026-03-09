@@ -178,6 +178,7 @@ header {
   flex-shrink: 0;
   box-shadow: 0 -2px 12px rgba(0,0,0,0.05);
   width: 100%;
+  order: 999;
 }
 .tab-btn {
   flex: 1; display: flex; flex-direction: column;
@@ -844,7 +845,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 </div>
 
 <!-- Bottom Tab Navigation -->
-<nav class="tab-nav" style="display:flex;flex-direction:row;position:fixed;bottom:0;left:0;right:0;z-index:50;">
+<nav class="tab-nav">
   <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')">
     <span class="tab-icon">💬</span>Ask HAN
   </button>
@@ -2077,7 +2078,7 @@ function saveProgress(data) {
 }
 
 function trackQuestion(topic, question) {
-  if (!currentUser) return;
+  if (!currentUser && !isAdmin) return;
   const data = loadProgress();
   data.totalAsked = (data.totalAsked || 0) + 1;
   data.topicCounts = data.topicCounts || {};
