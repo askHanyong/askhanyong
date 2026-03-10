@@ -484,14 +484,15 @@ function initDesmosGraphs(){Object.keys(_desmosConfigs).forEach(function(uid){va
 function formatResponse(text){let html=text;html=html.replace(/`{3}graph\s*([\s\S]*?)`{3}/g,function(match,jsonStr){try{var trimmed=jsonStr.trim();var config;try{config=JSON.parse(trimmed);}catch(e1){try{config=JSON.parse(trimmed.replace(/\\([^\\"'])/g,'\\\\$1'));}catch(e2){return'';}}return buildDesmosEmbed(config);}catch(e){return'';}});const latexBlocks=[];html=html.replace(/\\\[[\s\S]*?\\\]/g,(m)=>{latexBlocks.push(m);return`%%LB${latexBlocks.length-1}%%`;});html=html.replace(/\\\([\s\S]*?\\\)/g,(m)=>{latexBlocks.push(m);return`%%LB${latexBlocks.length-1}%%`;});html=html.replace(/^#{1,3}\s+(.+)$/gm,'<h3>$1</h3>');html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');html=html.replace(/(?:^|\n)(Step\s+\d+[:\.]?\s*)([^\n]+(?:\n(?!Step\s+\d).*)*)/g,(m,sl,content)=>`<div class="step"><div class="step-num">${sl.trim()}</div>${content.trim()}</div>`);html=html.replace(/\[Examiner[^\]]*\]:\s*([^\n]+)/g,'<div class="examiner-note">$1</div>');html=html.replace(/Examiner(?:\'s)? [Nn]ote[:\s]+([^\n]+)/g,'<div class="examiner-note">$1</div>');html=html.replace(/Common [Mm]istake[:\s]+([^\n]+)/g,'<div class="warning">$1</div>');html=html.replace(/\u0060([^\u0060]+)\u0060/g,'<code class="math-block">$1</code>');html=html.replace(/\n{2,}/g,'<br><br>');html=html.replace(/\n/g,'<br>');latexBlocks.forEach((latex,i)=>{const isDisplay=latex.startsWith('\\[');html=html.replace(`%%LB${i}%%`,isDisplay?`<div class="latex-display">${latex}</div>`:`<span class="latex-inline">${latex}</span>`);});return html;}
 
 function getSystemPrompt(repositoryContext){
-  const paperRules={'Paper 1':`PAPER 1 — NO CALCULATOR: Show all working by hand. Exact answers only (no decimals).`,'Paper 2':`PAPER 2 — GDC ALLOWED: Use GDC for numerical answers. Show method steps.`,'Paper 3':`PAPER 3 — PROBLEM SOLVING (HL only, GDC): Cross-topic, real-world modelling questions.`};
+  const paperRules={'Paper 1':'PAPER 1 — NO CALCULATOR: Show all working by hand. Exact answers only (no decimals).','Paper 2':'PAPER 2 — GDC ALLOWED: Use GDC for numerical answers. Show method steps.','Paper 3':'PAPER 3 — PROBLEM SOLVING (HL only, GDC): Cross-topic, real-world modelling questions.'};
+  const fence='```';
   return`You are HAN — an AI Math tutor built on the expertise of Hanyong Lim, an IB HL Mathematics Examiner with 20+ years of experience. HAN stands for Help · Achieve · Nurture.
 
 Your persona: Warm, encouraging, precise. You know exactly what examiners look for.
 
 Current student context:
 - Level: ${selectedLevel} Mathematics
-- Paper: ${selectedPaper}  
+- Paper: ${selectedPaper}
 - Topic: ${selectedSubjectTopic}
 
 PAPER RULES: ${paperRules[selectedPaper]||paperRules['Paper 1']}
@@ -509,14 +510,14 @@ ${repositoryContext?`\n═══════════════════
 
 LATEX RULES: Write ALL math in LaTeX. Use \\( ... \\) for inline, \\[ ... \\] for display. Never write raw x^2.
 
-GRAPHS: CRITICAL RULE — whenever a question references a graph or diagram, you MUST render it as a real interactive Desmos graph. NEVER write "[Graph would show...]" or describe a graph in text. Always output:
-\`\`\`graph
+GRAPHS: CRITICAL RULE — whenever a question references a graph or diagram, you MUST render it as a real interactive Desmos graph. NEVER write "[Graph would show...]" or describe a graph in text. Always output a graph block like this:
+${fence}graph
 {"exprs":[{"latex":"ACTUAL_LATEX_FUNCTION","color":"#C9A84C"}],"bounds":{"left":-1,"right":9,"bottom":-3,"top":4}}
-\`\`\`
-For the kinematics example v = 1.5sin(0.6t) - 0.4t + 1, output:
-\`\`\`graph
+${fence}
+For kinematics v = 1.5sin(0.6t) - 0.4t + 1, you would output:
+${fence}graph
 {"exprs":[{"latex":"y=1.5\\\\sin(0.6x)-0.4x+1","color":"#C9A84C","label":"v(t)"}],"bounds":{"left":-0.5,"right":9,"bottom":-3,"top":4}}
-\`\`\`
+${fence}
 Always choose bounds that show the full relevant domain of the function.`;
 }
 
