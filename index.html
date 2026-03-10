@@ -690,13 +690,66 @@ function openPasteFromSheet() {
   }, 200);
 }
 
+
+// ════════════════════════════════════════
+// PARSE QUESTION ID → metadata fields
+// Format: IBMAAHL[N|M]{YY}P{n}TZ{n}Q{n}
+// e.g.  IBMAAHLN24P2TZ0Q9
+//         → Year:2024 Level:MAA HL Paper:P2 Session:November TZ:0 Q:9
+// ════════════════════════════════════════
+function parseQuestionId(qid) {
+  if (!qid) return {};
+  const s = qid.toUpperCase().trim();
+  const out = {};
+
+  // Level
+  if (s.includes('HL'))      out.level = 'MAA HL';
+  else if (s.includes('SL')) out.level = 'MAA SL';
+
+  // Session char + Year + Paper, all packed together e.g. N24P2
+  const m = s.match(/(?:HL|SL)([NM]?)(\d{2})P(\d)/);
+  if (m) {
+    out.session  = m[1] === 'N' ? 'November' : m[1] === 'M' ? 'May' : '';
+    out.year     = '20' + m[2];
+    out.paper    = 'P' + m[3];
+  }
+
+  // Time Zone
+  const tz = s.match(/TZ(\d)/);
+  if (tz) out.tz = tz[1];
+
+  // Question number
+  const q = s.match(/Q(\d+)$/);
+  if (q) out.question = q[1];
+
+  return out;
+}
+
+// Enrich a repo record with parsed fields if sheet columns are missing
+function enrichRecord(r) {
+  const parsed = parseQuestionId(r['Question ID'] || '');
+  return {
+    year:     r['Year']            || parsed.year     || '',
+    level:    r['Level']           || parsed.level    || '',
+    paper:    r['Paper']           || parsed.paper    || '',
+    session:  r['Session']         || parsed.session  || '',
+    tz:       r['Time Zone'] || r['TZ'] || parsed.tz  || '',
+    question: r['Question Number'] || parsed.question || '',
+    marks:    r['Marks']           || '',
+    topic:    r['Topic']           || '',
+    subtopic: r['Subtopic']        || '',
+  };
+}
+
 function buildRef(r) {
-  // Format: Paper · Year · Session · Q{n}
+  // Parse missing fields from Question ID if sheet columns are empty
+  const meta = enrichRecord(r);
   const parts = [
-    r['Paper'] || '',
-    r['Year'] || '',
-    r['Session'] || '',
-    r['Question Number'] ? 'Q' + r['Question Number'] : ''
+    meta.paper,
+    meta.year,
+    meta.session,
+    meta.tz !== '' ? 'TZ' + meta.tz : '',
+    meta.question ? 'Q' + meta.question : ''
   ].filter(Boolean);
   return parts.join(' · ') || r['Question ID'] || 'Unknown reference';
 }
@@ -1118,7 +1171,7 @@ function renderPractice(records) {
         </div>
         <div class="q-marks">${r['Marks'] || '?'}<small>mk</small></div>
       </div>
-      <div class="q-ref">${ref}</div>
+      <div class="q-ref" style="font-size:12px;color:var(--text-mid);margin-top:4px;font-family:'DM Mono',monospace">${ref}</div>
     </div>`;
   }).join('');
 }
@@ -1134,14 +1187,17 @@ function openSheet(idx) {
     `<span class="tag ${d.cls}">${d.text}</span>` +
     `<span class="tag tag-paper">${r['Paper'] || ''} · ${r['Level'] || ''}</span>`;
 
-  // Reference box — shows metadata only
+  // Reference box — parse missing fields from Question ID
+  const meta = enrichRecord(r);
   document.getElementById('sheetRefBox').innerHTML =
-    `<div><strong>Paper:</strong> ${r['Paper'] || '—'}</div>` +
-    `<div><strong>Year:</strong> ${r['Year'] || '—'}</div>` +
-    `<div><strong>Session:</strong> ${r['Session'] || '—'}</div>` +
-    `<div><strong>Question:</strong> ${r['Question Number'] ? 'Q' + r['Question Number'] : '—'}</div>` +
-    `<div><strong>Topic:</strong> ${r['Topic'] || '—'}${r['Subtopic'] ? ' — ' + r['Subtopic'] : ''}</div>` +
-    `<div><strong>Marks:</strong> ${r['Marks'] || '—'}</div>`;
+    `<div><strong>Year:</strong> ${meta.year || '—'}</div>` +
+    `<div><strong>Level:</strong> ${meta.level || '—'}</div>` +
+    `<div><strong>Paper:</strong> ${meta.paper || '—'}</div>` +
+    `<div><strong>Session:</strong> ${meta.session || '—'}</div>` +
+    (meta.tz !== '' ? `<div><strong>Time Zone:</strong> TZ${meta.tz}</div>` : '') +
+    `<div><strong>Question:</strong> ${meta.question ? 'Q' + meta.question : '—'}</div>` +
+    `<div><strong>Topic:</strong> ${meta.topic || '—'}${meta.subtopic ? ' — ' + meta.subtopic : ''}</div>` +
+    `<div><strong>Marks:</strong> ${meta.marks || '—'}</div>`;
 
   // HAN insight (if stored, optional)
   const hanEl = document.getElementById('sheetHanSection');
