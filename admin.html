@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAN Admin — Solution Upload</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#1e3a5f; --blue:#1d4ed8; --blue-mid:#2563eb; --blue-light:#3b82f6;
+  --ice:#dbeafe; --ice-light:#eff6ff; --white:#ffffff; --bg:#f1f5f9; --bg-mid:#e8eef7;
+  --text:#1e293b; --text-mid:#475569; --text-soft:#94a3b8; --border:#e2e8f0;
+  --green:#10b981; --gold:#f59e0b; --red:#ef4444;
+  --radius:14px; --radius-sm:8px; --shadow:0 2px 12px rgba(0,0,0,0.06); --shadow-md:0 4px 20px rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+/* ── Header ── */
+header { background:linear-gradient(135deg,#1e3a5f,#1d4ed8); padding:14px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 12px rgba(0,0,0,0.2); }
+header h1 { font-size:18px; font-weight:700; color:white; }
+header a { font-size:12px; color:rgba(255,255,255,0.7); text-decoration:none; }
+header a:hover { color:white; }
+.admin-badge { background:rgba(201,168,76,0.3); border:1px solid #c9a84c; color:#f59e0b; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; }
+
+/* ── Auth gate ── */
+#authGate { max-width:400px; margin:80px auto; background:white; border-radius:var(--radius); padding:40px; box-shadow:var(--shadow-md); text-align:center; }
+#authGate h2 { font-size:20px; font-weight:700; margin-bottom:8px; }
+#authGate p { font-size:13px; color:var(--text-soft); margin-bottom:24px; }
+.auth-input { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:14px; font-family:'DM Sans',sans-serif; outline:none; }
+.auth-input:focus { border-color:var(--blue); }
+.auth-btn { width:100%; margin-top:12px; padding:12px; background:var(--blue); color:white; border:none; border-radius:var(--radius-sm); font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.auth-btn:hover { background:var(--blue-mid); }
+
+/* ── Main layout ── */
+#appContent { display:none; max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
+
+/* ── Steps ── */
+.step-nav { display:flex; gap:0; margin-bottom:28px; background:white; border-radius:var(--radius); border:1.5px solid var(--border); overflow:hidden; }
+.step-item { flex:1; padding:12px 8px; text-align:center; font-size:11px; font-weight:600; color:var(--text-soft); border-right:1px solid var(--border); cursor:pointer; transition:all 0.2s; }
+.step-item:last-child { border-right:none; }
+.step-item.active { background:var(--ice-light); color:var(--blue); }
+.step-item.done { background:var(--bg); color:var(--green); }
+.step-num { display:block; font-size:16px; font-weight:800; margin-bottom:2px; }
+
+/* ── Cards ── */
+.card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:20px; box-shadow:var(--shadow); }
+.card-title { font-size:16px; font-weight:700; margin-bottom:16px; color:var(--text); }
+.card-sub { font-size:13px; color:var(--text-soft); margin-top:-10px; margin-bottom:16px; }
+
+/* ── Form elements ── */
+.form-row { display:grid; gap:14px; margin-bottom:16px; }
+.form-row.cols-2 { grid-template-columns:1fr 1fr; }
+.form-row.cols-3 { grid-template-columns:1fr 1fr 1fr; }
+.form-row.cols-4 { grid-template-columns:1fr 1fr 1fr 1fr; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-label { font-size:11px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; }
+.form-input, .form-select, .form-textarea { padding:10px 12px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; font-family:'DM Sans',sans-serif; color:var(--text); outline:none; background:white; width:100%; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--blue); }
+.form-textarea { resize:vertical; min-height:80px; line-height:1.6; }
+
+/* ── Upload zone ── */
+.upload-zone { border:2px dashed var(--border); border-radius:var(--radius); padding:48px 24px; text-align:center; cursor:pointer; transition:all 0.2s; }
+.upload-zone:hover, .upload-zone.drag-over { border-color:var(--blue); background:var(--ice-light); }
+.upload-zone-icon { font-size:48px; margin-bottom:12px; }
+.upload-zone h3 { font-size:15px; font-weight:700; margin-bottom:6px; }
+.upload-zone p { font-size:13px; color:var(--text-soft); }
+.upload-zone input { display:none; }
+
+/* ── Page grid ── */
+.page-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px; margin-top:16px; }
+.page-thumb { border:2px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; cursor:pointer; transition:all 0.2s; position:relative; }
+.page-thumb:hover { border-color:var(--blue); }
+.page-thumb.selected { border-color:var(--blue); box-shadow:0 0 0 3px rgba(29,78,216,0.15); }
+.page-thumb canvas { width:100%; display:block; }
+.page-thumb .page-num { font-size:10px; font-weight:700; color:var(--text-soft); text-align:center; padding:4px; background:var(--bg); border-top:1px solid var(--border); }
+
+/* ── Progress bar ── */
+.progress-wrap { margin:16px 0; }
+.progress-bar { height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--blue); border-radius:3px; transition:width 0.3s; }
+.progress-label { font-size:12px; color:var(--text-soft); margin-top:6px; }
+
+/* ── Extracted question cards ── */
+.q-card { border:1.5px solid var(--border); border-radius:var(--radius); margin-bottom:16px; overflow:hidden; }
+.q-card-head { display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--bg); border-bottom:1px solid var(--border); cursor:pointer; }
+.q-card-num { font-size:18px; font-weight:800; color:var(--blue); min-width:80px; }
+.q-card-meta { font-size:12px; color:var(--text-soft); flex:1; }
+.q-card-status { font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; }
+.q-card-status.ok { background:#d1fae5; color:#065f46; }
+.q-card-status.warn { background:#fef9c3; color:#78350f; }
+.q-card-toggle { color:var(--text-soft); font-size:18px; transition:transform 0.2s; }
+.q-card-toggle.open { transform:rotate(180deg); }
+.q-card-body { display:none; padding:16px; }
+.q-card-body.open { display:block; }
+.q-card-pages { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.page-badge { background:var(--ice-light); border:1px solid var(--ice); color:var(--blue); font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; }
+
+/* ── Buttons ── */
+.btn { padding:11px 22px; border-radius:var(--radius-sm); font-size:13px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; border:none; transition:all 0.15s; display:inline-flex; align-items:center; gap:7px; }
+.btn-primary { background:var(--blue); color:white; }
+.btn-primary:hover { background:var(--blue-mid); }
+.btn-primary:disabled { background:var(--border); color:var(--text-soft); cursor:not-allowed; }
+.btn-secondary { background:white; color:var(--blue); border:1.5px solid var(--blue); }
+.btn-secondary:hover { background:var(--ice-light); }
+.btn-danger { background:white; color:var(--red); border:1.5px solid var(--red); }
+.btn-danger:hover { background:#fef2f2; }
+.btn-success { background:var(--green); color:white; }
+.btn-success:hover { background:#059669; }
+.btn-sm { padding:6px 14px; font-size:12px; }
+.btn-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+/* ── AI extraction panel ── */
+.ai-panel { background:linear-gradient(135deg,#1e3a5f10,#1d4ed808); border:1.5px solid var(--ice); border-radius:var(--radius); padding:20px; margin-bottom:20px; }
+.ai-panel-title { font-size:14px; font-weight:700; color:var(--navy); margin-bottom:8px; }
+.ai-panel p { font-size:13px; color:var(--text-mid); line-height:1.6; margin-bottom:12px; }
+.ai-thinking { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--blue); font-weight:600; }
+.spin { animation:spin 1s linear infinite; display:inline-block; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── Save results ── */
+.save-result { padding:16px; border-radius:var(--radius-sm); margin-top:12px; font-size:13px; font-weight:600; }
+.save-result.ok { background:#d1fae5; color:#065f46; border:1px solid #a7f3d0; }
+.save-result.err { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+
+/* ── ID helper ── */
+.id-helper { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; font-size:12px; color:var(--text-mid); margin-top:6px; font-family:'DM Mono',monospace; }
+.id-preview { font-weight:700; color:var(--blue); }
+
+/* ── Export section ── */
+.export-box { background:var(--bg); border:1px dashed var(--border); border-radius:var(--radius-sm); padding:14px; margin-top:12px; }
+.export-box textarea { width:100%; font-family:'DM Mono',monospace; font-size:11px; resize:vertical; min-height:160px; border:none; background:transparent; color:var(--text); outline:none; }
+
+/* ── Responsive ── */
+@media(max-width:640px) {
+  .form-row.cols-2, .form-row.cols-3, .form-row.cols-4 { grid-template-columns:1fr; }
+  .step-item .step-label { display:none; }
+}
+
+/* ── Notification toast ── */
+.toast { position:fixed; bottom:24px; right:24px; background:var(--text); color:white; padding:12px 20px; border-radius:var(--radius-sm); font-size:13px; font-weight:600; box-shadow:var(--shadow-md); z-index:1000; opacity:0; transform:translateY(10px); transition:all 0.3s; pointer-events:none; }
+.toast.show { opacity:1; transform:translateY(0); }
+.toast.success { background:var(--green); }
+.toast.error { background:var(--red); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📐 HAN Admin — Solution Upload</h1>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="admin-badge">ADMIN</span>
+    <a href="/">← Back to HAN</a>
+  </div>
+</header>
+
+<!-- Auth gate -->
+<div id="authGate">
+  <div style="font-size:48px;margin-bottom:16px">🔐</div>
+  <h2>Admin Access</h2>
+  <p>Enter your admin secret to continue</p>
+  <input class="auth-input" type="password" id="secretInput" placeholder="Admin secret key" onkeydown="if(event.key==='Enter')checkAuth()">
+  <button class="auth-btn" onclick="checkAuth()">Sign In</button>
+  <div id="authError" style="color:var(--red);font-size:13px;margin-top:10px;display:none">Incorrect secret. Try again.</div>
+</div>
+
+<!-- Main app (hidden until auth) -->
+<div id="appContent">
+
+  <!-- Step navigation -->
+  <div class="step-nav" id="stepNav">
+    <div class="step-item active" id="step-nav-1" onclick="goStep(1)"><span class="step-num">1</span><span class="step-label">Paper Info</span></div>
+    <div class="step-item" id="step-nav-2" onclick="goStep(2)"><span class="step-num">2</span><span class="step-label">Upload PDF</span></div>
+    <div class="step-item" id="step-nav-3" onclick="goStep(3)"><span class="step-num">3</span><span class="step-label">AI Extract</span></div>
+    <div class="step-item" id="step-nav-4" onclick="goStep(4)"><span class="step-num">4</span><span class="step-label">Review</span></div>
+    <div class="step-item" id="step-nav-5" onclick="goStep(5)"><span class="step-num">5</span><span class="step-label">Save</span></div>
+  </div>
+
+  <!-- ════ STEP 1: Paper Info ════ -->
+  <div id="step-1">
+    <div class="card">
+      <div class="card-title">📋 Step 1 — Paper Information</div>
+      <div class="card-sub">Tell HAN which exam paper these solutions belong to</div>
+
+      <div class="form-row cols-2">
+        <div class="form-group">
+          <label class="form-label">Level</label>
+          <select class="form-select" id="p-level">
+            <option value="MAA HL">MAA HL (Higher Level)</option>
+            <option value="MAA SL">MAA SL (Standard Level)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Paper</label>
+          <select class="form-select" id="p-paper">
+            <option value="P1">Paper 1 (No GDC)</option>
+            <option value="P2">Paper 2 (GDC)</option>
+            <option value="P3">Paper 3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row cols-3">
+        <div class="form-group">
+          <label class="form-label">Session</label>
+          <select class="form-select" id="p-session">
+            <option value="May">May</option>
+            <option value="November">November</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Year</label>
+          <select class="form-select" id="p-year">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time Zone</label>
+          <select class="form-select" id="p-tz">
+            <option value="0">TZ0 (Single TZ)</option>
+            <option value="1">TZ1 (Americas)</option>
+            <option value="2">TZ2 (Europe/Africa/Asia)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label">Google Drive PDF URL (for Solution URL field in database)</label>
+        <input class="form-input" id="p-driveUrl" placeholder="https://drive.google.com/file/d/YOUR_FILE_ID/view  (share link to your hosted PDF)">
+        <div style="font-size:11px;color:var(--text-soft);margin-top:4px">
+          Upload your full solutions PDF to Google Drive → Share → "Anyone with link" → Copy link. Each question will link here with #page=N.
+        </div>
+      </div>
+
+      <div style="background:var(--ice-light);border:1px solid var(--ice);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px">
+        <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px">Preview — Question ID prefix</div>
+        <div class="id-helper">IBMAA<span id="idPreview" class="id-preview">HLM25P2TZ0</span>Q<em>n</em></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goStep(2)">Next: Upload PDF →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ STEP 2: Upload PDF ════ -->
+  <div id="step-2" style="display:none">
+    <div class="card">
+      <div class="card-title">📄 Step 2 — Upload Solutions PDF</div>
+      <div class="card-sub">Upload your handwritten solutions PDF. Each page will be previewed below.</div>
+
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('pdfInput').click()" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="this.classList.remove('drag-over')">
+        <div class="upload-zone-icon">📄</div>
+        <h3>Click to upload or drag & drop</h3>
+        <p>PDF files only · No size limit (large PDFs may take a moment)</p>
+        <input type="file" id="pdfInput" accept=".pdf,application/pdf" onchange="handlePdfUpload(event)">
+      </div>
+
+      <div id="pdfProgress" style="display:none">
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          <div class="progress-label" id="progressLabel">Rendering pages…</div>
+        </div>
+      </div>
+
+      <div id="pagePreview" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;margin-bottom:8px">
+          <div style="font-size:13px;font-weight:700">Pages <span id="pageCount">0</span></div>
+          <button class="btn btn-sm btn-secondary" onclick="clearPdf()">✕ Clear</button>
+        </div>
+        <div class="page-grid" id="pageGrid"></div>
+      </div>
+
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-secondary" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-primary" id="toStep3Btn" onclick="goStep(3)" disabled>Next: AI Extract →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ STEP 3: AI Extraction ════ -->
+  <div id="step-3" style="display:none">
+    <div class="card">
+      <div class="card-title">🤖 Step 3 — AI Question Extraction</div>
+      <div class="card-sub">Claude will analyse each page and identify where each question starts and ends</div>
+
+      <div class="ai-panel">
+        <div class="ai-panel-title">How it works</div>
+        <p>
+          Claude looks at all <strong id="pageCountHint">0</strong> pages of your handwritten solutions PDF and identifies each question (Q1, Q2a, Q2b…),
+          which pages they span, and any visible hints like marks or topic labels. You'll review and complete the metadata in the next step.
+        </p>
+        <p style="margin-bottom:0">
+          <strong>Large PDFs:</strong> If your paper has many pages, extraction may take 30–60 seconds. Claude processes everything in one pass.
+        </p>
+      </div>
+
+      <div id="extractionStatus" style="display:none">
+        <div class="ai-thinking"><span class="spin">⟳</span> <span id="extractionStatusText">Sending pages to Claude…</span></div>
+        <div class="progress-wrap" style="margin-top:12px">
+          <div class="progress-bar"><div class="progress-fill" id="extractProgressFill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div id="extractionError" style="display:none" class="save-result err"></div>
+
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-secondary" onclick="goStep(2)">← Back</button>
+        <button class="btn btn-primary" id="extractBtn" onclick="runExtraction()">⚡ Extract Questions with Claude</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ STEP 4: Review & Edit ════ -->
+  <div id="step-4" style="display:none">
+    <div class="card">
+      <div class="card-title">✍️ Step 4 — Review & Edit Questions</div>
+      <div class="card-sub">Complete metadata for each extracted question. Claude's suggestions are pre-filled — edit anything incorrect.</div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-size:13px;color:var(--text-soft)"><span id="qCardCount">0</span> questions found</div>
+        <div class="btn-row">
+          <button class="btn btn-sm btn-secondary" onclick="expandAll()">Expand All</button>
+          <button class="btn btn-sm btn-secondary" onclick="collapseAll()">Collapse All</button>
+        </div>
+      </div>
+
+      <div id="qCardsContainer"></div>
+
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-secondary" onclick="goStep(3)">← Re-extract</button>
+        <button class="btn btn-primary" onclick="goStep(5)">Next: Save to Database →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ STEP 5: Save ════ -->
+  <div id="step-5" style="display:none">
+    <div class="card">
+      <div class="card-title">💾 Step 5 — Save to Database</div>
+      <div class="card-sub">Save all confirmed questions to the Google Sheets repository</div>
+
+      <div style="background:var(--ice-light);border:1px solid var(--ice);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">Summary</div>
+        <div id="saveSummary" style="font-size:13px;color:var(--text-mid);line-height:1.8"></div>
+      </div>
+
+      <div id="saveStatus" style="display:none"></div>
+
+      <div class="btn-row" style="margin-bottom:20px">
+        <button class="btn btn-success" id="saveBtn" onclick="saveToSheets()">💾 Save All to Google Sheets</button>
+        <button class="btn btn-secondary" onclick="goStep(4)">← Back to Review</button>
+      </div>
+
+      <!-- CSV export fallback -->
+      <div style="border-top:1px solid var(--border);padding-top:20px;margin-top:10px">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px">Or export as CSV</div>
+        <p style="font-size:12px;color:var(--text-soft);margin-bottom:10px">If saving directly to Sheets doesn't work yet, copy this CSV and paste it manually into your Google Sheet.</p>
+        <button class="btn btn-sm btn-secondary" onclick="generateCsv()">Generate CSV</button>
+        <div class="export-box" id="csvBox" style="display:none">
+          <textarea id="csvOutput" readonly onclick="this.select()"></textarea>
+          <div style="font-size:11px;color:var(--text-soft);margin-top:6px">Click to select all, then copy (Ctrl+C)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start another paper -->
+    <div class="card" style="text-align:center">
+      <div style="font-size:32px;margin-bottom:12px">🎉</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px">Upload another paper?</div>
+      <p style="font-size:13px;color:var(--text-soft);margin-bottom:16px">Go back to Step 1 to upload a different exam paper's solutions</p>
+      <button class="btn btn-secondary" onclick="resetAll()">Start New Paper</button>
+    </div>
+  </div>
+
+</div><!-- /appContent -->
+
+<div class="toast" id="toast"></div>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+// ════════════════════════════
+// CONSTANTS
+// ════════════════════════════
+const ADMIN_SECRET = 'hanyong-admin-2024'; // must match ADMIN_SECRET in netlify function
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzxhN5aEo2THjbhPENpyLb6OuKwTb2V7vxs_4-Zt13Po3e7euE3ciywAMFTyOoAOzadwA/exec';
+
+// PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ════════════════════════════
+// STATE
+// ════════════════════════════
+let currentStep = 1;
+let pdfPages = []; // array of {pageNum, imageBase64, width, height}
+let extractedQuestions = []; // array of {questionNum, pages, marksHint, topicHint, ...}
+
+// ════════════════════════════
+// AUTH
+// ════════════════════════════
+function checkAuth() {
+  const val = document.getElementById('secretInput').value.trim();
+  if (val === ADMIN_SECRET) {
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+    updateIdPreview();
+  } else {
+    document.getElementById('authError').style.display = 'block';
+  }
+}
+
+// ════════════════════════════
+// STEP NAVIGATION
+// ════════════════════════════
+function goStep(n) {
+  // Validate before advancing
+  if (n > currentStep) {
+    if (currentStep === 1 && n > 1) {
+      // nothing required, always allow
+    }
+    if (n === 3 && pdfPages.length === 0) {
+      showToast('Upload a PDF first', 'error'); return;
+    }
+    if (n >= 4 && extractedQuestions.length === 0 && n !== 5) {
+      showToast('Run AI extraction first', 'error'); return;
+    }
+  }
+  currentStep = n;
+  for (let i = 1; i <= 5; i++) {
+    const panel = document.getElementById('step-' + i);
+    const nav   = document.getElementById('step-nav-' + i);
+    if (panel) panel.style.display = i === n ? '' : 'none';
+    if (nav) {
+      nav.classList.toggle('active', i === n);
+      nav.classList.toggle('done', i < n);
+    }
+  }
+  if (n === 3) document.getElementById('pageCountHint').textContent = pdfPages.length;
+  if (n === 4) renderQCards();
+  if (n === 5) renderSaveSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════════════════════════════
+// PAPER METADATA & ID PREVIEW
+// ════════════════════════════
+['p-level','p-session','p-year','p-paper','p-tz'].forEach(id => {
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', updateIdPreview);
+  }, 0);
+});
+
+function updateIdPreview() {
+  const level   = (document.getElementById('p-level')?.value || 'MAA HL').replace('MAA ','').replace(' ','');
+  const session = (document.getElementById('p-session')?.value || 'May').charAt(0); // M or N
+  const year    = (document.getElementById('p-year')?.value || '2025').slice(2);    // last 2 digits
+  const paper   = (document.getElementById('p-paper')?.value || 'P2');
+  const tz      = (document.getElementById('p-tz')?.value || '0');
+  const preview = `${level}${session}${year}${paper}TZ${tz}`;
+  const el = document.getElementById('idPreview');
+  if (el) el.textContent = preview;
+}
+
+function getIdPrefix() {
+  const level   = (document.getElementById('p-level').value || 'MAA HL').replace('MAA ','').replace(' ','');
+  const session = (document.getElementById('p-session').value || 'May').charAt(0);
+  const year    = (document.getElementById('p-year').value || '2025').slice(2);
+  const paper   = (document.getElementById('p-paper').value || 'P2');
+  const tz      = (document.getElementById('p-tz').value || '0');
+  return `IBMAA${level}${session}${year}${paper}TZ${tz}`;
+}
+
+// ════════════════════════════
+// PDF UPLOAD & RENDERING
+// ════════════════════════════
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.add('drag-over');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') processPdf(file);
+  else showToast('Please drop a PDF file', 'error');
+}
+
+function handlePdfUpload(e) {
+  const file = e.target.files[0];
+  if (file) processPdf(file);
+}
+
+async function processPdf(file) {
+  pdfPages = [];
+  document.getElementById('pdfProgress').style.display = 'block';
+  document.getElementById('pagePreview').style.display = 'none';
+  document.getElementById('toStep3Btn').disabled = true;
+  document.getElementById('uploadZone').style.display = 'none';
+
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  const totalPages = pdf.numPages;
+
+  document.getElementById('progressLabel').textContent = `Rendering page 1 of ${totalPages}…`;
+
+  const grid = document.getElementById('pageGrid');
+  grid.innerHTML = '';
+
+  for (let p = 1; p <= totalPages; p++) {
+    document.getElementById('progressFill').style.width = `${(p / totalPages) * 100}%`;
+    document.getElementById('progressLabel').textContent = `Rendering page ${p} of ${totalPages}…`;
+
+    const page    = await pdf.getPage(p);
+    const scale   = 2.0; // hi-res for Claude
+    const viewport = page.getViewport({ scale });
+
+    const canvas  = document.createElement('canvas');
+    canvas.width  = viewport.width;
+    canvas.height = viewport.height;
+    const ctx     = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    const base64 = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+    pdfPages.push({ pageNum: p, imageBase64: base64, width: viewport.width, height: viewport.height });
+
+    // Thumbnail for display (lower res)
+    const thumbCanvas = document.createElement('canvas');
+    const thumbScale  = 140 / viewport.width;
+    thumbCanvas.width  = 140;
+    thumbCanvas.height = Math.round(viewport.height * thumbScale);
+    const thumbCtx = thumbCanvas.getContext('2d');
+    thumbCtx.drawImage(canvas, 0, 0, thumbCanvas.width, thumbCanvas.height);
+
+    const thumb = document.createElement('div');
+    thumb.className = 'page-thumb';
+    thumb.id = 'thumb-' + p;
+    thumb.innerHTML = `<div class="page-num">Page ${p}</div>`;
+    thumb.insertBefore(thumbCanvas, thumb.firstChild);
+    grid.appendChild(thumb);
+  }
+
+  document.getElementById('pdfProgress').style.display = 'none';
+  document.getElementById('pageCount').textContent = totalPages;
+  document.getElementById('pagePreview').style.display = 'block';
+  document.getElementById('toStep3Btn').disabled = false;
+  showToast(`${totalPages} pages loaded`, 'success');
+}
+
+function clearPdf() {
+  pdfPages = [];
+  document.getElementById('pageGrid').innerHTML = '';
+  document.getElementById('pagePreview').style.display = 'none';
+  document.getElementById('uploadZone').style.display = '';
+  document.getElementById('pdfInput').value = '';
+  document.getElementById('toStep3Btn').disabled = true;
+}
+
+// ════════════════════════════
+// AI EXTRACTION
+// ════════════════════════════
+async function runExtraction() {
+  if (pdfPages.length === 0) { showToast('No PDF loaded', 'error'); return; }
+
+  const extractBtn = document.getElementById('extractBtn');
+  extractBtn.disabled = true;
+  document.getElementById('extractionStatus').style.display = 'block';
+  document.getElementById('extractionError').style.display = 'none';
+  document.getElementById('extractProgressFill').style.width = '10%';
+  document.getElementById('extractionStatusText').textContent = 'Building image payload…';
+
+  // Build the message content — one image per page
+  const content = [];
+
+  // Intro text
+  content.push({
+    type: 'text',
+    text: `You are analysing ${pdfPages.length} pages from an IB Mathematics exam solutions PDF. These are Hanyong's handwritten worked solutions for ${document.getElementById('p-level').value} ${document.getElementById('p-paper').value}, ${document.getElementById('p-session').value} ${document.getElementById('p-year').value}, TZ${document.getElementById('p-tz').value}.
+
+Your task: identify EVERY question in this document and which pages each question spans.
+
+Return ONLY a valid JSON array with no markdown fencing, no explanation text — just the raw JSON array. Each element must be:
+{
+  "questionNum": "Q1" | "Q2a" | "Q2b" etc. (use sub-parts if visible),
+  "pages": [1, 2] (array of 1-indexed page numbers for this question's solution),
+  "marksHint": "6" or null (if marks are visible on the page),
+  "topicHint": "Calculus" or null (topic if visible/inferable),
+  "subtopicHint": "Integration by parts" or null,
+  "notes": "any useful observation" or null
+}
+
+Important:
+- Number questions as they appear: Q1, Q2, Q3... Use Q2a, Q2b if there are lettered sub-parts
+- If a question spans multiple pages, list all page numbers in the "pages" array
+- Be exhaustive — do not skip any question
+- If you cannot determine a sub-part boundary, group it as the parent question
+
+Here are all ${pdfPages.length} pages:`
+  });
+
+  // Add each page image
+  for (let i = 0; i < pdfPages.length; i++) {
+    content.push({ type: 'text', text: `[Page ${i + 1}]` });
+    content.push({
+      type: 'image',
+      source: { type: 'base64', media_type: 'image/jpeg', data: pdfPages[i].imageBase64 }
+    });
+  }
+
+  document.getElementById('extractProgressFill').style.width = '30%';
+  document.getElementById('extractionStatusText').textContent = `Sending ${pdfPages.length} pages to Claude…`;
+
+  try {
+    const resp = await fetch('/api/admin-extract', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + ADMIN_SECRET
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-6',
+        max_tokens: 4096,
+        system: 'You are a precise document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
+        messages: [{ role: 'user', content }]
+      })
+    });
+
+    document.getElementById('extractProgressFill').style.width = '80%';
+    document.getElementById('extractionStatusText').textContent = 'Parsing Claude\'s response…';
+
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message || 'Claude API error');
+
+    const rawText = data.content[0].text.trim();
+
+    // Extract JSON even if Claude wraps it in markdown
+    let jsonStr = rawText;
+    const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]+?)```/);
+    if (jsonMatch) jsonStr = jsonMatch[1].trim();
+
+    extractedQuestions = JSON.parse(jsonStr);
+    if (!Array.isArray(extractedQuestions)) throw new Error('Expected a JSON array');
+
+    document.getElementById('extractProgressFill').style.width = '100%';
+    document.getElementById('extractionStatusText').textContent = `Found ${extractedQuestions.length} questions!`;
+
+    setTimeout(() => {
+      document.getElementById('extractionStatus').style.display = 'none';
+      extractBtn.disabled = false;
+      goStep(4);
+    }, 800);
+
+  } catch (err) {
+    document.getElementById('extractionStatus').style.display = 'none';
+    const errEl = document.getElementById('extractionError');
+    errEl.textContent = '❌ Extraction failed: ' + err.message;
+    errEl.style.display = 'block';
+    extractBtn.disabled = false;
+    showToast('Extraction failed — see error above', 'error');
+  }
+}
+
+// ════════════════════════════
+// REVIEW CARDS (Step 4)
+// ════════════════════════════
+const TOPICS = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra','Complex Numbers'];
+
+function renderQCards() {
+  document.getElementById('qCardCount').textContent = extractedQuestions.length;
+  const container = document.getElementById('qCardsContainer');
+  container.innerHTML = '';
+
+  extractedQuestions.forEach((q, i) => {
+    const prefix = getIdPrefix();
+    const qPart  = (q.questionNum || 'Q?').replace(/^Q/i,'');
+    const qId    = `${prefix}Q${qPart}`;
+
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `qcard-${i}`;
+
+    const pagesLabel = (q.pages || []).map(p => `<span class="page-badge">pg ${p}</span>`).join('');
+    const topicSel   = TOPICS.map(t => `<option value="${t}" ${t === q.topicHint ? 'selected' : ''}>${t}</option>`).join('');
+
+    const driveBase = (document.getElementById('p-driveUrl').value || '').trim();
+    const firstPage = (q.pages || [])[0] || 1;
+    const pageParam = driveBase ? (driveBase.includes('?') ? `&page=${firstPage}` : `#page=${firstPage}`) : '';
+    const solUrl = driveBase ? driveBase + pageParam : '';
+
+    card.innerHTML = `
+      <div class="q-card-head" onclick="toggleCard(${i})">
+        <div class="q-card-num">${q.questionNum || 'Q?'}</div>
+        <div class="q-card-meta">
+          Pages: ${(q.pages || []).join(', ')} &nbsp;|&nbsp;
+          Marks: ${q.marksHint || '—'} &nbsp;|&nbsp;
+          Topic: ${q.topicHint || '—'}
+        </div>
+        <span class="q-card-status ok">✓ Review</span>
+        <span class="q-card-toggle" id="toggle-${i}">▼</span>
+      </div>
+      <div class="q-card-body" id="qbody-${i}">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          ${pagesLabel}
+          ${q.notes ? `<span style="font-size:12px;color:var(--text-soft);font-style:italic">${q.notes}</span>` : ''}
+        </div>
+
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Question ID</label>
+            <input class="form-input" id="qid-${i}" value="${qId}" placeholder="IBMAAHLN24P2TZ0Q1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Marks</label>
+            <input class="form-input" id="qmarks-${i}" value="${q.marksHint || ''}" placeholder="e.g. 7" type="number" min="1" max="30">
+          </div>
+        </div>
+
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Topic</label>
+            <select class="form-select" id="qtopic-${i}">
+              <option value="">— Select Topic —</option>
+              ${topicSel}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subtopic</label>
+            <input class="form-input" id="qsubtopic-${i}" value="${q.subtopicHint || ''}" placeholder="e.g. Integration by parts">
+          </div>
+        </div>
+
+        <div class="form-row" style="grid-template-columns:1fr">
+          <div class="form-group">
+            <label class="form-label">Solution URL (auto-generated from Drive link + page)</label>
+            <input class="form-input" id="qsolurl-${i}" value="${solUrl}" placeholder="https://drive.google.com/file/d/…#page=1">
+          </div>
+        </div>
+
+        <div class="form-row" style="grid-template-columns:1fr">
+          <div class="form-group">
+            <label class="form-label">HAN Explanation (optional — key insight for students)</label>
+            <textarea class="form-textarea" id="qhan-${i}" placeholder="e.g. Recognise this as a composite function — chain rule with substitution u = sin x…"></textarea>
+          </div>
+        </div>
+
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Common Mistakes (optional)</label>
+            <textarea class="form-textarea" id="qmistakes-${i}" placeholder="e.g. Students often forget the +C when the integral has bounds…" style="min-height:60px"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Examiner Note (optional)</label>
+            <textarea class="form-textarea" id="qexnote-${i}" placeholder="e.g. Examiner requires explicit substitution shown…" style="min-height:60px"></textarea>
+          </div>
+        </div>
+
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Difficulty</label>
+            <select class="form-select" id="qdiff-${i}">
+              <option value="1">★ Easy</option>
+              <option value="2" selected>★★ Medium</option>
+              <option value="3">★★★ Hard</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-select" id="qstatus-${i}">
+              <option value="final" selected>Final (visible to students)</option>
+              <option value="draft">Draft (hidden)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Page image preview -->
+        ${renderPageThumbs(q.pages || [])}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderPageThumbs(pages) {
+  if (!pages.length || !pdfPages.length) return '';
+  const thumbs = pages.map(p => {
+    const pd = pdfPages[p - 1];
+    if (!pd) return '';
+    return `<div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;flex:1;min-width:120px;max-width:200px">
+      <img src="data:image/jpeg;base64,${pd.imageBase64}" style="width:100%;display:block">
+      <div style="font-size:10px;text-align:center;padding:3px;color:var(--text-soft)">Page ${p}</div>
+    </div>`;
+  }).join('');
+  return `<div style="margin-top:14px">
+    <div class="form-label" style="margin-bottom:8px">Solution Pages Preview</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${thumbs}</div>
+  </div>`;
+}
+
+function toggleCard(i) {
+  const body   = document.getElementById('qbody-' + i);
+  const toggle = document.getElementById('toggle-' + i);
+  const isOpen = body.classList.toggle('open');
+  toggle.classList.toggle('open', isOpen);
+}
+
+function expandAll() {
+  extractedQuestions.forEach((_, i) => {
+    document.getElementById('qbody-' + i)?.classList.add('open');
+    document.getElementById('toggle-' + i)?.classList.add('open');
+  });
+}
+
+function collapseAll() {
+  extractedQuestions.forEach((_, i) => {
+    document.getElementById('qbody-' + i)?.classList.remove('open');
+    document.getElementById('toggle-' + i)?.classList.remove('open');
+  });
+}
+
+// ════════════════════════════
+// COLLECT FORM DATA
+// ════════════════════════════
+function collectQuestionData() {
+  return extractedQuestions.map((q, i) => ({
+    'Question ID':      (document.getElementById(`qid-${i}`)?.value || '').trim(),
+    'Level':            document.getElementById('p-level').value,
+    'Paper':            document.getElementById('p-paper').value,
+    'Year':             document.getElementById('p-year').value,
+    'Session':          document.getElementById('p-session').value,
+    'Time Zone':        document.getElementById('p-tz').value,
+    'Topic':            (document.getElementById(`qtopic-${i}`)?.value || '').trim(),
+    'Subtopic':         (document.getElementById(`qsubtopic-${i}`)?.value || '').trim(),
+    'Marks':            (document.getElementById(`qmarks-${i}`)?.value || '').trim(),
+    'Difficulty':       (document.getElementById(`qdiff-${i}`)?.value || '2').trim(),
+    'Status':           (document.getElementById(`qstatus-${i}`)?.value || 'final').trim(),
+    'HAN Explanation':  (document.getElementById(`qhan-${i}`)?.value || '').trim(),
+    'Common Mistakes':  (document.getElementById(`qmistakes-${i}`)?.value || '').trim(),
+    'Examiner Note':    (document.getElementById(`qexnote-${i}`)?.value || '').trim(),
+    'Solution URL':     (document.getElementById(`qsolurl-${i}`)?.value || '').trim(),
+  }));
+}
+
+// ════════════════════════════
+// SAVE SUMMARY (Step 5)
+// ════════════════════════════
+function renderSaveSummary() {
+  const data = collectQuestionData();
+  const level   = document.getElementById('p-level').value;
+  const paper   = document.getElementById('p-paper').value;
+  const session = document.getElementById('p-session').value;
+  const year    = document.getElementById('p-year').value;
+  const tz      = document.getElementById('p-tz').value;
+  const withSol = data.filter(q => q['Solution URL']).length;
+  const withTopic = data.filter(q => q['Topic']).length;
+
+  document.getElementById('saveSummary').innerHTML = `
+    📄 <strong>Paper:</strong> ${level} ${paper} — ${session} ${year} TZ${tz}<br>
+    🔢 <strong>Questions:</strong> ${data.length} total<br>
+    ✍️ <strong>With solution URL:</strong> ${withSol} / ${data.length}<br>
+    🏷️ <strong>With topic assigned:</strong> ${withTopic} / ${data.length}<br>
+    📊 <strong>Status:</strong> ${data.filter(q => q['Status'] === 'final').length} final, ${data.filter(q => q['Status'] === 'draft').length} draft
+  `;
+}
+
+// ════════════════════════════
+// SAVE TO GOOGLE SHEETS
+// ════════════════════════════
+async function saveToSheets() {
+  const data = collectQuestionData();
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving…';
+
+  const statusEl = document.getElementById('saveStatus');
+  statusEl.style.display = 'none';
+
+  let saved = 0, failed = 0;
+
+  for (const q of data) {
+    try {
+      const params = new URLSearchParams({
+        action: 'addQuestion',
+        questionId:    q['Question ID'],
+        level:         q['Level'],
+        paper:         q['Paper'],
+        year:          q['Year'],
+        session:       q['Session'],
+        timeZone:      q['Time Zone'],
+        topic:         q['Topic'],
+        subtopic:      q['Subtopic'],
+        marks:         q['Marks'],
+        difficulty:    q['Difficulty'],
+        status:        q['Status'],
+        hanExplanation: q['HAN Explanation'],
+        commonMistakes: q['Common Mistakes'],
+        examinerNote:  q['Examiner Note'],
+        solutionUrl:   q['Solution URL'],
+      });
+      await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
+      saved++;
+    } catch {
+      failed++;
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = '💾 Save All to Google Sheets';
+
+  statusEl.className = 'save-result ' + (failed === 0 ? 'ok' : 'err');
+  statusEl.style.display = 'block';
+  if (failed === 0) {
+    statusEl.textContent = `✅ ${saved} questions sent to Google Sheets! Check your sheet for the new rows.`;
+    showToast(`${saved} questions saved!`, 'success');
+  } else {
+    statusEl.textContent = `⚠️ ${saved} saved, ${failed} failed. Use the CSV export below as a fallback.`;
+    showToast('Some saves failed — use CSV export', 'error');
+  }
+}
+
+// ════════════════════════════
+// CSV EXPORT
+// ════════════════════════════
+function generateCsv() {
+  const data = collectQuestionData();
+  const cols = ['Question ID','Level','Paper','Year','Session','Time Zone','Topic','Subtopic','Marks','Difficulty','Status','HAN Explanation','Common Mistakes','Examiner Note','Solution URL'];
+  const escape = v => `"${(v || '').replace(/"/g,'""')}"`;
+  const rows = [cols.map(escape).join(',')];
+  data.forEach(q => rows.push(cols.map(c => escape(q[c] || '')).join(',')));
+  document.getElementById('csvOutput').value = rows.join('\n');
+  document.getElementById('csvBox').style.display = 'block';
+}
+
+// ════════════════════════════
+// RESET
+// ════════════════════════════
+function resetAll() {
+  pdfPages = [];
+  extractedQuestions = [];
+  document.getElementById('pdfInput').value = '';
+  document.getElementById('pageGrid').innerHTML = '';
+  document.getElementById('pagePreview').style.display = 'none';
+  document.getElementById('uploadZone').style.display = '';
+  document.getElementById('toStep3Btn').disabled = true;
+  document.getElementById('qCardsContainer').innerHTML = '';
+  document.getElementById('csvBox').style.display = 'none';
+  document.getElementById('saveStatus').style.display = 'none';
+  goStep(1);
+}
+
+// ════════════════════════════
+// TOAST
+// ════════════════════════════
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ════════════════════════════
+// INIT
+// ════════════════════════════
+// Wire up live ID preview after DOM ready
+window.addEventListener('DOMContentLoaded', () => {
+  ['p-level','p-session','p-year','p-paper','p-tz'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', updateIdPreview);
+  });
+});
+</script>
+</body>
+</html>
