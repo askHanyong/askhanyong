@@ -104,7 +104,39 @@ textarea#userInput::placeholder { color:var(--text-soft); }
 .send-btn { width:40px; height:40px; background:var(--blue); border:none; border-radius:10px; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; flex-shrink:0; }
 .send-btn:disabled { background:var(--text-soft); cursor:not-allowed; }
 .input-hint { font-size:10px; color:var(--text-soft); text-align:center; margin-top:6px; }
+
+/* ── Practice tab ── */
 .practice-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+
+/* Sub-tab toggle inside Practice */
+.practice-mode-bar { display:flex; gap:0; margin:14px 16px 0; border:1.5px solid var(--border); border-radius:10px; overflow:hidden; flex-shrink:0; }
+.pmode-btn { flex:1; padding:9px 6px; font-size:12px; font-weight:700; font-family:'DM Sans',sans-serif; border:none; background:white; color:var(--text-mid); cursor:pointer; transition:all 0.18s; }
+.pmode-btn.active { background:var(--blue); color:white; }
+
+/* Browse mode */
+.browse-pane { display:none; }
+.browse-pane.active { display:block; }
+
+/* Paste mode */
+.paste-pane { display:none; padding:16px; }
+.paste-pane.active { display:block; }
+.paste-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:18px 16px; margin-bottom:14px; }
+.paste-card h3 { font-size:15px; font-weight:700; color:var(--text); margin-bottom:4px; font-family:'Playfair Display',serif; }
+.paste-card p { font-size:12px; color:var(--text-soft); line-height:1.55; margin-bottom:14px; }
+.paste-label { font-size:11px; font-weight:700; color:var(--text-mid); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.paste-textarea { width:100%; min-height:130px; max-height:260px; border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px; font-size:13.5px; font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg); resize:vertical; outline:none; line-height:1.6; transition:border-color 0.2s; }
+.paste-textarea:focus { border-color:var(--blue); background:white; }
+.paste-textarea::placeholder { color:var(--text-soft); }
+.paste-meta-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; margin-bottom:14px; }
+.paste-select { flex:1; min-width:110px; padding:8px 10px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:12px; font-family:'DM Sans',sans-serif; color:var(--text); background:white; outline:none; cursor:pointer; }
+.paste-ask-btn { width:100%; padding:13px; background:linear-gradient(135deg,#1e40af,#1d4ed8); color:white; border:none; border-radius:var(--radius); font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
+.paste-ask-btn:disabled { opacity:0.55; cursor:not-allowed; }
+.paste-tips { background:var(--ice-light); border:1px solid rgba(29,78,216,0.15); border-radius:var(--radius-sm); padding:12px 14px; }
+.paste-tips-title { font-size:11px; font-weight:700; color:var(--blue); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.paste-tips ul { list-style:none; display:flex; flex-direction:column; gap:5px; }
+.paste-tips li { font-size:12px; color:var(--text-mid); display:flex; gap:7px; align-items:flex-start; }
+.paste-tips li::before { content:'→'; color:var(--blue); font-weight:700; flex-shrink:0; margin-top:1px; }
+
 .section-header { margin-bottom:14px; }
 .section-header h2 { font-size:19px; font-weight:700; color:var(--text); font-family:'Playfair Display',serif; }
 .section-header p { font-size:12px; color:var(--text-soft); margin-top:2px; }
@@ -126,7 +158,8 @@ textarea#userInput::placeholder { color:var(--text-soft); }
 .tag-paper { background:var(--bg); color:var(--text-mid); }
 .q-marks { font-size:22px; font-weight:800; color:var(--blue); white-space:nowrap; }
 .q-marks small { font-size:10px; font-weight:400; color:var(--text-soft); }
-.q-preview { font-size:13px; color:var(--text-mid); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.q-preview { font-size:13px; color:var(--text-mid); line-height:1.5; }
+.q-ref { font-size:12px; font-weight:600; color:var(--text); font-family:'DM Mono',monospace; }
 .q-empty { text-align:center; padding:48px 20px; }
 .q-empty .ei { font-size:44px; margin-bottom:12px; }
 .q-empty p { color:var(--text-soft); font-size:13px; }
@@ -149,6 +182,10 @@ textarea#userInput::placeholder { color:var(--text-soft); }
 .sheet-btn { flex:1; padding:12px; border-radius:var(--radius); font-size:13px; font-weight:700; cursor:pointer; border:none; font-family:'DM Sans',sans-serif; }
 .sheet-btn.primary { background:var(--blue); color:white; }
 .sheet-btn.secondary { background:var(--bg); color:var(--text); border:1.5px solid var(--border); }
+
+/* Reference-only question card badge */
+.ref-badge { display:inline-flex; align-items:center; gap:5px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:3px 10px; font-size:11px; font-weight:600; color:var(--text-mid); font-family:'DM Mono',monospace; }
+
 .mock-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
 .mock-hero { background:linear-gradient(135deg,#1e3a5f,#1d4ed8); padding:22px 18px 18px; color:white; }
 .mock-hero h2 { font-size:21px; font-weight:700; font-family:'Playfair Display',serif; margin-bottom:4px; }
@@ -217,6 +254,42 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .modal-note { font-size:11px; color:var(--text-soft); }
 .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:white; padding:10px 18px; border-radius:20px; font-size:13px; font-weight:500; opacity:0; transition:all 0.3s; z-index:600; pointer-events:none; white-space:nowrap; max-width:90vw; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Progress */
+.practice-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+
+/* ── Practice sub-tabs ── */
+.practice-subtabs { display:flex; background:white; border-bottom:2px solid var(--border); flex-shrink:0; }
+.pst-btn { flex:1; padding:11px 8px; border:none; background:none; font-size:12px; font-weight:700; color:var(--text-soft); cursor:pointer; font-family:'DM Sans',sans-serif; border-bottom:2.5px solid transparent; margin-bottom:-2px; transition:all 0.15s; }
+.pst-btn.active { color:var(--blue); border-bottom-color:var(--blue); }
+.pst-panel { display:none; flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.pst-panel.active { display:block; }
+.paste-panel-inner { padding:16px; display:flex; flex-direction:column; gap:14px; }
+.paste-label { font-size:12px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+.paste-textarea { width:100%; min-height:160px; border:1.5px solid var(--border); border-radius:var(--radius); padding:12px 14px; font-size:14px; font-family:'DM Sans',sans-serif; color:var(--text); background:white; resize:vertical; outline:none; line-height:1.6; transition:border-color 0.2s; }
+.paste-textarea:focus { border-color:var(--blue); }
+.paste-textarea::placeholder { color:var(--text-soft); }
+.paste-meta { display:flex; gap:8px; flex-wrap:wrap; }
+.paste-select { flex:1; min-width:110px; padding:8px 10px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:12px; font-family:'DM Sans',sans-serif; color:var(--text); background:white; cursor:pointer; outline:none; }
+.paste-submit-btn { width:100%; padding:13px; background:linear-gradient(135deg,#1e40af,#1d4ed8); color:white; border:none; border-radius:var(--radius); font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+.paste-submit-btn:disabled { background:var(--text-soft); cursor:not-allowed; }
+.paste-info-box { background:var(--ice-light); border:1px solid rgba(29,78,216,0.15); border-radius:var(--radius-sm); padding:12px 14px; font-size:12px; color:var(--text-mid); line-height:1.6; }
+.paste-info-box strong { color:var(--blue); }
+.paste-result { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; font-size:13.5px; line-height:1.75; color:var(--text); display:none; }
+.paste-result.show { display:block; }
+.paste-result-label { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.paste-result-label::after { content:''; flex:1; height:1px; background:var(--border); }
+/* ── Sheet reference-only block ── */
+.sheet-ref-block { background:var(--ice-light); border:1.5px solid rgba(29,78,216,0.2); border-radius:var(--radius); padding:14px 16px; margin:10px 0 12px; }
+.sheet-ref-title { font-size:13px; font-weight:700; color:var(--blue); margin-bottom:10px; }
+.sheet-ref-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.sheet-ref-item { display:flex; flex-direction:column; gap:2px; }
+.sheet-ref-item .srl { font-size:10px; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.4px; font-weight:700; }
+.sheet-ref-item .srv { font-size:13px; font-weight:600; color:var(--text); font-family:'DM Mono',monospace; }
+.sheet-paste-cta { background:var(--bg); border:1.5px dashed var(--border); border-radius:var(--radius); padding:14px 16px; text-align:center; margin:12px 0; }
+.sheet-paste-cta p { font-size:12px; color:var(--text-soft); margin-bottom:10px; line-height:1.55; }
+.sheet-paste-cta strong { color:var(--text); }
+.sheet-paste-cta button { padding:8px 18px; background:var(--blue); color:white; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
 </style>
 </head>
 <body>
@@ -232,6 +305,8 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="limit-track"><div class="limit-fill" id="limitFill" style="width:0%"></div></div>
   <button class="upgrade-btn-small" onclick="showUpgrade()">Upgrade</button>
 </div>
+
+<!-- ══════════════ CHAT ══════════════ -->
 <div class="view-panel active" id="view-chat">
   <div class="context-bar" id="contextBar">
     <span class="ctx-label">Level</span>
@@ -281,19 +356,97 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="input-hint">Powered by HAN · Built by Hanyong Lim, IB HL Mathematics Examiner</div>
   </div>
 </div>
+
+<!-- ══════════════ PRACTICE ══════════════ -->
 <div class="view-panel" id="view-practice">
-  <div class="practice-scroll"><div style="padding:16px">
-    <div class="section-header"><h2>📚 Question Bank</h2><p>Browse Hanyong's verified past paper solutions</p></div>
-    <div class="filter-bar">
-      <input class="f-input" id="pfSearch" placeholder="Search topic, keyword…" oninput="filterPractice()">
-      <select class="f-select" id="pfPaper" onchange="filterPractice()"><option value="">All Papers</option><option value="P1">Paper 1</option><option value="P2">Paper 2</option><option value="P3">Paper 3</option></select>
-      <select class="f-select" id="pfTopic" onchange="filterPractice()"><option value="">All Topics</option><option value="Calculus">Calculus</option><option value="Functions">Functions</option><option value="Geometry &amp; Trigonometry">Geometry &amp; Trig</option><option value="Statistics &amp; Probability">Statistics</option><option value="Number &amp; Algebra">Number &amp; Algebra</option><option value="Complex Numbers">Complex Numbers</option></select>
-      <select class="f-select" id="pfDiff" onchange="filterPractice()"><option value="">All Difficulties</option><option value="1">★ Easy</option><option value="2">★★ Medium</option><option value="3">★★★ Hard</option></select>
+  <!-- Sub-tab toggle -->
+  <div class="practice-mode-bar">
+    <button class="pmode-btn active" id="pmode-browse" onclick="setPracticeMode('browse')">📚 Browse Bank</button>
+    <button class="pmode-btn" id="pmode-paste" onclick="setPracticeMode('paste')">✏️ Paste Your Question</button>
+  </div>
+
+  <div class="practice-scroll">
+    <!-- BROWSE PANE -->
+    <div class="browse-pane active" id="browsePaneWrap">
+      <div style="padding:16px">
+        <div class="section-header">
+          <h2>📚 Question Bank</h2>
+          <p>Browse past paper references — bring the question text yourself or upload a photo</p>
+        </div>
+        <div class="filter-bar">
+          <input class="f-input" id="pfSearch" placeholder="Search topic, year, paper…" oninput="filterPractice()">
+          <select class="f-select" id="pfPaper" onchange="filterPractice()">
+            <option value="">All Papers</option>
+            <option value="P1">Paper 1</option>
+            <option value="P2">Paper 2</option>
+            <option value="P3">Paper 3</option>
+          </select>
+          <select class="f-select" id="pfTopic" onchange="filterPractice()">
+            <option value="">All Topics</option>
+            <option value="Calculus">Calculus</option>
+            <option value="Functions">Functions</option>
+            <option value="Geometry &amp; Trigonometry">Geometry &amp; Trig</option>
+            <option value="Statistics &amp; Probability">Statistics</option>
+            <option value="Number &amp; Algebra">Number &amp; Algebra</option>
+            <option value="Complex Numbers">Complex Numbers</option>
+          </select>
+          <select class="f-select" id="pfDiff" onchange="filterPractice()">
+            <option value="">All Difficulties</option>
+            <option value="1">★ Easy</option>
+            <option value="2">★★ Medium</option>
+            <option value="3">★★★ Hard</option>
+          </select>
+        </div>
+        <div class="f-count" id="practiceCount">Loading…</div>
+        <div class="q-grid" id="practiceGrid"><div class="q-empty"><div class="ei">⏳</div><p>Loading questions…</p></div></div>
+      </div>
     </div>
-    <div class="f-count" id="practiceCount">Loading…</div>
-    <div class="q-grid" id="practiceGrid"><div class="q-empty"><div class="ei">⏳</div><p>Loading questions…</p></div></div>
-  </div></div>
+
+    <!-- PASTE PANE -->
+    <div class="paste-pane" id="pastePaneWrap">
+      <div class="paste-card">
+        <h3>✏️ Paste Your Question</h3>
+        <p>Copy the question text from your textbook, past paper PDF, or type it manually. HAN will solve it step-by-step with full examiner commentary.</p>
+        <div class="paste-label">Question Text</div>
+        <textarea class="paste-textarea" id="pasteQText" placeholder="e.g. Find the exact value of ∫₀¹ x·eˣ dx, giving your answer in the form ae + b where a, b ∈ ℤ.&#10;&#10;[5 marks]" oninput="updatePasteBtn()"></textarea>
+        <div class="paste-meta-row">
+          <select class="paste-select" id="pasteLevel">
+            <option value="MAA HL">MAA HL</option>
+            <option value="MAA SL">MAA SL</option>
+          </select>
+          <select class="paste-select" id="pastePaper">
+            <option value="Paper 1">Paper 1 (No GDC)</option>
+            <option value="Paper 2">Paper 2 (GDC)</option>
+            <option value="Paper 3">Paper 3</option>
+          </select>
+          <select class="paste-select" id="pasteTopic">
+            <option value="All Topics">Any Topic</option>
+            <option value="Calculus">Calculus</option>
+            <option value="Functions">Functions</option>
+            <option value="Geometry &amp; Trigonometry">Geometry &amp; Trig</option>
+            <option value="Statistics &amp; Probability">Statistics</option>
+            <option value="Number &amp; Algebra">Number &amp; Algebra</option>
+            <option value="Complex Numbers">Complex Numbers</option>
+          </select>
+        </div>
+        <button class="paste-ask-btn" id="pasteAskBtn" onclick="sendPastedQuestion()" disabled>
+          <span>💬 Ask HAN to Solve This</span>
+        </button>
+      </div>
+      <div class="paste-tips">
+        <div class="paste-tips-title">💡 Tips for best results</div>
+        <ul>
+          <li>Include the mark allocation e.g. "[5 marks]" — HAN tailors the depth of solution</li>
+          <li>For "show that" questions, paste the full statement including what to prove</li>
+          <li>You can also switch to the Chat tab and upload a photo of the question</li>
+          <li>After HAN solves it, ask follow-ups like "Why does that step work?" or "Give me a similar question"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- ══════════════ MOCK ══════════════ -->
 <div class="view-panel" id="view-mock">
   <div class="mock-scroll">
     <div id="mockConfig">
@@ -329,6 +482,8 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
   </div>
 </div>
+
+<!-- ══════════════ PROGRESS ══════════════ -->
 <div class="view-panel" id="view-progress">
   <div class="practice-scroll"><div style="padding:16px">
     <div class="section-header" style="margin-bottom:20px">
@@ -354,25 +509,46 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
   </div></div>
 </div>
+
+<!-- Bottom Nav -->
 <nav class="tab-nav">
   <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="tab-icon">💬</span>Ask HAN</button>
   <button class="tab-btn" id="tab-practice" onclick="switchTab('practice')"><span class="tab-icon">📚</span>Practice</button>
   <button class="tab-btn" id="tab-mock" onclick="switchTab('mock')"><span class="tab-icon">📝</span>Mock Paper</button>
   <button class="tab-btn" id="tab-progress" onclick="switchTab('progress')"><span class="tab-icon">📊</span>Progress</button>
 </nav>
+
+<!-- ══════════════ BOTTOM SHEET (question detail) ══════════════ -->
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheetBg(event)">
   <div class="bottom-sheet">
     <div class="sheet-handle"></div>
     <button class="sheet-close" onclick="closeSheet()">✕</button>
     <div class="sheet-id" id="sheetId"></div>
     <div class="sheet-tags" id="sheetTags"></div>
-    <div class="sheet-section"><div class="sheet-label">Question</div><div class="sheet-content" id="sheetQuestion"></div></div>
-    <div class="sheet-section"><div class="sheet-label">Final Answer</div><div class="sheet-answer" id="sheetAnswer"></div></div>
-    <div class="sheet-section" id="sheetSolSection" style="display:none"><div class="sheet-label">Worked Solution</div><div class="sheet-content" id="sheetSolution"></div></div>
-    <div class="sheet-section" id="sheetHanSection" style="display:none"><div class="sheet-label">💡 HAN's Insight</div><div class="sheet-han" id="sheetHan"></div></div>
-    <div class="sheet-btns"><button class="sheet-btn secondary" id="sheetSolBtn" onclick="toggleSheetSolution()">📖 Show Solution</button><button class="sheet-btn primary" onclick="askHANAboutSheet()">💬 Ask HAN</button></div>
+
+    <!-- Reference info (always shown) -->
+    <div class="sheet-section">
+      <div class="sheet-label">Past Paper Reference</div>
+      <div id="sheetRefBox" style="background:var(--bg);border-radius:var(--radius-sm);padding:12px 14px;font-family:'DM Mono',monospace;font-size:13px;color:var(--text);line-height:1.7;"></div>
+    </div>
+
+    <!-- Copyright-safe note -->
+    <div style="margin-top:10px;padding:10px 14px;background:#fef9c3;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;font-size:12px;color:#78350f;line-height:1.55">
+      📋 <strong>Question text not stored</strong> — please retrieve it from your IB past papers booklet or official PDF using the reference above, then paste it in the <em>Paste tab</em> or upload a photo in <em>Ask HAN</em>.
+    </div>
+
+    <div class="sheet-section" id="sheetHanSection" style="display:none">
+      <div class="sheet-label">💡 HAN's Insight</div>
+      <div class="sheet-han" id="sheetHan"></div>
+    </div>
+    <div class="sheet-btns">
+      <button class="sheet-btn secondary" onclick="openPasteFromSheet()">✏️ Paste &amp; Solve</button>
+      <button class="sheet-btn primary" onclick="askHANAboutSheet()">💬 Ask HAN</button>
+    </div>
   </div>
 </div>
+
+<!-- Login modal -->
 <div class="modal-overlay" id="loginOverlay" onclick="closeModalBg(event,'loginOverlay')">
   <div class="modal-box" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeModal('loginOverlay')">✕</button>
@@ -383,6 +559,8 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="modal-note" style="margin-top:10px">Free · No credit card needed</div>
   </div>
 </div>
+
+<!-- Upgrade / Stripe modal -->
 <div class="modal-overlay" id="upgradeOverlay" onclick="closeModalBg(event,'upgradeOverlay')">
   <div class="modal-box" onclick="event.stopPropagation()" style="max-width:420px">
     <button class="modal-close" onclick="closeModal('upgradeOverlay')">✕</button>
@@ -399,94 +577,405 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Priority support from Hanyong</li>
       </ul>
     </div>
+    <!-- ★ STRIPE: Replace the paymentLink value below with your real Stripe Payment Link URL -->
+    <!-- To get it: Stripe Dashboard → Payment Links → Create → $15/month recurring → Copy link -->
     <button class="modal-cta" id="stripeCheckoutBtn" onclick="startStripeCheckout()" style="display:flex;align-items:center;justify-content:center;gap:8px"><span>Pay with Card</span><span style="font-size:18px">💳</span></button>
     <div id="stripeNotReady" style="display:none"><button class="modal-cta" onclick="window.location.href='mailto:hanyong@askhanyong.com?subject=askHanyong Premium'" style="background:var(--text-mid)">Join Premium Waitlist →</button></div>
     <div class="modal-note" style="margin-top:10px">Secure payment via Stripe · Cancel anytime</div>
     <div class="modal-note">Free questions reset at midnight 🕛</div>
   </div>
 </div>
-<div class="toast" id="toast"></div>
-<script>
-const SHEETS_URL='https://script.google.com/macros/s/AKfycbwkje6bTYMy0fwIMWYwQ6kBRgW98v_Q3YxRm6_59YZDElQsWxBAUUJ7gzMkH4re_zT5QQ/exec';
-const GOOGLE_CLIENT_ID='328753347113-pm103e847sq15r21d1tj5rpu2vubg4dh.apps.googleusercontent.com';
-const FREE_DAILY_LIMIT=5;
-const isAdmin=new URLSearchParams(window.location.search).get('admin')==='hanyong';
-let currentUser=null,selectedLevel='MAA HL',selectedPaper='Paper 1',selectedSubjectTopic='All Topics';
-let uploadedImageBase64=null,uploadedImageType=null,conversationHistory=[],isLoading=false;
-let allRepoRecords=[],currentSheetRecord=null,mockSelectedTopics=new Set(['All']),mockPaperData=[],practiceFiltered=[];
 
-function switchTab(tab){
-  ['chat','practice','mock','progress'].forEach(t=>{
-    const v=document.getElementById('view-'+t),b=document.getElementById('tab-'+t);
-    if(v)v.classList.toggle('active',t===tab);
-    if(b)b.classList.toggle('active',t===tab);
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+// CONFIG — edit these values
+// ════════════════════════════════════════
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwkje6bTYMy0fwIMWYwQ6kBRgW98v_Q3YxRm6_59YZDElQsWxBAUUJ7gzMkH4re_zT5QQ/exec';
+const GOOGLE_CLIENT_ID = '328753347113-pm103e847sq15r21d1tj5rpu2vubg4dh.apps.googleusercontent.com';
+
+// ★ STRIPE: Paste your Stripe Payment Link URL below after creating it in the Stripe dashboard
+// Example: 'https://buy.stripe.com/test_abc123xyz'
+// Steps: stripe.com/dashboard → Payment Links → + New → Recurring $15/month → Copy link URL
+const STRIPE_PAYMENT_LINK = 'YOUR_STRIPE_PAYMENT_LINK_HERE';
+
+const FREE_DAILY_LIMIT = 5;
+const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'hanyong';
+
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+let currentUser = null;
+let selectedLevel = 'MAA HL', selectedPaper = 'Paper 1', selectedSubjectTopic = 'All Topics';
+let uploadedImageBase64 = null, uploadedImageType = null;
+let conversationHistory = [], isLoading = false;
+let allRepoRecords = [], currentSheetRecord = null;
+let mockSelectedTopics = new Set(['All']), mockPaperData = [], practiceFiltered = [];
+
+// ════════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════════
+function switchTab(tab) {
+  ['chat','practice','mock','progress'].forEach(t => {
+    const v = document.getElementById('view-' + t), b = document.getElementById('tab-' + t);
+    if (v) v.classList.toggle('active', t === tab);
+    if (b) b.classList.toggle('active', t === tab);
   });
-  if(tab==='practice')initPractice();
-  if(tab==='mock')initMock();
-  if(tab==='progress'){
-    if(!currentUser&&!isAdmin){
-      document.getElementById('progressSignInPrompt').style.display='block';
-      document.getElementById('progressContent').style.display='none';
-    }else{
-      document.getElementById('progressSignInPrompt').style.display='none';
-      document.getElementById('progressContent').style.display='block';
+  if (tab === 'practice') initPractice();
+  if (tab === 'mock') initMock();
+  if (tab === 'progress') {
+    if (!currentUser && !isAdmin) {
+      document.getElementById('progressSignInPrompt').style.display = 'block';
+      document.getElementById('progressContent').style.display = 'none';
+    } else {
+      document.getElementById('progressSignInPrompt').style.display = 'none';
+      document.getElementById('progressContent').style.display = 'block';
       renderProgress();
     }
   }
 }
 
-function setCtx(el,group){
-  document.querySelectorAll('[data-group="'+group+'"]').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  const val=el.dataset.val;
-  if(group==='level'){selectedLevel=val;const isHL=val==='MAA HL';document.querySelectorAll('.hl-chip').forEach(c=>{c.style.display=isHL?'':'none';});}
-  if(group==='paper')selectedPaper=val;
-  if(group==='topic')selectedSubjectTopic=val;
+// ════════════════════════════════════════
+// PRACTICE MODE TOGGLE (Browse / Paste)
+// ════════════════════════════════════════
+function setPracticeMode(mode) {
+  document.getElementById('pmode-browse').classList.toggle('active', mode === 'browse');
+  document.getElementById('pmode-paste').classList.toggle('active', mode === 'paste');
+  document.getElementById('browsePaneWrap').classList.toggle('active', mode === 'browse');
+  document.getElementById('pastePaneWrap').classList.toggle('active', mode === 'paste');
 }
 
-function getTodayKey(uid){return'aq_'+uid+'_'+new Date().toISOString().slice(0,10);}
-function getQuestionCount(){if(!currentUser)return 0;return parseInt(sessionStorage.getItem(getTodayKey(currentUser.sub))||'0');}
-function incrementQuestionCount(){if(!currentUser)return;const key=getTodayKey(currentUser.sub);const count=parseInt(sessionStorage.getItem(key)||'0')+1;sessionStorage.setItem(key,String(count));updateLimitBar(count);}
-function updateLimitBar(count){const bar=document.getElementById('limitBar'),fill=document.getElementById('limitFill'),txt=document.getElementById('limitText');if(!currentUser){if(bar)bar.style.display='none';return;}if(bar)bar.style.display='flex';const pct=Math.min(100,(count/FREE_DAILY_LIMIT)*100);if(fill)fill.style.width=pct+'%';const rem=Math.max(0,FREE_DAILY_LIMIT-count);if(txt)txt.textContent=rem+' free question'+(rem!==1?'s':'')+' remaining today';if(count>=FREE_DAILY_LIMIT&&fill)fill.style.background='linear-gradient(90deg,#dc2626,#f87171)';}
-function checkPremiumStatus(){const key=currentUser?'han_premium_'+currentUser.sub:null;if(!key)return false;return sessionStorage.getItem(key)==='true';}
-function canAskQuestion(){if(isAdmin)return true;if(checkPremiumStatus())return true;return!!(currentUser&&getQuestionCount()<FREE_DAILY_LIMIT);}
+function updatePasteBtn() {
+  const text = (document.getElementById('pasteQText').value || '').trim();
+  document.getElementById('pasteAskBtn').disabled = text.length < 10;
+}
 
-function showLogin(){document.getElementById('loginOverlay').classList.add('open');}
-function showUpgrade(){document.getElementById('upgradeOverlay').classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-function closeModalBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
-function handleGoogleCredential(response){var payload=JSON.parse(atob(response.credential.split('.')[1]));currentUser=payload;closeModal('loginOverlay');renderUserPill(payload);updateLimitBar(getQuestionCount());}
-function renderUserPill(user){document.getElementById('userPillArea').innerHTML='<div class="user-pill" onclick="showUpgrade()">'+(user.picture?'<img src="'+user.picture+'" alt="">':'')+'<span>'+(user.given_name||user.name||user.email)+'</span></div>';}
-window.addEventListener('load',function(){if(typeof google==='undefined')return;google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredential,auto_select:false});google.accounts.id.renderButton(document.getElementById('googleSignInBtn'),{theme:'outline',size:'large',width:320,text:'signin_with'});});
+async function sendPastedQuestion() {
+  const text = (document.getElementById('pasteQText').value || '').trim();
+  if (!text || text.length < 10) return;
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-function handleImageUpload(event){const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('Please upload an image file');return;}const reader=new FileReader();reader.onload=function(e){const dataUrl=e.target.result;uploadedImageBase64=dataUrl.split(',')[1];uploadedImageType=file.type;document.getElementById('previewThumb').src=dataUrl;document.getElementById('previewStrip').classList.add('show');};reader.readAsDataURL(file);}
-function removeImage(){uploadedImageBase64=null;uploadedImageType=null;document.getElementById('previewStrip').classList.remove('show');document.getElementById('previewThumb').src='';}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px';}
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
-function usePrompt(text){const inp=document.getElementById('userInput');inp.value=text;autoResize(inp);inp.focus();}
+  // Sync context chips with paste selectors
+  const level = document.getElementById('pasteLevel').value;
+  const paper = document.getElementById('pastePaper').value;
+  const topic = document.getElementById('pasteTopic').value;
+  selectedLevel = level;
+  selectedPaper = paper;
+  selectedSubjectTopic = topic;
 
-async function ensureRepoLoaded(){if(allRepoRecords.length>0)return;try{const res=await fetch(SHEETS_URL);const data=await res.json();allRepoRecords=(data.records||[]).filter(r=>(r['Status']||'').toString().trim().toLowerCase()==='final');}catch(e){allRepoRecords=[];}}
-(async()=>{try{await ensureRepoLoaded();}catch(e){}})();
+  // Switch to chat and pre-fill
+  switchTab('chat');
+  setTimeout(() => {
+    const inp = document.getElementById('userInput');
+    inp.value = text;
+    autoResize(inp);
+    inp.focus();
+    // Auto-send after a tiny delay so the tab transition completes
+    setTimeout(() => sendMessage(), 120);
+  }, 300);
+}
 
-async function searchRepository(query){try{await ensureRepoLoaded();if(allRepoRecords.length===0)return null;const qw=query.toLowerCase().split(/\s+/);const scored=allRepoRecords.map(f=>{const blob=[f['Question ID']||'',f['Topic']||'',f['Subtopic']||'',f['Question']||'',f['HAN Explanation']||'',f['Common Mistakes']||'',f['Examiner Note']||''].join(' ').toLowerCase();let score=qw.filter(w=>w.length>3&&blob.includes(w)).length;if((f['Topic']||'').toLowerCase().includes(selectedSubjectTopic.toLowerCase()))score+=3;if((f['Paper']||'')===selectedPaper)score+=2;return{score,fields:f};});const top=scored.filter(s=>s.score>0).sort((a,b)=>b.score-a.score).slice(0,2);if(top.length===0)return null;return top.map((s,i)=>{const f=s.fields;return`--- REPOSITORY ENTRY ${i+1} ---\nQuestion ID: ${f['Question ID']||'N/A'}\nSource: ${f['Source']||'N/A'} | Level: ${f['Level']||'N/A'} | Paper: ${f['Paper']||'N/A'} | Topic: ${f['Topic']||'N/A'}\nQuestion: ${f['Question']||'N/A'}\nWorked Solution: ${f['Worked Solution']||'N/A'}\nFinal Answer: ${f['Final Answer']||'N/A'}\nExaminer Note: ${f['Examiner Note']||'N/A'}\nCommon Mistakes: ${f['Common Mistakes']||'N/A'}\nHAN Explanation: ${f['HAN Explanation']||'N/A'}`;}).join('\n\n');}catch(e){return null;}}
+// Open paste tab and pre-fill reference from sheet
+function openPasteFromSheet() {
+  if (!currentSheetRecord) return;
+  const ref = buildRef(currentSheetRecord);
+  closeSheet();
+  setTimeout(() => {
+    switchTab('practice');
+    setPracticeMode('paste');
+    const ta = document.getElementById('pasteQText');
+    ta.value = `[${ref}]\n\n`;
+    ta.focus();
+    updatePasteBtn();
+  }, 200);
+}
 
-function appendMessage(role,content,imageDataUrl){const ws=document.getElementById('welcomeScreen');if(ws)ws.remove();const area=document.getElementById('chatArea');const div=document.createElement('div');div.className='message '+(role==='user'?'user':'han');const av=document.createElement('div');av.className='av '+(role==='user'?'user':'han');av.textContent=role==='user'?'YOU':'HAN';const bubble=document.createElement('div');bubble.className='bubble';if(imageDataUrl){const img=document.createElement('img');img.src=imageDataUrl;bubble.appendChild(img);}if(content)bubble.innerHTML+=formatResponse(content);div.appendChild(av);div.appendChild(bubble);area.appendChild(div);area.scrollTop=area.scrollHeight;setTimeout(()=>{if(typeof initDesmosGraphs==='function')initDesmosGraphs();},150);if(role!=='user'&&content)setTimeout(()=>addSimilarBtn(bubble),200);return bubble;}
-function addSimilarBtn(bubble){const btn=document.createElement('button');btn.className='similar-btn';btn.innerHTML='🔄 Try a similar question';btn.onclick=()=>{const inp=document.getElementById('userInput');inp.value='Give me a similar question to practise — same topic and difficulty, different numbers.';autoResize(inp);sendMessage();};bubble.appendChild(document.createElement('br'));bubble.appendChild(btn);}
-function showTyping(){const area=document.getElementById('chatArea');const div=document.createElement('div');div.className='message han';div.id='typingMsg';const av=document.createElement('div');av.className='av han';av.textContent='HAN';const bubble=document.createElement('div');bubble.className='typing-bubble';bubble.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';div.appendChild(av);div.appendChild(bubble);area.appendChild(div);area.scrollTop=area.scrollHeight;}
-function removeTyping(){const t=document.getElementById('typingMsg');if(t)t.remove();}
+function buildRef(r) {
+  // Format: Paper · Year · Session · Q{n}
+  const parts = [
+    r['Paper'] || '',
+    r['Year'] || '',
+    r['Session'] || '',
+    r['Question Number'] ? 'Q' + r['Question Number'] : ''
+  ].filter(Boolean);
+  return parts.join(' · ') || r['Question ID'] || 'Unknown reference';
+}
 
-function desmosToggle(el){var f=el.previousElementSibling;f.style.height=f.style.height==='480px'?'320px':'480px';}
-var _desmosConfigs={};
-function buildDesmosEmbed(config){var uid='dg'+Math.random().toString(36).slice(2,8);_desmosConfigs[uid]=config;return'<div class="desmos-container"><div class="desmos-label">Interactive Graph</div><div id="'+uid+'" class="desmos-frame"></div><div class="desmos-toggle" onclick="desmosToggle(this)">&#x2922; Expand / Collapse</div></div>';}
-function initDesmosGraphs(){Object.keys(_desmosConfigs).forEach(function(uid){var el=document.getElementById(uid);if(!el||el.getAttribute('data-desmos-init'))return;el.setAttribute('data-desmos-init','1');var config=_desmosConfigs[uid];try{var calc=Desmos.GraphingCalculator(el,{expressions:true,settingsMenu:false,zoomButtons:true,border:false,lockViewport:false,fontSize:14});if(config.bounds)calc.setMathBounds(config.bounds);var colors=['#C9A84C','#4CAF7D','#e05c5c','#9DC3E6','#cc99ff'];(config.exprs||[]).forEach(function(expr,i){calc.setExpression({id:'e'+i,latex:expr.latex,color:expr.color||colors[i%colors.length],label:expr.label||'',showLabel:!!expr.label});});(config.points||[]).forEach(function(pt,i){calc.setExpression({id:'p'+i,latex:'('+pt.x+','+pt.y+')',color:pt.color||'#4CAF7D',label:pt.label||'',showLabel:!!pt.label,pointSize:12});});delete _desmosConfigs[uid];}catch(e){el.innerHTML='<div style="color:#e05c5c;padding:8px;font-size:12px;">Graph unavailable</div>';}});}
+// ════════════════════════════════════════
+// CONTEXT BAR
+// ════════════════════════════════════════
+function setCtx(el, group) {
+  document.querySelectorAll('[data-group="' + group + '"]').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const val = el.dataset.val;
+  if (group === 'level') {
+    selectedLevel = val;
+    const isHL = val === 'MAA HL';
+    document.querySelectorAll('.hl-chip').forEach(c => { c.style.display = isHL ? '' : 'none'; });
+  }
+  if (group === 'paper') selectedPaper = val;
+  if (group === 'topic') selectedSubjectTopic = val;
+}
 
-function formatResponse(text){let html=text;html=html.replace(/`{3}graph\s*([\s\S]*?)`{3}/g,function(match,jsonStr){try{var trimmed=jsonStr.trim();var config;try{config=JSON.parse(trimmed);}catch(e1){try{config=JSON.parse(trimmed.replace(/\\([^\\"'])/g,'\\\\$1'));}catch(e2){return'';}}return buildDesmosEmbed(config);}catch(e){return'';}});const latexBlocks=[];html=html.replace(/\\\[[\s\S]*?\\\]/g,(m)=>{latexBlocks.push(m);return`%%LB${latexBlocks.length-1}%%`;});html=html.replace(/\\\([\s\S]*?\\\)/g,(m)=>{latexBlocks.push(m);return`%%LB${latexBlocks.length-1}%%`;});html=html.replace(/^#{1,3}\s+(.+)$/gm,'<h3>$1</h3>');html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');html=html.replace(/(?:^|\n)(Step\s+\d+[:\.]?\s*)([^\n]+(?:\n(?!Step\s+\d).*)*)/g,(m,sl,content)=>`<div class="step"><div class="step-num">${sl.trim()}</div>${content.trim()}</div>`);html=html.replace(/\[Examiner[^\]]*\]:\s*([^\n]+)/g,'<div class="examiner-note">$1</div>');html=html.replace(/Examiner(?:\'s)? [Nn]ote[:\s]+([^\n]+)/g,'<div class="examiner-note">$1</div>');html=html.replace(/Common [Mm]istake[:\s]+([^\n]+)/g,'<div class="warning">$1</div>');html=html.replace(/\u0060([^\u0060]+)\u0060/g,'<code class="math-block">$1</code>');html=html.replace(/\n{2,}/g,'<br><br>');html=html.replace(/\n/g,'<br>');latexBlocks.forEach((latex,i)=>{const isDisplay=latex.startsWith('\\[');html=html.replace(`%%LB${i}%%`,isDisplay?`<div class="latex-display">${latex}</div>`:`<span class="latex-inline">${latex}</span>`);});return html;}
+// ════════════════════════════════════════
+// QUESTION COUNTING / LIMITS
+// ════════════════════════════════════════
+function getTodayKey(uid) { return 'aq_' + uid + '_' + new Date().toISOString().slice(0, 10); }
+function getQuestionCount() { if (!currentUser) return 0; return parseInt(sessionStorage.getItem(getTodayKey(currentUser.sub)) || '0'); }
+function incrementQuestionCount() {
+  if (!currentUser) return;
+  const key = getTodayKey(currentUser.sub);
+  const count = parseInt(sessionStorage.getItem(key) || '0') + 1;
+  sessionStorage.setItem(key, String(count));
+  updateLimitBar(count);
+}
+function updateLimitBar(count) {
+  const bar = document.getElementById('limitBar'), fill = document.getElementById('limitFill'), txt = document.getElementById('limitText');
+  if (!currentUser) { if (bar) bar.style.display = 'none'; return; }
+  if (bar) bar.style.display = 'flex';
+  const pct = Math.min(100, (count / FREE_DAILY_LIMIT) * 100);
+  if (fill) fill.style.width = pct + '%';
+  const rem = Math.max(0, FREE_DAILY_LIMIT - count);
+  if (txt) txt.textContent = rem + ' free question' + (rem !== 1 ? 's' : '') + ' remaining today';
+  if (count >= FREE_DAILY_LIMIT && fill) fill.style.background = 'linear-gradient(90deg,#dc2626,#f87171)';
+}
+function checkPremiumStatus() {
+  const key = currentUser ? 'han_premium_' + currentUser.sub : null;
+  if (!key) return false;
+  return sessionStorage.getItem(key) === 'true';
+}
+function canAskQuestion() {
+  if (isAdmin) return true;
+  if (checkPremiumStatus()) return true;
+  return !!(currentUser && getQuestionCount() < FREE_DAILY_LIMIT);
+}
 
-function getSystemPrompt(repositoryContext){
-  const paperRules={'Paper 1':'PAPER 1 — NO CALCULATOR: Show all working by hand. Exact answers only (no decimals).','Paper 2':'PAPER 2 — GDC ALLOWED: Use GDC for numerical answers. Show method steps.','Paper 3':'PAPER 3 — PROBLEM SOLVING (HL only, GDC): Cross-topic, real-world modelling questions.'};
-  const fence='```';
-  return`You are HAN — an AI Math tutor built on the expertise of Hanyong Lim, an IB HL Mathematics Examiner with 20+ years of experience. HAN stands for Help · Achieve · Nurture.
+// ════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════
+function showLogin() { document.getElementById('loginOverlay').classList.add('open'); }
+function showUpgrade() { document.getElementById('upgradeOverlay').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModalBg(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+function handleGoogleCredential(response) {
+  var payload = JSON.parse(atob(response.credential.split('.')[1]));
+  currentUser = payload;
+  closeModal('loginOverlay');
+  renderUserPill(payload);
+  updateLimitBar(getQuestionCount());
+}
+function renderUserPill(user) {
+  document.getElementById('userPillArea').innerHTML =
+    '<div class="user-pill" onclick="showUpgrade()">' +
+    (user.picture ? '<img src="' + user.picture + '" alt="">' : '') +
+    '<span>' + (user.given_name || user.name || user.email) + '</span></div>';
+}
+window.addEventListener('load', function () {
+  if (typeof google === 'undefined') return;
+  google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredential, auto_select: false });
+  google.accounts.id.renderButton(document.getElementById('googleSignInBtn'), { theme: 'outline', size: 'large', width: 320, text: 'signin_with' });
+});
+
+// ════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ════════════════════════════════════════
+// IMAGE UPLOAD
+// ════════════════════════════════════════
+function handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('Please upload an image file'); return; }
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const dataUrl = e.target.result;
+    uploadedImageBase64 = dataUrl.split(',')[1];
+    uploadedImageType = file.type;
+    document.getElementById('previewThumb').src = dataUrl;
+    document.getElementById('previewStrip').classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+function removeImage() {
+  uploadedImageBase64 = null; uploadedImageType = null;
+  document.getElementById('previewStrip').classList.remove('show');
+  document.getElementById('previewThumb').src = '';
+}
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function usePrompt(text) { const inp = document.getElementById('userInput'); inp.value = text; autoResize(inp); inp.focus(); }
+
+// ════════════════════════════════════════
+// REPOSITORY (reference-only)
+// ════════════════════════════════════════
+async function ensureRepoLoaded() {
+  if (allRepoRecords.length > 0) return;
+  try {
+    const res = await fetch(SHEETS_URL);
+    const data = await res.json();
+    // Accept records with a Status of 'final' OR records that just have a Question ID (reference-only mode)
+    allRepoRecords = (data.records || []).filter(r =>
+      (r['Status'] || '').toString().trim().toLowerCase() === 'final' || r['Question ID']
+    );
+  } catch (e) { allRepoRecords = []; }
+}
+(async () => { try { await ensureRepoLoaded(); } catch (e) {} })();
+
+async function searchRepository(query) {
+  try {
+    await ensureRepoLoaded();
+    if (allRepoRecords.length === 0) return null;
+    const qw = query.toLowerCase().split(/\s+/);
+    const scored = allRepoRecords.map(f => {
+      // Reference-only: match on metadata fields only (no question text stored)
+      const blob = [
+        f['Question ID'] || '', f['Topic'] || '', f['Subtopic'] || '',
+        f['Paper'] || '', f['Year'] || '', f['Session'] || '',
+        f['HAN Explanation'] || '', f['Common Mistakes'] || '', f['Examiner Note'] || ''
+      ].join(' ').toLowerCase();
+      let score = qw.filter(w => w.length > 3 && blob.includes(w)).length;
+      if ((f['Topic'] || '').toLowerCase().includes(selectedSubjectTopic.toLowerCase())) score += 3;
+      if ((f['Paper'] || '') === selectedPaper) score += 2;
+      return { score, fields: f };
+    });
+    const top = scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score).slice(0, 2);
+    if (top.length === 0) return null;
+    return top.map((s, i) => {
+      const f = s.fields;
+      return `--- REPOSITORY ENTRY ${i + 1} ---
+Reference: ${buildRef(f)}
+Question ID: ${f['Question ID'] || 'N/A'}
+Level: ${f['Level'] || 'N/A'} | Paper: ${f['Paper'] || 'N/A'} | Topic: ${f['Topic'] || 'N/A'} | Subtopic: ${f['Subtopic'] || 'N/A'}
+Marks: ${f['Marks'] || 'N/A'}
+Examiner Note: ${f['Examiner Note'] || 'N/A'}
+Common Mistakes: ${f['Common Mistakes'] || 'N/A'}
+HAN Explanation: ${f['HAN Explanation'] || 'N/A'}`;
+    }).join('\n\n');
+  } catch (e) { return null; }
+}
+
+// ════════════════════════════════════════
+// CHAT RENDERING
+// ════════════════════════════════════════
+function appendMessage(role, content, imageDataUrl) {
+  const ws = document.getElementById('welcomeScreen');
+  if (ws) ws.remove();
+  const area = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'message ' + (role === 'user' ? 'user' : 'han');
+  const av = document.createElement('div');
+  av.className = 'av ' + (role === 'user' ? 'user' : 'han');
+  av.textContent = role === 'user' ? 'YOU' : 'HAN';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  if (imageDataUrl) { const img = document.createElement('img'); img.src = imageDataUrl; bubble.appendChild(img); }
+  if (content) bubble.innerHTML += formatResponse(content);
+  div.appendChild(av); div.appendChild(bubble);
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  setTimeout(() => { if (typeof initDesmosGraphs === 'function') initDesmosGraphs(); }, 150);
+  if (role !== 'user' && content) setTimeout(() => addSimilarBtn(bubble), 200);
+  return bubble;
+}
+function addSimilarBtn(bubble) {
+  const btn = document.createElement('button');
+  btn.className = 'similar-btn';
+  btn.innerHTML = '🔄 Try a similar question';
+  btn.onclick = () => {
+    const inp = document.getElementById('userInput');
+    inp.value = 'Give me a similar question to practise — same topic and difficulty, different numbers.';
+    autoResize(inp); sendMessage();
+  };
+  bubble.appendChild(document.createElement('br'));
+  bubble.appendChild(btn);
+}
+function showTyping() {
+  const area = document.getElementById('chatArea');
+  const div = document.createElement('div'); div.className = 'message han'; div.id = 'typingMsg';
+  const av = document.createElement('div'); av.className = 'av han'; av.textContent = 'HAN';
+  const bubble = document.createElement('div'); bubble.className = 'typing-bubble';
+  bubble.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  div.appendChild(av); div.appendChild(bubble);
+  area.appendChild(div); area.scrollTop = area.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typingMsg'); if (t) t.remove(); }
+
+// ════════════════════════════════════════
+// DESMOS
+// ════════════════════════════════════════
+function desmosToggle(el) { var f = el.previousElementSibling; f.style.height = f.style.height === '480px' ? '320px' : '480px'; }
+var _desmosConfigs = {};
+function buildDesmosEmbed(config) {
+  var uid = 'dg' + Math.random().toString(36).slice(2, 8);
+  _desmosConfigs[uid] = config;
+  return '<div class="desmos-container"><div class="desmos-label">Interactive Graph</div><div id="' + uid + '" class="desmos-frame"></div><div class="desmos-toggle" onclick="desmosToggle(this)">&#x2922; Expand / Collapse</div></div>';
+}
+function initDesmosGraphs() {
+  Object.keys(_desmosConfigs).forEach(function (uid) {
+    var el = document.getElementById(uid);
+    if (!el || el.getAttribute('data-desmos-init')) return;
+    el.setAttribute('data-desmos-init', '1');
+    var config = _desmosConfigs[uid];
+    try {
+      var calc = Desmos.GraphingCalculator(el, { expressions: true, settingsMenu: false, zoomButtons: true, border: false, lockViewport: false, fontSize: 14 });
+      if (config.bounds) calc.setMathBounds(config.bounds);
+      var colors = ['#C9A84C', '#4CAF7D', '#e05c5c', '#9DC3E6', '#cc99ff'];
+      (config.exprs || []).forEach(function (expr, i) { calc.setExpression({ id: 'e' + i, latex: expr.latex, color: expr.color || colors[i % colors.length], label: expr.label || '', showLabel: !!expr.label }); });
+      (config.points || []).forEach(function (pt, i) { calc.setExpression({ id: 'p' + i, latex: '(' + pt.x + ',' + pt.y + ')', color: pt.color || '#4CAF7D', label: pt.label || '', showLabel: !!pt.label, pointSize: 12 }); });
+      delete _desmosConfigs[uid];
+    } catch (e) { el.innerHTML = '<div style="color:#e05c5c;padding:8px;font-size:12px;">Graph unavailable</div>'; }
+  });
+}
+
+// ════════════════════════════════════════
+// FORMAT RESPONSE
+// ════════════════════════════════════════
+function formatResponse(text) {
+  let html = text;
+  html = html.replace(/`{3}graph\s*([\s\S]*?)`{3}/g, function (match, jsonStr) {
+    try {
+      var trimmed = jsonStr.trim(), config;
+      try { config = JSON.parse(trimmed); } catch (e1) { try { config = JSON.parse(trimmed.replace(/\\([^\\"'])/g, '\\\\$1')); } catch (e2) { return ''; } }
+      return buildDesmosEmbed(config);
+    } catch (e) { return ''; }
+  });
+  const latexBlocks = [];
+  html = html.replace(/\\\[[\s\S]*?\\\]/g, m => { latexBlocks.push(m); return `%%LB${latexBlocks.length - 1}%%`; });
+  html = html.replace(/\\\([\s\S]*?\\\)/g, m => { latexBlocks.push(m); return `%%LB${latexBlocks.length - 1}%%`; });
+  html = html.replace(/^#{1,3}\s+(.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/(?:^|\n)(Step\s+\d+[:\.]?\s*)([^\n]+(?:\n(?!Step\s+\d).*)*)/g, (m, sl, content) => `<div class="step"><div class="step-num">${sl.trim()}</div>${content.trim()}</div>`);
+  html = html.replace(/\[Examiner[^\]]*\]:\s*([^\n]+)/g, '<div class="examiner-note">$1</div>');
+  html = html.replace(/Examiner(?:\'s)? [Nn]ote[:\s]+([^\n]+)/g, '<div class="examiner-note">$1</div>');
+  html = html.replace(/Common [Mm]istake[:\s]+([^\n]+)/g, '<div class="warning">$1</div>');
+  html = html.replace(/\u0060([^\u0060]+)\u0060/g, '<code class="math-block">$1</code>');
+  html = html.replace(/\n{2,}/g, '<br><br>');
+  html = html.replace(/\n/g, '<br>');
+  latexBlocks.forEach((latex, i) => {
+    const isDisplay = latex.startsWith('\\[');
+    html = html.replace(`%%LB${i}%%`, isDisplay ? `<div class="latex-display">${latex}</div>` : `<span class="latex-inline">${latex}</span>`);
+  });
+  return html;
+}
+
+// ════════════════════════════════════════
+// SYSTEM PROMPT
+// ════════════════════════════════════════
+function getSystemPrompt(repositoryContext) {
+  const paperRules = {
+    'Paper 1': 'PAPER 1 — NO CALCULATOR: Show all working by hand. Exact answers only (no decimals).',
+    'Paper 2': 'PAPER 2 — GDC ALLOWED: Use GDC for numerical answers. Show method steps.',
+    'Paper 3': 'PAPER 3 — PROBLEM SOLVING (HL only, GDC): Cross-topic, real-world modelling questions.'
+  };
+  const fence = '```';
+  return `You are HAN — an AI Math tutor built on the expertise of Hanyong Lim, an IB HL Mathematics Examiner with 20+ years of experience. HAN stands for Help · Achieve · Nurture.
 
 Your persona: Warm, encouraging, precise. You know exactly what examiners look for.
 
@@ -495,7 +984,7 @@ Current student context:
 - Paper: ${selectedPaper}
 - Topic: ${selectedSubjectTopic}
 
-PAPER RULES: ${paperRules[selectedPaper]||paperRules['Paper 1']}
+PAPER RULES: ${paperRules[selectedPaper] || paperRules['Paper 1']}
 
 Tutoring approach:
 1. Identify the question type and IB topic
@@ -506,7 +995,7 @@ Tutoring approach:
 
 IB rules: Use IB terminology (hence, show that, find the exact value). Use mark scheme format (M1, A1). Correct notation: f'(x), dy/dx, ∫, Σ.
 
-${repositoryContext?`\n════════════════════\nHANYONG'S REPOSITORY — VERIFIED SOLUTIONS\n════════════════════\n${repositoryContext}\n════════════════════\n`:''}
+${repositoryContext ? `\n════════════════════\nHANYONG'S REPOSITORY — VERIFIED INSIGHTS (reference metadata only, no question text)\n════════════════════\n${repositoryContext}\n════════════════════\n` : ''}
 
 LATEX RULES: Write ALL math in LaTeX. Use \\( ... \\) for inline, \\[ ... \\] for display. Never write raw x^2.
 
@@ -520,97 +1009,523 @@ ${fence}graph
 ${fence}
 Always choose bounds that show the full relevant domain of the function.`;
 }
-async function sendMessage(){
-  if(isLoading)return;
-  const input=document.getElementById('userInput');
-  const text=input.value.trim();
-  if(!text&&!uploadedImageBase64)return;
-  if(!isAdmin&&!currentUser){showLogin();return;}
-  if(!canAskQuestion()){showUpgrade();return;}
-  if(!isAdmin)incrementQuestionCount();
-  trackQuestion(selectedSubjectTopic||'General',text);
-  isLoading=true;
-  document.getElementById('sendBtn').disabled=true;
-  const imageDataUrl=uploadedImageBase64?`data:${uploadedImageType};base64,${uploadedImageBase64}`:null;
-  appendMessage('user',text,imageDataUrl);
-  const userContent=[];
-  if(uploadedImageBase64)userContent.push({type:'image',source:{type:'base64',media_type:uploadedImageType,data:uploadedImageBase64}});
-  userContent.push({type:'text',text:text||'Please solve this question.'});
-  conversationHistory.push({role:'user',content:userContent});
-  input.value='';input.style.height='auto';removeImage();
+
+// ════════════════════════════════════════
+// SEND MESSAGE
+// ════════════════════════════════════════
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text && !uploadedImageBase64) return;
+  if (!isAdmin && !currentUser) { showLogin(); return; }
+  if (!canAskQuestion()) { showUpgrade(); return; }
+  if (!isAdmin) incrementQuestionCount();
+  trackQuestion(selectedSubjectTopic || 'General', text);
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  const imageDataUrl = uploadedImageBase64 ? `data:${uploadedImageType};base64,${uploadedImageBase64}` : null;
+  appendMessage('user', text, imageDataUrl);
+  const userContent = [];
+  if (uploadedImageBase64) userContent.push({ type: 'image', source: { type: 'base64', media_type: uploadedImageType, data: uploadedImageBase64 } });
+  userContent.push({ type: 'text', text: text || 'Please solve this question.' });
+  conversationHistory.push({ role: 'user', content: userContent });
+  input.value = ''; input.style.height = 'auto'; removeImage();
   showTyping();
-  try{
-    let repositoryContext=null;
-    try{repositoryContext=await searchRepository(text||'IB Math question');}catch(e){}
-    if(repositoryContext){const ind=document.createElement('div');ind.className='repo-indicator';ind.id='repoInd';ind.textContent="📚 Drawing from Hanyong's repository…";document.getElementById('chatArea').appendChild(ind);}
-    const response=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:getSystemPrompt(repositoryContext),messages:conversationHistory})});
-    const data=await response.json().catch(()=>({error:{message:'Non-JSON response (HTTP '+response.status+')'}}));
-    if(data.error)throw new Error(data.error.message||JSON.stringify(data.error));
-    if(!data.content)throw new Error('No content in response');
-    const reply=data.content.filter(b=>b.type==='text').map(b=>b.text).join('\n');
-    conversationHistory.push({role:'assistant',content:reply});
+  try {
+    let repositoryContext = null;
+    try { repositoryContext = await searchRepository(text || 'IB Math question'); } catch (e) {}
+    if (repositoryContext) {
+      const ind = document.createElement('div');
+      ind.className = 'repo-indicator'; ind.id = 'repoInd';
+      ind.textContent = "📚 Drawing from Hanyong's repository…";
+      document.getElementById('chatArea').appendChild(ind);
+    }
+    const response = await fetch('/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, system: getSystemPrompt(repositoryContext), messages: conversationHistory })
+    });
+    const data = await response.json().catch(() => ({ error: { message: 'Non-JSON response (HTTP ' + response.status + ')' } }));
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    if (!data.content) throw new Error('No content in response');
+    const reply = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
+    conversationHistory.push({ role: 'assistant', content: reply });
     removeTyping();
-    const ind=document.getElementById('repoInd');if(ind)ind.remove();
-    appendMessage('han',reply);
-    if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
-  }catch(err){removeTyping();showToast('Error: '+(err.message||String(err)));conversationHistory.pop();}
-  isLoading=false;document.getElementById('sendBtn').disabled=false;input.focus();
+    const ind = document.getElementById('repoInd'); if (ind) ind.remove();
+    appendMessage('han', reply);
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+  } catch (err) {
+    removeTyping();
+    showToast('Error: ' + (err.message || String(err)));
+    conversationHistory.pop();
+  }
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+  input.focus();
 }
 
-async function initPractice(){await ensureRepoLoaded();practiceFiltered=[...allRepoRecords];renderPractice(practiceFiltered);}
-function diffInfo(d){if(d==1)return{text:'★ Easy',cls:'tag-easy'};if(d==2)return{text:'★★ Medium',cls:'tag-medium'};return{text:'★★★ Hard',cls:'tag-hard'};}
-function filterPractice(){const search=(document.getElementById('pfSearch').value||'').toLowerCase(),paper=document.getElementById('pfPaper').value,topic=document.getElementById('pfTopic').value,diff=document.getElementById('pfDiff').value;practiceFiltered=allRepoRecords.filter(r=>{if(paper&&(r['Paper']||'')!==paper)return false;if(topic&&!(r['Topic']||'').includes(topic))return false;if(diff&&String(r['Difficulty']||'')!==diff)return false;if(search){const blob=[r['Topic'],r['Subtopic'],r['Question'],r['Source'],r['Question ID']].join(' ').toLowerCase();if(!blob.includes(search))return false;}return true;});renderPractice(practiceFiltered);}
-function renderPractice(records){const grid=document.getElementById('practiceGrid'),count=document.getElementById('practiceCount');if(count)count.textContent=records.length+' question'+(records.length!==1?'s':'');if(records.length===0){grid.innerHTML='<div class="q-empty"><div class="ei">🔍</div><p>No questions match your filters.</p></div>';return;}grid.innerHTML=records.map((r,i)=>{const d=diffInfo(r['Difficulty']);const preview=(r['Question']||'').replace(/<[^>]+>/g,'').substring(0,100);return`<div class="q-card" onclick="openSheet(${i})"><div class="q-card-top"><div><div class="q-source">${r['Source']||r['Question ID']||''}</div><div class="q-tags"><span class="tag tag-topic">${r['Topic']||''}</span><span class="tag ${d.cls}">${d.text}</span><span class="tag tag-paper">${r['Paper']||''}</span></div></div><div class="q-marks">${r['Marks']||'?'}<small>mk</small></div></div><div class="q-preview">${preview||'Tap to view question →'}</div></div>`;}).join('');}
-function openSheet(idx){const r=practiceFiltered[idx];if(!r)return;currentSheetRecord=r;const d=diffInfo(r['Difficulty']);document.getElementById('sheetId').textContent=r['Question ID']||'';document.getElementById('sheetTags').innerHTML=`<span class="tag tag-topic">${r['Topic']||''}</span><span class="tag ${d.cls}">${d.text}</span><span class="tag tag-paper">${r['Paper']||''} · ${r['Level']||''}</span>`;document.getElementById('sheetQuestion').innerHTML=formatResponse(r['Question']||'Not available');document.getElementById('sheetAnswer').innerHTML=r['Final Answer']||'—';document.getElementById('sheetSolution').innerHTML=formatResponse(r['Worked Solution']||'—');document.getElementById('sheetHan').innerHTML=r['HAN Explanation']||'—';document.getElementById('sheetSolSection').style.display='none';document.getElementById('sheetHanSection').style.display='none';document.getElementById('sheetSolBtn').textContent='📖 Show Solution';document.getElementById('sheetOverlay').classList.add('open');if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();}
-function closeSheet(){document.getElementById('sheetOverlay').classList.remove('open');}
-function closeSheetBg(e){if(e.target===document.getElementById('sheetOverlay'))closeSheet();}
-function toggleSheetSolution(){const sol=document.getElementById('sheetSolSection'),han=document.getElementById('sheetHanSection'),btn=document.getElementById('sheetSolBtn'),open=sol.style.display!=='none';sol.style.display=open?'none':'block';han.style.display=open?'none':'block';btn.textContent=open?'📖 Show Solution':'🙈 Hide Solution';if(!open&&window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();}
-function askHANAboutSheet(){if(!currentSheetRecord)return;closeSheet();switchTab('chat');setTimeout(()=>{const inp=document.getElementById('userInput');inp.value='Help me with this question from '+(currentSheetRecord['Source']||currentSheetRecord['Question ID']||'')+': '+(currentSheetRecord['Question']||'').substring(0,200);autoResize(inp);inp.focus();},300);}
+// ════════════════════════════════════════
+// PRACTICE — BROWSE
+// ════════════════════════════════════════
+async function initPractice() {
+  await ensureRepoLoaded();
+  practiceFiltered = [...allRepoRecords];
+  renderPractice(practiceFiltered);
+}
+function diffInfo(d) {
+  if (d == 1) return { text: '★ Easy', cls: 'tag-easy' };
+  if (d == 2) return { text: '★★ Medium', cls: 'tag-medium' };
+  return { text: '★★★ Hard', cls: 'tag-hard' };
+}
+function filterPractice() {
+  const search = (document.getElementById('pfSearch').value || '').toLowerCase();
+  const paper = document.getElementById('pfPaper').value;
+  const topic = document.getElementById('pfTopic').value;
+  const diff = document.getElementById('pfDiff').value;
+  practiceFiltered = allRepoRecords.filter(r => {
+    if (paper && (r['Paper'] || '') !== paper) return false;
+    if (topic && !(r['Topic'] || '').includes(topic)) return false;
+    if (diff && String(r['Difficulty'] || '') !== diff) return false;
+    if (search) {
+      // Search on reference fields only (no question text)
+      const blob = [r['Topic'], r['Subtopic'], r['Source'], r['Question ID'], r['Year'], r['Session'], r['Paper']].join(' ').toLowerCase();
+      if (!blob.includes(search)) return false;
+    }
+    return true;
+  });
+  renderPractice(practiceFiltered);
+}
+function renderPractice(records) {
+  const grid = document.getElementById('practiceGrid'), count = document.getElementById('practiceCount');
+  if (count) count.textContent = records.length + ' question' + (records.length !== 1 ? 's' : '');
+  if (records.length === 0) {
+    grid.innerHTML = '<div class="q-empty"><div class="ei">🔍</div><p>No questions match your filters.</p></div>';
+    return;
+  }
+  grid.innerHTML = records.map((r, i) => {
+    const d = diffInfo(r['Difficulty']);
+    const ref = buildRef(r);
+    return `<div class="q-card" onclick="openSheet(${i})">
+      <div class="q-card-top">
+        <div>
+          <div class="q-source">${r['Question ID'] || ''}</div>
+          <div class="q-tags">
+            <span class="tag tag-topic">${r['Topic'] || ''}</span>
+            <span class="tag ${d.cls}">${d.text}</span>
+            <span class="tag tag-paper">${r['Paper'] || ''}</span>
+          </div>
+        </div>
+        <div class="q-marks">${r['Marks'] || '?'}<small>mk</small></div>
+      </div>
+      <div class="q-ref">${ref}</div>
+    </div>`;
+  }).join('');
+}
+function openSheet(idx) {
+  const r = practiceFiltered[idx];
+  if (!r) return;
+  currentSheetRecord = r;
+  const d = diffInfo(r['Difficulty']);
+  document.getElementById('sheetId').textContent = r['Question ID'] || '';
+  document.getElementById('sheetTags').innerHTML =
+    `<span class="tag tag-topic">${r['Topic'] || ''}</span>` +
+    (r['Subtopic'] ? `<span class="tag tag-paper">${r['Subtopic']}</span>` : '') +
+    `<span class="tag ${d.cls}">${d.text}</span>` +
+    `<span class="tag tag-paper">${r['Paper'] || ''} · ${r['Level'] || ''}</span>`;
 
-async function initMock(){await ensureRepoLoaded();const rc=document.getElementById('mockQCount');if(rc)rc.textContent=allRepoRecords.length;const tc=document.getElementById('mockTopicCount');if(tc)tc.textContent=new Set(allRepoRecords.map(r=>r['Topic']).filter(Boolean)).size;}
-function selChip(el,groupId){document.querySelectorAll('#'+groupId+' .mock-chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
-function marksSliderChange(val){document.getElementById('marksVal').textContent=val;document.getElementById('timeHint').textContent=Math.round(val*1.3);}
-async function generateMock(){await ensureRepoLoaded();if(allRepoRecords.length===0){showToast('Repository still loading, please try again.');return;}const paperType=document.querySelector('#mockPaperType .mock-chip.sel')?.dataset.val||'P1';const targetMarks=parseInt(document.getElementById('marksSlider').value);const topics=[...mockSelectedTopics];const allTopics=topics.includes('All');let pool=allRepoRecords.filter(r=>{if(!allTopics&&!topics.some(t=>(r['Topic']||'').includes(t)))return false;if(paperType==='P1'&&r['Paper']!=='P1')return false;if(paperType==='P2'&&r['Paper']!=='P2')return false;return true;});if(pool.length===0){showToast('Not enough questions for these filters.');return;}pool=pool.sort(()=>Math.random()-0.5);let selected=[],total=0;for(const q of pool){const m=parseInt(q['Marks']||0);if(m>0&&total+m<=targetMarks+8){selected.push(q);total+=m;}if(total>=targetMarks)break;}if(selected.length===0){showToast('Could not build paper. Try increasing target marks.');return;}mockPaperData=selected;renderMockPaper(selected,total,paperType,topics);}
-function renderMockPaper(qs,total,pt,topics){document.getElementById('mockConfig').style.display='none';document.getElementById('mockPaper').classList.add('vis');const ptLabel=pt==='P1'?'Paper 1 (No GDC)':pt==='P2'?'Paper 2 (GDC)':'Mixed';const tLabel=topics.includes('All')?'All Topics':topics.join(', ');const date=new Date().toLocaleDateString('en-SG',{day:'numeric',month:'short',year:'numeric'});document.getElementById('paperHeader').innerHTML=`<div class="paper-title">askHanyong Mock Paper</div><div class="paper-meta">Generated ${date} · ${ptLabel} · ${tLabel}</div><div class="paper-stats"><div class="paper-stat"><div class="sv">${qs.length}</div><div class="sl">Questions</div></div><div class="paper-stat"><div class="sv">${total}</div><div class="sl">Marks</div></div><div class="paper-stat"><div class="sv">~${Math.round(total*1.3)}</div><div class="sl">Minutes</div></div></div>`;document.getElementById('paperQuestions').innerHTML=qs.map((q,i)=>`<div class="mock-q"><div class="mock-q-head" id="mqh${i}" onclick="toggleMQ(${i})"><div class="mock-q-num">Q${i+1}</div><div class="mock-q-topic">${q['Topic']||''}${q['Subtopic']?' — '+q['Subtopic']:''}</div><div class="mock-q-badge">[${q['Marks']||'?'} marks]</div><div class="mock-q-chevron">▼</div></div><div class="mock-q-body" id="mqb${i}"><div class="mock-q-text">${formatResponse(q['Question']||'Question not available')}</div><div class="mock-q-actions"><button class="mq-btn mq-primary" id="mqsolvebtn${i}" onclick="toggleMQSol(${i})">👁 Show Answer</button><button class="mq-btn mq-secondary" onclick="askHANMockQ(${i})">💬 Ask HAN</button></div><div class="mock-ans-box" id="mqa${i}"><div class="mock-ans-label">Final Answer</div><div class="mock-ans-val">${q['Final Answer']||'—'}</div></div><div class="mock-sol-box" id="mqs${i}">${formatResponse(q['Worked Solution']||'Not available')}</div></div></div>`).join('');if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
-setTimeout(()=>{if(typeof initDesmosGraphs==='function')initDesmosGraphs();},150);}
-function toggleMQ(i){document.getElementById('mqb'+i).classList.toggle('open');document.getElementById('mqh'+i).classList.toggle('open');}
-function toggleMQSol(i){const ans=document.getElementById('mqa'+i),sol=document.getElementById('mqs'+i),btn=document.getElementById('mqsolvebtn'+i),isOpen=sol.classList.contains('open');ans.classList.toggle('open',!isOpen);sol.classList.toggle('open',!isOpen);if(btn)btn.textContent=isOpen?'👁 Show Answer':'🙈 Hide Answer';if(!isOpen&&window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();}
-function askHANMockQ(i){const q=mockPaperData[i];if(!q)return;switchTab('chat');setTimeout(()=>{const inp=document.getElementById('userInput');inp.value='Help me with Q'+(i+1)+' on my mock paper: '+(q['Question']||'').substring(0,200);autoResize(inp);inp.focus();},300);}
-function backToConfig(){document.getElementById('mockPaper').classList.remove('vis');document.getElementById('mockConfig').style.display='block';}
+  // Reference box — shows metadata only
+  document.getElementById('sheetRefBox').innerHTML =
+    `<div><strong>Paper:</strong> ${r['Paper'] || '—'}</div>` +
+    `<div><strong>Year:</strong> ${r['Year'] || '—'}</div>` +
+    `<div><strong>Session:</strong> ${r['Session'] || '—'}</div>` +
+    `<div><strong>Question:</strong> ${r['Question Number'] ? 'Q' + r['Question Number'] : '—'}</div>` +
+    `<div><strong>Topic:</strong> ${r['Topic'] || '—'}${r['Subtopic'] ? ' — ' + r['Subtopic'] : ''}</div>` +
+    `<div><strong>Marks:</strong> ${r['Marks'] || '—'}</div>`;
 
-document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.mock-topic').forEach(chip=>{chip.addEventListener('click',function(){const val=this.dataset.val;if(val==='All'){mockSelectedTopics=new Set(['All']);document.querySelectorAll('.mock-topic').forEach(c=>c.classList.remove('sel'));this.classList.add('sel');}else{mockSelectedTopics.delete('All');document.querySelector('.mock-topic[data-val="All"]').classList.remove('sel');this.classList.toggle('sel');if(this.classList.contains('sel'))mockSelectedTopics.add(val);else mockSelectedTopics.delete(val);if(mockSelectedTopics.size===0){mockSelectedTopics.add('All');document.querySelector('.mock-topic[data-val="All"]').classList.add('sel');}}});});});
+  // HAN insight (if stored, optional)
+  const hanEl = document.getElementById('sheetHanSection');
+  if (r['HAN Explanation']) {
+    document.getElementById('sheetHan').innerHTML = r['HAN Explanation'];
+    hanEl.style.display = 'block';
+  } else {
+    hanEl.style.display = 'none';
+  }
 
+  document.getElementById('sheetOverlay').classList.add('open');
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+}
+function closeSheet() { document.getElementById('sheetOverlay').classList.remove('open'); }
+function closeSheetBg(e) { if (e.target === document.getElementById('sheetOverlay')) closeSheet(); }
+function askHANAboutSheet() {
+  if (!currentSheetRecord) return;
+  closeSheet();
+  switchTab('chat');
+  setTimeout(() => {
+    const inp = document.getElementById('userInput');
+    const ref = buildRef(currentSheetRecord);
+    inp.value = `Help me with this IB question — ${ref}. Topic: ${currentSheetRecord['Topic'] || ''}${currentSheetRecord['Subtopic'] ? ', ' + currentSheetRecord['Subtopic'] : ''}. I'll paste or describe the question.`;
+    autoResize(inp); inp.focus();
+  }, 300);
+}
+
+// ════════════════════════════════════════
+// MOCK PAPER
+// ════════════════════════════════════════
+async function initMock() {
+  await ensureRepoLoaded();
+  const rc = document.getElementById('mockQCount'); if (rc) rc.textContent = allRepoRecords.length;
+  const tc = document.getElementById('mockTopicCount'); if (tc) tc.textContent = new Set(allRepoRecords.map(r => r['Topic']).filter(Boolean)).size;
+}
+function selChip(el, groupId) {
+  document.querySelectorAll('#' + groupId + ' .mock-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function marksSliderChange(val) {
+  document.getElementById('marksVal').textContent = val;
+  document.getElementById('timeHint').textContent = Math.round(val * 1.3);
+}
+async function generateMock() {
+  await ensureRepoLoaded();
+  if (allRepoRecords.length === 0) { showToast('Repository still loading, please try again.'); return; }
+  const paperType = document.querySelector('#mockPaperType .mock-chip.sel')?.dataset.val || 'P1';
+  const targetMarks = parseInt(document.getElementById('marksSlider').value);
+  const topics = [...mockSelectedTopics];
+  const allTopics = topics.includes('All');
+  let pool = allRepoRecords.filter(r => {
+    if (!allTopics && !topics.some(t => (r['Topic'] || '').includes(t))) return false;
+    if (paperType === 'P1' && r['Paper'] !== 'P1') return false;
+    if (paperType === 'P2' && r['Paper'] !== 'P2') return false;
+    return true;
+  });
+  if (pool.length === 0) { showToast('Not enough questions for these filters.'); return; }
+  pool = pool.sort(() => Math.random() - 0.5);
+  let selected = [], total = 0;
+  for (const q of pool) {
+    const m = parseInt(q['Marks'] || 0);
+    if (m > 0 && total + m <= targetMarks + 8) { selected.push(q); total += m; }
+    if (total >= targetMarks) break;
+  }
+  if (selected.length === 0) { showToast('Could not build paper. Try increasing target marks.'); return; }
+  mockPaperData = selected;
+  renderMockPaper(selected, total, paperType, topics);
+}
+function renderMockPaper(qs, total, pt, topics) {
+  document.getElementById('mockConfig').style.display = 'none';
+  document.getElementById('mockPaper').classList.add('vis');
+  const ptLabel = pt === 'P1' ? 'Paper 1 (No GDC)' : pt === 'P2' ? 'Paper 2 (GDC)' : 'Mixed';
+  const tLabel = topics.includes('All') ? 'All Topics' : topics.join(', ');
+  const date = new Date().toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+  document.getElementById('paperHeader').innerHTML =
+    `<div class="paper-title">askHanyong Mock Paper</div>
+     <div class="paper-meta">Generated ${date} · ${ptLabel} · ${tLabel}</div>
+     <div class="paper-stats">
+       <div class="paper-stat"><div class="sv">${qs.length}</div><div class="sl">Questions</div></div>
+       <div class="paper-stat"><div class="sv">${total}</div><div class="sl">Marks</div></div>
+       <div class="paper-stat"><div class="sv">~${Math.round(total * 1.3)}</div><div class="sl">Minutes</div></div>
+     </div>`;
+  document.getElementById('paperQuestions').innerHTML = qs.map((q, i) => {
+    const ref = buildRef(q);
+    return `<div class="mock-q">
+      <div class="mock-q-head" id="mqh${i}" onclick="toggleMQ(${i})">
+        <div class="mock-q-num">Q${i + 1}</div>
+        <div class="mock-q-topic">${q['Topic'] || ''}${q['Subtopic'] ? ' — ' + q['Subtopic'] : ''}</div>
+        <div class="mock-q-badge">[${q['Marks'] || '?'} marks]</div>
+        <div class="mock-q-chevron">▼</div>
+      </div>
+      <div class="mock-q-body" id="mqb${i}">
+        <div class="mock-q-text">
+          <div style="background:var(--bg);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px;margin-bottom:10px">
+            📋 Reference: <strong>${ref}</strong><br>
+            <span style="color:var(--text-soft);font-size:11px">Retrieve the question from your IB past papers PDF</span>
+          </div>
+        </div>
+        <div class="mock-q-actions">
+          <button class="mq-btn mq-primary" onclick="askHANMockQ(${i})">💬 Ask HAN</button>
+          <button class="mq-btn mq-secondary" onclick="pasteForMockQ(${i})">✏️ Paste &amp; Solve</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+  setTimeout(() => { if (typeof initDesmosGraphs === 'function') initDesmosGraphs(); }, 150);
+}
+function toggleMQ(i) { document.getElementById('mqb' + i).classList.toggle('open'); document.getElementById('mqh' + i).classList.toggle('open'); }
+function askHANMockQ(i) {
+  const q = mockPaperData[i]; if (!q) return;
+  const ref = buildRef(q);
+  switchTab('chat');
+  setTimeout(() => {
+    const inp = document.getElementById('userInput');
+    inp.value = `Help me with Q${i + 1} on my mock paper — ${ref}. Topic: ${q['Topic'] || ''}`;
+    autoResize(inp); inp.focus();
+  }, 300);
+}
+function pasteForMockQ(i) {
+  const q = mockPaperData[i]; if (!q) return;
+  const ref = buildRef(q);
+  switchTab('practice');
+  setPracticeMode('paste');
+  setTimeout(() => {
+    const ta = document.getElementById('pasteQText');
+    ta.value = `[${ref}]\n\n`;
+    ta.focus();
+    updatePasteBtn();
+  }, 300);
+}
+function backToConfig() {
+  document.getElementById('mockPaper').classList.remove('vis');
+  document.getElementById('mockConfig').style.display = 'block';
+}
+
+// ════════════════════════════════════════
+// MOCK TOPIC SELECTOR
+// ════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.mock-topic').forEach(chip => {
+    chip.addEventListener('click', function () {
+      const val = this.dataset.val;
+      if (val === 'All') {
+        mockSelectedTopics = new Set(['All']);
+        document.querySelectorAll('.mock-topic').forEach(c => c.classList.remove('sel'));
+        this.classList.add('sel');
+      } else {
+        mockSelectedTopics.delete('All');
+        document.querySelector('.mock-topic[data-val="All"]').classList.remove('sel');
+        this.classList.toggle('sel');
+        if (this.classList.contains('sel')) mockSelectedTopics.add(val);
+        else mockSelectedTopics.delete(val);
+        if (mockSelectedTopics.size === 0) {
+          mockSelectedTopics.add('All');
+          document.querySelector('.mock-topic[data-val="All"]').classList.add('sel');
+        }
+      }
+    });
+  });
+});
+
+// ════════════════════════════════════════
 // PROGRESS TRACKING
-const PROGRESS_KEY_PREFIX='han_progress_';
-function getProgressKey(){if(isAdmin)return PROGRESS_KEY_PREFIX+'admin';if(!currentUser)return null;return PROGRESS_KEY_PREFIX+currentUser.sub;}
-function loadProgress(){const key=getProgressKey();if(!key)return{totalAsked:0,topicCounts:{},recentActivity:[],lastActiveDate:null,streak:0};try{return JSON.parse(sessionStorage.getItem(key)||'null')||{totalAsked:0,topicCounts:{},recentActivity:[],lastActiveDate:null,streak:0};}catch(e){return{totalAsked:0,topicCounts:{},recentActivity:[],lastActiveDate:null,streak:0};}}
-function saveProgress(data){const key=getProgressKey();if(!key)return;sessionStorage.setItem(key,JSON.stringify(data));}
-function trackQuestion(topic,question){const data=loadProgress();data.totalAsked=(data.totalAsked||0)+1;data.topicCounts=data.topicCounts||{};data.topicCounts[topic||'General']=(data.topicCounts[topic||'General']||0)+1;data.recentActivity=data.recentActivity||[];data.recentActivity.unshift({topic:topic||'General',question:(question||'').substring(0,80),time:new Date().toISOString()});if(data.recentActivity.length>20)data.recentActivity=data.recentActivity.slice(0,20);const today=new Date().toISOString().slice(0,10),yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);if(data.lastActiveDate===yesterday)data.streak=(data.streak||0)+1;else if(data.lastActiveDate!==today)data.streak=1;data.lastActiveDate=today;saveProgress(data);}
-function renderProgress(){const data=loadProgress();document.getElementById('statTotalAsked').textContent=data.totalAsked||0;document.getElementById('statTopicsExplored').textContent=Object.keys(data.topicCounts||{}).length;document.getElementById('statStreak').textContent=data.streak||0;const topicEl=document.getElementById('topicBreakdown'),topics=data.topicCounts||{},maxCount=Math.max(...Object.values(topics),1);const topicColors={'Calculus':'#1d4ed8','Functions':'#7c3aed','Geometry & Trigonometry':'#0891b2','Statistics & Probability':'#059669','Number & Algebra':'#d97706','General':'#94a3b8','All Topics':'#64748b'};if(Object.keys(topics).length===0){topicEl.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0">No questions asked yet. Start chatting with HAN!</div>';}else{topicEl.innerHTML=Object.entries(topics).sort((a,b)=>b[1]-a[1]).map(([topic,count])=>{const pct=Math.round((count/maxCount)*100),color=topicColors[topic]||'#1d4ed8';return`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:600;color:var(--text)">${topic}</span><span style="font-size:12px;color:var(--text-soft)">${count} question${count!==1?'s':''}</span></div><div style="background:var(--bg);border-radius:4px;height:6px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px"></div></div></div>`;}).join('');}
-const weakEl=document.getElementById('weakAreas'),allTopicsList=['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra'],practiced=Object.keys(topics),notPracticed=allTopicsList.filter(t=>!practiced.includes(t)),leastPracticed=Object.entries(topics).sort((a,b)=>a[1]-b[1]).slice(0,2).map(e=>e[0]),focusAreas=[...notPracticed,...leastPracticed].slice(0,3);
-if(data.totalAsked<3){weakEl.innerHTML='<div style="font-size:13px;color:var(--text-soft)">Ask at least 3 questions to see your focus areas.</div>';}else if(focusAreas.length===0){weakEl.innerHTML='<div style="font-size:13px;color:var(--green);font-weight:600">🎉 Great work! You\'ve covered all topics.</div>';}else{weakEl.innerHTML=focusAreas.map(t=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--ice-light);border-radius:8px;margin-bottom:8px;cursor:pointer" onclick="usePromptAndSwitch('Give me a practice question on ${t}')"><span style="font-size:18px">📌</span><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${t}</div><div style="font-size:11px;color:var(--text-soft)">${topics[t]?`Only ${topics[t]} question${topics[t]!==1?'s':''} asked`:'Not practiced yet'}</div></div><span style="font-size:11px;color:var(--blue);font-weight:600">Practice →</span></div>`).join('');}
-const actEl=document.getElementById('recentActivity'),activity=data.recentActivity||[];if(activity.length===0){actEl.innerHTML='<div style="font-size:13px;color:var(--text-soft)">No activity yet. Start asking HAN questions!</div>';}else{actEl.innerHTML=activity.slice(0,8).map(a=>`<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:5px;flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--text)">${a.topic}</div><div style="font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.question||'(Image question)'}</div></div><div style="font-size:10px;color:var(--text-soft);white-space:nowrap">${getTimeAgo(a.time)}</div></div>`).join('');}}
-function getTimeAgo(iso){const diff=Date.now()-new Date(iso).getTime(),mins=Math.floor(diff/60000);if(mins<1)return'just now';if(mins<60)return`${mins}m ago`;const hrs=Math.floor(mins/60);if(hrs<24)return`${hrs}h ago`;return`${Math.floor(hrs/24)}d ago`;}
-function usePromptAndSwitch(text){switchTab('chat');setTimeout(()=>{const inp=document.getElementById('userInput');inp.value=text;autoResize(inp);inp.focus();},300);}
-function resetProgress(){if(!confirm('Reset all your progress data? This cannot be undone.'))return;const key=getProgressKey();if(key)sessionStorage.removeItem(key);renderProgress();showToast('Progress reset.');}
+// ════════════════════════════════════════
+const PROGRESS_KEY_PREFIX = 'han_progress_';
+function getProgressKey() { if (isAdmin) return PROGRESS_KEY_PREFIX + 'admin'; if (!currentUser) return null; return PROGRESS_KEY_PREFIX + currentUser.sub; }
+function loadProgress() {
+  const key = getProgressKey();
+  if (!key) return { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 };
+  try { return JSON.parse(sessionStorage.getItem(key) || 'null') || { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 }; }
+  catch (e) { return { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 }; }
+}
+function saveProgress(data) { const key = getProgressKey(); if (!key) return; sessionStorage.setItem(key, JSON.stringify(data)); }
+function trackQuestion(topic, question) {
+  const data = loadProgress();
+  data.totalAsked = (data.totalAsked || 0) + 1;
+  data.topicCounts = data.topicCounts || {};
+  data.topicCounts[topic || 'General'] = (data.topicCounts[topic || 'General'] || 0) + 1;
+  data.recentActivity = data.recentActivity || [];
+  data.recentActivity.unshift({ topic: topic || 'General', question: (question || '').substring(0, 80), time: new Date().toISOString() });
+  if (data.recentActivity.length > 20) data.recentActivity = data.recentActivity.slice(0, 20);
+  const today = new Date().toISOString().slice(0, 10), yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (data.lastActiveDate === yesterday) data.streak = (data.streak || 0) + 1;
+  else if (data.lastActiveDate !== today) data.streak = 1;
+  data.lastActiveDate = today;
+  saveProgress(data);
+}
+function renderProgress() {
+  const data = loadProgress();
+  document.getElementById('statTotalAsked').textContent = data.totalAsked || 0;
+  document.getElementById('statTopicsExplored').textContent = Object.keys(data.topicCounts || {}).length;
+  document.getElementById('statStreak').textContent = data.streak || 0;
+  const topicEl = document.getElementById('topicBreakdown'), topics = data.topicCounts || {}, maxCount = Math.max(...Object.values(topics), 1);
+  const topicColors = { 'Calculus': '#1d4ed8', 'Functions': '#7c3aed', 'Geometry & Trigonometry': '#0891b2', 'Statistics & Probability': '#059669', 'Number & Algebra': '#d97706', 'General': '#94a3b8', 'All Topics': '#64748b' };
+  if (Object.keys(topics).length === 0) {
+    topicEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft);padding:8px 0">No questions asked yet. Start chatting with HAN!</div>';
+  } else {
+    topicEl.innerHTML = Object.entries(topics).sort((a, b) => b[1] - a[1]).map(([topic, count]) => {
+      const pct = Math.round((count / maxCount) * 100), color = topicColors[topic] || '#1d4ed8';
+      return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:600;color:var(--text)">${topic}</span><span style="font-size:12px;color:var(--text-soft)">${count} question${count !== 1 ? 's' : ''}</span></div><div style="background:var(--bg);border-radius:4px;height:6px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px"></div></div></div>`;
+    }).join('');
+  }
+  const weakEl = document.getElementById('weakAreas');
+  const allTopicsList = ['Calculus', 'Functions', 'Geometry & Trigonometry', 'Statistics & Probability', 'Number & Algebra'];
+  const practiced = Object.keys(topics), notPracticed = allTopicsList.filter(t => !practiced.includes(t));
+  const leastPracticed = Object.entries(topics).sort((a, b) => a[1] - b[1]).slice(0, 2).map(e => e[0]);
+  const focusAreas = [...notPracticed, ...leastPracticed].slice(0, 3);
+  if (data.totalAsked < 3) {
+    weakEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">Ask at least 3 questions to see your focus areas.</div>';
+  } else if (focusAreas.length === 0) {
+    weakEl.innerHTML = '<div style="font-size:13px;color:var(--green);font-weight:600">🎉 Great work! You\'ve covered all topics.</div>';
+  } else {
+    weakEl.innerHTML = focusAreas.map(t =>
+      `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--ice-light);border-radius:8px;margin-bottom:8px;cursor:pointer" onclick="usePromptAndSwitch('Give me a practice question on ${t}')">
+        <span style="font-size:18px">📌</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${t}</div><div style="font-size:11px;color:var(--text-soft)">${topics[t] ? `Only ${topics[t]} question${topics[t] !== 1 ? 's' : ''} asked` : 'Not practiced yet'}</div></div>
+        <span style="font-size:11px;color:var(--blue);font-weight:600">Practice →</span>
+      </div>`
+    ).join('');
+  }
+  const actEl = document.getElementById('recentActivity'), activity = data.recentActivity || [];
+  if (activity.length === 0) {
+    actEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">No activity yet. Start asking HAN questions!</div>';
+  } else {
+    actEl.innerHTML = activity.slice(0, 8).map(a =>
+      `<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:5px;flex-shrink:0"></div>
+        <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--text)">${a.topic}</div><div style="font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.question || '(Image question)'}</div></div>
+        <div style="font-size:10px;color:var(--text-soft);white-space:nowrap">${getTimeAgo(a.time)}</div>
+      </div>`
+    ).join('');
+  }
+}
+function getTimeAgo(iso) { const diff = Date.now() - new Date(iso).getTime(), mins = Math.floor(diff / 60000); if (mins < 1) return 'just now'; if (mins < 60) return `${mins}m ago`; const hrs = Math.floor(mins / 60); if (hrs < 24) return `${hrs}h ago`; return `${Math.floor(hrs / 24)}d ago`; }
+function usePromptAndSwitch(text) { switchTab('chat'); setTimeout(() => { const inp = document.getElementById('userInput'); inp.value = text; autoResize(inp); inp.focus(); }, 300); }
+function resetProgress() { if (!confirm('Reset all your progress data? This cannot be undone.')) return; const key = getProgressKey(); if (key) sessionStorage.removeItem(key); renderProgress(); showToast('Progress reset.'); }
 
+// ════════════════════════════════════════
 // STRIPE
-const STRIPE_CONFIG={publishableKey:'pk_live_YOUR_STRIPE_PUBLISHABLE_KEY_HERE',paymentLink:'https://buy.stripe.com/YOUR_PAYMENT_LINK_HERE',priceDisplay:'$15',currency:'usd'};
-function startStripeCheckout(){if(STRIPE_CONFIG.paymentLink.includes('YOUR_PAYMENT_LINK')){document.getElementById('stripeCheckoutBtn').style.display='none';document.getElementById('stripeNotReady').style.display='block';return;}let url=STRIPE_CONFIG.paymentLink;if(currentUser&&currentUser.email)url+=(url.includes('?')?'&':'?')+'prefilled_email='+encodeURIComponent(currentUser.email);window.open(url,'_blank');closeModal('upgradeOverlay');showToast('Opening secure checkout…');}
-function setPremiumUser(){const key=currentUser?'han_premium_'+currentUser.sub:null;if(key){sessionStorage.setItem(key,'true');showToast('🎉 Welcome to Premium!');updateLimitBar(0);}}
-document.addEventListener('DOMContentLoaded',function(){const el=document.getElementById('stripePrice');if(el)el.textContent=STRIPE_CONFIG.priceDisplay;});
+// ════════════════════════════════════════
+function startStripeCheckout() {
+  if (!STRIPE_PAYMENT_LINK || STRIPE_PAYMENT_LINK === 'YOUR_STRIPE_PAYMENT_LINK_HERE') {
+    document.getElementById('stripeCheckoutBtn').style.display = 'none';
+    document.getElementById('stripeNotReady').style.display = 'block';
+    return;
+  }
+  let url = STRIPE_PAYMENT_LINK;
+  if (currentUser && currentUser.email) url += (url.includes('?') ? '&' : '?') + 'prefilled_email=' + encodeURIComponent(currentUser.email);
+  window.open(url, '_blank');
+  closeModal('upgradeOverlay');
+  showToast('Opening secure checkout…');
+}
+document.addEventListener('DOMContentLoaded', function () {
+  const el = document.getElementById('stripePrice');
+  if (el) el.textContent = '$15';
+});
 
+// ════════════════════════════════════════
 // PDF EXPORT
-async function exportMockPDF(){if(!mockPaperData||mockPaperData.length===0){showToast('No mock paper to export. Generate one first.');return;}const btn=document.getElementById('pdfExportBtn');btn.textContent='⏳ Generating PDF…';btn.disabled=true;try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const pageW=210,pageH=297,margin=18,contentW=210-18*2;let y=margin;const navy=[30,58,95],blue=[29,78,216],gold=[201,168,76],lightBlue=[219,234,254],gray=[100,116,139],lightGray=[241,245,249],black=[30,41,59];function checkPage(needed){if(y+needed>pageH-margin){doc.addPage();y=margin;drawPageHeader();}}function drawPageHeader(){doc.setFillColor(...navy);doc.rect(0,0,pageW,8,'F');doc.setFillColor(...gold);doc.rect(0,6,pageW,2,'F');}function stripMath(text){return(text||'').replace(/\$\$[\s\S]*?\$\$/g,'[equation]').replace(/\$([^$]+)\$/g,'$1').replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g,'($1)/($2)').replace(/\\sqrt\{([^}]+)\}/g,'sqrt($1)').replace(/\\left\(/g,'(').replace(/\\right\)/g,')').replace(/\\[a-zA-Z]+\{([^}]*)\}/g,'$1').replace(/\\[a-zA-Z]+/g,'').replace(/[{}]/g,'').replace(/<[^>]+>/g,'').trim();}
-drawPageHeader();doc.setFillColor(...navy);doc.roundedRect(margin,20,contentW,55,4,4,'F');doc.setFont('helvetica','bold');doc.setFontSize(22);doc.setTextColor(255,255,255);doc.text('askHanyong',margin+10,38);doc.setFontSize(13);doc.setTextColor(...gold);doc.text('IB Mathematics Mock Paper',margin+10,48);doc.setFontSize(9);doc.setTextColor(180,200,230);const paperType=document.querySelector('#mockPaperType .mock-chip.sel')?.querySelector('.mock-chip-label')?.textContent||'Practice Paper';const totalMarks=mockPaperData.reduce((s,q)=>s+parseInt(q['Marks']||0),0);const date=new Date().toLocaleDateString('en-SG',{day:'numeric',month:'long',year:'numeric'});doc.text(`${paperType}  ·  ${mockPaperData.length} Questions  ·  ${totalMarks} Marks  ·  Generated ${date}`,margin+10,60);doc.setFontSize(8);doc.setTextColor(...gold);doc.text('Built on 20+ years of IB HL Mathematics Examining experience',margin+10,68);
-y=85;const stats=[{label:'Questions',val:String(mockPaperData.length)},{label:'Total Marks',val:String(totalMarks)},{label:'Time (est.)',val:`~${Math.round(totalMarks*1.3)} min`},{label:'Paper Type',val:paperType}];const boxW=(contentW-9)/4;stats.forEach((s,i)=>{const bx=margin+i*(boxW+3);doc.setFillColor(...lightBlue);doc.roundedRect(bx,y,boxW,18,2,2,'F');doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(...blue);doc.text(s.val,bx+boxW/2,y+10,{align:'center'});doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...gray);doc.text(s.label,bx+boxW/2,y+15,{align:'center'});});
-y=115;doc.setFillColor(...lightGray);doc.roundedRect(margin,y,contentW,28,3,3,'F');doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...navy);doc.text('Instructions',margin+6,y+8);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...black);const instructions=paperType.includes('1')?'Do not use a calculator. Show all working clearly. Give exact answers unless told otherwise.':'A GDC is permitted. Show method steps alongside GDC results. Give answers to 3 significant figures unless exact.';const instrLines=doc.splitTextToSize(instructions,contentW-12);instrLines.forEach((line,i)=>doc.text(line,margin+6,y+15+i*5));
-y=155;doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...navy);doc.text('Questions',margin,y);y+=6;doc.line(margin,y,margin+contentW,y);y+=4;mockPaperData.forEach((q,i)=>{checkPage(8);if(i%2===0){doc.setFillColor(248,250,252);doc.rect(margin,y-4,contentW,7,'F');}doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...blue);doc.text(`Q${i+1}`,margin+2,y);doc.setFont('helvetica','normal');doc.setTextColor(...black);doc.text(stripMath([q['Topic'],q['Subtopic']].filter(Boolean).join(' — ')).substring(0,55),margin+12,y);doc.setFont('helvetica','bold');doc.setTextColor(...blue);doc.text(`[${q['Marks']||'?'} marks]`,margin+contentW-2,y,{align:'right'});y+=7;});
-doc.setFillColor(...navy);doc.rect(0,pageH-18,pageW,18,'F');doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(180,200,230);doc.text('Powered by HAN · Built by Hanyong Lim, IB HL Mathematics Examiner · askhanyong.com',pageW/2,pageH-8,{align:'center'});
-mockPaperData.forEach((q,i)=>{doc.addPage();drawPageHeader();y=18;doc.setFillColor(...blue);doc.roundedRect(margin,y,contentW,14,3,3,'F');doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(255,255,255);doc.text(`Question ${i+1}`,margin+6,y+9);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(180,210,255);doc.text([q['Topic'],q['Subtopic'],q['Paper']].filter(Boolean).join(' · '),margin+contentW-4,y+9,{align:'right'});doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...gold);doc.text(`[${q['Marks']||'?'} marks]`,margin+6,y+22);y+=28;doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...black);const qLines=doc.splitTextToSize(stripMath(q['Question']||''),contentW);qLines.forEach(line=>{checkPage(6);doc.text(line,margin,y);y+=5.5;});y+=6;checkPage(40);doc.setFillColor(252,253,255);doc.setDrawColor(220,230,245);doc.roundedRect(margin,y,contentW,45,2,2,'FD');doc.setFont('helvetica','italic');doc.setFontSize(8);doc.setTextColor(180,195,215);doc.text('Working space',margin+4,y+8);for(let l=1;l<=5;l++){const ly=y+10+l*6;doc.setDrawColor(210,220,235);doc.setLineDashPattern([1,2],0);doc.line(margin+4,ly,margin+contentW-4,ly);doc.setLineDashPattern([],0);}y+=55;doc.setFillColor(...navy);doc.rect(0,pageH-10,pageW,10,'F');doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(150,175,210);doc.text(`askHanyong Mock Paper · Q${i+1} of ${mockPaperData.length}`,pageW/2,pageH-3.5,{align:'center'});});
-doc.addPage();drawPageHeader();y=18;doc.setFillColor(...gold);doc.roundedRect(margin,y,contentW,14,3,3,'F');doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(...navy);doc.text('Answer Key',margin+6,y+9);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80,60,20);doc.text('Final answers only — worked solutions available in askHanyong',margin+contentW-4,y+9,{align:'right'});y+=22;mockPaperData.forEach((q,i)=>{checkPage(14);doc.setFillColor(i%2===0?248:255,i%2===0?250:255,i%2===0?252:255);doc.roundedRect(margin,y-4,contentW,12,2,2,'F');doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...blue);doc.text(`Q${i+1}`,margin+4,y+3);doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(...black);doc.text(stripMath(q['Final Answer']||'—').substring(0,80),margin+16,y+3);doc.setFont('helvetica','italic');doc.setFontSize(7);doc.setTextColor(...gray);doc.text(`[${q['Marks']||'?'} marks]`,margin+contentW-2,y+3,{align:'right'});y+=12;});
-doc.setFillColor(...navy);doc.rect(0,pageH-10,pageW,10,'F');doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(150,175,210);doc.text('Powered by HAN · Built by Hanyong Lim, IB HL Mathematics Examiner · askhanyong.com',pageW/2,pageH-3.5,{align:'center'});
-doc.save(`askHanyong_MockPaper_${new Date().toISOString().slice(0,10)}.pdf`);showToast('PDF downloaded! 📄');}catch(err){console.error('PDF export error:',err);showToast('PDF export failed. Try again.');}btn.textContent='📄 Export PDF';btn.disabled=false;}
+// ════════════════════════════════════════
+async function exportMockPDF() {
+  if (!mockPaperData || mockPaperData.length === 0) { showToast('No mock paper to export. Generate one first.'); return; }
+  const btn = document.getElementById('pdfExportBtn');
+  btn.textContent = '⏳ Generating PDF…'; btn.disabled = true;
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW = 210, pageH = 297, margin = 18, contentW = 210 - 18 * 2;
+    let y = margin;
+    const navy = [30, 58, 95], blue = [29, 78, 216], gold = [201, 168, 76];
+    const lightBlue = [219, 234, 254], gray = [100, 116, 139], lightGray = [241, 245, 249], black = [30, 41, 59];
+    function checkPage(needed) { if (y + needed > pageH - margin) { doc.addPage(); y = margin; drawPageHeader(); } }
+    function drawPageHeader() { doc.setFillColor(...navy); doc.rect(0, 0, pageW, 8, 'F'); doc.setFillColor(...gold); doc.rect(0, 6, pageW, 2, 'F'); }
+    function stripMath(text) {
+      return (text || '').replace(/\$\$[\s\S]*?\$\$/g, '[equation]').replace(/\$([^$]+)\$/g, '$1')
+        .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1)/($2)').replace(/\\sqrt\{([^}]+)\}/g, 'sqrt($1)')
+        .replace(/\\left\(/g, '(').replace(/\\right\)/g, ')').replace(/\\[a-zA-Z]+\{([^}]*)\}/g, '$1')
+        .replace(/\\[a-zA-Z]+/g, '').replace(/[{}]/g, '').replace(/<[^>]+>/g, '').trim();
+    }
+    drawPageHeader();
+    doc.setFillColor(...navy);
+    doc.roundedRect(margin, 20, contentW, 55, 4, 4, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(22); doc.setTextColor(255, 255, 255);
+    doc.text('askHanyong', margin + 10, 38);
+    doc.setFontSize(13); doc.setTextColor(...gold);
+    doc.text('IB Mathematics Mock Paper', margin + 10, 48);
+    doc.setFontSize(9); doc.setTextColor(180, 200, 230);
+    const paperType = document.querySelector('#mockPaperType .mock-chip.sel')?.querySelector('.mock-chip-label')?.textContent || 'Practice Paper';
+    const totalMarks = mockPaperData.reduce((s, q) => s + parseInt(q['Marks'] || 0), 0);
+    const date = new Date().toLocaleDateString('en-SG', { day: 'numeric', month: 'long', year: 'numeric' });
+    doc.text(`${paperType}  ·  ${mockPaperData.length} Questions  ·  ${totalMarks} Marks  ·  Generated ${date}`, margin + 10, 60);
+    doc.setFontSize(8); doc.setTextColor(...gold);
+    doc.text('Built on 20+ years of IB HL Mathematics Examining experience', margin + 10, 68);
+    y = 85;
+    const stats = [
+      { label: 'Questions', val: String(mockPaperData.length) },
+      { label: 'Total Marks', val: String(totalMarks) },
+      { label: 'Time (est.)', val: `~${Math.round(totalMarks * 1.3)} min` },
+      { label: 'Paper Type', val: paperType }
+    ];
+    const boxW = (contentW - 9) / 4;
+    stats.forEach((s, i) => {
+      const bx = margin + i * (boxW + 3);
+      doc.setFillColor(...lightBlue); doc.roundedRect(bx, y, boxW, 18, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...blue);
+      doc.text(s.val, bx + boxW / 2, y + 10, { align: 'center' });
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...gray);
+      doc.text(s.label, bx + boxW / 2, y + 15, { align: 'center' });
+    });
+    y = 115;
+    doc.setFillColor(...lightGray); doc.roundedRect(margin, y, contentW, 28, 3, 3, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...navy);
+    doc.text('Instructions', margin + 6, y + 8);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...black);
+    const instructions = paperType.includes('1')
+      ? 'Do not use a calculator. Show all working clearly. Give exact answers unless told otherwise.'
+      : 'A GDC is permitted. Show method steps alongside GDC results. Give answers to 3 significant figures unless exact.';
+    const instrLines = doc.splitTextToSize(instructions, contentW - 12);
+    instrLines.forEach((line, i) => doc.text(line, margin + 6, y + 15 + i * 5));
+    y = 155;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...navy);
+    doc.text('Questions', margin, y); y += 6;
+    doc.line(margin, y, margin + contentW, y); y += 4;
+    mockPaperData.forEach((q, i) => {
+      checkPage(8);
+      if (i % 2 === 0) { doc.setFillColor(248, 250, 252); doc.rect(margin, y - 4, contentW, 7, 'F'); }
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...blue);
+      doc.text(`Q${i + 1}`, margin + 2, y);
+      doc.setFont('helvetica', 'normal'); doc.setTextColor(...black);
+      const ref = buildRef(q);
+      doc.text(ref.substring(0, 55), margin + 12, y);
+      doc.setFont('helvetica', 'bold'); doc.setTextColor(...blue);
+      doc.text(`[${q['Marks'] || '?'} marks]`, margin + contentW - 2, y, { align: 'right' });
+      y += 7;
+    });
+    doc.setFillColor(...navy); doc.rect(0, pageH - 18, pageW, 18, 'F');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(180, 200, 230);
+    doc.text('Powered by HAN · Built by Hanyong Lim, IB HL Mathematics Examiner · askhanyong.com', pageW / 2, pageH - 8, { align: 'center' });
+
+    mockPaperData.forEach((q, i) => {
+      doc.addPage(); drawPageHeader(); y = 18;
+      doc.setFillColor(...blue); doc.roundedRect(margin, y, contentW, 14, 3, 3, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(255, 255, 255);
+      doc.text(`Question ${i + 1}`, margin + 6, y + 9);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(180, 210, 255);
+      doc.text([q['Topic'], q['Subtopic'], q['Paper']].filter(Boolean).join(' · '), margin + contentW - 4, y + 9, { align: 'right' });
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...gold);
+      doc.text(`[${q['Marks'] || '?'} marks]`, margin + 6, y + 22); y += 30;
+
+      // Reference box
+      doc.setFillColor(241, 245, 249); doc.roundedRect(margin, y, contentW, 22, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...navy);
+      doc.text('Past Paper Reference', margin + 4, y + 7);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...blue);
+      doc.text(buildRef(q), margin + 4, y + 15);
+      y += 30;
+
+      // Working space
+      checkPage(40);
+      doc.setFillColor(252, 253, 255); doc.setDrawColor(220, 230, 245);
+      doc.roundedRect(margin, y, contentW, 45, 2, 2, 'FD');
+      doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(180, 195, 215);
+      doc.text('Working space', margin + 4, y + 8);
+      for (let l = 1; l <= 5; l++) {
+        const ly = y + 10 + l * 6;
+        doc.setDrawColor(210, 220, 235); doc.setLineDashPattern([1, 2], 0);
+        doc.line(margin + 4, ly, margin + contentW - 4, ly);
+        doc.setLineDashPattern([], 0);
+      }
+      y += 55;
+      doc.setFillColor(...navy); doc.rect(0, pageH - 10, pageW, 10, 'F');
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(150, 175, 210);
+      doc.text(`askHanyong Mock Paper · Q${i + 1} of ${mockPaperData.length}`, pageW / 2, pageH - 3.5, { align: 'center' });
+    });
+
+    doc.save(`askHanyong_MockPaper_${new Date().toISOString().slice(0, 10)}.pdf`);
+    showToast('PDF downloaded! 📄');
+  } catch (err) {
+    console.error('PDF export error:', err);
+    showToast('PDF export failed. Try again.');
+  }
+  btn.textContent = '📄 Export PDF'; btn.disabled = false;
+}
 </script>
 </body>
 </html>
