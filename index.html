@@ -367,7 +367,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
       </div>
     </div>
-    <div class="input-hint">Powered by HAN · Built by Hanyong Lim, IB HL Mathematics Examiner</div>
+    <div class="input-hint">Powered by HAN · Tip: Ctrl+V to paste a screenshot directly</div>
   </div>
 </div>
 
@@ -907,6 +907,38 @@ function removeImage() {
 }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+
+// ── Ctrl+V / paste image support ──
+document.addEventListener('paste', function(e) {
+  // Only handle if we're focused on chat (not in other text areas)
+  const active = document.activeElement;
+  const isInChatInput = active && active.id === 'userInput';
+  const isPasteArea = active && (active.classList.contains('paste-textarea') || active.classList.contains('fb-input'));
+  if (isPasteArea) return; // let normal paste work in other textareas
+
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      e.preventDefault();
+      const file = items[i].getAsFile();
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        uploadedImageBase64 = ev.target.result.split(',')[1];
+        uploadedImageType = file.type;
+        document.getElementById('previewThumb').src = ev.target.result;
+        document.getElementById('previewStrip').classList.add('show');
+        // Switch to chat tab if not already there
+        if (!document.getElementById('view-chat').classList.contains('active')) switchTab('chat');
+        document.getElementById('userInput').focus();
+        showToast('📸 Screenshot pasted! Add your question and send.');
+      };
+      reader.readAsDataURL(file);
+      return; // only handle first image
+    }
+  }
+});
 function usePrompt(text) { const inp = document.getElementById('userInput'); inp.value = text; autoResize(inp); inp.focus(); }
 
 // ════════════════════════════════════════
@@ -981,6 +1013,10 @@ function appendMessage(role, content, imageDataUrl) {
   if (role !== 'user' && content) {
     setTimeout(() => addSimilarBtn(bubble), 200);
     setTimeout(() => addFeedbackBar(bubble, content), 250);
+  }
+  // Typeset MathJax immediately after inserting content
+  if (content && window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([bubble]).catch(() => {});
   }
   return bubble;
 }
@@ -1221,7 +1257,6 @@ async function sendMessage() {
     removeTyping();
     const ind = document.getElementById('repoInd'); if (ind) ind.remove();
     appendMessage('han', reply);
-    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
   } catch (err) {
     removeTyping();
     showToast('Error: ' + (err.message || String(err)));
