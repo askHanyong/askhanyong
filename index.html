@@ -510,7 +510,7 @@ ${repositoryContext?`\n═══════════════════
 
 LATEX RULES: Write ALL math in LaTeX. Use \\( ... \\) for inline, \\[ ... \\] for display. Never write raw x^2.
 
-GRAPHS: CRITICAL RULE — whenever a question references a graph or diagram, you MUST render it as a real interactive Desmos graph. NEVER write "[Graph would show...]" or describe a graph in text. Always output a graph block like this:
+GRAPHS: CRITICAL RULE — whenever a question references a graph or diagram, you MUST render it as a real interactive Desmos graph. NEVER write "[Graph would show...]" or describe a graph in text. Always output:
 ${fence}graph
 {"exprs":[{"latex":"ACTUAL_LATEX_FUNCTION","color":"#C9A84C"}],"bounds":{"left":-1,"right":9,"bottom":-3,"top":4}}
 ${fence}
@@ -520,7 +520,6 @@ ${fence}graph
 ${fence}
 Always choose bounds that show the full relevant domain of the function.`;
 }
-
 async function sendMessage(){
   if(isLoading)return;
   const input=document.getElementById('userInput');
