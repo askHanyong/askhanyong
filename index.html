@@ -290,6 +290,20 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .sheet-paste-cta p { font-size:12px; color:var(--text-soft); margin-bottom:10px; line-height:1.55; }
 .sheet-paste-cta strong { color:var(--text); }
 .sheet-paste-cta button { padding:8px 18px; background:var(--blue); color:white; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+
+/* ── Feedback buttons ── */
+.feedback-bar { display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); }
+.feedback-label { font-size:11px; color:var(--text-soft); flex:1; }
+.fb-btn { padding:5px 12px; border:1.5px solid var(--border); border-radius:20px; background:white; font-size:13px; cursor:pointer; transition:all 0.15s; line-height:1; }
+.fb-btn:hover { border-color:var(--blue); background:var(--ice-light); }
+.fb-btn.active-good { border-color:var(--green); background:#f0fdf4; }
+.fb-btn.active-bad  { border-color:#dc2626; background:#fef2f2; }
+.fb-form { margin-top:8px; display:none; }
+.fb-form.show { display:block; }
+.fb-input { width:100%; padding:8px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:12px; font-family:'DM Sans',sans-serif; color:var(--text); outline:none; resize:none; }
+.fb-input:focus { border-color:var(--blue); }
+.fb-send { margin-top:6px; padding:6px 16px; background:var(--blue); color:white; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.fb-thanks { font-size:12px; color:var(--green); font-weight:600; margin-top:6px; display:none; }
 </style>
 </head>
 <body>
@@ -964,9 +978,79 @@ function appendMessage(role, content, imageDataUrl) {
   area.appendChild(div);
   area.scrollTop = area.scrollHeight;
   setTimeout(() => { if (typeof initDesmosGraphs === 'function') initDesmosGraphs(); }, 150);
-  if (role !== 'user' && content) setTimeout(() => addSimilarBtn(bubble), 200);
+  if (role !== 'user' && content) {
+    setTimeout(() => addSimilarBtn(bubble), 200);
+    setTimeout(() => addFeedbackBar(bubble, content), 250);
+  }
   return bubble;
 }
+
+// ════════════════════════════════════════
+// FEEDBACK BAR
+// ════════════════════════════════════════
+let _fbCounter = 0;
+function addFeedbackBar(bubble, hanResponse) {
+  const id = 'fb' + (++_fbCounter);
+  const userMsg = conversationHistory.length >= 2
+    ? (conversationHistory[conversationHistory.length - 2]?.content?.find?.(b => b.type === 'text')?.text
+       || conversationHistory[conversationHistory.length - 2]?.content
+       || '')
+    : '';
+
+  const bar = document.createElement('div');
+  bar.innerHTML = `
+    <div class="feedback-bar">
+      <span class="feedback-label">Was this helpful?</span>
+      <button class="fb-btn" id="${id}-good" onclick="submitFeedback('${id}', 1, \`${userMsg.toString().substring(0,200).replace(/`/g,"'")}\`, \`${hanResponse.substring(0,500).replace(/`/g,"'")}\`)">👍</button>
+      <button class="fb-btn" id="${id}-bad"  onclick="showFbForm('${id}', \`${userMsg.toString().substring(0,200).replace(/`/g,"'")}\`, \`${hanResponse.substring(0,500).replace(/`/g,"'")}\`)">👎</button>
+    </div>
+    <div class="fb-form" id="${id}-form">
+      <textarea class="fb-input" id="${id}-comment" rows="2" placeholder="What was wrong or missing? (optional)"></textarea>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+        <button class="fb-send" onclick="submitFeedback('${id}', 0, \`${userMsg.toString().substring(0,200).replace(/`/g,"'")}\`, \`${hanResponse.substring(0,500).replace(/`/g,"'")}\`)">Send feedback</button>
+        <div class="fb-thanks" id="${id}-thanks">Thanks! We'll review this. 🙏</div>
+      </div>
+    </div>`;
+  bubble.appendChild(bar);
+}
+
+function showFbForm(id, question, response) {
+  document.getElementById(id + '-bad').classList.add('active-bad');
+  document.getElementById(id + '-good').classList.remove('active-good');
+  document.getElementById(id + '-form').classList.add('show');
+}
+
+async function submitFeedback(id, rating, question, response) {
+  const comment = (document.getElementById(id + '-comment')?.value || '').trim();
+
+  // Update button states
+  document.getElementById(id + '-good').classList.toggle('active-good', rating === 1);
+  document.getElementById(id + '-bad').classList.toggle('active-bad',  rating === 0);
+
+  if (rating === 1) {
+    // Thumbs up — just show thanks, no form needed
+    document.getElementById(id + '-form').classList.remove('show');
+  }
+
+  // Show thanks
+  const thanks = document.getElementById(id + '-thanks');
+  if (thanks) { thanks.style.display = 'block'; }
+
+  // Send to Google Sheet
+  try {
+    const params = new URLSearchParams({
+      action:   'feedback',
+      rating:   rating === 1 ? 'helpful' : 'unhelpful',
+      comment:  comment,
+      question: question,
+      response: response,
+      topic:    selectedSubjectTopic || '',
+      ts:       new Date().toISOString()
+    });
+    await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
+  } catch(e) {}
+}
+
 function addSimilarBtn(bubble) {
   const btn = document.createElement('button');
   btn.className = 'similar-btn';
