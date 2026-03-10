@@ -580,7 +580,23 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <!-- ★ STRIPE: Replace the paymentLink value below with your real Stripe Payment Link URL -->
     <!-- To get it: Stripe Dashboard → Payment Links → Create → $15/month recurring → Copy link -->
     <button class="modal-cta" id="stripeCheckoutBtn" onclick="startStripeCheckout()" style="display:flex;align-items:center;justify-content:center;gap:8px"><span>Pay with Card</span><span style="font-size:18px">💳</span></button>
-    <div id="stripeNotReady" style="display:none"><button class="modal-cta" onclick="window.location.href='mailto:hanyong@askhanyong.com?subject=askHanyong Premium'" style="background:var(--text-mid)">Join Premium Waitlist →</button></div>
+    <div id="stripeNotReady" style="display:none">
+      <div id="waitlistForm">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;text-align:left">📋 Join the Premium Waitlist</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <input id="waitlistName" type="text" placeholder="Your name" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text)">
+          <input id="waitlistEmail" type="email" placeholder="Email address" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text)">
+          <input id="waitlistSchool" type="text" placeholder="School / country (optional)" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text)">
+          <button class="modal-cta" onclick="submitWaitlist()" id="waitlistSubmitBtn" style="margin-bottom:0;background:var(--navy)">Join Waitlist →</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-soft);margin-top:8px;text-align:center">We'll notify you as soon as Premium launches.</div>
+      </div>
+      <div id="waitlistSuccess" style="display:none;text-align:center;padding:12px 0">
+        <div style="font-size:32px;margin-bottom:8px">🎉</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">You're on the list!</div>
+        <div style="font-size:12px;color:var(--text-soft)">Hanyong will be in touch when Premium is ready.</div>
+      </div>
+    </div>
     <div class="modal-note" style="margin-top:10px">Secure payment via Stripe · Cancel anytime</div>
     <div class="modal-note">Free questions reset at midnight 🕛</div>
   </div>
@@ -774,12 +790,12 @@ function setCtx(el, group) {
 // QUESTION COUNTING / LIMITS
 // ════════════════════════════════════════
 function getTodayKey(uid) { return 'aq_' + uid + '_' + new Date().toISOString().slice(0, 10); }
-function getQuestionCount() { if (!currentUser) return 0; return parseInt(sessionStorage.getItem(getTodayKey(currentUser.sub)) || '0'); }
+function getQuestionCount() { if (!currentUser) return 0; return parseInt(localStorage.getItem(getTodayKey(currentUser.sub)) || '0'); }
 function incrementQuestionCount() {
   if (!currentUser) return;
   const key = getTodayKey(currentUser.sub);
-  const count = parseInt(sessionStorage.getItem(key) || '0') + 1;
-  sessionStorage.setItem(key, String(count));
+  const count = parseInt(localStorage.getItem(key) || '0') + 1;
+  localStorage.setItem(key, String(count));
   updateLimitBar(count);
 }
 function updateLimitBar(count) {
@@ -807,7 +823,21 @@ function canAskQuestion() {
 // AUTH
 // ════════════════════════════════════════
 function showLogin() { document.getElementById('loginOverlay').classList.add('open'); }
-function showUpgrade() { document.getElementById('upgradeOverlay').classList.add('open'); }
+function showUpgrade() {
+  document.getElementById('upgradeOverlay').classList.add('open');
+  // Reset waitlist form state
+  document.getElementById('waitlistForm').style.display = 'block';
+  document.getElementById('waitlistSuccess').style.display = 'none';
+  const btn = document.getElementById('waitlistSubmitBtn');
+  if (btn) { btn.textContent = 'Join Waitlist →'; btn.disabled = false; }
+  // Pre-fill from Google account
+  if (currentUser) {
+    const nameEl  = document.getElementById('waitlistName');
+    const emailEl = document.getElementById('waitlistEmail');
+    if (nameEl  && !nameEl.value)  nameEl.value  = currentUser.given_name || currentUser.name || '';
+    if (emailEl && !emailEl.value) emailEl.value = currentUser.email || '';
+  }
+}
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function closeModalBg(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
 
@@ -1368,10 +1398,10 @@ function getProgressKey() { if (isAdmin) return PROGRESS_KEY_PREFIX + 'admin'; i
 function loadProgress() {
   const key = getProgressKey();
   if (!key) return { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 };
-  try { return JSON.parse(sessionStorage.getItem(key) || 'null') || { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 }; }
+  try { return JSON.parse(localStorage.getItem(key) || 'null') || { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 }; }
   catch (e) { return { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 }; }
 }
-function saveProgress(data) { const key = getProgressKey(); if (!key) return; sessionStorage.setItem(key, JSON.stringify(data)); }
+function saveProgress(data) { const key = getProgressKey(); if (!key) return; localStorage.setItem(key, JSON.stringify(data)); }
 function trackQuestion(topic, question) {
   const data = loadProgress();
   data.totalAsked = (data.totalAsked || 0) + 1;
@@ -1434,7 +1464,53 @@ function renderProgress() {
 }
 function getTimeAgo(iso) { const diff = Date.now() - new Date(iso).getTime(), mins = Math.floor(diff / 60000); if (mins < 1) return 'just now'; if (mins < 60) return `${mins}m ago`; const hrs = Math.floor(mins / 60); if (hrs < 24) return `${hrs}h ago`; return `${Math.floor(hrs / 24)}d ago`; }
 function usePromptAndSwitch(text) { switchTab('chat'); setTimeout(() => { const inp = document.getElementById('userInput'); inp.value = text; autoResize(inp); inp.focus(); }, 300); }
-function resetProgress() { if (!confirm('Reset all your progress data? This cannot be undone.')) return; const key = getProgressKey(); if (key) sessionStorage.removeItem(key); renderProgress(); showToast('Progress reset.'); }
+function resetProgress() { if (!confirm('Reset all your progress data? This cannot be undone.')) return; const key = getProgressKey(); if (key) localStorage.removeItem(key); renderProgress(); showToast('Progress reset.'); }
+
+
+// ════════════════════════════════════════
+// WAITLIST FORM → saves to Google Sheet
+// ════════════════════════════════════════
+async function submitWaitlist() {
+  const name  = (document.getElementById('waitlistName').value  || '').trim();
+  const email = (document.getElementById('waitlistEmail').value || '').trim();
+  const school= (document.getElementById('waitlistSchool').value|| '').trim();
+
+  if (!email) {
+    document.getElementById('waitlistEmail').style.borderColor = 'var(--red)';
+    document.getElementById('waitlistEmail').focus();
+    return;
+  }
+
+  const btn = document.getElementById('waitlistSubmitBtn');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+
+  try {
+    // Pre-fill name/email from Google account if available
+    const finalName  = name  || (currentUser ? (currentUser.given_name || currentUser.name || '') : '');
+    const finalEmail = email || (currentUser ? currentUser.email : '');
+
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'waitlist',
+        name:   finalName,
+        email:  finalEmail,
+        school: school,
+        timestamp: new Date().toISOString(),
+        source: 'upgrade_modal'
+      })
+    });
+
+    // Show success regardless (no-cors means we can't read response)
+    document.getElementById('waitlistForm').style.display = 'none';
+    document.getElementById('waitlistSuccess').style.display = 'block';
+  } catch (err) {
+    btn.textContent = 'Join Waitlist →'; btn.disabled = false;
+    showToast('Could not save — please try again.');
+  }
+}
 
 // ════════════════════════════════════════
 // STRIPE
