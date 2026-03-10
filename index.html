@@ -32,10 +32,13 @@ header { background:linear-gradient(135deg,#1e3a5f,#1d4ed8); padding:10px 16px; 
 .user-pill { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:4px 12px 4px 4px; cursor:pointer; }
 .user-pill img { width:26px; height:26px; border-radius:50%; }
 .user-pill span { font-size:12px; color:white; font-weight:500; }
-.limit-bar { display:none; align-items:center; gap:10px; padding:6px 16px; background:var(--ice-light); border-bottom:1px solid var(--border); font-size:12px; color:var(--text-mid); flex-shrink:0; }
-.limit-track { flex:1; max-width:120px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.limit-bar { display:none; align-items:center; gap:10px; padding:6px 16px; background:var(--ice-light); border-bottom:1px solid var(--border); font-size:12px; color:var(--text-mid); flex-shrink:0; flex-wrap:wrap; }
+.limit-track-group { display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
+.limit-track-label { font-size:10px; font-weight:700; color:var(--text-soft); white-space:nowrap; }
+.limit-track { flex:1; max-width:80px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
 .limit-fill { height:100%; background:var(--blue); border-radius:2px; transition:width 0.3s; }
-.upgrade-btn-small { padding:3px 10px; background:var(--blue); color:white; border:none; border-radius:12px; font-size:11px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.limit-sep { width:1px; height:16px; background:var(--border); }
+.upgrade-btn-small { padding:3px 10px; background:var(--blue); color:white; border:none; border-radius:12px; font-size:11px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; }
 .tab-nav { display:flex; flex-direction:row; background:white; border-top:1px solid var(--border); flex-shrink:0; box-shadow:0 -2px 12px rgba(0,0,0,0.05); }
 .tab-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:6px 4px 5px; gap:2px; border:none; background:none; cursor:pointer; color:var(--text-soft); font-size:9px; font-weight:600; font-family:'DM Sans',sans-serif; transition:color 0.2s; position:relative; }
 .tab-btn.active { color:var(--blue); }
@@ -315,8 +318,16 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="header-right"><div id="userPillArea"><button class="sign-in-btn" onclick="showLogin()">Sign in</button></div></div>
 </header>
 <div class="limit-bar" id="limitBar">
-  <span id="limitText">5 free questions today</span>
-  <div class="limit-track"><div class="limit-fill" id="limitFill" style="width:0%"></div></div>
+  <div class="limit-track-group">
+    <span class="limit-track-label">📷 Uploads</span>
+    <div class="limit-track"><div class="limit-fill" id="limitFillUpload" style="width:0%"></div></div>
+  </div>
+  <div class="limit-sep"></div>
+  <div class="limit-track-group">
+    <span class="limit-track-label">✏️ Typed</span>
+    <div class="limit-track"><div class="limit-fill" id="limitFillTyped" style="width:0%"></div></div>
+  </div>
+  <span id="limitText" style="font-size:11px;color:var(--text-mid);white-space:nowrap"></span>
   <button class="upgrade-btn-small" onclick="showUpgrade()">Upgrade</button>
 </div>
 
@@ -576,6 +587,31 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   </div>
 </div>
 
+<!-- Welcome modal (shown once on first sign-in) -->
+<div class="modal-overlay" id="welcomeModal" onclick="closeModalBg(event,'welcomeModal')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:400px">
+    <div class="modal-icon">🎉</div>
+    <h2 style="margin-bottom:6px">Welcome to HAN!</h2>
+    <p style="margin-bottom:16px;font-size:13px;color:var(--text-mid);line-height:1.6">You're one of HAN's first beta students. Here's what you get <strong>free today</strong>:</p>
+    <div style="background:var(--ice-light);border:1.5px solid var(--blue);border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:left">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:22px">📷</span>
+        <div><div style="font-size:13px;font-weight:700;color:var(--text)">5 photo/upload questions</div><div style="font-size:11px;color:var(--text-soft)">Snap a question, HAN solves it with full working</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:22px">✏️</span>
+        <div><div style="font-size:13px;font-weight:700;color:var(--text)">10 typed questions</div><div style="font-size:11px;color:var(--text-soft)">Type any IB Math question, get step-by-step help</div></div>
+      </div>
+    </div>
+    <div style="background:#fef9c3;border:1.5px solid #fbbf24;border-radius:12px;padding:14px 16px;margin-bottom:18px;text-align:left">
+      <div style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">⏳ Beta Offer — Limited Time</div>
+      <div style="font-size:13px;color:#78350f;line-height:1.6">As one of our first students, unlock <strong>unlimited access for S$45 once</strong> — no subscription ever. After beta, this becomes S$45/month.</div>
+    </div>
+    <button class="modal-cta" onclick="closeModal('welcomeModal')" style="margin-bottom:8px">Start Asking HAN →</button>
+    <div style="font-size:12px;color:var(--text-soft);text-align:center;cursor:pointer" onclick="closeModal('welcomeModal');showUpgrade()">See beta pricing →</div>
+  </div>
+</div>
+
 <!-- Login modal -->
 <div class="modal-overlay" id="loginOverlay" onclick="closeModalBg(event,'loginOverlay')">
   <div class="modal-box" onclick="event.stopPropagation()">
@@ -593,13 +629,21 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="modal-box" onclick="event.stopPropagation()" style="max-width:420px">
     <button class="modal-close" onclick="closeModal('upgradeOverlay')">✕</button>
     <div class="modal-icon">⚡</div>
-    <h2>Upgrade to Premium</h2>
-    <p style="margin-bottom:16px">Unlock unlimited questions, full mock papers, and progress tracking.</p>
+    <h2>Unlock Unlimited Access</h2>
+    <p style="margin-bottom:4px;font-size:12px;color:var(--text-soft)">You've hit your free limit for today.</p>
     <div style="background:var(--ice-light);border:1.5px solid var(--blue);border-radius:14px;padding:16px;margin-bottom:18px">
-      <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Premium</div>
-      <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px"><span style="font-size:36px;font-weight:800;color:var(--blue);font-family:'Playfair Display',serif" id="stripePrice">$15</span><span style="font-size:14px;color:var(--text-soft)">/month</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px">Beta Student Offer</span>
+        <span style="background:#fbbf24;color:#78350f;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">LIMITED TIME</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
+        <span style="font-size:40px;font-weight:800;color:var(--blue);font-family:'Playfair Display',serif">S$45</span>
+        <span style="font-size:15px;color:var(--text-soft);text-decoration:line-through">S$45/mo</span>
+        <span style="font-size:13px;font-weight:700;color:var(--green)">one-time</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">Lock in lifetime access now. After beta, this becomes S$45/month — you'll never be charged again.</div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;text-align:left">
-        <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Unlimited questions daily</li>
+        <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Unlimited questions — uploads & typed, every day</li>
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Full mock paper generator</li>
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Progress tracking dashboard</li>
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Priority support from Hanyong</li>
@@ -625,8 +669,8 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <div style="font-size:12px;color:var(--text-soft)">Hanyong will be in touch when Premium is ready.</div>
       </div>
     </div>
-    <div class="modal-note" style="margin-top:10px">Secure payment via Stripe · Cancel anytime</div>
-    <div class="modal-note">Free questions reset at midnight 🕛</div>
+    <div class="modal-note" style="margin-top:10px">Secure payment via Stripe · One-time charge, no subscription</div>
+    <div class="modal-note">Beta pricing ends when we launch publicly 🚀</div>
   </div>
 </div>
 
@@ -644,7 +688,8 @@ const GOOGLE_CLIENT_ID = '328753347113-pm103e847sq15r21d1tj5rpu2vubg4dh.apps.goo
 // Steps: stripe.com/dashboard → Payment Links → + New → Recurring $15/month → Copy link URL
 const STRIPE_PAYMENT_LINK = 'YOUR_STRIPE_PAYMENT_LINK_HERE';
 
-const FREE_DAILY_LIMIT = 5;
+const FREE_UPLOAD_LIMIT = 5;   // photo/screenshot questions
+const FREE_TYPED_LIMIT  = 10;  // typed text questions
 const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'hanyong';
 
 // ════════════════════════════════════════
@@ -816,35 +861,48 @@ function setCtx(el, group) {
 
 // ════════════════════════════════════════
 // QUESTION COUNTING / LIMITS
+// Upload questions = photo/screenshot, Typed = text-only
 // ════════════════════════════════════════
-function getTodayKey(uid) { return 'aq_' + uid + '_' + new Date().toISOString().slice(0, 10); }
-function getQuestionCount() { if (!currentUser) return 0; return parseInt(localStorage.getItem(getTodayKey(currentUser.sub)) || '0'); }
-function incrementQuestionCount() {
+function getTodayKey(uid, type) { return 'aq_' + type + '_' + uid + '_' + new Date().toISOString().slice(0, 10); }
+function getCount(type) { if (!currentUser) return 0; return parseInt(localStorage.getItem(getTodayKey(currentUser.sub, type)) || '0'); }
+function incrementCount(type) {
   if (!currentUser) return;
-  const key = getTodayKey(currentUser.sub);
+  const key = getTodayKey(currentUser.sub, type);
   const count = parseInt(localStorage.getItem(key) || '0') + 1;
   localStorage.setItem(key, String(count));
-  updateLimitBar(count);
+  updateLimitBar();
 }
-function updateLimitBar(count) {
-  const bar = document.getElementById('limitBar'), fill = document.getElementById('limitFill'), txt = document.getElementById('limitText');
+function updateLimitBar() {
+  const bar = document.getElementById('limitBar'), txt = document.getElementById('limitText');
+  const uploadFill = document.getElementById('limitFillUpload'), typedFill = document.getElementById('limitFillTyped');
   if (!currentUser) { if (bar) bar.style.display = 'none'; return; }
   if (bar) bar.style.display = 'flex';
-  const pct = Math.min(100, (count / FREE_DAILY_LIMIT) * 100);
-  if (fill) fill.style.width = pct + '%';
-  const rem = Math.max(0, FREE_DAILY_LIMIT - count);
-  if (txt) txt.textContent = rem + ' free question' + (rem !== 1 ? 's' : '') + ' remaining today';
-  if (count >= FREE_DAILY_LIMIT && fill) fill.style.background = 'linear-gradient(90deg,#dc2626,#f87171)';
+  const uploads = getCount('upload'), typed = getCount('typed');
+  const remU = Math.max(0, FREE_UPLOAD_LIMIT - uploads);
+  const remT = Math.max(0, FREE_TYPED_LIMIT - typed);
+  if (uploadFill) {
+    const pct = Math.min(100, (uploads / FREE_UPLOAD_LIMIT) * 100);
+    uploadFill.style.width = pct + '%';
+    uploadFill.style.background = uploads >= FREE_UPLOAD_LIMIT ? 'linear-gradient(90deg,#dc2626,#f87171)' : 'var(--blue)';
+  }
+  if (typedFill) {
+    const pct = Math.min(100, (typed / FREE_TYPED_LIMIT) * 100);
+    typedFill.style.width = pct + '%';
+    typedFill.style.background = typed >= FREE_TYPED_LIMIT ? 'linear-gradient(90deg,#dc2626,#f87171)' : 'var(--green)';
+  }
+  if (txt) txt.textContent = remU + ' upload' + (remU !== 1 ? 's' : '') + ' · ' + remT + ' typed left today';
 }
 function checkPremiumStatus() {
   const key = currentUser ? 'han_premium_' + currentUser.sub : null;
   if (!key) return false;
   return sessionStorage.getItem(key) === 'true';
 }
-function canAskQuestion() {
+function canAskQuestion(type) {
   if (isAdmin) return true;
   if (checkPremiumStatus()) return true;
-  return !!(currentUser && getQuestionCount() < FREE_DAILY_LIMIT);
+  if (!currentUser) return false;
+  if (type === 'upload') return getCount('upload') < FREE_UPLOAD_LIMIT;
+  return getCount('typed') < FREE_TYPED_LIMIT;
 }
 
 // ════════════════════════════════════════
@@ -874,7 +932,27 @@ function handleGoogleCredential(response) {
   currentUser = payload;
   closeModal('loginOverlay');
   renderUserPill(payload);
-  updateLimitBar(getQuestionCount());
+  updateLimitBar();
+  // Save to Users sheet (backend deduplicates by email)
+  saveUserToSheet(payload);
+  // Show welcome modal only on first ever visit
+  const seenKey = 'han_welcomed_' + payload.sub;
+  if (!localStorage.getItem(seenKey)) {
+    localStorage.setItem(seenKey, '1');
+    setTimeout(() => document.getElementById('welcomeModal').classList.add('open'), 400);
+  }
+}
+
+async function saveUserToSheet(user) {
+  try {
+    const params = new URLSearchParams({
+      action: 'saveUser',
+      name:   user.name  || '',
+      email:  user.email || '',
+      ts:     new Date().toISOString()
+    });
+    await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
+  } catch(e) {}
 }
 function renderUserPill(user) {
   document.getElementById('userPillArea').innerHTML =
@@ -1236,8 +1314,9 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text && !uploadedImageBase64) return;
   if (!isAdmin && !currentUser) { showLogin(); return; }
-  if (!canAskQuestion()) { showUpgrade(); return; }
-  if (!isAdmin) incrementQuestionCount();
+  const questionType = uploadedImageBase64 ? 'upload' : 'typed';
+  if (!canAskQuestion(questionType)) { showUpgrade(); return; }
+  if (!isAdmin) incrementCount(questionType);
   trackQuestion(selectedSubjectTopic || 'General', text);
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
