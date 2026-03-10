@@ -555,6 +555,20 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div class="sheet-label">💡 HAN's Insight</div>
       <div class="sheet-han" id="sheetHan"></div>
     </div>
+
+    <!-- Hanyong's handwritten solution (shown only if Solution URL exists) -->
+    <div class="sheet-section" id="sheetSolutionSection" style="display:none">
+      <div class="sheet-label">✍️ Hanyong's Worked Solution</div>
+      <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:28px;flex-shrink:0">📄</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:2px">Hanyong's handwritten notes</div>
+          <div style="font-size:11px;color:#166534;line-height:1.5">20+ years of examiner insight — scanned and annotated by Hanyong himself</div>
+        </div>
+        <button id="sheetSolutionBtn" onclick="openSolution()" style="padding:9px 16px;background:#16a34a;color:white;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0">View →</button>
+      </div>
+    </div>
+
     <div class="sheet-btns">
       <button class="sheet-btn secondary" onclick="openPasteFromSheet()">✏️ Paste &amp; Solve</button>
       <button class="sheet-btn primary" onclick="askHANAboutSheet()">💬 Ask HAN</button>
@@ -1357,8 +1371,24 @@ function openSheet(idx) {
     hanEl.style.display = 'none';
   }
 
+  // Hanyong's solution PDF (if URL stored)
+  const solEl = document.getElementById('sheetSolutionSection');
+  const solUrl = r['Solution URL'] || '';
+  if (solUrl && solUrl.startsWith('http')) {
+    solEl.style.display = 'block';
+    document.getElementById('sheetSolutionBtn').setAttribute('data-url', solUrl);
+  } else {
+    solEl.style.display = 'none';
+  }
+
   document.getElementById('sheetOverlay').classList.add('open');
   if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+function openSolution() {
+  const btn = document.getElementById('sheetSolutionBtn');
+  const url = btn ? btn.getAttribute('data-url') : '';
+  if (url) window.open(url, '_blank');
 }
 function closeSheet() { document.getElementById('sheetOverlay').classList.remove('open'); }
 function closeSheetBg(e) { if (e.target === document.getElementById('sheetOverlay')) closeSheet(); }
