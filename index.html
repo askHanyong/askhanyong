@@ -1489,19 +1489,15 @@ async function submitWaitlist() {
     const finalName  = name  || (currentUser ? (currentUser.given_name || currentUser.name || '') : '');
     const finalEmail = email || (currentUser ? currentUser.email : '');
 
-    await fetch(SHEETS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'waitlist',
-        name:   finalName,
-        email:  finalEmail,
-        school: school,
-        timestamp: new Date().toISOString(),
-        source: 'upgrade_modal'
-      })
+    const params = new URLSearchParams({
+      action: 'waitlist',
+      name:   finalName,
+      email:  finalEmail,
+      school: school,
+      ts:     new Date().toISOString(),
+      source: 'upgrade_modal'
     });
+    await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
 
     // Show success regardless (no-cors means we can't read response)
     document.getElementById('waitlistForm').style.display = 'none';
