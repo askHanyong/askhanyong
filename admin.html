@@ -612,7 +612,7 @@ Return ONLY a valid JSON array — no markdown fencing, no explanation. Each ele
   "questionNum": "Q1" | "Q2a" | "Q2b" etc.,
   "pages": [${batchStart}] (use the ORIGINAL document page numbers, ${batchStart}–${batchEnd}),
   "marksHint": "6" or null,
-  "topicHint": "Calculus" or null,
+  "topicHint": one of ["Calculus","Functions","Geometry & Trigonometry","Statistics & Probability","Number & Algebra","Complex Numbers"] or null (use exact string),
   "subtopicHint": "Integration by parts" or null,
   "notes": null
 }
@@ -695,6 +695,17 @@ Pages ${batchStart}–${batchEnd}:`
 // ════════════════════════════
 const TOPICS = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra','Complex Numbers'];
 
+function normalizeTopic(hint) {
+  if (!hint) return '';
+  const h = hint.toLowerCase().trim();
+  // Exact match (case-insensitive)
+  const exact = TOPICS.find(t => t.toLowerCase() === h);
+  if (exact) return exact;
+  // Partial match: topic starts with hint or hint is contained in topic
+  const partial = TOPICS.find(t => t.toLowerCase().startsWith(h) || h.startsWith(t.toLowerCase().split(' ')[0]));
+  return partial || '';
+}
+
 function renderQCards() {
   document.getElementById('qCardCount').textContent = extractedQuestions.length;
   const container = document.getElementById('qCardsContainer');
@@ -710,7 +721,8 @@ function renderQCards() {
     card.id = `qcard-${i}`;
 
     const pagesLabel = (q.pages || []).map(p => `<span class="page-badge">pg ${p}</span>`).join('');
-    const topicSel   = TOPICS.map(t => `<option value="${t}" ${t === q.topicHint ? 'selected' : ''}>${t}</option>`).join('');
+    const matchedTopic = normalizeTopic(q.topicHint);
+    const topicSel   = TOPICS.map(t => `<option value="${t}" ${t === matchedTopic ? 'selected' : ''}>${t}</option>`).join('');
 
     const driveBase = (document.getElementById('p-driveUrl').value || '').trim();
     const firstPage = (q.pages || [])[0] || 1;
