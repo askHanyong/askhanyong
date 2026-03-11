@@ -646,8 +646,11 @@ Pages ${batchStart}–${batchEnd}:`
       // calling .json() directly would throw the confusing "Unexpected token '<'" error.
       const respText = await resp.text();
       if (respText.trim().startsWith('<')) {
-        const hint = resp.status === 413 ? 'payload too large' : resp.status === 524 || resp.status === 502 ? 'function timed out' : `HTTP ${resp.status}`;
-        throw new Error(`Server error (${hint}) on batch ${b + 1}. Deployment may still be in progress, or try again in a moment.`);
+        const hint = resp.status === 404 ? 'function not found — new deployment may still be in progress'
+                   : resp.status === 413 ? 'payload too large'
+                   : resp.status === 524 || resp.status === 502 ? 'function timed out'
+                   : `HTTP ${resp.status}`;
+        throw new Error(`Server error (${hint}) on batch ${b + 1}. Hard-refresh (Ctrl+Shift+R) and try again.`);
       }
       if (!resp.ok) {
         throw new Error(`HTTP ${resp.status}: ${respText.substring(0, 120)}`);
