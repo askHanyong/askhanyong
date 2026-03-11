@@ -307,6 +307,81 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .fb-input:focus { border-color:var(--blue); }
 .fb-send { margin-top:6px; padding:6px 16px; background:var(--blue); color:white; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
 .fb-thanks { font-size:12px; color:var(--green); font-weight:600; margin-top:6px; display:none; }
+
+/* ── Soft nudge bar ── */
+.nudge-bar { display:none; align-items:center; gap:8px; padding:7px 16px; background:linear-gradient(135deg,#fffbeb,#fef3c7); border-bottom:1.5px solid #fbbf24; font-size:12px; color:#78350f; flex-shrink:0; }
+.nudge-bar.show { display:flex; animation:fadeIn 0.25s; }
+.nudge-bar strong { color:#92400e; font-weight:700; }
+.nudge-upgrade-btn { padding:4px 12px; background:#f59e0b; color:white; border:none; border-radius:12px; font-size:11px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; flex-shrink:0; }
+.nudge-close { margin-left:auto; background:none; border:none; color:#b45309; cursor:pointer; font-size:18px; line-height:1; padding:0 2px; flex-shrink:0; }
+
+/* ── Session banner (shown during a learning session) ── */
+.session-banner { display:none; background:linear-gradient(135deg,#1e3a5f,#1d4ed8); padding:7px 16px; align-items:center; gap:10px; flex-shrink:0; }
+.session-banner.active { display:flex; }
+.session-topic-pill { background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.3); border-radius:12px; padding:3px 10px; font-size:11px; font-weight:700; color:white; white-space:nowrap; }
+.session-banner-text { font-size:12px; color:rgba(255,255,255,0.85); flex:1; }
+.session-end-btn { padding:4px 10px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:10px; color:white; font-size:11px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; flex-shrink:0; }
+
+/* ── Launch HAN / learn setup overlay ── */
+.learn-overlay { display:none; position:fixed; inset:0; background:rgba(10,22,50,0.7); z-index:400; align-items:flex-end; justify-content:center; }
+.learn-overlay.open { display:flex; animation:fadeIn 0.2s; }
+.learn-sheet { background:white; width:100%; max-width:680px; max-height:90dvh; border-radius:24px 24px 0 0; overflow-y:auto; padding:0 0 32px; animation:slideUp 0.25s ease-out; }
+.learn-sheet-hero { background:linear-gradient(135deg,#1e3a5f,#1d4ed8); padding:20px 20px 18px; border-radius:24px 24px 0 0; }
+.learn-sheet-hero h2 { font-size:20px; font-weight:700; color:white; font-family:'Playfair Display',serif; margin-bottom:4px; }
+.learn-sheet-hero p { font-size:12px; color:rgba(255,255,255,0.75); line-height:1.5; }
+.learn-sheet-body { padding:16px 18px; }
+.learn-section-label { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:10px; }
+.learn-topic-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+.learn-topic-card { padding:13px 12px; border:2px solid var(--border); border-radius:var(--radius); background:white; cursor:pointer; transition:all 0.15s; text-align:left; }
+.learn-topic-card.sel { border-color:var(--blue); background:var(--ice-light); }
+.learn-topic-card:hover { border-color:var(--blue-mid); box-shadow:var(--shadow); transform:translateY(-1px); }
+.learn-topic-icon { font-size:22px; margin-bottom:5px; }
+.learn-topic-label { font-size:12px; font-weight:700; color:var(--text); }
+.learn-topic-sub { font-size:10px; color:var(--text-soft); margin-top:2px; line-height:1.4; }
+.learn-topic-card.sel .learn-topic-label { color:var(--blue); }
+.learn-depth-row { display:flex; gap:8px; margin-bottom:18px; }
+.learn-depth-btn { flex:1; padding:10px 6px; border:2px solid var(--border); border-radius:10px; background:white; font-size:12px; font-weight:700; color:var(--text-mid); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.15s; text-align:center; }
+.learn-depth-btn.sel { border-color:var(--blue); background:var(--blue); color:white; }
+.learn-start-btn { width:100%; padding:14px; background:linear-gradient(135deg,#1e40af,#1d4ed8); color:white; border:none; border-radius:var(--radius); font-size:15px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
+.learn-start-btn:disabled { opacity:0.45; cursor:not-allowed; }
+.learn-close-row { display:flex; justify-content:flex-end; padding:10px 14px 0; }
+.learn-close-btn { background:var(--bg); border:none; border-radius:50%; width:30px; height:30px; font-size:14px; cursor:pointer; color:var(--text-soft); display:flex; align-items:center; justify-content:center; }
+
+/* ── "Launch HAN" welcome CTA ── */
+.launch-han-cta { width:100%; max-width:340px; background:linear-gradient(135deg,#1e3a5f,#1d4ed8); border-radius:var(--radius); padding:14px 16px; cursor:pointer; display:flex; align-items:center; gap:14px; margin-top:12px; border:none; transition:opacity 0.2s; }
+.launch-han-cta:hover { opacity:0.9; }
+.launch-han-cta-icon { font-size:26px; flex-shrink:0; }
+.launch-han-cta-text { text-align:left; }
+.launch-han-cta-text strong { font-size:13px; font-weight:700; color:white; display:block; }
+.launch-han-cta-text span { font-size:11px; color:rgba(255,255,255,0.7); }
+
+/* ── Mobile polish ── */
+@media (max-width:600px) {
+  .context-bar { flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:7px 12px; gap:5px; }
+  .context-bar::-webkit-scrollbar { display:none; }
+  .ctx-chip { flex-shrink:0; padding:4px 9px; }
+  .ctx-label { flex-shrink:0; }
+  .ctx-sep { flex-shrink:0; }
+  .limit-bar { flex-wrap:nowrap; font-size:11px; padding:5px 12px; gap:5px; }
+  .limit-track { max-width:44px; }
+  .limit-track-label { font-size:9px; }
+  #limitText { font-size:10px; min-width:0; }
+  .upgrade-btn-small { font-size:10px; padding:3px 8px; flex-shrink:0; }
+  .tab-btn { font-size:8px; padding:5px 2px 4px; }
+  .tab-btn .tab-icon { font-size:15px; }
+  .welcome-screen { padding:16px 12px; }
+  .welcome-cards { max-width:100%; }
+  .welcome-card { padding:12px 10px; }
+  header { padding:8px 12px; }
+  .logo-text h1 { font-size:15px; }
+  .bubble { font-size:13px; }
+  .mock-hero { padding:16px 14px 14px; }
+  .learn-topic-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+}
+@media (max-width:380px) {
+  .learn-topic-grid { grid-template-columns:1fr; }
+  .welcome-cards { grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
@@ -331,8 +406,22 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <button class="upgrade-btn-small" onclick="showUpgrade()">Upgrade</button>
 </div>
 
+<!-- Soft nudge bar (appears at 80% limit) -->
+<div class="nudge-bar" id="nudgeBar">
+  <span>⚡ <span id="nudgeText">Almost at your limit</span></span>
+  <button class="nudge-upgrade-btn" onclick="showUpgrade()">Upgrade — S$45</button>
+  <button class="nudge-close" onclick="dismissNudge()" title="Dismiss">✕</button>
+</div>
+
 <!-- ══════════════ CHAT ══════════════ -->
 <div class="view-panel active" id="view-chat">
+  <!-- Learning session banner -->
+  <div class="session-banner" id="sessionBanner">
+    <span style="font-size:16px">🎓</span>
+    <span class="session-banner-text" id="sessionBannerText">Learning session active</span>
+    <span class="session-topic-pill" id="sessionTopicPill"></span>
+    <button class="session-end-btn" onclick="endLearningSession()">End Session</button>
+  </div>
   <div class="context-bar" id="contextBar">
     <span class="ctx-label">Level</span>
     <button class="ctx-chip active" data-group="level" data-val="MAA HL" onclick="setCtx(this,'level')">HL</button>
@@ -363,6 +452,14 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <div class="welcome-card" onclick="usePrompt('What are the most common mistakes students make in IB HL Paper 1?')"><div class="wc-icon">🎯</div><div class="wc-title">Examiner tips</div><div class="wc-desc">What earns and loses marks</div></div>
         <div class="welcome-card" onclick="switchTab('mock')"><div class="wc-icon">📝</div><div class="wc-title">Mock paper</div><div class="wc-desc">Custom practice paper</div></div>
       </div>
+      <button class="launch-han-cta" onclick="openLearnSetup()">
+        <span class="launch-han-cta-icon">🎓</span>
+        <span class="launch-han-cta-text">
+          <strong>Launch a Learning Session</strong>
+          <span>Pick a topic — HAN guides you start to finish</span>
+        </span>
+        <span style="color:rgba(255,255,255,0.6);font-size:18px;flex-shrink:0">›</span>
+      </button>
     </div>
   </div>
   <div class="input-area">
@@ -583,6 +680,62 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="sheet-btns">
       <button class="sheet-btn secondary" onclick="openPasteFromSheet()">✏️ Paste &amp; Solve</button>
       <button class="sheet-btn primary" onclick="askHANAboutSheet()">💬 Ask HAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ LEARN SETUP OVERLAY ══════════════ -->
+<div class="learn-overlay" id="learnOverlay" onclick="closeLearnOverlayBg(event)">
+  <div class="learn-sheet" onclick="event.stopPropagation()">
+    <div class="learn-sheet-hero">
+      <div class="learn-close-row" style="padding:0;margin-bottom:10px"><button class="learn-close-btn" onclick="closeLearnOverlay()" style="background:rgba(255,255,255,0.15);color:white">✕</button></div>
+      <h2>🎓 Launch a Learning Session</h2>
+      <p>HAN will guide you through a focused topic — from core concepts to exam-ready techniques.</p>
+    </div>
+    <div class="learn-sheet-body">
+      <div class="learn-section-label">Choose a Topic</div>
+      <div class="learn-topic-grid" id="learnTopicGrid">
+        <div class="learn-topic-card" data-topic="Calculus" onclick="selectLearnTopic(this)">
+          <div class="learn-topic-icon">∫</div>
+          <div class="learn-topic-label">Calculus</div>
+          <div class="learn-topic-sub">Derivatives, integrals, differential equations</div>
+        </div>
+        <div class="learn-topic-card" data-topic="Functions" onclick="selectLearnTopic(this)">
+          <div class="learn-topic-icon">f(x)</div>
+          <div class="learn-topic-label">Functions</div>
+          <div class="learn-topic-sub">Domain, range, transformations, inverses</div>
+        </div>
+        <div class="learn-topic-card" data-topic="Number & Algebra" onclick="selectLearnTopic(this)">
+          <div class="learn-topic-icon">∑</div>
+          <div class="learn-topic-label">Number &amp; Algebra</div>
+          <div class="learn-topic-sub">Sequences, series, binomial theorem</div>
+        </div>
+        <div class="learn-topic-card" data-topic="Geometry & Trigonometry" onclick="selectLearnTopic(this)">
+          <div class="learn-topic-icon">△</div>
+          <div class="learn-topic-label">Geometry &amp; Trig</div>
+          <div class="learn-topic-sub">Vectors, trig identities, 3D shapes</div>
+        </div>
+        <div class="learn-topic-card" data-topic="Statistics & Probability" onclick="selectLearnTopic(this)">
+          <div class="learn-topic-icon">📊</div>
+          <div class="learn-topic-label">Statistics &amp; Prob</div>
+          <div class="learn-topic-sub">Distributions, hypothesis testing, regression</div>
+        </div>
+        <div class="learn-topic-card" data-topic="Complex Numbers" onclick="selectLearnTopic(this)">
+          <div class="learn-topic-icon">𝑖</div>
+          <div class="learn-topic-label">Complex Numbers</div>
+          <div class="learn-topic-sub">Polar form, de Moivre's theorem (HL)</div>
+        </div>
+      </div>
+      <div class="learn-section-label">Session Goal</div>
+      <div class="learn-depth-row" id="learnDepthRow">
+        <button class="learn-depth-btn sel" data-depth="concepts" onclick="selectLearnDepth(this)">📖 Learn Concepts</button>
+        <button class="learn-depth-btn" data-depth="practice" onclick="selectLearnDepth(this)">✏️ Exam Practice</button>
+        <button class="learn-depth-btn" data-depth="mistakes" onclick="selectLearnDepth(this)">🎯 Fix Mistakes</button>
+      </div>
+      <button class="learn-start-btn" id="learnStartBtn" onclick="startLearningSession()" disabled>
+        <span>Start Session with HAN</span><span style="font-size:18px">🎓</span>
+      </button>
+      <div style="font-size:11px;color:var(--text-soft);text-align:center;margin-top:10px">Session uses your daily question quota · Upgrade for unlimited sessions</div>
     </div>
   </div>
 </div>
@@ -871,6 +1024,7 @@ function incrementCount(type) {
   const count = parseInt(localStorage.getItem(key) || '0') + 1;
   localStorage.setItem(key, String(count));
   updateLimitBar();
+  checkNudge(type);
 }
 function updateLimitBar() {
   const bar = document.getElementById('limitBar'), txt = document.getElementById('limitText');
@@ -1696,6 +1850,104 @@ function resetProgress() { if (!confirm('Reset all your progress data? This cann
 
 
 // ════════════════════════════════════════
+// SOFT NUDGE (80% limit warning)
+// ════════════════════════════════════════
+let _nudgeDismissedUpload = false, _nudgeDismissedTyped = false;
+
+function checkNudge(type) {
+  if (!currentUser || isAdmin || checkPremiumStatus()) return;
+  const count = getCount(type);
+  const limit = type === 'upload' ? FREE_UPLOAD_LIMIT : FREE_TYPED_LIMIT;
+  const threshold = Math.floor(limit * 0.8);
+  const remaining = limit - count;
+  const dismissed = type === 'upload' ? _nudgeDismissedUpload : _nudgeDismissedTyped;
+  if (dismissed) return;
+  if (count >= threshold && count < limit) {
+    const noun = type === 'upload' ? 'upload' : 'typed question';
+    const plural = remaining !== 1 ? 's' : '';
+    document.getElementById('nudgeText').innerHTML =
+      `<strong>${remaining} ${noun}${plural} left today</strong> — going unlimited?`;
+    document.getElementById('nudgeBar').classList.add('show');
+  }
+}
+
+function dismissNudge() {
+  document.getElementById('nudgeBar').classList.remove('show');
+  // Mark both as dismissed for this session
+  _nudgeDismissedUpload = true;
+  _nudgeDismissedTyped = true;
+}
+
+// ════════════════════════════════════════
+// LAUNCH HAN — LEARNING SESSION
+// ════════════════════════════════════════
+let learnSelectedTopic = null, learnSelectedDepth = 'concepts', isLearningSession = false;
+
+function openLearnSetup() {
+  if (!currentUser && !isAdmin) { showLogin(); return; }
+  document.getElementById('learnOverlay').classList.add('open');
+}
+function closeLearnOverlay() { document.getElementById('learnOverlay').classList.remove('open'); }
+function closeLearnOverlayBg(e) { if (e.target === document.getElementById('learnOverlay')) closeLearnOverlay(); }
+
+function selectLearnTopic(card) {
+  document.querySelectorAll('.learn-topic-card').forEach(c => c.classList.remove('sel'));
+  card.classList.add('sel');
+  learnSelectedTopic = card.dataset.topic;
+  document.getElementById('learnStartBtn').disabled = false;
+}
+
+function selectLearnDepth(btn) {
+  document.querySelectorAll('.learn-depth-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  learnSelectedDepth = btn.dataset.depth;
+}
+
+async function startLearningSession() {
+  if (!learnSelectedTopic) return;
+  closeLearnOverlay();
+
+  // Set context to match selected topic
+  const topicChip = document.querySelector(`[data-group="topic"][data-val="${learnSelectedTopic}"]`);
+  if (topicChip) setCtx(topicChip, 'topic');
+
+  isLearningSession = true;
+
+  // Show session banner
+  const banner = document.getElementById('sessionBanner');
+  const bannerText = document.getElementById('sessionBannerText');
+  const topicPill = document.getElementById('sessionTopicPill');
+  bannerText.textContent = 'Learning session active';
+  topicPill.textContent = learnSelectedTopic;
+  banner.classList.add('active');
+
+  // Switch to chat tab and clear chat
+  switchTab('chat');
+
+  // Build opening prompt based on depth
+  const depthPrompts = {
+    concepts: `I want to learn ${learnSelectedTopic} from the ground up. Start by giving me a concise overview of the key concepts I need to know for IB ${selectedLevel} — then walk me through the most important one first, with an example.`,
+    practice: `I want to practice ${learnSelectedTopic} exam questions. Give me a well-chosen IB-style ${selectedLevel} question on ${learnSelectedTopic} to try — state the topic area and marks. After I answer, give full worked solution with examiner commentary.`,
+    mistakes: `I want to understand the most common mistakes students make in ${learnSelectedTopic} for IB ${selectedLevel}. Walk me through the top 3 errors, show what wrong working looks like, then show the correct approach for each.`
+  };
+
+  const openingMessage = depthPrompts[learnSelectedDepth] || depthPrompts.concepts;
+
+  // Pre-fill and auto-send
+  const inp = document.getElementById('userInput');
+  inp.value = openingMessage;
+  autoResize(inp);
+  await sendMessage();
+}
+
+function endLearningSession() {
+  isLearningSession = false;
+  learnSelectedTopic = null;
+  document.getElementById('sessionBanner').classList.remove('active');
+  showToast('Session ended. Great work! 🎓');
+}
+
+// ════════════════════════════════════════
 // WAITLIST FORM → saves to Google Sheet
 // ════════════════════════════════════════
 async function submitWaitlist() {
@@ -1749,6 +2001,7 @@ function startStripeCheckout() {
   if (currentUser && currentUser.email) url += (url.includes('?') ? '&' : '?') + 'prefilled_email=' + encodeURIComponent(currentUser.email);
   window.open(url, '_blank');
   closeModal('upgradeOverlay');
+  dismissNudge();
   showToast('Opening secure checkout…');
 }
 
