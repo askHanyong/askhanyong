@@ -519,7 +519,7 @@ async function processPdf(file) {
     document.getElementById('progressLabel').textContent = `Rendering page ${p} of ${totalPages}…`;
 
     const page    = await pdf.getPage(p);
-    const scale   = 1.5; // sufficient resolution for Claude to read handwriting
+    const scale   = 1.0; // 1× is sufficient for Claude to read handwriting; keeps payload small
     const viewport = page.getViewport({ scale });
 
     const canvas  = document.createElement('canvas');
@@ -528,7 +528,7 @@ async function processPdf(file) {
     const ctx     = canvas.getContext('2d');
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    const base64 = canvas.toDataURL('image/jpeg', 0.75).split(',')[1];
+    const base64 = canvas.toDataURL('image/jpeg', 0.70).split(',')[1];
     pdfPages.push({ pageNum: p, imageBase64: base64, width: viewport.width, height: viewport.height });
 
     // Thumbnail for display (lower res)
@@ -576,8 +576,8 @@ async function runExtraction() {
   document.getElementById('extractProgressFill').style.width = '5%';
   document.getElementById('extractionStatusText').textContent = 'Building image payload…';
 
-  // Split pages into batches of 10 to stay well under Netlify's 6 MB body limit
-  const BATCH_SIZE = 10;
+  // 4 pages per batch: each batch ≈ 150–250 KB, completes well within 26 s timeout
+  const BATCH_SIZE = 4;
   const totalBatches = Math.ceil(pdfPages.length / BATCH_SIZE);
   const allResults = [];
 
@@ -642,16 +642,18 @@ Pages ${batchStart}–${batchEnd}:`
         })
       });
 
+      // Always read as text first — if Netlify returns an HTML error page,
+      // calling .json() directly would throw the confusing "Unexpected token '<'" error.
+      const respText = await resp.text();
+      if (respText.trim().startsWith('<')) {
+        const hint = resp.status === 413 ? 'payload too large' : resp.status === 524 || resp.status === 502 ? 'function timed out' : `HTTP ${resp.status}`;
+        throw new Error(`Server error (${hint}) on batch ${b + 1}. Deployment may still be in progress, or try again in a moment.`);
+      }
       if (!resp.ok) {
-        const errText = await resp.text();
-        // Detect HTML error page (Netlify size / timeout error)
-        if (errText.trim().startsWith('<')) {
-          throw new Error(`Server error (HTTP ${resp.status}) — request too large or timed out. Try uploading fewer pages at once.`);
-        }
-        throw new Error(`HTTP ${resp.status}`);
+        throw new Error(`HTTP ${resp.status}: ${respText.substring(0, 120)}`);
       }
 
-      const data = await resp.json();
+      const data = JSON.parse(respText);
       if (data.error) throw new Error(data.error.message || 'Claude API error');
 
       const rawText = data.content[0].text.trim();
