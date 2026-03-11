@@ -844,6 +844,21 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   </div>
 </div>
 
+<!-- Solution Viewer Modal -->
+<div class="modal-overlay" id="solutionViewerOverlay" onclick="if(event.target===this)closeSolutionViewer()" style="align-items:center;padding:16px">
+  <div style="width:100%;max-width:840px;height:88vh;background:#fff;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.25)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #e5e7eb;flex-shrink:0">
+      <div style="font-size:14px;font-weight:700;color:#111827">📄 Hanyong's Worked Solution</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="solutionPageNote" style="font-size:12px;color:#6b7280;background:#f3f4f6;padding:2px 10px;border-radius:999px;display:none"></span>
+        <a id="solutionOpenBtn" href="#" target="_blank" rel="noopener" style="font-size:12px;color:#2563eb;text-decoration:none;background:#eff6ff;padding:5px 12px;border-radius:7px;font-weight:600">Open in Drive ↗</a>
+        <button onclick="closeSolutionViewer()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#9ca3af;line-height:1;padding:0 2px">✕</button>
+      </div>
+    </div>
+    <iframe id="solutionIframe" src="" style="flex:1;border:none;width:100%" allowfullscreen loading="lazy"></iframe>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1106,12 +1121,27 @@ function handleGoogleCredential(response) {
   updateLimitBar();
   // Save to Users sheet (backend deduplicates by email)
   saveUserToSheet(payload);
+  // Check premium status from Google Sheets
+  checkAndSetPremium(payload);
   // Show welcome modal only on first ever visit
   const seenKey = 'han_welcomed_' + payload.sub;
   if (!localStorage.getItem(seenKey)) {
     localStorage.setItem(seenKey, '1');
     setTimeout(() => document.getElementById('welcomeModal').classList.add('open'), 400);
   }
+}
+
+async function checkAndSetPremium(user) {
+  if (!user || !user.email) return;
+  try {
+    const params = new URLSearchParams({ action: 'checkPremium', email: user.email });
+    const res  = await fetch(SHEETS_URL + '?' + params.toString());
+    const data = await res.json();
+    if (data.premium) {
+      sessionStorage.setItem('han_premium_' + user.sub, 'true');
+      updateLimitBar();
+    }
+  } catch(e) {}
 }
 
 async function saveUserToSheet(user) {
@@ -1690,10 +1720,44 @@ function openSheet(idx) {
   if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
 }
 
+function parseDriveUrl(url) {
+  if (!url) return null;
+  const fileIdMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (!fileIdMatch) return null;
+  const fileId    = fileIdMatch[1];
+  const pageMatch = url.match(/[?&#]page=(\d+)/);
+  return { fileId, page: pageMatch ? parseInt(pageMatch[1]) : null };
+}
+
 function openSolution() {
   const btn = document.getElementById('sheetSolutionBtn');
   const url = btn ? btn.getAttribute('data-url') : '';
-  if (url) window.open(url, '_blank');
+  if (!url) return;
+
+  const parsed = parseDriveUrl(url);
+  if (!parsed) { window.open(url, '_blank'); return; }
+
+  const embedUrl   = `https://drive.google.com/file/d/${parsed.fileId}/preview`;
+  const noteEl     = document.getElementById('solutionPageNote');
+  const openBtn    = document.getElementById('solutionOpenBtn');
+  const iframe     = document.getElementById('solutionIframe');
+
+  iframe.src       = embedUrl;
+  openBtn.href     = url;
+
+  if (parsed.page) {
+    noteEl.textContent = `Page ${parsed.page}`;
+    noteEl.style.display = 'inline';
+  } else {
+    noteEl.style.display = 'none';
+  }
+
+  document.getElementById('solutionViewerOverlay').classList.add('open');
+}
+
+function closeSolutionViewer() {
+  document.getElementById('solutionViewerOverlay').classList.remove('open');
+  document.getElementById('solutionIframe').src = '';
 }
 function closeSheet() { document.getElementById('sheetOverlay').classList.remove('open'); }
 function closeSheetBg(e) { if (e.target === document.getElementById('sheetOverlay')) closeSheet(); }
