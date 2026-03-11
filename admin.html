@@ -296,7 +296,7 @@ header a:hover { color:white; }
           which pages they span, and any visible hints like marks or topic labels. You'll review and complete the metadata in the next step.
         </p>
         <p style="margin-bottom:0">
-          <strong>Large PDFs:</strong> If your paper has many pages, extraction may take 30–60 seconds. Claude processes everything in one pass.
+          <strong>Large PDFs:</strong> If your paper has many pages, extraction may take 30–60 seconds. Claude processes 2 pages at a time in quick batches.
         </p>
       </div>
 
@@ -519,7 +519,7 @@ async function processPdf(file) {
     document.getElementById('progressLabel').textContent = `Rendering page ${p} of ${totalPages}…`;
 
     const page    = await pdf.getPage(p);
-    const scale   = 1.0; // 1× is sufficient for Claude to read handwriting; keeps payload small
+    const scale   = 0.8; // 0.8× keeps images readable for Claude while reducing payload size
     const viewport = page.getViewport({ scale });
 
     const canvas  = document.createElement('canvas');
@@ -576,8 +576,8 @@ async function runExtraction() {
   document.getElementById('extractProgressFill').style.width = '5%';
   document.getElementById('extractionStatusText').textContent = 'Building image payload…';
 
-  // 4 pages per batch: each batch ≈ 150–250 KB, completes well within 26 s timeout
-  const BATCH_SIZE = 4;
+  // 2 pages per batch: Haiku processes 2 images in ~3-8 s, well within Netlify's 26 s limit
+  const BATCH_SIZE = 2;
   const totalBatches = Math.ceil(pdfPages.length / BATCH_SIZE);
   const allResults = [];
 
@@ -635,8 +635,8 @@ Pages ${batchStart}–${batchEnd}:`
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
         body: JSON.stringify({
-          model: 'claude-opus-4-6',
-          max_tokens: 4096,
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1024,
           system: 'You are a precise document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
           messages: [{ role: 'user', content }]
         })
@@ -646,8 +646,11 @@ Pages ${batchStart}–${batchEnd}:`
       // calling .json() directly would throw the confusing "Unexpected token '<'" error.
       const respText = await resp.text();
       if (respText.trim().startsWith('<')) {
-        const hint = resp.status === 413 ? 'payload too large' : resp.status === 524 || resp.status === 502 ? 'function timed out' : `HTTP ${resp.status}`;
-        throw new Error(`Server error (${hint}) on batch ${b + 1}. Deployment may still be in progress, or try again in a moment.`);
+        const hint = resp.status === 404 ? 'function not found — new deployment may still be in progress'
+                   : resp.status === 413 ? 'payload too large'
+                   : resp.status === 524 || resp.status === 502 ? 'function timed out'
+                   : `HTTP ${resp.status}`;
+        throw new Error(`Server error (${hint}) on batch ${b + 1}. Hard-refresh (Ctrl+Shift+R) and try again.`);
       }
       if (!resp.ok) {
         throw new Error(`HTTP ${resp.status}: ${respText.substring(0, 120)}`);

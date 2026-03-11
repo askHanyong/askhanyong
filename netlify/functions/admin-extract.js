@@ -54,8 +54,8 @@ exports.handler = async (event) => {
 
   // system prompt is supplied by the caller (admin only)
   const finalBody = Buffer.from(JSON.stringify({
-    model: requestBody.model || 'claude-opus-4-6',
-    max_tokens: requestBody.max_tokens || 4096,
+    model: requestBody.model || 'claude-haiku-4-5-20251001',
+    max_tokens: requestBody.max_tokens || 1024,
     system: requestBody.system,
     messages: requestBody.messages
   }), 'utf8');
