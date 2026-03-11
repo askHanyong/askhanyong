@@ -519,7 +519,7 @@ async function processPdf(file) {
     document.getElementById('progressLabel').textContent = `Rendering page ${p} of ${totalPages}…`;
 
     const page    = await pdf.getPage(p);
-    const scale   = 2.0; // hi-res for Claude
+    const scale   = 1.0; // 1× is sufficient for Claude to read handwriting; keeps payload small
     const viewport = page.getViewport({ scale });
 
     const canvas  = document.createElement('canvas');
@@ -528,7 +528,7 @@ async function processPdf(file) {
     const ctx     = canvas.getContext('2d');
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    const base64 = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+    const base64 = canvas.toDataURL('image/jpeg', 0.70).split(',')[1];
     pdfPages.push({ pageNum: p, imageBase64: base64, width: viewport.width, height: viewport.height });
 
     // Thumbnail for display (lower res)
@@ -573,80 +573,100 @@ async function runExtraction() {
   extractBtn.disabled = true;
   document.getElementById('extractionStatus').style.display = 'block';
   document.getElementById('extractionError').style.display = 'none';
-  document.getElementById('extractProgressFill').style.width = '10%';
+  document.getElementById('extractProgressFill').style.width = '5%';
   document.getElementById('extractionStatusText').textContent = 'Building image payload…';
 
-  // Build the message content — one image per page
-  const content = [];
+  // 4 pages per batch: each batch ≈ 150–250 KB, completes well within 26 s timeout
+  const BATCH_SIZE = 4;
+  const totalBatches = Math.ceil(pdfPages.length / BATCH_SIZE);
+  const allResults = [];
 
-  // Intro text
-  content.push({
-    type: 'text',
-    text: `You are analysing ${pdfPages.length} pages from an IB Mathematics exam solutions PDF. These are Hanyong's handwritten worked solutions for ${document.getElementById('p-level').value} ${document.getElementById('p-paper').value}, ${document.getElementById('p-session').value} ${document.getElementById('p-year').value}, TZ${document.getElementById('p-tz').value}.
-
-Your task: identify EVERY question in this document and which pages each question spans.
-
-Return ONLY a valid JSON array with no markdown fencing, no explanation text — just the raw JSON array. Each element must be:
-{
-  "questionNum": "Q1" | "Q2a" | "Q2b" etc. (use sub-parts if visible),
-  "pages": [1, 2] (array of 1-indexed page numbers for this question's solution),
-  "marksHint": "6" or null (if marks are visible on the page),
-  "topicHint": "Calculus" or null (topic if visible/inferable),
-  "subtopicHint": "Integration by parts" or null,
-  "notes": "any useful observation" or null
-}
-
-Important:
-- Number questions as they appear: Q1, Q2, Q3... Use Q2a, Q2b if there are lettered sub-parts
-- If a question spans multiple pages, list all page numbers in the "pages" array
-- Be exhaustive — do not skip any question
-- If you cannot determine a sub-part boundary, group it as the parent question
-
-Here are all ${pdfPages.length} pages:`
-  });
-
-  // Add each page image
-  for (let i = 0; i < pdfPages.length; i++) {
-    content.push({ type: 'text', text: `[Page ${i + 1}]` });
-    content.push({
-      type: 'image',
-      source: { type: 'base64', media_type: 'image/jpeg', data: pdfPages[i].imageBase64 }
-    });
-  }
-
-  document.getElementById('extractProgressFill').style.width = '30%';
-  document.getElementById('extractionStatusText').textContent = `Sending ${pdfPages.length} pages to Claude…`;
+  const level   = document.getElementById('p-level').value;
+  const paper   = document.getElementById('p-paper').value;
+  const session = document.getElementById('p-session').value;
+  const year    = document.getElementById('p-year').value;
+  const tz      = document.getElementById('p-tz').value;
 
   try {
-    const resp = await fetch('/api/admin-extract', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + ADMIN_SECRET
-      },
-      body: JSON.stringify({
-        model: 'claude-opus-4-6',
-        max_tokens: 4096,
-        system: 'You are a precise document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
-        messages: [{ role: 'user', content }]
-      })
-    });
+    for (let b = 0; b < totalBatches; b++) {
+      const batchPages = pdfPages.slice(b * BATCH_SIZE, (b + 1) * BATCH_SIZE);
+      const batchStart = b * BATCH_SIZE + 1;
+      const batchEnd   = batchStart + batchPages.length - 1;
 
-    document.getElementById('extractProgressFill').style.width = '80%';
-    document.getElementById('extractionStatusText').textContent = 'Parsing Claude\'s response…';
+      const pct = Math.round(5 + (b / totalBatches) * 80);
+      document.getElementById('extractProgressFill').style.width = pct + '%';
+      document.getElementById('extractionStatusText').textContent =
+        totalBatches > 1
+          ? `Processing pages ${batchStart}–${batchEnd} (batch ${b + 1} of ${totalBatches})…`
+          : `Sending ${pdfPages.length} pages to Claude…`;
 
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error.message || 'Claude API error');
+      const content = [];
+      content.push({
+        type: 'text',
+        text: `You are analysing pages ${batchStart}–${batchEnd} (document total: ${pdfPages.length} pages) from an IB Mathematics exam solutions PDF. These are Hanyong's handwritten worked solutions for ${level} ${paper}, ${session} ${year}, TZ${tz}.
 
-    const rawText = data.content[0].text.trim();
+Your task: identify EVERY question visible in these pages and which page numbers each question spans.
 
-    // Extract JSON even if Claude wraps it in markdown
-    let jsonStr = rawText;
-    const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]+?)```/);
-    if (jsonMatch) jsonStr = jsonMatch[1].trim();
+Return ONLY a valid JSON array — no markdown fencing, no explanation. Each element:
+{
+  "questionNum": "Q1" | "Q2a" | "Q2b" etc.,
+  "pages": [${batchStart}] (use the ORIGINAL document page numbers, ${batchStart}–${batchEnd}),
+  "marksHint": "6" or null,
+  "topicHint": "Calculus" or null,
+  "subtopicHint": "Integration by parts" or null,
+  "notes": null
+}
 
-    extractedQuestions = JSON.parse(jsonStr);
-    if (!Array.isArray(extractedQuestions)) throw new Error('Expected a JSON array');
+Rules:
+- Use original document page numbers (${batchStart}–${batchEnd})
+- Use Q2a, Q2b for lettered sub-parts; group unclear sub-parts under parent
+- A question may span multiple pages — list all of them
+- Do not skip any question
+
+Pages ${batchStart}–${batchEnd}:`
+      });
+
+      for (let i = 0; i < batchPages.length; i++) {
+        content.push({ type: 'text', text: `[Page ${batchStart + i}]` });
+        content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: batchPages[i].imageBase64 } });
+      }
+
+      const resp = await fetch('/api/admin-extract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
+        body: JSON.stringify({
+          model: 'claude-opus-4-6',
+          max_tokens: 4096,
+          system: 'You are a precise document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
+          messages: [{ role: 'user', content }]
+        })
+      });
+
+      // Always read as text first — if Netlify returns an HTML error page,
+      // calling .json() directly would throw the confusing "Unexpected token '<'" error.
+      const respText = await resp.text();
+      if (respText.trim().startsWith('<')) {
+        const hint = resp.status === 413 ? 'payload too large' : resp.status === 524 || resp.status === 502 ? 'function timed out' : `HTTP ${resp.status}`;
+        throw new Error(`Server error (${hint}) on batch ${b + 1}. Deployment may still be in progress, or try again in a moment.`);
+      }
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}: ${respText.substring(0, 120)}`);
+      }
+
+      const data = JSON.parse(respText);
+      if (data.error) throw new Error(data.error.message || 'Claude API error');
+
+      const rawText = data.content[0].text.trim();
+      let jsonStr = rawText;
+      const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]+?)```/);
+      if (jsonMatch) jsonStr = jsonMatch[1].trim();
+
+      const batchResults = JSON.parse(jsonStr);
+      if (!Array.isArray(batchResults)) throw new Error(`Expected a JSON array (batch ${b + 1})`);
+      allResults.push(...batchResults);
+    }
+
+    extractedQuestions = allResults;
 
     document.getElementById('extractProgressFill').style.width = '100%';
     document.getElementById('extractionStatusText').textContent = `Found ${extractedQuestions.length} questions!`;

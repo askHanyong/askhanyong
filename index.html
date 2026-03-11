@@ -382,6 +382,22 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   .learn-topic-grid { grid-template-columns:1fr; }
   .welcome-cards { grid-template-columns:1fr; }
 }
+
+/* ── Self-assessment ── */
+.self-assess-bar { display:flex; align-items:center; gap:8px; margin-top:10px; padding:9px 12px; background:var(--ice-light); border:1px solid rgba(29,78,216,0.15); border-radius:10px; flex-wrap:wrap; }
+.sa-label { font-size:12px; color:var(--text-mid); font-weight:600; flex:1; min-width:100px; }
+.sa-btn { padding:5px 14px; border-radius:20px; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; border:none; transition:all 0.15s; }
+.sa-correct { background:#dcfce7; color:#16a34a; }
+.sa-correct:hover { background:#bbf7d0; }
+.sa-wrong { background:#fef9c3; color:#92400e; }
+.sa-wrong:hover { background:#fde68a; }
+.sa-done { padding:5px 0 2px; font-size:12px; }
+
+/* ── Weekly activity chart ── */
+.week-grid { display:flex; gap:4px; align-items:flex-end; height:52px; margin-top:8px; }
+.week-day { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:3px; flex:1; }
+.week-bar { width:100%; max-width:32px; border-radius:4px 4px 0 0; min-height:4px; transition:all 0.2s; }
+.week-lbl { font-size:9px; color:var(--text-soft); }
 </style>
 </head>
 <body>
@@ -624,6 +640,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center"><div style="font-size:28px;font-weight:800;color:var(--green)" id="statTopicsExplored">0</div><div style="font-size:11px;color:var(--text-soft);margin-top:3px">Topics Explored</div></div>
         <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center"><div style="font-size:28px;font-weight:800;color:var(--gold)" id="statStreak">0</div><div style="font-size:11px;color:var(--text-soft);margin-top:3px">Day Streak 🔥</div></div>
       </div>
+      <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">This Week</div><div id="weeklyActivity"></div></div>
       <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px">Questions by Topic</div><div id="topicBreakdown"></div></div>
       <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">🎯 Focus Areas</div><div id="weakAreas" style="font-size:13px;color:var(--text-mid)">Ask more questions to see your focus areas.</div></div>
       <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px"><div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Recent Activity</div><div id="recentActivity" style="font-size:13px;color:var(--text-mid)">No activity yet. Start asking HAN questions!</div></div>
@@ -1257,6 +1274,7 @@ function appendMessage(role, content, imageDataUrl) {
   area.scrollTop = area.scrollHeight;
   setTimeout(() => { if (typeof initDesmosGraphs === 'function') initDesmosGraphs(); }, 150);
   if (role !== 'user' && content) {
+    setTimeout(() => addSelfAssessment(bubble, selectedSubjectTopic), 150);
     setTimeout(() => addSimilarBtn(bubble), 200);
     setTimeout(() => addFeedbackBar(bubble, content), 250);
   }
@@ -1344,6 +1362,52 @@ function addSimilarBtn(bubble) {
   };
   bubble.appendChild(document.createElement('br'));
   bubble.appendChild(btn);
+}
+
+// ════════════════════════════════════════
+// SELF-ASSESSMENT
+// ════════════════════════════════════════
+let _saCounter = 0;
+function addSelfAssessment(bubble, topic) {
+  const id = 'sa' + (++_saCounter);
+  const te = encodeURIComponent(topic || 'General');
+  const div = document.createElement('div');
+  div.innerHTML =
+    `<div class="self-assess-bar" id="${id}-bar">` +
+    `<span class="sa-label">Did you understand this?</span>` +
+    `<button class="sa-btn sa-correct" onclick="markOutcome('${id}','${te}',true)">✓ Got it</button>` +
+    `<button class="sa-btn sa-wrong" onclick="markOutcome('${id}','${te}',false)">↩ Need review</button>` +
+    `</div><div class="sa-done" id="${id}-done" style="display:none"></div>`;
+  bubble.appendChild(div);
+}
+function markOutcome(id, topicEncoded, correct) {
+  const topic = decodeURIComponent(topicEncoded);
+  const bar = document.getElementById(id + '-bar');
+  const done = document.getElementById(id + '-done');
+  if (bar) bar.style.display = 'none';
+  if (done) {
+    done.style.display = 'block';
+    done.innerHTML = correct
+      ? '<span style="color:var(--green);font-size:12px;font-weight:600">✓ Recorded — keep it up!</span>'
+      : '<span style="color:var(--gold);font-size:12px;font-weight:600">📌 Noted — revisit this topic</span>';
+  }
+  recordOutcome(topic, correct);
+  // Update most recent activity entry outcome
+  const data = loadProgress();
+  if (data.recentActivity.length > 0 && data.recentActivity[0].outcome === null) {
+    data.recentActivity[0].outcome = correct;
+    saveProgress(data);
+  }
+}
+function recordOutcome(topic, correct) {
+  const data = loadProgress();
+  data.totalSelfAssessed = (data.totalSelfAssessed || 0) + 1;
+  if (correct) data.totalCorrect = (data.totalCorrect || 0) + 1;
+  data.topicSelfAssessed = data.topicSelfAssessed || {};
+  data.topicCorrect = data.topicCorrect || {};
+  data.topicSelfAssessed[topic] = (data.topicSelfAssessed[topic] || 0) + 1;
+  if (correct) data.topicCorrect[topic] = (data.topicCorrect[topic] || 0) + 1;
+  saveProgress(data);
 }
 function showTyping() {
   const area = document.getElementById('chatArea');
@@ -1552,17 +1616,25 @@ function renderPractice(records) {
     grid.innerHTML = '<div class="q-empty"><div class="ei">🔍</div><p>No questions match your filters.</p></div>';
     return;
   }
+  const progressData = loadProgress();
+  const attempted = progressData.practiceAttempts || {};
   grid.innerHTML = records.map((r, i) => {
     const d = diffInfo(r['Difficulty']);
     const ref = buildRef(r);
-    return `<div class="q-card" onclick="openSheet(${i})">
+    const qid = r['Question ID'] || '';
+    const done = attempted[qid];
+    const doneTag = done ? `<span class="tag" style="background:#dcfce7;color:#16a34a">✓ Attempted</span>` : '';
+    const hasSolution = (r['Solution URL'] || '').startsWith('http');
+    const solTag = hasSolution ? `<span class="tag" style="background:#f0fdf4;color:#15803d">📄 Solution</span>` : '';
+    return `<div class="q-card" onclick="openSheet(${i})" style="${done ? 'border-color:#86efac' : ''}">
       <div class="q-card-top">
         <div>
-          <div class="q-source">${r['Question ID'] || ''}</div>
+          <div class="q-source">${qid}</div>
           <div class="q-tags">
             <span class="tag tag-topic">${r['Topic'] || ''}</span>
             <span class="tag ${d.cls}">${d.text}</span>
             <span class="tag tag-paper">${r['Paper'] || ''}</span>
+            ${doneTag}${solTag}
           </div>
         </div>
         <div class="q-marks">${r['Marks'] || '?'}<small>mk</small></div>
@@ -1627,6 +1699,13 @@ function closeSheet() { document.getElementById('sheetOverlay').classList.remove
 function closeSheetBg(e) { if (e.target === document.getElementById('sheetOverlay')) closeSheet(); }
 function askHANAboutSheet() {
   if (!currentSheetRecord) return;
+  // Track practice attempt
+  const qid = currentSheetRecord['Question ID'];
+  if (qid) {
+    const data = loadProgress();
+    data.practiceAttempts[qid] = { time: new Date().toISOString() };
+    saveProgress(data);
+  }
   closeSheet();
   switchTab('chat');
   setTimeout(() => {
@@ -1777,22 +1856,22 @@ document.addEventListener('DOMContentLoaded', function () {
 // ════════════════════════════════════════
 const PROGRESS_KEY_PREFIX = 'han_progress_';
 function getProgressKey() { if (isAdmin) return PROGRESS_KEY_PREFIX + 'admin'; if (!currentUser) return null; return PROGRESS_KEY_PREFIX + currentUser.sub; }
+const _progressDefaults = () => ({ totalAsked: 0, totalCorrect: 0, totalSelfAssessed: 0, topicCounts: {}, topicCorrect: {}, topicSelfAssessed: {}, recentActivity: [], weeklyActivity: {}, practiceAttempts: {}, lastActiveDate: null, streak: 0 });
 function loadProgress() {
   const key = getProgressKey();
-  if (!key) return { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 };
-  try { return JSON.parse(localStorage.getItem(key) || 'null') || { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 }; }
-  catch (e) { return { totalAsked: 0, topicCounts: {}, recentActivity: [], lastActiveDate: null, streak: 0 }; }
+  if (!key) return _progressDefaults();
+  try { const d = JSON.parse(localStorage.getItem(key) || 'null'); return d ? Object.assign(_progressDefaults(), d) : _progressDefaults(); }
+  catch (e) { return _progressDefaults(); }
 }
 function saveProgress(data) { const key = getProgressKey(); if (!key) return; localStorage.setItem(key, JSON.stringify(data)); }
 function trackQuestion(topic, question) {
   const data = loadProgress();
   data.totalAsked = (data.totalAsked || 0) + 1;
-  data.topicCounts = data.topicCounts || {};
   data.topicCounts[topic || 'General'] = (data.topicCounts[topic || 'General'] || 0) + 1;
-  data.recentActivity = data.recentActivity || [];
-  data.recentActivity.unshift({ topic: topic || 'General', question: (question || '').substring(0, 80), time: new Date().toISOString() });
+  data.recentActivity.unshift({ topic: topic || 'General', question: (question || '').substring(0, 80), time: new Date().toISOString(), outcome: null });
   if (data.recentActivity.length > 20) data.recentActivity = data.recentActivity.slice(0, 20);
   const today = new Date().toISOString().slice(0, 10), yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  data.weeklyActivity[today] = (data.weeklyActivity[today] || 0) + 1;
   if (data.lastActiveDate === yesterday) data.streak = (data.streak || 0) + 1;
   else if (data.lastActiveDate !== today) data.streak = 1;
   data.lastActiveDate = today;
@@ -1800,48 +1879,105 @@ function trackQuestion(topic, question) {
 }
 function renderProgress() {
   const data = loadProgress();
-  document.getElementById('statTotalAsked').textContent = data.totalAsked || 0;
-  document.getElementById('statTopicsExplored').textContent = Object.keys(data.topicCounts || {}).length;
+  const totalAsked = data.totalAsked || 0;
+  const totalSelfAssessed = data.totalSelfAssessed || 0;
+  const totalCorrect = data.totalCorrect || 0;
+  const accuracy = totalSelfAssessed > 0 ? Math.round((totalCorrect / totalSelfAssessed) * 100) : null;
+
+  document.getElementById('statTotalAsked').textContent = totalAsked;
+  // Show accuracy if data exists, otherwise topics explored
+  const topicsExploredEl = document.getElementById('statTopicsExplored');
+  const topicsExploredLbl = topicsExploredEl.nextElementSibling;
+  if (accuracy !== null) {
+    topicsExploredEl.textContent = accuracy + '%';
+    topicsExploredEl.style.color = accuracy >= 70 ? 'var(--green)' : accuracy >= 40 ? 'var(--gold)' : 'var(--red)';
+    if (topicsExploredLbl) topicsExploredLbl.textContent = 'Accuracy ✓';
+  } else {
+    topicsExploredEl.textContent = Object.keys(data.topicCounts || {}).length;
+    topicsExploredEl.style.color = 'var(--green)';
+    if (topicsExploredLbl) topicsExploredLbl.textContent = 'Topics Explored';
+  }
   document.getElementById('statStreak').textContent = data.streak || 0;
-  const topicEl = document.getElementById('topicBreakdown'), topics = data.topicCounts || {}, maxCount = Math.max(...Object.values(topics), 1);
-  const topicColors = { 'Calculus': '#1d4ed8', 'Functions': '#7c3aed', 'Geometry & Trigonometry': '#0891b2', 'Statistics & Probability': '#059669', 'Number & Algebra': '#d97706', 'General': '#94a3b8', 'All Topics': '#64748b' };
+
+  // Weekly activity chart
+  const weekEl = document.getElementById('weeklyActivity');
+  if (weekEl) {
+    const weekly = data.weeklyActivity || {};
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(Date.now() - i * 86400000);
+      const key = d.toISOString().slice(0, 10);
+      const lbl = ['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()];
+      days.push({ key, lbl, count: weekly[key] || 0 });
+    }
+    const maxDay = Math.max(...days.map(d => d.count), 1);
+    const hasAny = days.some(d => d.count > 0);
+    if (!hasAny) {
+      weekEl.innerHTML = '<div style="font-size:12px;color:var(--text-soft);padding:6px 0">No activity yet this week.</div>';
+    } else {
+      weekEl.innerHTML = '<div class="week-grid">' + days.map(d => {
+        const h = d.count > 0 ? Math.max(8, Math.round((d.count / maxDay) * 40)) : 4;
+        const bg = d.count > 0 ? 'var(--blue)' : 'var(--border)';
+        const opacity = d.count > 0 ? (0.4 + 0.6 * (d.count / maxDay)) : 1;
+        return `<div class="week-day"><div class="week-bar" style="height:${h}px;background:${bg};opacity:${opacity}" title="${d.count} q"></div><div class="week-lbl">${d.lbl}</div></div>`;
+      }).join('') + '</div>';
+    }
+  }
+
+  // Topic breakdown with accuracy badges
+  const topicEl = document.getElementById('topicBreakdown');
+  const topics = data.topicCounts || {};
+  const topicCorrect = data.topicCorrect || {};
+  const topicSelfAssessed = data.topicSelfAssessed || {};
+  const maxCount = Math.max(...Object.values(topics), 1);
+  const topicColors = { 'Calculus':'#1d4ed8','Functions':'#7c3aed','Geometry & Trigonometry':'#0891b2','Statistics & Probability':'#059669','Number & Algebra':'#d97706','General':'#94a3b8','All Topics':'#64748b' };
   if (Object.keys(topics).length === 0) {
     topicEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft);padding:8px 0">No questions asked yet. Start chatting with HAN!</div>';
   } else {
     topicEl.innerHTML = Object.entries(topics).sort((a, b) => b[1] - a[1]).map(([topic, count]) => {
-      const pct = Math.round((count / maxCount) * 100), color = topicColors[topic] || '#1d4ed8';
-      return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:600;color:var(--text)">${topic}</span><span style="font-size:12px;color:var(--text-soft)">${count} question${count !== 1 ? 's' : ''}</span></div><div style="background:var(--bg);border-radius:4px;height:6px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px"></div></div></div>`;
+      const assessed = topicSelfAssessed[topic] || 0;
+      const correct = topicCorrect[topic] || 0;
+      const acc = assessed >= 2 ? Math.round((correct / assessed) * 100) : null;
+      const pct = Math.round((count / maxCount) * 100);
+      const color = topicColors[topic] || '#1d4ed8';
+      const accBadge = acc !== null
+        ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:5px;background:${acc>=70?'#dcfce7':acc>=40?'#fef9c3':'#fee2e2'};color:${acc>=70?'#16a34a':acc>=40?'#92400e':'#dc2626'}">${acc}%</span>`
+        : '';
+      return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center"><span style="font-size:12px;font-weight:600;color:var(--text)">${topic}${accBadge}</span><span style="font-size:12px;color:var(--text-soft)">${count} q${count!==1?'s':''}</span></div><div style="background:var(--bg);border-radius:4px;height:6px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px"></div></div></div>`;
     }).join('');
   }
+
+  // Focus areas
   const weakEl = document.getElementById('weakAreas');
-  const allTopicsList = ['Calculus', 'Functions', 'Geometry & Trigonometry', 'Statistics & Probability', 'Number & Algebra'];
+  const allTopicsList = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra'];
   const practiced = Object.keys(topics), notPracticed = allTopicsList.filter(t => !practiced.includes(t));
+  // Prioritize topics with low accuracy (>= 2 self-assessed) or least practiced
+  const weakByAcc = Object.entries(topicSelfAssessed).filter(([t, n]) => n >= 2 && Math.round(((topicCorrect[t]||0)/n)*100) < 50).map(e => e[0]);
   const leastPracticed = Object.entries(topics).sort((a, b) => a[1] - b[1]).slice(0, 2).map(e => e[0]);
-  const focusAreas = [...notPracticed, ...leastPracticed].slice(0, 3);
-  if (data.totalAsked < 3) {
+  const focusAreas = [...new Set([...weakByAcc, ...notPracticed, ...leastPracticed])].slice(0, 3);
+  if (totalAsked < 3) {
     weakEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">Ask at least 3 questions to see your focus areas.</div>';
   } else if (focusAreas.length === 0) {
     weakEl.innerHTML = '<div style="font-size:13px;color:var(--green);font-weight:600">🎉 Great work! You\'ve covered all topics.</div>';
   } else {
-    weakEl.innerHTML = focusAreas.map(t =>
-      `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--ice-light);border-radius:8px;margin-bottom:8px;cursor:pointer" onclick="usePromptAndSwitch('Give me a practice question on ${t}')">
-        <span style="font-size:18px">📌</span>
-        <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${t}</div><div style="font-size:11px;color:var(--text-soft)">${topics[t] ? `Only ${topics[t]} question${topics[t] !== 1 ? 's' : ''} asked` : 'Not practiced yet'}</div></div>
-        <span style="font-size:11px;color:var(--blue);font-weight:600">Practice →</span>
-      </div>`
-    ).join('');
+    weakEl.innerHTML = focusAreas.map(t => {
+      const assessed = topicSelfAssessed[t] || 0;
+      const acc = assessed >= 2 ? Math.round(((topicCorrect[t]||0)/assessed)*100) : null;
+      const reason = acc !== null && acc < 50 ? `${acc}% accuracy — needs work` : topics[t] ? `Only ${topics[t]} question${topics[t]!==1?'s':''} asked` : 'Not practiced yet';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--ice-light);border-radius:8px;margin-bottom:8px;cursor:pointer" onclick="usePromptAndSwitch('Give me a practice question on ${t}')"><span style="font-size:18px">📌</span><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${t}</div><div style="font-size:11px;color:var(--text-soft)">${reason}</div></div><span style="font-size:11px;color:var(--blue);font-weight:600">Practice →</span></div>`;
+    }).join('');
   }
-  const actEl = document.getElementById('recentActivity'), activity = data.recentActivity || [];
+
+  // Recent activity
+  const actEl = document.getElementById('recentActivity');
+  const activity = data.recentActivity || [];
   if (activity.length === 0) {
     actEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">No activity yet. Start asking HAN questions!</div>';
   } else {
-    actEl.innerHTML = activity.slice(0, 8).map(a =>
-      `<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-        <div style="width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:5px;flex-shrink:0"></div>
-        <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--text)">${a.topic}</div><div style="font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.question || '(Image question)'}</div></div>
-        <div style="font-size:10px;color:var(--text-soft);white-space:nowrap">${getTimeAgo(a.time)}</div>
-      </div>`
-    ).join('');
+    actEl.innerHTML = activity.slice(0, 8).map(a => {
+      const icon = a.outcome === true ? '<span style="color:var(--green);font-size:11px;font-weight:700"> ✓</span>' : a.outcome === false ? '<span style="color:var(--gold);font-size:11px;font-weight:700"> ↩</span>' : '';
+      return `<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:5px;flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--text)">${a.topic}${icon}</div><div style="font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.question||'(Image question)'}</div></div><div style="font-size:10px;color:var(--text-soft);white-space:nowrap">${getTimeAgo(a.time)}</div></div>`;
+    }).join('');
   }
 }
 function getTimeAgo(iso) { const diff = Date.now() - new Date(iso).getTime(), mins = Math.floor(diff / 60000); if (mins < 1) return 'just now'; if (mins < 60) return `${mins}m ago`; const hrs = Math.floor(mins / 60); if (hrs < 24) return `${hrs}h ago`; return `${Math.floor(hrs / 24)}d ago`; }
