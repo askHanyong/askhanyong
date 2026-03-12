@@ -388,7 +388,7 @@ header a:hover { color:white; }
 // ════════════════════════════
 // CONSTANTS
 // ════════════════════════════
-const ADMIN_SECRET = 'hanyong-admin-2024'; // must match ADMIN_SECRET in netlify function
+let ADMIN_SECRET = ''; // set at login from user input
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzxhN5aEo2THjbhPENpyLb6OuKwTb2V7vxs_4-Zt13Po3e7euE3ciywAMFTyOoAOzadwA/exec';
 
 // PDF.js worker
@@ -406,7 +406,8 @@ let extractedQuestions = []; // array of {questionNum, pages, marksHint, topicHi
 // ════════════════════════════
 function checkAuth() {
   const val = document.getElementById('secretInput').value.trim();
-  if (val === ADMIN_SECRET) {
+  if (val) {
+    ADMIN_SECRET = val;
     document.getElementById('authGate').style.display = 'none';
     document.getElementById('appContent').style.display = 'block';
     updateIdPreview();

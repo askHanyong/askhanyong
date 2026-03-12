@@ -22,8 +22,11 @@ const PARAM_TO_HEADER = {
   solutionUrl:    'Solution URL',
 };
 
-// Simple admin secret — set this to match GAS_ADMIN_SECRET in your Netlify env vars
-const ADMIN_SECRET = 'hanyong-admin-2024';
+// Admin secret — stored in Script Properties (File → Project Properties → Script Properties)
+// Key: ADMIN_SECRET, Value: must match GAS_ADMIN_SECRET in your Netlify env vars
+function getAdminSecret() {
+  return PropertiesService.getScriptProperties().getProperty('ADMIN_SECRET');
+}
 
 function doGet(e) {
   const action = e.parameter.action;
@@ -61,7 +64,7 @@ function addQuestion(params) {
 // Called by the Netlify stripe-webhook function after successful payment.
 // Protected by a shared secret to prevent unauthorised additions.
 function addPremiumUser(params) {
-  if (params.secret !== ADMIN_SECRET) {
+  if (params.secret !== getAdminSecret()) {
     return ContentService
       .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
       .setMimeType(ContentService.MimeType.JSON);

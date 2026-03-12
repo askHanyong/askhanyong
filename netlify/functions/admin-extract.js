@@ -1,7 +1,7 @@
 const https = require('https');
 
-// Simple admin secret — change this to something only you know
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'hanyong-admin-2024';
+// Simple admin secret — set ADMIN_SECRET in Netlify environment variables
+const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
 exports.handler = async (event) => {
   // CORS preflight

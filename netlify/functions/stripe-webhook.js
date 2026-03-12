@@ -3,11 +3,11 @@ const crypto = require('crypto');
 // Environment variables to set in Netlify dashboard:
 //   STRIPE_WEBHOOK_SECRET  — from Stripe Dashboard → Webhooks → signing secret
 //   SHEETS_URL             — your Google Apps Script web app URL
-//   GAS_ADMIN_SECRET       — same value as ADMIN_SECRET in your GAS (default: hanyong-admin-2024)
+//   GAS_ADMIN_SECRET       — same value as ADMIN_SECRET in your GAS
 
 const WEBHOOK_SECRET  = process.env.STRIPE_WEBHOOK_SECRET;
 const SHEETS_URL      = process.env.SHEETS_URL;
-const GAS_ADMIN_SECRET = process.env.GAS_ADMIN_SECRET || 'hanyong-admin-2024';
+const GAS_ADMIN_SECRET = process.env.GAS_ADMIN_SECRET;
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
