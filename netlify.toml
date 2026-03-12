@@ -3,7 +3,7 @@
   publish = "."
 
 [build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "SHEETS_URL"
+  SECRETS_SCAN_OMIT_KEYS = "ADMIN_SECRET,ANTHROPIC_API_KEY,GAS_ADMIN_SECRET,SHEETS_URL,STRIPE_WEBHOOK_SECRET"
 
 [functions]
   node_bundler = "esbuild"
