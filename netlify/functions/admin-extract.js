@@ -22,6 +22,13 @@ exports.handler = async (event) => {
   }
 
   // Check admin secret
+  if (!ADMIN_SECRET) {
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ error: { message: 'ADMIN_SECRET not configured in Netlify environment variables' } })
+    };
+  }
   const auth = (event.headers['authorization'] || event.headers['Authorization'] || '');
   if (auth !== 'Bearer ' + ADMIN_SECRET) {
     return {
