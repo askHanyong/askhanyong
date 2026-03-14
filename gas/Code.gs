@@ -37,10 +37,23 @@ function doGet(e) {
   if (action === 'saveUser')        return saveUser(e.parameter);
   if (action === 'registerUser')    return registerUser(e.parameter);
   if (action === 'getUser')         return getUser(e.parameter);
+  if (action === 'loadProgress')    return loadProgress(e.parameter);
+  if (action === 'resetProgress')   return resetProgressGAS(e.parameter);
 
   return ContentService
     .createTextOutput('HAN Admin GAS — OK')
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+// Progress data sent as JSON body — only save needs POST due to data size
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    if (body.action === 'saveProgress') return saveProgress(body);
+  } catch (err) {}
+  return ContentService
+    .createTextOutput(JSON.stringify({ error: 'Invalid request' }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 // ── Write a question row to the Questions sheet ──────────────────
@@ -216,6 +229,100 @@ function registerUser(params) {
     params.hashedPassword || '',
     params.ts             || new Date().toISOString(),
   ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Progress tracking ─────────────────────────────────────────────
+
+function getOrCreateProgressSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('Progress');
+  if (!sheet) {
+    sheet = ss.insertSheet('Progress');
+    sheet.getRange(1, 1, 1, 3).setValues([['Email', 'ProgressJSON', 'LastUpdated']]);
+  }
+  return sheet;
+}
+
+// Save progress — called via doPost (data too large for URL params)
+function saveProgress(body) {
+  const email = (body.email || '').toLowerCase().trim();
+  if (!email) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'No email' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const sheet = getOrCreateProgressSheet();
+  const rows = sheet.getDataRange().getValues();
+  const rowIndex = rows.findIndex((r, i) => i > 0 && r[0] === email);
+  const now = new Date().toISOString();
+  const json = typeof body.data === 'string' ? body.data : JSON.stringify(body.data || {});
+
+  if (rowIndex > -1) {
+    sheet.getRange(rowIndex + 1, 2, 1, 2).setValues([[json, now]]);
+  } else {
+    sheet.appendRow([email, json, now]);
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Load progress — called via doGet
+function loadProgress(params) {
+  const email = (params.email || '').toLowerCase().trim();
+  if (!email) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ found: false }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Progress');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ found: false }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const rows = sheet.getDataRange().getValues();
+  const row = rows.find((r, i) => i > 0 && r[0] === email);
+  if (!row) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ found: false }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ found: true, data: row[1], lastUpdated: row[2] }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Reset progress — called via doGet
+function resetProgressGAS(params) {
+  const email = (params.email || '').toLowerCase().trim();
+  if (!email) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'No email' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Progress');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const rows = sheet.getDataRange().getValues();
+  const rowIndex = rows.findIndex((r, i) => i > 0 && r[0] === email);
+  if (rowIndex > -1) sheet.deleteRow(rowIndex + 1);
 
   return ContentService
     .createTextOutput(JSON.stringify({ success: true }))

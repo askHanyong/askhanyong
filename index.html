@@ -1301,6 +1301,8 @@ function handleGoogleCredential(response) {
   saveUserToSheet(payload);
   // Check premium status from Google Sheets
   checkAndSetPremium(payload);
+  // Sync progress from server
+  loadProgressFromServer();
   // Show welcome modal only on first ever visit
   const seenKey = 'han_welcomed_' + payload.sub;
   if (!localStorage.getItem(seenKey)) {
@@ -1462,6 +1464,7 @@ async function handleEmailLogin() {
     renderUserPill(currentUser);
     updateLimitBar();
     checkAndSetPremium(currentUser);
+    loadProgressFromServer();
     const seenKey = 'han_welcomed_' + currentUser.sub;
     if (!localStorage.getItem(seenKey)) { localStorage.setItem(seenKey, '1'); setTimeout(() => document.getElementById('welcomeModal').classList.add('open'), 400); }
   } catch(e) {
@@ -1516,6 +1519,7 @@ async function handleEmailRegister() {
       renderUserPill(currentUser);
       updateLimitBar();
       checkAndSetPremium(currentUser);
+      loadProgressFromServer();
     } catch(e) { localStorage.removeItem('han_session'); }
   }
 })();
@@ -2280,7 +2284,49 @@ function loadProgress() {
   try { const d = JSON.parse(localStorage.getItem(key) || 'null'); return d ? Object.assign(_progressDefaults(), d) : _progressDefaults(); }
   catch (e) { return _progressDefaults(); }
 }
-function saveProgress(data) { const key = getProgressKey(); if (!key) return; localStorage.setItem(key, JSON.stringify(data)); }
+function saveProgress(data) {
+  const key = getProgressKey();
+  if (!key) return;
+  localStorage.setItem(key, JSON.stringify(data));
+  _syncProgressToServer(data);
+}
+
+// ── Server sync (fire-and-forget) ────────────────────────────────
+async function _syncProgressToServer(data) {
+  if (!currentUser || !currentUser.email) return;
+  try {
+    await fetch('/api/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save', email: currentUser.email, data }),
+    });
+  } catch (e) { /* silent — localStorage is the fallback */ }
+}
+
+async function loadProgressFromServer() {
+  if (!currentUser || !currentUser.email) return;
+  try {
+    const res = await fetch('/api/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'load', email: currentUser.email }),
+    });
+    const result = await res.json();
+    if (result.found && result.data) {
+      const serverData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+      const localData = loadProgress();
+      // Use whichever has more questions asked (server wins on tie)
+      if ((serverData.totalAsked || 0) >= (localData.totalAsked || 0)) {
+        const key = getProgressKey();
+        if (key) localStorage.setItem(key, JSON.stringify(Object.assign(_progressDefaults(), serverData)));
+      } else {
+        // Local is ahead — push it to server
+        _syncProgressToServer(localData);
+      }
+      renderProgress();
+    }
+  } catch (e) { /* silent — use local data */ }
+}
 function trackQuestion(topic, question) {
   const data = loadProgress();
   data.totalAsked = (data.totalAsked || 0) + 1;
@@ -2399,7 +2445,22 @@ function renderProgress() {
 }
 function getTimeAgo(iso) { const diff = Date.now() - new Date(iso).getTime(), mins = Math.floor(diff / 60000); if (mins < 1) return 'just now'; if (mins < 60) return `${mins}m ago`; const hrs = Math.floor(mins / 60); if (hrs < 24) return `${hrs}h ago`; return `${Math.floor(hrs / 24)}d ago`; }
 function usePromptAndSwitch(text) { switchTab('chat'); setTimeout(() => { const inp = document.getElementById('userInput'); inp.value = text; autoResize(inp); inp.focus(); }, 300); }
-function resetProgress() { if (!confirm('Reset all your progress data? This cannot be undone.')) return; const key = getProgressKey(); if (key) localStorage.removeItem(key); renderProgress(); showToast('Progress reset.'); }
+async function resetProgress() {
+  if (!confirm('Reset all your progress data? This cannot be undone.')) return;
+  const key = getProgressKey();
+  if (key) localStorage.removeItem(key);
+  if (currentUser && currentUser.email) {
+    try {
+      await fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reset', email: currentUser.email }),
+      });
+    } catch (e) { /* silent */ }
+  }
+  renderProgress();
+  showToast('Progress reset.');
+}
 
 
 // ════════════════════════════════════════
