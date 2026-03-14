@@ -404,15 +404,37 @@ let extractedQuestions = []; // array of {questionNum, pages, marksHint, topicHi
 // ════════════════════════════
 // AUTH
 // ════════════════════════════
-function checkAuth() {
+async function checkAuth() {
   const val = document.getElementById('secretInput').value.trim();
-  if (val) {
-    ADMIN_SECRET = val;
-    document.getElementById('authGate').style.display = 'none';
-    document.getElementById('appContent').style.display = 'block';
-    updateIdPreview();
-  } else {
-    document.getElementById('authError').style.display = 'block';
+  const errEl = document.getElementById('authError');
+  const btn = document.querySelector('#authGate .auth-btn');
+  if (!val) { errEl.textContent = 'Please enter the admin secret.'; errEl.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  errEl.style.display = 'none';
+
+  try {
+    const resp = await fetch('/api/admin-extract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + val },
+      body: JSON.stringify({ action: 'ping' })
+    });
+    if (resp.ok) {
+      ADMIN_SECRET = val;
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('appContent').style.display = 'block';
+      updateIdPreview();
+    } else {
+      errEl.textContent = resp.status === 401 ? 'Incorrect secret. Try again.' : 'Server error — check Netlify env vars.';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
   }
 }
 

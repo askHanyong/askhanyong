@@ -3,6 +3,8 @@ const https = require('https');
 // Simple admin secret — set ADMIN_SECRET in Netlify environment variables
 const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
+const CORS = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
+
 exports.handler = async (event) => {
   // CORS preflight
   if (event.httpMethod === 'OPTIONS') {
@@ -21,32 +23,26 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  // Check admin secret
+  // Check admin secret is configured
   if (!ADMIN_SECRET) {
     return {
       statusCode: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: CORS,
       body: JSON.stringify({ error: { message: 'ADMIN_SECRET not configured in Netlify environment variables' } })
     };
   }
+
+  // Verify caller supplied the correct secret
   const auth = (event.headers['authorization'] || event.headers['Authorization'] || '');
   if (auth !== 'Bearer ' + ADMIN_SECRET) {
     return {
       statusCode: 401,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: CORS,
       body: JSON.stringify({ error: { message: 'Unauthorized' } })
     };
   }
 
-  const apiKey = (process.env.ANTHROPIC_API_KEY || '').trim();
-  if (!apiKey) {
-    return {
-      statusCode: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: { message: 'ANTHROPIC_API_KEY not set' } })
-    };
-  }
-
+  // Parse body
   let requestBody;
   try {
     const bodyBuffer = Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8');
@@ -54,8 +50,23 @@ exports.handler = async (event) => {
   } catch (e) {
     return {
       statusCode: 400,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: CORS,
       body: JSON.stringify({ error: { message: 'Invalid JSON body' } })
+    };
+  }
+
+  // Auth ping — confirm the secret is correct without calling Claude
+  if (requestBody.action === 'ping') {
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
+  }
+
+  // Require Anthropic API key for actual extraction
+  const apiKey = (process.env.ANTHROPIC_API_KEY || '').trim();
+  if (!apiKey) {
+    return {
+      statusCode: 500,
+      headers: CORS,
+      body: JSON.stringify({ error: { message: 'ANTHROPIC_API_KEY not set' } })
     };
   }
 
@@ -85,18 +96,14 @@ exports.handler = async (event) => {
       res.on('data', chunk => chunks.push(chunk));
       res.on('end', () => {
         const responseBody = Buffer.concat(chunks).toString('utf8');
-        resolve({
-          statusCode: res.statusCode,
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-          body: responseBody
-        });
+        resolve({ statusCode: res.statusCode, headers: CORS, body: responseBody });
       });
     });
 
     req.on('error', (e) => {
       resolve({
         statusCode: 500,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        headers: CORS,
         body: JSON.stringify({ error: { message: 'Network error: ' + e.message } })
       });
     });
