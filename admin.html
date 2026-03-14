@@ -388,7 +388,7 @@ header a:hover { color:white; }
 // ════════════════════════════
 // CONSTANTS
 // ════════════════════════════
-const ADMIN_SECRET = 'hanyong-admin-2024'; // must match ADMIN_SECRET in netlify function
+let ADMIN_SECRET = ''; // set at login, validated server-side
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbylVgX1pvK2sIhtPeSOmEtaMqjBcHOD1cw4Q-VycdnB1WvSK5f-LhFDyHEDav01D-LKQg/exec';
 
 // PDF.js worker
@@ -404,14 +404,37 @@ let extractedQuestions = []; // array of {questionNum, pages, marksHint, topicHi
 // ════════════════════════════
 // AUTH
 // ════════════════════════════
-function checkAuth() {
+async function checkAuth() {
   const val = document.getElementById('secretInput').value.trim();
-  if (val === ADMIN_SECRET) {
-    document.getElementById('authGate').style.display = 'none';
-    document.getElementById('appContent').style.display = 'block';
-    updateIdPreview();
-  } else {
-    document.getElementById('authError').style.display = 'block';
+  const errEl = document.getElementById('authError');
+  const btn = document.querySelector('#authGate .auth-btn');
+  if (!val) { errEl.textContent = 'Please enter the admin secret.'; errEl.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  errEl.style.display = 'none';
+
+  try {
+    const resp = await fetch('/api/admin-extract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + val },
+      body: JSON.stringify({ action: 'ping' })
+    });
+    if (resp.ok) {
+      ADMIN_SECRET = val;
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('appContent').style.display = 'block';
+      updateIdPreview();
+    } else {
+      errEl.textContent = resp.status === 401 ? 'Incorrect secret. Try again.' : 'Server error — check Netlify env vars.';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
   }
 }
 
@@ -603,17 +626,20 @@ async function runExtraction() {
       const content = [];
       content.push({
         type: 'text',
-        text: `You are analysing pages ${batchStart}–${batchEnd} (document total: ${pdfPages.length} pages) from an IB Mathematics exam solutions PDF. These are Hanyong's handwritten worked solutions for ${level} ${paper}, ${session} ${year}, TZ${tz}.
+        text: `You are analysing pages ${batchStart}–${batchEnd} (document total: ${pdfPages.length} pages) from an IB Diploma Programme Mathematics exam solutions PDF. These are Hanyong's handwritten worked solutions for ${level} ${paper}, ${session} ${year}, TZ${tz}.
 
-Your task: identify EVERY question visible in these pages and which page numbers each question spans.
+Your task: identify EVERY question visible in these pages, which page numbers each question spans, and generate teaching content for each question.
 
 Return ONLY a valid JSON array — no markdown fencing, no explanation. Each element:
 {
   "questionNum": "Q1" | "Q2a" | "Q2b" etc.,
   "pages": [${batchStart}] (use the ORIGINAL document page numbers, ${batchStart}–${batchEnd}),
-  "marksHint": "6" or null,
-  "topicHint": "Calculus" or null,
+  "marksHint": "6" or null (read the mark allocation from the paper if visible, otherwise infer from solution length),
+  "topicHint": one of ["Calculus","Functions","Geometry & Trigonometry","Statistics & Probability","Number & Algebra","Complex Numbers"] or null (use exact string),
   "subtopicHint": "Integration by parts" or null,
+  "hanExplanation": "1–2 sentence key insight a student needs to solve this question (e.g. the core technique, substitution, or conceptual link to recognise)",
+  "commonMistakes": "1–2 sentence description of the most likely mark-losing errors students make on this type of question",
+  "examinerNote": "1 sentence on what the IB examiner specifically looks for or requires to award full marks",
   "notes": null
 }
 
@@ -622,6 +648,7 @@ Rules:
 - Use Q2a, Q2b for lettered sub-parts; group unclear sub-parts under parent
 - A question may span multiple pages — list all of them
 - Do not skip any question
+- Always provide hanExplanation, commonMistakes, and examinerNote — never leave them null
 
 Pages ${batchStart}–${batchEnd}:`
       });
@@ -636,8 +663,8 @@ Pages ${batchStart}–${batchEnd}:`
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1024,
-          system: 'You are a precise document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
+          max_tokens: 2048,
+          system: 'You are a precise IB Diploma Programme Mathematics expert and document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
           messages: [{ role: 'user', content }]
         })
       });
@@ -695,6 +722,21 @@ Pages ${batchStart}–${batchEnd}:`
 // ════════════════════════════
 const TOPICS = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra','Complex Numbers'];
 
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function normalizeTopic(hint) {
+  if (!hint) return '';
+  const h = hint.toLowerCase().trim();
+  // Exact match (case-insensitive)
+  const exact = TOPICS.find(t => t.toLowerCase() === h);
+  if (exact) return exact;
+  // Partial match: topic starts with hint or hint is contained in topic
+  const partial = TOPICS.find(t => t.toLowerCase().startsWith(h) || h.startsWith(t.toLowerCase().split(' ')[0]));
+  return partial || '';
+}
+
 function renderQCards() {
   document.getElementById('qCardCount').textContent = extractedQuestions.length;
   const container = document.getElementById('qCardsContainer');
@@ -710,7 +752,8 @@ function renderQCards() {
     card.id = `qcard-${i}`;
 
     const pagesLabel = (q.pages || []).map(p => `<span class="page-badge">pg ${p}</span>`).join('');
-    const topicSel   = TOPICS.map(t => `<option value="${t}" ${t === q.topicHint ? 'selected' : ''}>${t}</option>`).join('');
+    const matchedTopic = normalizeTopic(q.topicHint);
+    const topicSel   = TOPICS.map(t => `<option value="${t}" ${t === matchedTopic ? 'selected' : ''}>${t}</option>`).join('');
 
     const driveBase = (document.getElementById('p-driveUrl').value || '').trim();
     const firstPage = (q.pages || [])[0] || 1;
@@ -768,19 +811,19 @@ function renderQCards() {
 
         <div class="form-row" style="grid-template-columns:1fr">
           <div class="form-group">
-            <label class="form-label">HAN Explanation (optional — key insight for students)</label>
-            <textarea class="form-textarea" id="qhan-${i}" placeholder="e.g. Recognise this as a composite function — chain rule with substitution u = sin x…"></textarea>
+            <label class="form-label">HAN Explanation — key insight for students</label>
+            <textarea class="form-textarea" id="qhan-${i}" placeholder="e.g. Recognise this as a composite function — chain rule with substitution u = sin x…">${escHtml(q.hanExplanation)}</textarea>
           </div>
         </div>
 
         <div class="form-row cols-2">
           <div class="form-group">
-            <label class="form-label">Common Mistakes (optional)</label>
-            <textarea class="form-textarea" id="qmistakes-${i}" placeholder="e.g. Students often forget the +C when the integral has bounds…" style="min-height:60px"></textarea>
+            <label class="form-label">Common Mistakes</label>
+            <textarea class="form-textarea" id="qmistakes-${i}" placeholder="e.g. Students often forget the +C when the integral has bounds…" style="min-height:60px">${escHtml(q.commonMistakes)}</textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">Examiner Note (optional)</label>
-            <textarea class="form-textarea" id="qexnote-${i}" placeholder="e.g. Examiner requires explicit substitution shown…" style="min-height:60px"></textarea>
+            <label class="form-label">Examiner Note</label>
+            <textarea class="form-textarea" id="qexnote-${i}" placeholder="e.g. Examiner requires explicit substitution shown…" style="min-height:60px">${escHtml(q.examinerNote)}</textarea>
           </div>
         </div>
 
