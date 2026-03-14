@@ -388,8 +388,8 @@ header a:hover { color:white; }
 // ════════════════════════════
 // CONSTANTS
 // ════════════════════════════
-let ADMIN_SECRET = ''; // set at login, validated server-side
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbylVgX1pvK2sIhtPeSOmEtaMqjBcHOD1cw4Q-VycdnB1WvSK5f-LhFDyHEDav01D-LKQg/exec';
+let ADMIN_SECRET = ''; // set at login from user input
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzxhN5aEo2THjbhPENpyLb6OuKwTb2V7vxs_4-Zt13Po3e7euE3ciywAMFTyOoAOzadwA/exec';
 
 // PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -947,32 +947,43 @@ async function saveToSheets() {
   const statusEl = document.getElementById('saveStatus');
   statusEl.style.display = 'none';
 
-  let saved = 0, failed = 0;
+  let saved = 0, failed = 0, lastError = '';
 
   for (const q of data) {
     try {
-      const params = new URLSearchParams({
-        action: 'addQuestion',
-        questionId:    q['Question ID'],
-        level:         q['Level'],
-        paper:         q['Paper'],
-        year:          q['Year'],
-        session:       q['Session'],
-        timeZone:      q['Time Zone'],
-        topic:         q['Topic'],
-        subtopic:      q['Subtopic'],
-        marks:         q['Marks'],
-        difficulty:    q['Difficulty'],
-        status:        q['Status'],
-        hanExplanation: q['HAN Explanation'],
-        commonMistakes: q['Common Mistakes'],
-        examinerNote:  q['Examiner Note'],
-        solutionUrl:   q['Solution URL'],
+      const resp = await fetch('/.netlify/functions/save-question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionId:     q['Question ID'],
+          level:          q['Level'],
+          paper:          q['Paper'],
+          year:           q['Year'],
+          session:        q['Session'],
+          timeZone:       q['Time Zone'],
+          topic:          q['Topic'],
+          subtopic:       q['Subtopic'],
+          marks:          q['Marks'],
+          difficulty:     q['Difficulty'],
+          status:         q['Status'],
+          hanExplanation: q['HAN Explanation'],
+          commonMistakes: q['Common Mistakes'],
+          examinerNote:   q['Examiner Note'],
+          solutionUrl:    q['Solution URL'],
+        }),
       });
-      const resp = await fetch(SHEETS_URL + '?' + params.toString(), { redirect: 'follow' });
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      saved++;
-    } catch {
+      const result = await resp.json();
+      if (!resp.ok || result.error) {
+        lastError = result.error || result.gasBody || 'Unknown error';
+        console.error('save-question failed:', result);
+        failed++;
+      } else {
+        console.log('saved:', q['Question ID'], result.gasBody);
+        saved++;
+      }
+    } catch (err) {
+      lastError = err.message;
+      console.error('save-question error:', err);
       failed++;
     }
   }
@@ -983,11 +994,11 @@ async function saveToSheets() {
   statusEl.className = 'save-result ' + (failed === 0 ? 'ok' : 'err');
   statusEl.style.display = 'block';
   if (failed === 0) {
-    statusEl.textContent = `✅ ${saved} questions sent to Google Sheets! Check your sheet for the new rows.`;
+    statusEl.textContent = `✅ ${saved} questions saved to Google Sheets!`;
     showToast(`${saved} questions saved!`, 'success');
   } else {
-    statusEl.textContent = `⚠️ ${saved} saved, ${failed} failed. Use the CSV export below as a fallback.`;
-    showToast('Some saves failed — use CSV export', 'error');
+    statusEl.textContent = `⚠️ ${saved} saved, ${failed} failed. Error: ${lastError}`;
+    showToast('Some saves failed — check console', 'error');
   }
 }
 
