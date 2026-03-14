@@ -398,6 +398,40 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .week-day { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:3px; flex:1; }
 .week-bar { width:100%; max-width:32px; border-radius:4px 4px 0 0; min-height:4px; transition:all 0.2s; }
 .week-lbl { font-size:9px; color:var(--text-soft); }
+
+/* ── Auth tabs (login/register) ── */
+.auth-tabs { display:flex; border-bottom:2px solid var(--border); margin-bottom:18px; gap:0; }
+.auth-tab { flex:1; padding:9px 8px; border:none; background:none; font-size:13px; font-weight:600; color:var(--text-soft); cursor:pointer; font-family:'DM Sans',sans-serif; border-bottom:2.5px solid transparent; margin-bottom:-2px; transition:all 0.15s; }
+.auth-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+.auth-form { display:flex; flex-direction:column; gap:10px; text-align:left; }
+.auth-field { display:flex; flex-direction:column; gap:4px; }
+.auth-label { font-size:11px; font-weight:700; color:var(--text-mid); text-transform:uppercase; letter-spacing:0.4px; }
+.auth-input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:13px; font-family:'DM Sans',sans-serif; color:var(--text); outline:none; transition:border-color 0.2s; background:white; }
+.auth-input:focus { border-color:var(--blue); }
+.auth-select { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:13px; font-family:'DM Sans',sans-serif; color:var(--text); outline:none; background:white; cursor:pointer; }
+.auth-select:focus { border-color:var(--blue); }
+.auth-error { font-size:12px; color:var(--red); text-align:center; min-height:16px; margin-top:2px; }
+.auth-link { font-size:12px; color:var(--blue); cursor:pointer; font-weight:600; }
+.auth-link:hover { text-decoration:underline; }
+.auth-divider { display:flex; align-items:center; gap:10px; margin:4px 0; }
+.auth-divider-line { flex:1; height:1px; background:var(--border); }
+.auth-divider-text { font-size:11px; color:var(--text-soft); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+
+/* ── About page ── */
+.about-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.about-hero { background:linear-gradient(135deg,#1e3a5f,#1d4ed8); padding:32px 20px 28px; text-align:center; color:white; flex-shrink:0; }
+.about-avatar { width:80px; height:80px; background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.3); border-radius:24px; display:flex; align-items:center; justify-content:center; font-size:38px; margin:0 auto 14px; }
+.about-section { padding:18px 16px; border-bottom:1px solid var(--border); background:white; }
+.about-section:last-child { border-bottom:none; }
+.about-section-title { font-size:11px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:10px; }
+.about-body { font-size:13.5px; color:var(--text-mid); line-height:1.8; }
+.about-body p + p { margin-top:10px; }
+.about-body strong { color:var(--text); }
+.about-cta-row { padding:16px; background:var(--bg); }
+.about-stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0 4px; }
+.about-stat { background:rgba(255,255,255,0.12); border-radius:12px; padding:12px 8px; text-align:center; }
+.about-stat-num { font-size:22px; font-weight:800; color:white; }
+.about-stat-lbl { font-size:10px; color:rgba(255,255,255,0.65); margin-top:3px; }
 </style>
 </head>
 <body>
@@ -419,13 +453,13 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="limit-track"><div class="limit-fill" id="limitFillTyped" style="width:0%"></div></div>
   </div>
   <span id="limitText" style="font-size:11px;color:var(--text-mid);white-space:nowrap"></span>
-  <button class="upgrade-btn-small" onclick="showUpgrade()">Upgrade</button>
+  <button class="upgrade-btn-small" onclick="showUpgrade()">Contribute</button>
 </div>
 
 <!-- Soft nudge bar (appears at 80% limit) -->
 <div class="nudge-bar" id="nudgeBar">
   <span>⚡ <span id="nudgeText">Almost at your limit</span></span>
-  <button class="nudge-upgrade-btn" onclick="showUpgrade()">Upgrade — S$45</button>
+  <button class="nudge-upgrade-btn" onclick="showUpgrade()">Contribute S$45</button>
   <button class="nudge-close" onclick="dismissNudge()" title="Dismiss">✕</button>
 </div>
 
@@ -649,12 +683,63 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   </div></div>
 </div>
 
+<!-- About page -->
+<div class="view-panel" id="view-about">
+  <div class="about-scroll">
+    <div class="about-hero">
+      <div class="about-avatar">🎓</div>
+      <h2 style="font-size:21px;font-weight:700;font-family:'Playfair Display',serif;color:white;margin-bottom:6px">Hi, I'm Hanyong</h2>
+      <p style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;max-width:280px;margin:0 auto">IB Math Teacher · Former IB Examiner · Creator of HAN</p>
+      <div class="about-stat-row">
+        <div class="about-stat"><div class="about-stat-num">20+</div><div class="about-stat-lbl">Years Teaching</div></div>
+        <div class="about-stat"><div class="about-stat-num">45</div><div class="about-stat-lbl">Perfect Score</div></div>
+        <div class="about-stat"><div class="about-stat-num">∞</div><div class="about-stat-lbl">Free Access</div></div>
+      </div>
+    </div>
+    <div style="background:var(--bg)">
+      <div class="about-section">
+        <div class="about-section-title">Why I built HAN</div>
+        <div class="about-body">
+          <p>After years of teaching IB Mathematics and marking thousands of exam scripts as an IB examiner, I kept noticing the same thing: students were losing marks not because they didn't understand the mathematics — but because they didn't know how to present it the way examiners expect.</p>
+          <p>I built HAN so that every student, regardless of where they are in the world or what school they attend, can have access to the same examiner-level guidance I give my own students. No expensive tutor required.</p>
+        </div>
+      </div>
+      <div class="about-section">
+        <div class="about-section-title">What is HAN?</div>
+        <div class="about-body">
+          <p>HAN is an AI tutor trained on my teaching philosophy — two decades of IB examining experience condensed into one tool. It doesn't just solve problems; it teaches you how to solve them in a way that earns full marks.</p>
+          <p>HAN knows mark schemes, understands where students commonly slip up, and explains mathematics the way an IB examiner would. Every response is built around helping you understand <em>why</em>, not just <em>what</em>.</p>
+        </div>
+      </div>
+      <div class="about-section">
+        <div class="about-section-title">The 45 Aspiration</div>
+        <div class="about-body">
+          <p>In the IB, <strong>45 is the perfect score</strong>. Very few students reach it — but the aspiration matters. When I set the contribution at S$45, it wasn't arbitrary. It's a symbol: this tool exists to help you reach for that 45, or as close to it as possible.</p>
+          <p>askHanyong is <strong>free for every student</strong>. If it's helped you, a one-time contribution of S$45 keeps the servers running and the tool improving. But if you can't afford it right now, please keep using it — that's exactly why I built this.</p>
+        </div>
+      </div>
+      <div class="about-section">
+        <div class="about-section-title">Get in touch</div>
+        <div class="about-body">
+          <p>Questions, feedback, or just want to say hi? I read every message.</p>
+          <p style="margin-top:8px"><a href="mailto:hanyong@askhanyong.com" style="color:var(--blue);font-weight:600;text-decoration:none">hanyong@askhanyong.com</a></p>
+        </div>
+      </div>
+      <div class="about-cta-row">
+        <button class="modal-cta" onclick="switchTab('chat')" style="margin-bottom:8px">Start Asking HAN →</button>
+        <button onclick="showUpgrade()" style="width:100%;padding:11px;background:none;border:1.5px solid var(--blue);border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'DM Sans',sans-serif">Support the Mission — S$45</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Bottom Nav -->
 <nav class="tab-nav">
   <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="tab-icon">💬</span>Ask HAN</button>
   <button class="tab-btn" id="tab-practice" onclick="switchTab('practice')"><span class="tab-icon">📚</span>Practice</button>
   <button class="tab-btn" id="tab-mock" onclick="switchTab('mock')"><span class="tab-icon">📝</span>Mock Paper</button>
   <button class="tab-btn" id="tab-progress" onclick="switchTab('progress')"><span class="tab-icon">📊</span>Progress</button>
+  <button class="tab-btn" id="tab-about" onclick="switchTab('about')"><span class="tab-icon">👤</span>About</button>
 </nav>
 
 <!-- ══════════════ BOTTOM SHEET (question detail) ══════════════ -->
@@ -784,12 +869,79 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 
 <!-- Login modal -->
 <div class="modal-overlay" id="loginOverlay" onclick="closeModalBg(event,'loginOverlay')">
-  <div class="modal-box" onclick="event.stopPropagation()">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:380px">
     <button class="modal-close" onclick="closeModal('loginOverlay')">✕</button>
     <div class="modal-icon">📐</div>
     <h2>Welcome to askHanyong</h2>
-    <p>Sign in to track your progress and get 5 free questions every day.</p>
-    <div id="googleSignInBtn"></div>
+    <p style="margin-bottom:16px">Sign in to track your progress and get free questions every day.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="loginTabGoogle" onclick="switchLoginTab('google')">Google</button>
+      <button class="auth-tab" id="loginTabEmail" onclick="switchLoginTab('email')">Email & Password</button>
+    </div>
+    <!-- Google tab -->
+    <div id="loginPanelGoogle">
+      <div id="googleSignInBtn" style="display:flex;justify-content:center"></div>
+    </div>
+    <!-- Email tab -->
+    <div id="loginPanelEmail" style="display:none">
+      <div class="auth-form">
+        <div class="auth-field">
+          <label class="auth-label">Email</label>
+          <input class="auth-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Password</label>
+          <input class="auth-input" id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password">
+        </div>
+        <div class="auth-error" id="loginError"></div>
+        <button class="modal-cta" style="margin-bottom:6px" onclick="handleEmailLogin()" id="loginSubmitBtn">Sign In</button>
+        <div style="text-align:center;font-size:13px;color:var(--text-mid)">New here? <span class="auth-link" onclick="showRegister()">Create an account</span></div>
+      </div>
+    </div>
+    <div class="modal-note" style="margin-top:12px">Free · No credit card needed</div>
+  </div>
+</div>
+
+<!-- Registration modal -->
+<div class="modal-overlay" id="registerOverlay" onclick="closeModalBg(event,'registerOverlay')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:380px">
+    <button class="modal-close" onclick="closeModal('registerOverlay')">✕</button>
+    <div class="modal-icon">🎓</div>
+    <h2>Create Your Account</h2>
+    <p style="margin-bottom:18px">Join thousands of IB students learning with HAN.</p>
+    <div class="auth-form">
+      <div class="auth-field">
+        <label class="auth-label">Full Name</label>
+        <input class="auth-input" id="regName" type="text" placeholder="Your name" autocomplete="name">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input class="auth-input" id="regEmail" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Country / Territory</label>
+        <select class="auth-select" id="regCountry">
+          <option value="">Select your country / territory…</option>
+        </select>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <input class="auth-input" id="regPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Confirm Password</label>
+        <input class="auth-input" id="regPasswordConfirm" type="password" placeholder="Repeat your password" autocomplete="new-password">
+      </div>
+      <div class="auth-error" id="registerError"></div>
+      <button class="modal-cta" style="margin-bottom:6px" onclick="handleEmailRegister()" id="registerSubmitBtn">Create Account</button>
+      <div style="text-align:center;font-size:13px;color:var(--text-mid)">Already have an account? <span class="auth-link" onclick="closeModal('registerOverlay');showLogin()">Sign in</span></div>
+    </div>
+    <div class="auth-divider" style="margin-top:14px">
+      <div class="auth-divider-line"></div>
+      <span class="auth-divider-text">or</span>
+      <div class="auth-divider-line"></div>
+    </div>
+    <div id="googleSignInBtnReg" style="display:flex;justify-content:center;margin-top:12px"></div>
     <div class="modal-note" style="margin-top:10px">Free · No credit card needed</div>
   </div>
 </div>
@@ -798,20 +950,18 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 <div class="modal-overlay" id="upgradeOverlay" onclick="closeModalBg(event,'upgradeOverlay')">
   <div class="modal-box" onclick="event.stopPropagation()" style="max-width:420px">
     <button class="modal-close" onclick="closeModal('upgradeOverlay')">✕</button>
-    <div class="modal-icon">⚡</div>
-    <h2>Unlock Unlimited Access</h2>
-    <p style="margin-bottom:4px;font-size:12px;color:var(--text-soft)">You've hit your free limit for today.</p>
-    <div style="background:var(--ice-light);border:1.5px solid var(--blue);border-radius:14px;padding:16px;margin-bottom:18px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px">Beta Student Offer</span>
-        <span style="background:#fbbf24;color:#78350f;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">LIMITED TIME</span>
+    <div class="modal-icon">🎯</div>
+    <h2 style="font-size:19px">Support HAN's Mission</h2>
+    <p style="font-size:13px;color:var(--text-mid);line-height:1.6;margin-bottom:16px">askHanyong is <strong>free for every IB student</strong>. If it's helped you, a small contribution keeps it alive and growing — so more students can benefit.</p>
+    <div style="background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1.5px solid var(--blue);border-radius:14px;padding:16px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="font-size:34px;font-weight:800;color:var(--blue);font-family:'Playfair Display',serif;line-height:1">S$45</div>
+        <div style="text-align:left">
+          <div style="font-size:12px;font-weight:700;color:var(--text)">One-time · No subscription</div>
+          <div style="font-size:11px;color:var(--text-mid);line-height:1.4;margin-top:2px">Why S$45? In the IB, <strong style="color:var(--blue)">45 is the perfect score</strong> — the aspiration every student works towards.</div>
+        </div>
       </div>
-      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
-        <span style="font-size:40px;font-weight:800;color:var(--blue);font-family:'Playfair Display',serif">S$45</span>
-        <span style="font-size:15px;color:var(--text-soft);text-decoration:line-through">S$45/mo</span>
-        <span style="font-size:13px;font-weight:700;color:var(--green)">one-time</span>
-      </div>
-      <div style="font-size:12px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">Lock in lifetime access now. After beta, this becomes S$45/month — you'll never be charged again.</div>
+      <div style="font-size:12px;color:var(--text-soft);border-top:1px solid rgba(29,78,216,0.12);padding-top:10px;margin-top:4px;margin-bottom:12px;line-height:1.5;font-style:italic">"I built this to be free. Your contribution helps keep the servers running and reach more students who need it." — Hanyong</div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;text-align:left">
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Unlimited questions — uploads & typed, every day</li>
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Full mock paper generator</li>
@@ -819,28 +969,25 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Priority support from Hanyong</li>
       </ul>
     </div>
-    <!-- ★ STRIPE: Replace the paymentLink value below with your real Stripe Payment Link URL -->
-    <!-- To get it: Stripe Dashboard → Payment Links → Create → $15/month recurring → Copy link -->
-    <button class="modal-cta" id="stripeCheckoutBtn" onclick="startStripeCheckout()" style="display:flex;align-items:center;justify-content:center;gap:8px"><span>Pay with Card</span><span style="font-size:18px">💳</span></button>
+    <button class="modal-cta" id="stripeCheckoutBtn" onclick="startStripeCheckout()" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#1e40af,#1d4ed8)"><span>Contribute S$45</span><span style="font-size:16px">🙏</span></button>
     <div id="stripeNotReady" style="display:none">
       <div id="waitlistForm">
-        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;text-align:left">📋 Join the Premium Waitlist</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;text-align:left">📋 Join the Waitlist</div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <input id="waitlistName" type="text" placeholder="Your name" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text)">
           <input id="waitlistEmail" type="email" placeholder="Email address" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text)">
-          <input id="waitlistSchool" type="text" placeholder="School / country (optional)" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text)">
-          <button class="modal-cta" onclick="submitWaitlist()" id="waitlistSubmitBtn" style="margin-bottom:0;background:var(--navy)">Join Waitlist →</button>
+          <button class="modal-cta" onclick="submitWaitlist()" id="waitlistSubmitBtn" style="margin-bottom:0;background:var(--navy)">Stay Updated →</button>
         </div>
-        <div style="font-size:11px;color:var(--text-soft);margin-top:8px;text-align:center">We'll notify you as soon as Premium launches.</div>
+        <div style="font-size:11px;color:var(--text-soft);margin-top:8px;text-align:center">We'll let you know about new features and updates.</div>
       </div>
       <div id="waitlistSuccess" style="display:none;text-align:center;padding:12px 0">
         <div style="font-size:32px;margin-bottom:8px">🎉</div>
         <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">You're on the list!</div>
-        <div style="font-size:12px;color:var(--text-soft)">Hanyong will be in touch when Premium is ready.</div>
+        <div style="font-size:12px;color:var(--text-soft)">Hanyong will be in touch soon.</div>
       </div>
     </div>
-    <div class="modal-note" style="margin-top:10px">Secure payment via Stripe · One-time charge, no subscription</div>
-    <div class="modal-note">Beta pricing ends when we launch publicly 🚀</div>
+    <div class="modal-note" style="margin-top:10px">Secure payment via Stripe · 100% optional · No subscription ever</div>
+    <div style="margin-top:8px;text-align:center"><span style="font-size:11px;color:var(--text-soft);cursor:pointer" onclick="closeModal('upgradeOverlay')">Continue with free access →</span></div>
   </div>
 </div>
 
@@ -891,7 +1038,7 @@ let mockSelectedTopics = new Set(['All']), mockPaperData = [], practiceFiltered 
 // TAB SWITCHING
 // ════════════════════════════════════════
 function switchTab(tab) {
-  ['chat','practice','mock','progress'].forEach(t => {
+  ['chat','practice','mock','progress','about'].forEach(t => {
     const v = document.getElementById('view-' + t), b = document.getElementById('tab-' + t);
     if (v) v.classList.toggle('active', t === tab);
     if (b) b.classList.toggle('active', t === tab);
@@ -1115,8 +1262,11 @@ function closeModalBg(e, id) { if (e.target === document.getElementById(id)) clo
 
 function handleGoogleCredential(response) {
   var payload = JSON.parse(atob(response.credential.split('.')[1]));
+  payload.authMethod = 'google';
   currentUser = payload;
+  localStorage.setItem('han_session', JSON.stringify(currentUser));
   closeModal('loginOverlay');
+  closeModal('registerOverlay');
   renderUserPill(payload);
   updateLimitBar();
   // Save to Users sheet (backend deduplicates by email)
@@ -1147,10 +1297,12 @@ async function checkAndSetPremium(user) {
 async function saveUserToSheet(user) {
   try {
     const params = new URLSearchParams({
-      action: 'saveUser',
-      name:   user.name  || '',
-      email:  user.email || '',
-      ts:     new Date().toISOString()
+      action:   'saveUser',
+      name:     user.name    || '',
+      email:    user.email   || '',
+      country:  user.country || '',
+      authMethod: user.authMethod || 'google',
+      ts:       new Date().toISOString()
     });
     await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
   } catch(e) {}
@@ -1162,10 +1314,152 @@ function renderUserPill(user) {
     '<span>' + (user.given_name || user.name || user.email) + '</span></div>';
 }
 window.addEventListener('load', function () {
+  populateCountrySelect();
   if (typeof google === 'undefined') return;
   google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredential, auto_select: false });
-  google.accounts.id.renderButton(document.getElementById('googleSignInBtn'), { theme: 'outline', size: 'large', width: 320, text: 'signin_with' });
+  google.accounts.id.renderButton(document.getElementById('googleSignInBtn'), { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
+  google.accounts.id.renderButton(document.getElementById('googleSignInBtnReg'), { theme: 'outline', size: 'large', width: 300, text: 'signup_with' });
 });
+
+// ════════════════════════════════════════
+// AUTH — Email / Password
+// ════════════════════════════════════════
+const AUTH_URL = '/.netlify/functions/auth';
+
+const TERRITORIES = [
+  'Afghanistan','Albania','Algeria','Andorra','Angola','Antigua and Barbuda','Argentina','Armenia','Australia',
+  'Austria','Azerbaijan','Bahamas','Bahrain','Bangladesh','Barbados','Belarus','Belgium','Belize','Benin',
+  'Bhutan','Bolivia','Bosnia and Herzegovina','Botswana','Brazil','Brunei','Bulgaria','Burkina Faso','Burundi',
+  'Cabo Verde','Cambodia','Cameroon','Canada','Central African Republic','Chad','Chile','China','Colombia',
+  'Comoros','Congo (Brazzaville)','Congo (Kinshasa)','Costa Rica','Croatia','Cuba','Cyprus','Czech Republic',
+  'Denmark','Djibouti','Dominica','Dominican Republic','Ecuador','Egypt','El Salvador','Equatorial Guinea',
+  'Eritrea','Estonia','Eswatini','Ethiopia','Fiji','Finland','France','Gabon','Gambia','Georgia','Germany',
+  'Ghana','Greece','Grenada','Guatemala','Guinea','Guinea-Bissau','Guyana','Haiti','Honduras','Hungary',
+  'Iceland','India','Indonesia','Iran','Iraq','Ireland','Israel','Italy','Jamaica','Japan','Jordan',
+  'Kazakhstan','Kenya','Kiribati','Kuwait','Kyrgyzstan','Laos','Latvia','Lebanon','Lesotho','Liberia',
+  'Libya','Liechtenstein','Lithuania','Luxembourg','Madagascar','Malawi','Malaysia','Maldives','Mali',
+  'Malta','Marshall Islands','Mauritania','Mauritius','Mexico','Micronesia','Moldova','Monaco','Mongolia',
+  'Montenegro','Morocco','Mozambique','Myanmar','Namibia','Nauru','Nepal','Netherlands','New Zealand',
+  'Nicaragua','Niger','Nigeria','North Korea','North Macedonia','Norway','Oman','Pakistan','Palau',
+  'Panama','Papua New Guinea','Paraguay','Peru','Philippines','Poland','Portugal','Qatar','Romania',
+  'Russia','Rwanda','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Samoa',
+  'San Marino','São Tomé and Príncipe','Saudi Arabia','Senegal','Serbia','Seychelles','Sierra Leone',
+  'Singapore','Slovakia','Slovenia','Solomon Islands','Somalia','South Africa','South Korea','South Sudan',
+  'Spain','Sri Lanka','Sudan','Suriname','Sweden','Switzerland','Syria','Tajikistan','Tanzania','Thailand',
+  'Timor-Leste','Togo','Tonga','Trinidad and Tobago','Tunisia','Turkey','Turkmenistan','Tuvalu','Uganda',
+  'Ukraine','United Arab Emirates','United Kingdom','United States','Uruguay','Uzbekistan','Vanuatu',
+  'Vatican City','Venezuela','Vietnam','Yemen','Zambia','Zimbabwe',
+  // Key territories & regions
+  'Hong Kong','Macau','Taiwan','Kosovo','Palestine','Western Sahara','Puerto Rico','Bermuda',
+  'Cayman Islands','Gibraltar','Guam','Isle of Man','Jersey','Guernsey','Aruba','Curaçao',
+  'French Polynesia','New Caledonia','Réunion','Martinique','Guadeloupe','Mayotte'
+].sort();
+
+function populateCountrySelect() {
+  const sel = document.getElementById('regCountry');
+  if (!sel) return;
+  TERRITORIES.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    sel.appendChild(opt);
+  });
+}
+
+function switchLoginTab(tab) {
+  document.getElementById('loginPanelGoogle').style.display = tab === 'google' ? 'block' : 'none';
+  document.getElementById('loginPanelEmail').style.display  = tab === 'email'  ? 'block' : 'none';
+  document.getElementById('loginTabGoogle').classList.toggle('active', tab === 'google');
+  document.getElementById('loginTabEmail').classList.toggle('active',  tab === 'email');
+  document.getElementById('loginError').textContent = '';
+}
+
+function showRegister() {
+  closeModal('loginOverlay');
+  document.getElementById('registerError').textContent = '';
+  document.getElementById('regName').value = '';
+  document.getElementById('regEmail').value = '';
+  document.getElementById('regPassword').value = '';
+  document.getElementById('regPasswordConfirm').value = '';
+  document.getElementById('regCountry').value = '';
+  document.getElementById('registerOverlay').classList.add('open');
+}
+
+async function handleEmailLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl    = document.getElementById('loginError');
+  const btn      = document.getElementById('loginSubmitBtn');
+  errEl.textContent = '';
+  if (!email || !password) { errEl.textContent = 'Please enter your email and password.'; return; }
+  btn.textContent = 'Signing in…'; btn.disabled = true;
+  try {
+    const res  = await fetch(AUTH_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'login', email, password }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) { errEl.textContent = data.error || 'Sign in failed. Please try again.'; return; }
+    const user = data.user;
+    currentUser = { name: user.name, given_name: user.name.split(' ')[0], email: user.email, picture: null, sub: btoa(user.email), authMethod: 'email', country: user.country };
+    localStorage.setItem('han_session', JSON.stringify(currentUser));
+    closeModal('loginOverlay');
+    renderUserPill(currentUser);
+    updateLimitBar();
+    checkAndSetPremium(currentUser);
+    const seenKey = 'han_welcomed_' + currentUser.sub;
+    if (!localStorage.getItem(seenKey)) { localStorage.setItem(seenKey, '1'); setTimeout(() => document.getElementById('welcomeModal').classList.add('open'), 400); }
+  } catch(e) {
+    errEl.textContent = 'Connection error. Please try again.';
+  } finally {
+    btn.textContent = 'Sign In'; btn.disabled = false;
+  }
+}
+
+async function handleEmailRegister() {
+  const name    = document.getElementById('regName').value.trim();
+  const email   = document.getElementById('regEmail').value.trim();
+  const country = document.getElementById('regCountry').value;
+  const pass    = document.getElementById('regPassword').value;
+  const pass2   = document.getElementById('regPasswordConfirm').value;
+  const errEl   = document.getElementById('registerError');
+  const btn     = document.getElementById('registerSubmitBtn');
+  errEl.textContent = '';
+  if (!name)    { errEl.textContent = 'Please enter your name.'; return; }
+  if (!email)   { errEl.textContent = 'Please enter your email.'; return; }
+  if (!country) { errEl.textContent = 'Please select your country / territory.'; return; }
+  if (pass.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; return; }
+  if (pass !== pass2)  { errEl.textContent = 'Passwords do not match.'; return; }
+  btn.textContent = 'Creating account…'; btn.disabled = true;
+  try {
+    const res  = await fetch(AUTH_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'register', name, email, country, password: pass }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) { errEl.textContent = data.error || 'Registration failed. Please try again.'; return; }
+    const user = data.user;
+    currentUser = { name: user.name, given_name: user.name.split(' ')[0], email: user.email, picture: null, sub: btoa(user.email), authMethod: 'email', country: user.country };
+    localStorage.setItem('han_session', JSON.stringify(currentUser));
+    closeModal('registerOverlay');
+    renderUserPill(currentUser);
+    updateLimitBar();
+    checkAndSetPremium(currentUser);
+    const seenKey = 'han_welcomed_' + currentUser.sub;
+    localStorage.setItem(seenKey, '1');
+    setTimeout(() => document.getElementById('welcomeModal').classList.add('open'), 400);
+  } catch(e) {
+    errEl.textContent = 'Connection error. Please try again.';
+  } finally {
+    btn.textContent = 'Create Account'; btn.disabled = false;
+  }
+}
+
+// Restore session on page load
+(function restoreSession() {
+  const saved = localStorage.getItem('han_session');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      renderUserPill(currentUser);
+      updateLimitBar();
+      checkAndSetPremium(currentUser);
+    } catch(e) { localStorage.removeItem('han_session'); }
+  }
+})();
 
 // ════════════════════════════════════════
 // TOAST
