@@ -52,6 +52,12 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers: CORS_HEADERS, body: 'Method Not Allowed' };
   }
 
+  // Fail fast with a clear message if env vars are missing
+  if (!SHEETS_URL) {
+    console.error('auth.js: SHEETS_URL env var is not set');
+    return json(500, { error: 'Server configuration error: SHEETS_URL missing. Please contact support.' });
+  }
+
   let body;
   try {
     body = JSON.parse(event.body);
@@ -104,7 +110,7 @@ exports.handler = async (event) => {
       });
     } catch (e) {
       console.error('Register error:', e.message);
-      return json(500, { error: 'Registration failed. Please try again.' });
+      return json(500, { error: 'Registration failed: ' + e.message });
     }
   }
 

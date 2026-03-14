@@ -1602,9 +1602,9 @@ function appendMessage(role, content, imageDataUrl) {
     setTimeout(() => addSimilarBtn(bubble), 200);
     setTimeout(() => addFeedbackBar(bubble, content), 250);
   }
-  // Typeset MathJax immediately after inserting content
+  // Typeset MathJax immediately after inserting content, then re-scroll
   if (content && window.MathJax && MathJax.typesetPromise) {
-    MathJax.typesetPromise([bubble]).catch(() => {});
+    MathJax.typesetPromise([bubble]).then(() => { area.scrollTop = area.scrollHeight; }).catch(() => {});
   }
   return bubble;
 }
