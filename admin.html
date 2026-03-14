@@ -969,7 +969,8 @@ async function saveToSheets() {
         examinerNote:  q['Examiner Note'],
         solutionUrl:   q['Solution URL'],
       });
-      await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
+      const resp = await fetch(SHEETS_URL + '?' + params.toString(), { redirect: 'follow' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
       saved++;
     } catch {
       failed++;
