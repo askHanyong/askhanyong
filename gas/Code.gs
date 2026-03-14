@@ -126,9 +126,19 @@ function checkPremium(params) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+// ── Ensure Users sheet has correct headers ────────────────────────
+function ensureUserSheetHeaders(sheet) {
+  const correct = ['Email', 'Name', 'Country', 'AuthMethod', 'HashedPassword', 'Last Seen'];
+  const existing = sheet.getRange(1, 1, 1, correct.length).getValues()[0];
+  const needsFix = correct.some((h, i) => existing[i] !== h);
+  if (needsFix) {
+    sheet.getRange(1, 1, 1, correct.length).setValues([correct]);
+  }
+}
+
 // ── Save / update a Google OAuth user in the Users sheet ─────────
 // Called by saveUserToSheet() on frontend after Google sign-in.
-// Columns: Email | Name | Country | AuthMethod | Last Seen
+// Columns: Email | Name | Country | AuthMethod | HashedPassword | Last Seen
 function saveUser(params) {
   const email = (params.email || '').toLowerCase().trim();
   if (!email) {
@@ -142,6 +152,8 @@ function saveUser(params) {
   if (!sheet) {
     sheet = ss.insertSheet('Users');
     sheet.getRange(1, 1, 1, 6).setValues([['Email', 'Name', 'Country', 'AuthMethod', 'HashedPassword', 'Last Seen']]);
+  } else {
+    ensureUserSheetHeaders(sheet);
   }
 
   const data = sheet.getDataRange().getValues();
@@ -192,6 +204,8 @@ function registerUser(params) {
   if (!sheet) {
     sheet = ss.insertSheet('Users');
     sheet.getRange(1, 1, 1, 6).setValues([['Email', 'Name', 'Country', 'AuthMethod', 'HashedPassword', 'Last Seen']]);
+  } else {
+    ensureUserSheetHeaders(sheet);
   }
 
   sheet.appendRow([

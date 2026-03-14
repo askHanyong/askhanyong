@@ -847,23 +847,26 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="modal-box" onclick="event.stopPropagation()" style="max-width:400px">
     <div class="modal-icon">🎉</div>
     <h2 style="margin-bottom:6px">Welcome to HAN!</h2>
-    <p style="margin-bottom:16px;font-size:13px;color:var(--text-mid);line-height:1.6">You're one of HAN's first beta students. Here's what you get <strong>free today</strong>:</p>
+    <p style="margin-bottom:16px;font-size:13px;color:var(--text-mid);line-height:1.6">askHanyong is <strong>free</strong> for every IB student — no catch, no paywall. Just ask.</p>
     <div style="background:var(--ice-light);border:1.5px solid var(--blue);border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:left">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <span style="font-size:22px">📷</span>
-        <div><div style="font-size:13px;font-weight:700;color:var(--text)">5 photo/upload questions</div><div style="font-size:11px;color:var(--text-soft)">Snap a question, HAN solves it with full working</div></div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--text)">Upload or snap questions</div><div style="font-size:11px;color:var(--text-soft)">Photo of your worksheet? HAN solves it with full working</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:22px">✏️</span>
+        <div><div style="font-size:13px;font-weight:700;color:var(--text)">Type any IB Math question</div><div style="font-size:11px;color:var(--text-soft)">Get clear, step-by-step answers instantly</div></div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:22px">✏️</span>
-        <div><div style="font-size:13px;font-weight:700;color:var(--text)">10 typed questions</div><div style="font-size:11px;color:var(--text-soft)">Type any IB Math question, get step-by-step help</div></div>
+        <span style="font-size:22px">🎓</span>
+        <div><div style="font-size:13px;font-weight:700;color:var(--text)">Learn at your own pace</div><div style="font-size:11px;color:var(--text-soft)">Concept explainers, exam tips, mock paper practice</div></div>
       </div>
     </div>
-    <div style="background:#fef9c3;border:1.5px solid #fbbf24;border-radius:12px;padding:14px 16px;margin-bottom:18px;text-align:left">
-      <div style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">⏳ Beta Offer — Limited Time</div>
-      <div style="font-size:13px;color:#78350f;line-height:1.6">As one of our first students, unlock <strong>unlimited access for S$45 once</strong> — no subscription ever. After beta, this becomes S$45/month.</div>
+    <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:12px 16px;margin-bottom:18px;text-align:left">
+      <div style="font-size:12px;color:#166534;line-height:1.6">💚 <strong>Keeping the servers running</strong> costs real money. If HAN has helped you, a small one-time contribution makes a big difference — but it's completely optional. You get full access either way.</div>
     </div>
     <button class="modal-cta" onclick="closeModal('welcomeModal')" style="margin-bottom:8px">Start Asking HAN →</button>
-    <div style="font-size:12px;color:var(--text-soft);text-align:center;cursor:pointer" onclick="closeModal('welcomeModal');showUpgrade()">See beta pricing →</div>
+    <div style="font-size:12px;color:var(--text-soft);text-align:center;cursor:pointer" onclick="closeModal('welcomeModal');showUpgrade()">Support the project →</div>
   </div>
 </div>
 
@@ -943,6 +946,31 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
     <div id="googleSignInBtnReg" style="display:flex;justify-content:center;margin-top:12px"></div>
     <div class="modal-note" style="margin-top:10px">Free · No credit card needed</div>
+  </div>
+</div>
+
+<!-- User account dropdown modal -->
+<div class="modal-overlay" id="userAccountModal" onclick="closeModalBg(event,'userAccountModal')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:340px">
+    <button class="modal-close" onclick="closeModal('userAccountModal')">✕</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+      <div id="accountAvatarWrap" style="width:44px;height:44px;border-radius:50%;overflow:hidden;background:var(--ice);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--blue);flex-shrink:0"></div>
+      <div style="min-width:0">
+        <div id="accountName" style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+        <div id="accountEmail" style="font-size:12px;color:var(--text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button onclick="closeModal('userAccountModal');showUpgrade()" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--ice-light);border:1.5px solid var(--blue);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--blue);width:100%;text-align:left">
+        <span style="font-size:18px">🙏</span> Support the project
+      </button>
+      <button onclick="switchUser()" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-mid);width:100%;text-align:left">
+        <span style="font-size:18px">🔄</span> Change account
+      </button>
+      <button onclick="logOut()" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#fff5f5;border:1.5px solid #fca5a5;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#dc2626;width:100%;text-align:left">
+        <span style="font-size:18px">🚪</span> Log out
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1309,9 +1337,40 @@ async function saveUserToSheet(user) {
 }
 function renderUserPill(user) {
   document.getElementById('userPillArea').innerHTML =
-    '<div class="user-pill" onclick="showUpgrade()">' +
-    (user.picture ? '<img src="' + user.picture + '" alt="">' : '') +
+    '<div class="user-pill" onclick="showAccountMenu()">' +
+    (user.picture ? '<img src="' + user.picture + '" alt="">' : '<div style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white">' + (user.given_name || user.name || user.email || '?')[0].toUpperCase() + '</div>') +
     '<span>' + (user.given_name || user.name || user.email) + '</span></div>';
+}
+
+function showAccountMenu() {
+  if (!currentUser) return;
+  const name = currentUser.name || currentUser.given_name || currentUser.email || '';
+  const email = currentUser.email || '';
+  const pic = currentUser.picture || '';
+  const avatarEl = document.getElementById('accountAvatarWrap');
+  if (pic) {
+    avatarEl.innerHTML = '<img src="' + pic + '" alt="" style="width:44px;height:44px;object-fit:cover">';
+  } else {
+    avatarEl.textContent = (name || email || '?')[0].toUpperCase();
+  }
+  document.getElementById('accountName').textContent = name;
+  document.getElementById('accountEmail').textContent = email;
+  document.getElementById('userAccountModal').classList.add('open');
+}
+
+function logOut() {
+  closeModal('userAccountModal');
+  localStorage.removeItem('han_session');
+  sessionStorage.clear();
+  currentUser = null;
+  document.getElementById('userPillArea').innerHTML = '<button class="sign-in-btn" onclick="showLogin()">Sign in</button>';
+  document.getElementById('limitBar').style.display = 'none';
+}
+
+function switchUser() {
+  closeModal('userAccountModal');
+  logOut();
+  setTimeout(showLogin, 150);
 }
 window.addEventListener('load', function () {
   populateCountrySelect();
