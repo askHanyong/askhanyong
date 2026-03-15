@@ -540,9 +540,12 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .about-stat-num { font-size:22px; font-weight:800; color:white; }
 .about-stat-lbl { font-size:10px; color:rgba(255,255,255,0.65); margin-top:3px; }
 
-/* ── Share button ── */
+/* ── Share / Download buttons ── */
 .share-btn { padding:5px 12px; border:1.5px solid var(--border); border-radius:20px; background:white; font-size:12px; font-weight:600; color:var(--text-mid); cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.15s; margin-top:8px; font-family:'Inter',sans-serif; }
 .share-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--ice-light); }
+.download-btn { padding:5px 12px; border:1.5px solid var(--border); border-radius:20px; background:white; font-size:12px; font-weight:600; color:var(--text-mid); cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.15s; margin-top:8px; margin-left:6px; font-family:'Inter',sans-serif; }
+.download-btn:hover { border-color:var(--green); color:var(--green); background:#f0fdf4; }
+.download-btn:disabled { opacity:0.55; cursor:not-allowed; }
 
 /* ── Try this next ── */
 .try-next-bar { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
@@ -1904,6 +1907,7 @@ function appendMessage(role, content, imageDataUrl) {
     setTimeout(() => addSimilarBtn(bubble), 200);
     setTimeout(() => addFeedbackBar(bubble, content), 250);
     setTimeout(() => addShareBtn(bubble), 300);
+    setTimeout(() => addDownloadBtn(bubble), 320);
     setTimeout(() => addTryNextSuggestions(bubble), 350);
   }
   // Typeset MathJax immediately after inserting content, then re-scroll
@@ -3142,6 +3146,154 @@ function addShareBtn(bubble) {
     else show();
   }
 })();
+
+// ════════════════════════════════════════
+// DOWNLOAD EXPLANATION AS PDF
+// ════════════════════════════════════════
+function addDownloadBtn(bubble) {
+  const btn = document.createElement('button');
+  btn.className = 'download-btn';
+  btn.innerHTML = '⬇ Save as PDF';
+  btn.onclick = () => downloadAnswerPDF(btn);
+  bubble.appendChild(btn);
+}
+
+function downloadAnswerPDF(triggerBtn) {
+  if (triggerBtn) { triggerBtn.textContent = '⏳ Generating…'; triggerBtn.disabled = true; }
+  try {
+    const { jsPDF } = window.jspdf;
+
+    // Pull raw content from conversation history
+    const lastAssistant = [...conversationHistory].reverse().find(m => m.role === 'assistant');
+    const lastUser      = [...conversationHistory].reverse().find(m => m.role === 'user');
+    const rawAnswer   = typeof lastAssistant?.content === 'string' ? lastAssistant.content : '';
+    const rawQuestion = Array.isArray(lastUser?.content)
+      ? (lastUser.content.find(b => b.type === 'text')?.text || '')
+      : (lastUser?.content || '');
+    const hadImage = Array.isArray(lastUser?.content) && lastUser.content.some(b => b.type === 'image');
+
+    // Strip LaTeX / markdown for plain-text PDF rendering
+    function clean(t) {
+      return (t || '')
+        .replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1')
+        .replace(/#{1,6}\s/g, '')
+        .replace(/\$\$[\s\S]*?\$\$/g, '[equation]').replace(/\\\[[\s\S]*?\\\]/g, '[equation]')
+        .replace(/\\\(([^)]+)\\\)/g, '$1').replace(/\$([^$\n]+)\$/g, '$1')
+        .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1)/($2)')
+        .replace(/\\sqrt\{([^}]+)\}/g, 'sqrt($1)')
+        .replace(/\\left[\(\[{]/g, '(').replace(/\\right[\)\]}]/g, ')')
+        .replace(/\\[a-zA-Z]+\{([^}]*)\}/g, '$1').replace(/\\[a-zA-Z]+/g, '')
+        .replace(/[{}]/g, '').replace(/<[^>]+>/g, '').replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW = 210, pageH = 297, margin = 18, cW = 174; // contentWidth = 210 - 2*18
+    let y = margin;
+    const navy = [14, 28, 51], blue = [29, 78, 216], gold = [201, 168, 76];
+    const lightBlue = [239, 246, 255], black = [17, 24, 39];
+    const green = [5, 150, 105], amber = [245, 158, 11];
+
+    function drawHeader() {
+      doc.setFillColor(...navy); doc.rect(0, 0, pageW, 8, 'F');
+      doc.setFillColor(...gold); doc.rect(0, 6, pageW, 2, 'F');
+    }
+    function drawFooter() {
+      doc.setFillColor(...navy); doc.rect(0, pageH - 12, pageW, 12, 'F');
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(160, 185, 220);
+      doc.text('Powered by HAN · Built by Hanyong Lim, IB HL Mathematics Examiner · askhanyong.com', pageW / 2, pageH - 4.5, { align: 'center' });
+    }
+    function checkPage(needed) {
+      if (y + needed > pageH - 20) { drawFooter(); doc.addPage(); drawHeader(); y = 18; }
+    }
+
+    drawHeader();
+
+    // Title block
+    doc.setFillColor(...navy);
+    doc.roundedRect(margin, 14, cW, 28, 3, 3, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor(255, 255, 255);
+    doc.text("HAN's Explanation", margin + 8, 26);
+    doc.setFontSize(8); doc.setTextColor(...gold);
+    doc.text('askHanyong · IB Math AI Tutor · Built on 20+ years of examiner experience', margin + 8, 33);
+    const date = new Date().toLocaleDateString('en-SG', { day: 'numeric', month: 'long', year: 'numeric' });
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(160, 190, 230);
+    const ctx = [selectedLevel, selectedPaper, selectedSubjectTopic !== 'All Topics' ? selectedSubjectTopic : null, date].filter(Boolean).join('  ·  ');
+    doc.text(ctx, margin + 8, 39);
+    y = 52;
+
+    // Question box
+    const qText = rawQuestion ? clean(rawQuestion) : (hadImage ? '(Question uploaded as image)' : '');
+    if (qText) {
+      const qLines = doc.splitTextToSize(qText, cW - 14);
+      const qBoxH = qLines.length * 5 + 14;
+      checkPage(qBoxH + 8);
+      doc.setFillColor(...lightBlue);
+      doc.roundedRect(margin, y, cW, qBoxH, 3, 3, 'F');
+      doc.setDrawColor(...blue); doc.setLineWidth(0.4);
+      doc.roundedRect(margin, y, cW, qBoxH, 3, 3, 'S');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...blue);
+      doc.text('Question', margin + 6, y + 7);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...black);
+      qLines.forEach((line, i) => doc.text(line, margin + 6, y + 13 + i * 5));
+      y += qBoxH + 8;
+    }
+
+    // Section header
+    checkPage(12);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...navy);
+    doc.text("HAN's Explanation", margin, y); y += 2;
+    doc.setDrawColor(...gold); doc.setLineWidth(0.8);
+    doc.line(margin, y, margin + 44, y); y += 7;
+
+    // Render paragraphs
+    const paragraphs = clean(rawAnswer).split(/\n\n+/);
+    paragraphs.forEach(para => {
+      const p = para.trim();
+      if (!p) return;
+      const isStep     = /^(step\s*\d+|\d+[\.\)])/i.test(p);
+      const isExaminer = /examiner|mark scheme|\bnote\b|tip:/i.test(p);
+      const isWarning  = /warning|common mistake|avoid:/i.test(p);
+
+      if (isStep || isExaminer || isWarning) {
+        const lines = doc.splitTextToSize(p, cW - 14);
+        const bH = lines.length * 5 + 8;
+        checkPage(bH + 4);
+        if (isStep) {
+          doc.setFillColor(239, 246, 255); doc.rect(margin, y, cW, bH, 'F');
+          doc.setFillColor(...blue); doc.rect(margin, y, 2.5, bH, 'F');
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...blue);
+          doc.text(lines[0], margin + 6, y + 5.5);
+          doc.setFont('helvetica', 'normal'); doc.setTextColor(...black);
+          lines.slice(1).forEach((l, i) => doc.text(l, margin + 6, y + 10 + i * 5));
+        } else if (isExaminer) {
+          doc.setFillColor(240, 253, 244); doc.rect(margin, y, cW, bH, 'F');
+          doc.setFillColor(...green); doc.rect(margin, y, 2.5, bH, 'F');
+          doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(22, 101, 52);
+          lines.forEach((l, i) => doc.text(l, margin + 6, y + 5.5 + i * 5));
+        } else {
+          doc.setFillColor(255, 253, 195); doc.rect(margin, y, cW, bH, 'F');
+          doc.setFillColor(...amber); doc.rect(margin, y, 2.5, bH, 'F');
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(120, 53, 15);
+          lines.forEach((l, i) => doc.text(l, margin + 6, y + 5.5 + i * 5));
+        }
+        y += bH + 4;
+      } else {
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...black);
+        const lines = doc.splitTextToSize(p, cW);
+        lines.forEach(line => { checkPage(5.5); doc.text(line, margin, y); y += 5.5; });
+        y += 3;
+      }
+    });
+
+    drawFooter();
+    doc.save(`HAN_Explanation_${new Date().toISOString().slice(0, 10)}.pdf`);
+    showToast('Explanation saved as PDF! 📄');
+  } catch (err) {
+    console.error('PDF error:', err);
+    showToast('PDF generation failed. Try again.');
+  }
+  if (triggerBtn) { triggerBtn.textContent = '⬇ Save as PDF'; triggerBtn.disabled = false; }
+}
 
 // ════════════════════════════════════════
 // TRY THIS NEXT
