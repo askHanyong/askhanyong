@@ -75,6 +75,15 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 .bubble img { max-width:100%; border-radius:8px; margin-bottom:8px; }
 .stream-cursor { display:inline-block; width:2px; height:1em; background:var(--gold,#C9A84C); vertical-align:middle; margin-left:2px; animation:blink 0.8s step-end infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.new-chat-btn { padding:5px 12px; background:var(--ice); border:1.5px solid var(--border); border-radius:14px; font-size:12px; font-weight:700; color:var(--blue); cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap; transition:background 0.15s; margin-right:6px; }
+.new-chat-btn:hover { background:var(--ice-light); }
+.recent-chats-row { margin-top:16px; width:100%; max-width:360px; }
+.recent-chats-label { font-size:11px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; text-align:left; }
+.recent-chat-chip { display:flex; align-items:center; gap:8px; width:100%; padding:9px 12px; background:white; border:1.5px solid var(--border); border-radius:10px; font-size:12px; color:var(--text); cursor:pointer; font-family:'Inter',sans-serif; text-align:left; transition:border-color 0.15s; margin-bottom:6px; }
+.recent-chat-chip:hover { border-color:var(--blue); }
+.recent-chat-chip-icon { font-size:14px; flex-shrink:0; }
+.recent-chat-chip-title { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500; }
+.recent-chat-chip-time { font-size:10px; color:var(--text-soft); flex-shrink:0; }
 .bubble h3 { font-size:14px; font-weight:700; color:var(--text); margin:10px 0 4px; }
 .bubble strong { font-weight:700; color:var(--text); }
 .bubble .step { background:var(--ice-light); border-left:3px solid var(--blue); padding:8px 12px; border-radius:0 8px 8px 0; margin:8px 0; }
@@ -564,7 +573,10 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="han-badge">HAN</div>
     <div class="logo-text"><h1>askHanyong</h1><span>IB Math AI Tutor</span></div>
   </div>
-  <div class="header-right"><div id="userPillArea"><button class="sign-in-btn" onclick="showLogin()">Sign in</button></div></div>
+  <div class="header-right">
+    <button class="new-chat-btn" id="newChatBtn" onclick="startNewChat()" title="New chat" style="display:none">＋ New</button>
+    <div id="userPillArea"><button class="sign-in-btn" onclick="showLogin()">Sign in</button></div>
+  </div>
 </header>
 <div class="limit-bar" id="limitBar">
   <div class="limit-track-group">
@@ -634,6 +646,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         </span>
         <span style="color:rgba(255,255,255,0.6);font-size:18px;flex-shrink:0">›</span>
       </button>
+      <div class="recent-chats-row" id="recentChatsRow" style="display:none"></div>
     </div>
   </div>
   <div class="input-area">
@@ -1022,11 +1035,11 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div class="auth-form">
         <div class="auth-field">
           <label class="auth-label">Email</label>
-          <input class="auth-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
+          <input class="auth-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')handleEmailLogin()">
         </div>
         <div class="auth-field">
           <label class="auth-label">Password</label>
-          <input class="auth-input" id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password">
+          <input class="auth-input" id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')handleEmailLogin()">
         </div>
         <div class="auth-error" id="loginError"></div>
         <button class="modal-cta" style="margin-bottom:6px" onclick="handleEmailLogin()" id="loginSubmitBtn">Sign In</button>
@@ -1051,7 +1064,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       </div>
       <div class="auth-field">
         <label class="auth-label">Email</label>
-        <input class="auth-input" id="regEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        <input class="auth-input" id="regEmail" type="email" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')handleEmailRegister()">
       </div>
       <div class="auth-field">
         <label class="auth-label">Country / Territory</label>
@@ -1061,11 +1074,11 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       </div>
       <div class="auth-field">
         <label class="auth-label">Password</label>
-        <input class="auth-input" id="regPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password">
+        <input class="auth-input" id="regPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')handleEmailRegister()">
       </div>
       <div class="auth-field">
         <label class="auth-label">Confirm Password</label>
-        <input class="auth-input" id="regPasswordConfirm" type="password" placeholder="Repeat your password" autocomplete="new-password">
+        <input class="auth-input" id="regPasswordConfirm" type="password" placeholder="Repeat your password" autocomplete="new-password" onkeydown="if(event.key==='Enter')handleEmailRegister()">
       </div>
       <div class="auth-error" id="registerError"></div>
       <button class="modal-cta" style="margin-bottom:6px" onclick="handleEmailRegister()" id="registerSubmitBtn">Create Account</button>
@@ -1463,6 +1476,20 @@ function setCtx(el, group) {
   if (group === 'topic') selectedSubjectTopic = val;
 }
 
+// Apply context chips from a record's metadata (used by practice/mock → chat flows)
+function applyContext(level, paper, topic) {
+  const paperAlias = { 'P1': 'Paper 1', 'P2': 'Paper 2', 'P3': 'Paper 3' };
+  const topicAlias = { 'Geometry': 'Geometry & Trigonometry', 'Statistics': 'Statistics & Probability', 'Algebra': 'Number & Algebra', 'Complex': 'Complex Numbers' };
+  const pv = paperAlias[paper] || paper;
+  const tv = topicAlias[topic] || topic;
+  const lvlEl = level && document.querySelector(`[data-group="level"][data-val="${level}"]`);
+  const ppEl  = pv    && document.querySelector(`[data-group="paper"][data-val="${pv}"]`);
+  const tpEl  = tv    && document.querySelector(`[data-group="topic"][data-val="${tv}"]`);
+  if (lvlEl) setCtx(lvlEl, 'level');
+  if (ppEl)  setCtx(ppEl,  'paper');
+  if (tpEl)  setCtx(tpEl,  'topic');
+}
+
 // ════════════════════════════════════════
 // QUESTION COUNTING / LIMITS
 // Upload questions = photo/screenshot, Typed = text-only
@@ -1482,6 +1509,17 @@ function updateLimitBar() {
   const uploadFill = document.getElementById('limitFillUpload'), typedFill = document.getElementById('limitFillTyped');
   if (!currentUser) { if (bar) bar.style.display = 'none'; return; }
   if (bar) bar.style.display = 'flex';
+
+  if (checkPremiumStatus() || isAdmin) {
+    bar.querySelectorAll('.limit-track-group, .limit-sep').forEach(el => el.style.display = 'none');
+    const upgradeBtn = bar.querySelector('.upgrade-btn-small'); if (upgradeBtn) upgradeBtn.style.display = 'none';
+    if (txt) { txt.style.cssText = 'font-size:11px;color:var(--green);font-weight:700;white-space:nowrap'; txt.textContent = '✨ Unlimited'; }
+    return;
+  }
+
+  bar.querySelectorAll('.limit-track-group, .limit-sep').forEach(el => el.style.display = '');
+  const upgradeBtn = bar.querySelector('.upgrade-btn-small'); if (upgradeBtn) upgradeBtn.style.display = '';
+
   const uploads = getCount('upload'), typed = getCount('typed');
   const remU = Math.max(0, FREE_UPLOAD_LIMIT - uploads);
   const remT = Math.max(0, FREE_TYPED_LIMIT - typed);
@@ -1493,9 +1531,13 @@ function updateLimitBar() {
   if (typedFill) {
     const pct = Math.min(100, (typed / FREE_TYPED_LIMIT) * 100);
     typedFill.style.width = pct + '%';
-    typedFill.style.background = typed >= FREE_TYPED_LIMIT ? 'linear-gradient(90deg,#dc2626,#f87171)' : 'var(--green)';
+    typedFill.style.background = typed >= FREE_TYPED_LIMIT ? 'linear-gradient(90deg,#dc2626,#f87171)' : pct >= 80 ? 'linear-gradient(90deg,#f59e0b,#fbbf24)' : 'var(--green)';
   }
-  if (txt) txt.textContent = remU + ' upload' + (remU !== 1 ? 's' : '') + ' · ' + remT + ' typed left today';
+  const urgentT = remT <= 2, warnT = remT <= 5;
+  if (txt) {
+    txt.style.cssText = 'font-size:11px;white-space:nowrap;font-weight:' + (urgentT ? '700' : warnT ? '600' : '400') + ';color:' + (urgentT ? '#dc2626' : warnT ? '#b45309' : 'var(--text-mid)');
+    txt.textContent = remT + ' typed' + (remU < FREE_UPLOAD_LIMIT ? ' · ' + remU + ' upload' + (remU !== 1 ? 's' : '') : '') + ' left today';
+  }
 }
 function checkPremiumStatus() {
   const key = currentUser ? 'han_premium_' + currentUser.sub : null;
@@ -2158,6 +2200,94 @@ Always choose bounds that show the full relevant domain of the function.`;
 }
 
 // ════════════════════════════════════════
+// CONVERSATION HISTORY (New Chat / Recent Chats)
+// ════════════════════════════════════════
+const MAX_SAVED_CHATS = 5;
+
+function getSavedChats() {
+  try { return JSON.parse(localStorage.getItem('han_chats') || '[]'); } catch (e) { return []; }
+}
+
+function saveCurrentChat() {
+  if (!conversationHistory.length) return;
+  const firstUser = conversationHistory.find(m => m.role === 'user');
+  if (!firstUser) return;
+  const rawTitle = Array.isArray(firstUser.content)
+    ? (firstUser.content.find(b => b.type === 'text')?.text || '')
+    : String(firstUser.content);
+  const title = rawTitle.trim().slice(0, 80) || 'Untitled chat';
+  const chats = getSavedChats().filter(c => c.id !== _currentChatId);
+  chats.unshift({ id: _currentChatId, ts: Date.now(), title, messages: conversationHistory.slice(), level: selectedLevel, paper: selectedPaper, topic: selectedSubjectTopic });
+  localStorage.setItem('han_chats', JSON.stringify(chats.slice(0, MAX_SAVED_CHATS)));
+}
+
+let _currentChatId = Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+
+function startNewChat() {
+  saveCurrentChat();
+  conversationHistory = [];
+  _currentChatId = Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+  const area = document.getElementById('chatArea');
+  area.innerHTML = `<div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-avatar">HAN</div>
+    <h2>New chat</h2>
+    <p>Ask me anything — IB Math, worked solutions, exam tips.</p>
+    <div class="recent-chats-row" id="recentChatsRow" style="display:none"></div>
+  </div>`;
+  document.getElementById('newChatBtn').style.display = 'none';
+  renderRecentChats();
+}
+
+function loadChat(id) {
+  const chats = getSavedChats();
+  const chat = chats.find(c => c.id === id);
+  if (!chat) return;
+  saveCurrentChat();
+  conversationHistory = chat.messages.slice();
+  _currentChatId = chat.id;
+  // Restore context
+  const lvlEl = document.querySelector(`[data-group="level"][data-val="${chat.level}"]`);
+  if (lvlEl) setCtx(lvlEl, 'level');
+  const ppEl = document.querySelector(`[data-group="paper"][data-val="${chat.paper}"]`);
+  if (ppEl) setCtx(ppEl, 'paper');
+  const tpEl = document.querySelector(`[data-group="topic"][data-val="${chat.topic}"]`);
+  if (tpEl) setCtx(tpEl, 'topic');
+  // Rebuild chat DOM
+  const area = document.getElementById('chatArea');
+  area.innerHTML = '';
+  conversationHistory.forEach(msg => {
+    const role = msg.role === 'user' ? 'user' : 'han';
+    const text = Array.isArray(msg.content) ? (msg.content.find(b => b.type === 'text')?.text || '') : String(msg.content);
+    if (text) appendMessage(role, text);
+  });
+  document.getElementById('newChatBtn').style.display = '';
+}
+
+function renderRecentChats() {
+  const row = document.getElementById('recentChatsRow');
+  if (!row) return;
+  const chats = getSavedChats();
+  if (!chats.length) { row.style.display = 'none'; return; }
+  row.style.display = '';
+  const now = Date.now();
+  function relTime(ts) {
+    const s = Math.floor((now - ts) / 1000);
+    if (s < 60) return 'just now';
+    if (s < 3600) return Math.floor(s / 60) + 'm ago';
+    if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+    return Math.floor(s / 86400) + 'd ago';
+  }
+  row.innerHTML = '<div class="recent-chats-label">Recent chats</div>' +
+    chats.slice(0, 3).map(c =>
+      `<button class="recent-chat-chip" onclick="loadChat('${c.id.replace(/'/g, '')}')">
+        <span class="recent-chat-chip-icon">💬</span>
+        <span class="recent-chat-chip-title">${c.title.replace(/</g, '&lt;')}</span>
+        <span class="recent-chat-chip-time">${relTime(c.ts)}</span>
+      </button>`
+    ).join('');
+}
+
+// ════════════════════════════════════════
 // STREAMING HELPERS
 // ════════════════════════════════════════
 function appendStreamingMessage() {
@@ -2233,6 +2363,7 @@ async function sendMessage() {
   userContent.push({ type: 'text', text: text || 'Please solve this question.' });
   conversationHistory.push({ role: 'user', content: userContent });
   input.value = ''; input.style.height = 'auto'; removeImage();
+  document.getElementById('newChatBtn').style.display = '';
   showTyping();
   try {
     let repositoryContext = null;
@@ -2456,15 +2587,16 @@ function closeSheet() { document.getElementById('sheetOverlay').classList.remove
 function closeSheetBg(e) { if (e.target === document.getElementById('sheetOverlay')) closeSheet(); }
 function askHANAboutSheet() {
   if (!currentSheetRecord) return;
-  // Track practice attempt
   const qid = currentSheetRecord['Question ID'];
   if (qid) {
     const data = loadProgress();
     data.practiceAttempts[qid] = { time: new Date().toISOString() };
     saveProgress(data);
   }
+  const meta = enrichRecord(currentSheetRecord);
   closeSheet();
   switchTab('chat');
+  applyContext(meta.level, meta.paper, meta.topic);
   setTimeout(() => {
     const inp = document.getElementById('userInput');
     const ref = buildRef(currentSheetRecord);
@@ -2558,7 +2690,9 @@ function toggleMQ(i) { document.getElementById('mqb' + i).classList.toggle('open
 function askHANMockQ(i) {
   const q = mockPaperData[i]; if (!q) return;
   const ref = buildRef(q);
+  const meta = enrichRecord(q);
   switchTab('chat');
+  applyContext(meta.level, meta.paper, meta.topic);
   setTimeout(() => {
     const inp = document.getElementById('userInput');
     inp.value = `Help me with Q${i + 1} on my mock paper — ${ref}. Topic: ${q['Topic'] || ''}`;
@@ -2833,15 +2967,27 @@ async function resetProgress() {
 // SOFT NUDGE (80% limit warning)
 // ════════════════════════════════════════
 let _nudgeDismissedUpload = false, _nudgeDismissedTyped = false;
+let _nudgeSoftShownTyped = false, _nudgeSoftShownUpload = false;
 
 function checkNudge(type) {
   if (!currentUser || isAdmin || checkPremiumStatus()) return;
   const count = getCount(type);
   const limit = type === 'upload' ? FREE_UPLOAD_LIMIT : FREE_TYPED_LIMIT;
-  const threshold = Math.floor(limit * 0.8);
   const remaining = limit - count;
   const dismissed = type === 'upload' ? _nudgeDismissedUpload : _nudgeDismissedTyped;
   if (dismissed) return;
+
+  // Soft nudge at Q3 (typed only) — one-time gentle message
+  if (type === 'typed' && count === 3 && !_nudgeSoftShownTyped) {
+    _nudgeSoftShownTyped = true;
+    document.getElementById('nudgeText').innerHTML =
+      `Students with unlimited access average <strong>40% more practice time</strong> — S$45, one-time`;
+    document.getElementById('nudgeBar').classList.add('show');
+    return;
+  }
+
+  // Urgent nudge at 80%
+  const threshold = Math.floor(limit * 0.8);
   if (count >= threshold && count < limit) {
     const noun = type === 'upload' ? 'upload' : 'typed question';
     const plural = remaining !== 1 ? 's' : '';
@@ -3185,9 +3331,10 @@ function finishOnboarding() {
 
 // Kick off onboarding check after load
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => setTimeout(checkOnboarding, 800));
+  document.addEventListener('DOMContentLoaded', () => { setTimeout(checkOnboarding, 800); renderRecentChats(); });
 } else {
   setTimeout(checkOnboarding, 800);
+  renderRecentChats();
 }
 
 // ════════════════════════════════════════
