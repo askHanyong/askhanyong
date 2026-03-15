@@ -539,6 +539,18 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .about-stat { background:rgba(255,255,255,0.12); border-radius:12px; padding:12px 8px; text-align:center; }
 .about-stat-num { font-size:22px; font-weight:800; color:white; }
 .about-stat-lbl { font-size:10px; color:rgba(255,255,255,0.65); margin-top:3px; }
+
+/* ── Share button ── */
+.share-btn { padding:5px 12px; border:1.5px solid var(--border); border-radius:20px; background:white; font-size:12px; font-weight:600; color:var(--text-mid); cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.15s; margin-top:8px; font-family:'Inter',sans-serif; }
+.share-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--ice-light); }
+
+/* ── Try this next ── */
+.try-next-bar { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+.try-next-label { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+.try-next-chips { display:flex; flex-direction:column; gap:6px; }
+.try-next-chip { text-align:left; padding:8px 12px; border:1.5px solid var(--border); border-radius:10px; background:var(--bg); font-size:12px; color:var(--text-mid); cursor:pointer; transition:all 0.15s; display:flex; justify-content:space-between; align-items:center; gap:8px; font-family:'Inter',sans-serif; width:100%; }
+.try-next-chip:hover { border-color:var(--blue); background:var(--ice-light); color:var(--text); }
+.try-next-chip .tnc-meta { font-size:10px; color:var(--text-soft); white-space:nowrap; flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -1131,6 +1143,34 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
     <div class="modal-note" style="margin-top:10px">Secure payment via Stripe</div>
     <div style="margin-top:8px;text-align:center"><span style="font-size:11px;color:var(--text-soft);cursor:pointer" onclick="closeModal('upgradeOverlay')">Continue with free access →</span></div>
+    <div style="margin-top:8px;text-align:center"><span style="font-size:11px;color:var(--blue);cursor:pointer;font-weight:600" onclick="closeModal('upgradeOverlay');document.getElementById('thankYouOverlay').classList.add('open')">I just contributed →</span></div>
+
+    <!-- Gift section -->
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;text-align:left">🎁 Gift to a student</div>
+      <p style="font-size:12px;color:var(--text-soft);line-height:1.55;margin-bottom:10px;text-align:left">Know someone preparing for IB exams? Give them unlimited access as a gift.</p>
+      <button onclick="startGiftCheckout()" style="width:100%;padding:12px;background:white;color:var(--navy);border:2px solid var(--navy);border-radius:var(--radius);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s" onmouseover="this.style.background='var(--ice-light)'" onmouseout="this.style.background='white'"><span>🎁</span><span>Gift Unlimited Access — S$45</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Contribution thank-you modal -->
+<div class="modal-overlay" id="thankYouOverlay" onclick="closeModalBg(event,'thankYouOverlay')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:400px">
+    <button class="modal-close" onclick="closeModal('thankYouOverlay')">✕</button>
+    <div style="font-size:48px;margin-bottom:12px">🎉</div>
+    <h2 style="font-family:'Playfair Display',serif;margin-bottom:8px">Thank you so much!</h2>
+    <div style="background:linear-gradient(135deg,#0a1628,#1a3068);border-radius:14px;padding:16px 18px;margin:14px 0 18px;text-align:left">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="font-size:36px;flex-shrink:0">🙏</div>
+        <div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.9);line-height:1.7;font-style:italic">"Your contribution means everything to me. It helps keep the servers running and allows me to give more students like you the best IB Math preparation possible. Go get that 7!"</div>
+          <div style="font-size:12px;color:#C9A84C;font-weight:700;margin-top:10px">— Hanyong</div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-mid);line-height:1.6;margin-bottom:18px">Your account now has <strong>unlimited access</strong>. No daily limits — ask as many questions as you need.</p>
+    <button class="modal-cta" onclick="closeModal('thankYouOverlay')">Keep Studying →</button>
   </div>
 </div>
 
@@ -1244,6 +1284,8 @@ const GOOGLE_CLIENT_ID = '328753347113-pm103e847sq15r21d1tj5rpu2vubg4dh.apps.goo
 // Example: 'https://buy.stripe.com/test_abc123xyz'
 // Steps: stripe.com/dashboard → Payment Links → + New → Recurring $15/month → Copy link URL
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/9B6dRbcsn3VA0uc8x887K00';
+// ★ GIFT: Set a separate Stripe link for gifting, or leave as STRIPE_PAYMENT_LINK to reuse the same one
+const STRIPE_GIFT_LINK = STRIPE_PAYMENT_LINK;
 
 const FREE_UPLOAD_LIMIT = 5;   // photo/screenshot questions
 const FREE_TYPED_LIMIT  = 10;  // typed text questions
@@ -1861,6 +1903,8 @@ function appendMessage(role, content, imageDataUrl) {
     setTimeout(() => addSelfAssessment(bubble, selectedSubjectTopic), 150);
     setTimeout(() => addSimilarBtn(bubble), 200);
     setTimeout(() => addFeedbackBar(bubble, content), 250);
+    setTimeout(() => addShareBtn(bubble), 300);
+    setTimeout(() => addTryNextSuggestions(bubble), 350);
   }
   // Typeset MathJax immediately after inserting content, then re-scroll
   if (content && window.MathJax && MathJax.typesetPromise) {
@@ -3049,6 +3093,99 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => setTimeout(checkOnboarding, 800));
 } else {
   setTimeout(checkOnboarding, 800);
+}
+
+// ════════════════════════════════════════
+// SHARE A QUESTION LINK
+// ════════════════════════════════════════
+function addShareBtn(bubble) {
+  const lastUserEntry = [...conversationHistory].reverse().find(m => m.role === 'user');
+  const text = Array.isArray(lastUserEntry?.content)
+    ? (lastUserEntry.content.find(b => b.type === 'text')?.text || '')
+    : (lastUserEntry?.content || '');
+  if (!text) return;
+  const btn = document.createElement('button');
+  btn.className = 'share-btn';
+  btn.innerHTML = '🔗 Share this question';
+  btn.onclick = () => {
+    const url = window.location.origin + window.location.pathname + '?q=' + encodeURIComponent(text);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => showToast('Link copied to clipboard!'));
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta); showToast('Link copied!');
+    }
+  };
+  bubble.appendChild(btn);
+}
+
+// On page load: pre-fill from ?q= param
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('q');
+  if (q) {
+    window.history.replaceState({}, '', window.location.pathname);
+    const tryFill = () => {
+      const inp = document.getElementById('userInput');
+      if (inp) { inp.value = q; autoResize(inp); inp.focus(); }
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryFill);
+    else tryFill();
+  }
+  // On page load: show thank-you modal if returning from Stripe
+  if (params.get('contributed') === '1') {
+    window.history.replaceState({}, '', window.location.pathname);
+    const show = () => setTimeout(() => document.getElementById('thankYouOverlay').classList.add('open'), 500);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show);
+    else show();
+  }
+})();
+
+// ════════════════════════════════════════
+// TRY THIS NEXT
+// ════════════════════════════════════════
+function addTryNextSuggestions(bubble) {
+  if (!allRepoRecords || allRepoRecords.length === 0) return;
+  const topic = selectedSubjectTopic;
+  let pool = (topic && topic !== 'All Topics')
+    ? allRepoRecords.filter(r => (r['Topic'] || '').toLowerCase().includes(
+        topic.replace('Geometry & Trigonometry','geometry').replace('Statistics & Probability','stat')
+             .replace('Number & Algebra','algebra').replace('Complex Numbers','complex')
+             .toLowerCase().split(' ')[0]))
+    : allRepoRecords;
+  if (pool.length < 2) pool = allRepoRecords;
+  const picks = [...pool].sort(() => Math.random() - 0.5).slice(0, 2);
+  const div = document.createElement('div');
+  div.className = 'try-next-bar';
+  div.innerHTML = '<div class="try-next-label">📚 Try these next</div><div class="try-next-chips">' +
+    picks.map(r => {
+      const d = diffInfo(r['Difficulty'] || 1);
+      const label = [r['Topic'], r['Subtopic']].filter(Boolean).join(' — ') || r['Question ID'] || 'IB Math';
+      const escaped = JSON.stringify(r).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+      return `<button class="try-next-chip" onclick='openSheetDirect(JSON.parse(this.dataset.r))'` +
+             ` data-r="${escaped}"><span>${label}</span>` +
+             `<span class="tnc-meta">${r['Marks'] || '?'} marks</span></button>`;
+    }).join('') + '</div>';
+  bubble.appendChild(div);
+}
+
+function openSheetDirect(r) {
+  practiceFiltered = [r];
+  openSheet(0);
+}
+
+// ════════════════════════════════════════
+// GIFT CHECKOUT
+// ════════════════════════════════════════
+function startGiftCheckout() {
+  const link = (typeof STRIPE_GIFT_LINK !== 'undefined' && STRIPE_GIFT_LINK) ? STRIPE_GIFT_LINK : STRIPE_PAYMENT_LINK;
+  if (!link || link === 'YOUR_STRIPE_PAYMENT_LINK_HERE') { showToast('Gift checkout coming soon!'); return; }
+  const url = link + (link.includes('?') ? '&' : '?') + 'utm_source=gift';
+  window.open(url, '_blank');
+  closeModal('upgradeOverlay');
+  showToast('Opening gift checkout…');
 }
 </script>
 </body>
