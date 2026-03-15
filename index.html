@@ -465,6 +465,65 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .onboard-back { background:none; border:none; color:var(--text-soft); font-size:12px; cursor:pointer; font-family:'Inter',sans-serif; padding:0; margin-bottom:16px; display:flex; align-items:center; gap:4px; }
 .onboard-back:hover { color:var(--text-mid); }
 
+/* ── Progress tab redesign ── */
+.prog-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:24px; }
+.prog-signin-prompt { text-align:center; padding:56px 24px; }
+.prog-streak-card { margin:16px 16px 12px; border-radius:20px; padding:22px 20px 18px; position:relative; overflow:hidden; }
+.prog-streak-card.has-streak { background:linear-gradient(135deg,#78350f 0%,#b45309 60%,#d97706 100%); }
+.prog-streak-card.no-streak { background:linear-gradient(135deg,#0a1628 0%,#1a3068 100%); }
+.prog-streak-inner { display:flex; align-items:center; gap:18px; }
+.prog-streak-flame { font-size:54px; line-height:1; flex-shrink:0; filter:drop-shadow(0 4px 14px rgba(251,146,60,0.55)); }
+.prog-streak-label { font-size:14px; font-weight:700; color:rgba(255,255,255,0.85); margin-top:4px; }
+.prog-streak-msg { font-size:12px; color:rgba(255,255,255,0.6); margin-top:3px; }
+.prog-streak-dots { display:flex; gap:5px; margin-top:16px; }
+.prog-streak-dot { flex:1; height:4px; border-radius:2px; background:rgba(255,255,255,0.18); transition:background 0.2s; }
+.prog-streak-dot.done { background:#C9A84C; }
+.prog-streak-dot.today { background:white; }
+.prog-nostreak-icon { font-size:38px; margin-bottom:10px; }
+.prog-nostreak-title { font-size:17px; font-weight:700; color:white; font-family:'Playfair Display',serif; margin-bottom:6px; }
+.prog-nostreak-sub { font-size:12px; color:rgba(255,255,255,0.6); line-height:1.55; margin-bottom:16px; max-width:240px; margin-left:auto; margin-right:auto; }
+.prog-nostreak-btn { padding:9px 20px; background:rgba(201,168,76,0.15); border:1.5px solid rgba(201,168,76,0.45); border-radius:20px; color:#C9A84C; font-size:12px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; transition:all 0.18s; }
+.prog-nostreak-btn:hover { background:rgba(201,168,76,0.25); }
+.prog-stats-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 16px 12px; }
+.prog-stat-card { background:white; border:1.5px solid var(--border); border-radius:14px; padding:16px 14px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+.prog-stat-icon { font-size:20px; margin-bottom:8px; }
+.prog-stat-value { font-size:34px; font-weight:800; line-height:1; font-family:'Playfair Display',serif; }
+.prog-stat-label { font-size:11px; color:var(--text-soft); margin-top:6px; font-weight:600; }
+.prog-section { background:white; border:1.5px solid var(--border); border-radius:16px; padding:18px 16px; margin:0 16px 12px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+.prog-section-title { font-size:11px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:14px; }
+.prog-week-grid { display:flex; gap:4px; align-items:flex-end; height:68px; }
+.prog-week-day { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:4px; flex:1; }
+.prog-week-bar { width:100%; max-width:36px; border-radius:5px 5px 0 0; min-height:5px; }
+.prog-week-lbl { font-size:9px; color:var(--text-soft); font-weight:600; }
+.prog-week-lbl.today { color:var(--text); font-weight:800; }
+.prog-topic-item { margin-bottom:14px; }
+.prog-topic-item:last-child { margin-bottom:0; }
+.prog-topic-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.prog-topic-name { font-size:13px; font-weight:600; color:var(--text); }
+.prog-topic-right { display:flex; align-items:center; gap:6px; }
+.prog-topic-count { font-size:12px; color:var(--text-soft); }
+.prog-topic-acc { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+.prog-topic-bar-track { background:var(--bg); border-radius:4px; height:7px; overflow:hidden; }
+.prog-topic-bar-fill { height:100%; border-radius:4px; }
+.prog-focus-item { display:flex; align-items:center; gap:12px; padding:12px 14px; background:var(--bg); border:1.5px solid var(--border); border-radius:12px; margin-bottom:8px; cursor:pointer; transition:all 0.18s; }
+.prog-focus-item:last-child { margin-bottom:0; }
+.prog-focus-item:hover { border-color:rgba(201,168,76,0.45); background:rgba(201,168,76,0.04); box-shadow:0 2px 10px rgba(0,0,0,0.06); }
+.prog-focus-icon { font-size:20px; flex-shrink:0; width:28px; text-align:center; font-style:italic; font-weight:700; color:var(--text-mid); }
+.prog-focus-text { flex:1; min-width:0; }
+.prog-focus-name { font-size:13px; font-weight:700; color:var(--text); }
+.prog-focus-reason { font-size:11px; color:var(--text-soft); margin-top:2px; }
+.prog-focus-cta { font-size:11px; color:#C9A84C; font-weight:700; white-space:nowrap; flex-shrink:0; }
+.prog-activity-item { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--bg); align-items:flex-start; }
+.prog-activity-item:last-child { border-bottom:none; padding-bottom:0; }
+.prog-activity-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.prog-activity-body { flex:1; min-width:0; }
+.prog-activity-topic { font-size:12px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:5px; }
+.prog-activity-q { font-size:11px; color:var(--text-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:2px; }
+.prog-activity-time { font-size:10px; color:var(--text-soft); white-space:nowrap; flex-shrink:0; }
+.prog-reset-row { padding:12px 16px 4px; text-align:center; }
+.prog-reset-btn { padding:8px 18px; background:none; border:1.5px solid var(--border); border-radius:10px; font-size:12px; color:var(--text-soft); cursor:pointer; font-family:'Inter',sans-serif; transition:all 0.15s; }
+.prog-reset-btn:hover { border-color:var(--red); color:var(--red); }
+
 /* ── About page ── */
 .about-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
 .about-hero { background:linear-gradient(135deg,#0a1628,#1a3068); padding:32px 20px 28px; text-align:center; color:white; flex-shrink:0; }
@@ -705,30 +764,37 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 
 <!-- ══════════════ PROGRESS ══════════════ -->
 <div class="view-panel" id="view-progress">
-  <div class="practice-scroll"><div style="padding:16px">
-    <div class="section-header" style="margin-bottom:20px">
-      <h2 style="font-size:19px;font-weight:700;font-family:'Playfair Display',serif">📊 My Progress</h2>
-      <p style="font-size:12px;color:var(--text-soft);margin-top:2px">Track your IB Math practice journey</p>
-    </div>
-    <div id="progressSignInPrompt" style="text-align:center;padding:40px 20px;display:none">
-      <div style="font-size:40px;margin-bottom:12px">🔐</div>
-      <div style="font-weight:700;font-size:15px;margin-bottom:6px">Sign in to track progress</div>
-      <div style="font-size:13px;color:var(--text-soft);margin-bottom:18px">Your question history and weak topics are saved when you sign in.</div>
-      <button onclick="showLogin()" style="padding:10px 24px;background:var(--blue);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Sign In</button>
+  <div class="prog-scroll">
+    <div id="progressSignInPrompt" class="prog-signin-prompt" style="display:none">
+      <div style="font-size:48px;margin-bottom:14px">🔐</div>
+      <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:var(--text)">Sign in to track progress</div>
+      <div style="font-size:13px;color:var(--text-soft);margin-bottom:20px;max-width:260px;margin-left:auto;margin-right:auto;line-height:1.6">Your question history and weak topics are saved when you sign in.</div>
+      <button onclick="showLogin()" style="padding:11px 28px;background:var(--navy);color:white;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Sign In →</button>
     </div>
     <div id="progressContent">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
-        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center"><div style="font-size:28px;font-weight:800;color:var(--blue)" id="statTotalAsked">0</div><div style="font-size:11px;color:var(--text-soft);margin-top:3px">Questions Asked</div></div>
-        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center"><div style="font-size:28px;font-weight:800;color:var(--green)" id="statTopicsExplored">0</div><div style="font-size:11px;color:var(--text-soft);margin-top:3px">Topics Explored</div></div>
-        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center"><div style="font-size:28px;font-weight:800;color:var(--gold)" id="statStreak">0</div><div style="font-size:11px;color:var(--text-soft);margin-top:3px">Day Streak 🔥</div></div>
+      <div id="progStreakHero"></div>
+      <div id="progStatsRow" class="prog-stats-row"></div>
+      <div id="progWeekSection" class="prog-section" style="display:none">
+        <div class="prog-section-title">This Week</div>
+        <div id="weeklyActivity"></div>
       </div>
-      <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">This Week</div><div id="weeklyActivity"></div></div>
-      <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px">Questions by Topic</div><div id="topicBreakdown"></div></div>
-      <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px"><div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">🎯 Focus Areas</div><div id="weakAreas" style="font-size:13px;color:var(--text-mid)">Ask more questions to see your focus areas.</div></div>
-      <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px"><div style="font-size:12px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Recent Activity</div><div id="recentActivity" style="font-size:13px;color:var(--text-mid)">No activity yet. Start asking HAN questions!</div></div>
-      <div style="text-align:center;margin-top:20px"><button onclick="resetProgress()" style="padding:8px 18px;background:none;border:1.5px solid var(--border);border-radius:10px;font-size:12px;color:var(--text-soft);cursor:pointer;font-family:'Inter',sans-serif">Reset Progress</button></div>
+      <div class="prog-section">
+        <div class="prog-section-title">Questions by Topic</div>
+        <div id="topicBreakdown"></div>
+      </div>
+      <div class="prog-section">
+        <div class="prog-section-title">🎯 Focus Areas</div>
+        <div id="weakAreas"></div>
+      </div>
+      <div class="prog-section">
+        <div class="prog-section-title">Recent Activity</div>
+        <div id="recentActivity"></div>
+      </div>
+      <div class="prog-reset-row">
+        <button class="prog-reset-btn" onclick="resetProgress()">Reset Progress</button>
+      </div>
     </div>
-  </div></div>
+  </div>
 </div>
 
 <!-- About page -->
@@ -2475,101 +2541,131 @@ function renderProgress() {
   const totalAsked = data.totalAsked || 0;
   const totalSelfAssessed = data.totalSelfAssessed || 0;
   const totalCorrect = data.totalCorrect || 0;
-  const accuracy = totalSelfAssessed > 0 ? Math.round((totalCorrect / totalSelfAssessed) * 100) : null;
+  const streak = data.streak || 0;
+  const accuracy = totalSelfAssessed >= 2 ? Math.round((totalCorrect / totalSelfAssessed) * 100) : null;
+  const weekly = data.weeklyActivity || {};
+  const today = new Date().toISOString().slice(0, 10);
 
-  document.getElementById('statTotalAsked').textContent = totalAsked;
-  // Show accuracy if data exists, otherwise topics explored
-  const topicsExploredEl = document.getElementById('statTopicsExplored');
-  const topicsExploredLbl = topicsExploredEl.nextElementSibling;
-  if (accuracy !== null) {
-    topicsExploredEl.textContent = accuracy + '%';
-    topicsExploredEl.style.color = accuracy >= 70 ? 'var(--green)' : accuracy >= 40 ? 'var(--gold)' : 'var(--red)';
-    if (topicsExploredLbl) topicsExploredLbl.textContent = 'Accuracy ✓';
+  // ── Streak hero ──
+  const streakEl = document.getElementById('progStreakHero');
+  if (streak > 0) {
+    const msgs = { 1:'Great start!', 2:'Building momentum!', 3:'On a roll!', 7:'One whole week!', 14:'Two weeks strong!', 30:'Legendary dedication!' };
+    const msg = Object.entries(msgs).reverse().find(([k]) => streak >= +k)?.[1] || 'Keep it up!';
+    const dots = Array.from({length:7}, (_,i) => {
+      const d = new Date(Date.now() - (6-i)*86400000).toISOString().slice(0,10);
+      const cls = d === today ? 'today' : weekly[d] ? 'done' : '';
+      return `<div class="prog-streak-dot${cls?' '+cls:''}"></div>`;
+    }).join('');
+    streakEl.innerHTML = `<div class="prog-streak-card has-streak">
+      <div class="prog-streak-inner">
+        <div class="prog-streak-flame">🔥</div>
+        <div>
+          <div style="font-size:52px;font-weight:800;color:white;line-height:1;font-family:'Playfair Display',serif">${streak}</div>
+          <div class="prog-streak-label">Day Streak</div>
+          <div class="prog-streak-msg">${msg}</div>
+        </div>
+      </div>
+      <div class="prog-streak-dots">${dots}</div>
+    </div>`;
   } else {
-    topicsExploredEl.textContent = Object.keys(data.topicCounts || {}).length;
-    topicsExploredEl.style.color = 'var(--green)';
-    if (topicsExploredLbl) topicsExploredLbl.textContent = 'Topics Explored';
+    streakEl.innerHTML = `<div class="prog-streak-card no-streak" style="text-align:center">
+      <div class="prog-nostreak-icon">✨</div>
+      <div class="prog-nostreak-title">Start your streak today</div>
+      <div class="prog-nostreak-sub">Ask HAN one question to begin your learning journey and build a daily habit.</div>
+      <button class="prog-nostreak-btn" onclick="switchTab('chat')">Ask a Question →</button>
+    </div>`;
   }
-  document.getElementById('statStreak').textContent = data.streak || 0;
 
-  // Weekly activity chart
+  // ── Stats row ──
+  const statsEl = document.getElementById('progStatsRow');
+  const topicsCount = Object.keys(data.topicCounts || {}).length;
+  const accDisplay = accuracy !== null
+    ? { value: accuracy+'%', label:'Self-Assessed Accuracy', color: accuracy>=70?'var(--green)':accuracy>=40?'var(--gold)':'var(--red)', icon:'✅' }
+    : { value: topicsCount, label:'Topics Explored', color:'var(--navy)', icon:'📚' };
+  statsEl.innerHTML = `
+    <div class="prog-stat-card">
+      <div class="prog-stat-icon">💬</div>
+      <div class="prog-stat-value" style="color:var(--navy)">${totalAsked}</div>
+      <div class="prog-stat-label">Questions Asked</div>
+    </div>
+    <div class="prog-stat-card">
+      <div class="prog-stat-icon">${accDisplay.icon}</div>
+      <div class="prog-stat-value" style="color:${accDisplay.color}">${accDisplay.value}</div>
+      <div class="prog-stat-label">${accDisplay.label}</div>
+    </div>`;
+
+  // ── Weekly chart ──
   const weekEl = document.getElementById('weeklyActivity');
-  if (weekEl) {
-    const weekly = data.weeklyActivity || {};
-    const days = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(Date.now() - i * 86400000);
-      const key = d.toISOString().slice(0, 10);
-      const lbl = ['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()];
-      days.push({ key, lbl, count: weekly[key] || 0 });
-    }
-    const maxDay = Math.max(...days.map(d => d.count), 1);
-    const hasAny = days.some(d => d.count > 0);
-    if (!hasAny) {
-      weekEl.innerHTML = '<div style="font-size:12px;color:var(--text-soft);padding:6px 0">No activity yet this week.</div>';
-    } else {
-      weekEl.innerHTML = '<div class="week-grid">' + days.map(d => {
-        const h = d.count > 0 ? Math.max(8, Math.round((d.count / maxDay) * 40)) : 4;
-        const bg = d.count > 0 ? 'var(--blue)' : 'var(--border)';
-        const opacity = d.count > 0 ? (0.4 + 0.6 * (d.count / maxDay)) : 1;
-        return `<div class="week-day"><div class="week-bar" style="height:${h}px;background:${bg};opacity:${opacity}" title="${d.count} q"></div><div class="week-lbl">${d.lbl}</div></div>`;
-      }).join('') + '</div>';
-    }
+  const weekSection = document.getElementById('progWeekSection');
+  const days = Array.from({length:7}, (_,i) => {
+    const d = new Date(Date.now() - (6-i)*86400000);
+    return { key:d.toISOString().slice(0,10), lbl:['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()], count:weekly[d.toISOString().slice(0,10)]||0, isToday:d.toISOString().slice(0,10)===today };
+  });
+  const maxDay = Math.max(...days.map(d=>d.count), 1);
+  if (!days.some(d=>d.count>0)) {
+    weekSection.style.display = 'none';
+  } else {
+    weekSection.style.display = '';
+    weekEl.innerHTML = '<div class="prog-week-grid">' + days.map(d => {
+      const h = d.count > 0 ? Math.max(10, Math.round((d.count/maxDay)*60)) : 5;
+      const bg = d.isToday && d.count > 0 ? '#C9A84C' : d.count > 0 ? `rgba(14,28,51,${0.3+0.7*(d.count/maxDay)})` : 'var(--border)';
+      return `<div class="prog-week-day"><div class="prog-week-bar" style="height:${h}px;background:${bg}" title="${d.count} question${d.count!==1?'s':''}"></div><div class="prog-week-lbl${d.isToday?' today':''}">${d.lbl}</div></div>`;
+    }).join('') + '</div>';
   }
 
-  // Topic breakdown with accuracy badges
+  // ── Topic breakdown ──
   const topicEl = document.getElementById('topicBreakdown');
   const topics = data.topicCounts || {};
   const topicCorrect = data.topicCorrect || {};
   const topicSelfAssessed = data.topicSelfAssessed || {};
   const maxCount = Math.max(...Object.values(topics), 1);
-  const topicColors = { 'Calculus':'#1d4ed8','Functions':'#7c3aed','Geometry & Trigonometry':'#0891b2','Statistics & Probability':'#059669','Number & Algebra':'#d97706','General':'#94a3b8','All Topics':'#64748b' };
-  if (Object.keys(topics).length === 0) {
-    topicEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft);padding:8px 0">No questions asked yet. Start chatting with HAN!</div>';
+  const topicColors = { 'Calculus':'#1e3a8a','Functions':'#5b21b6','Geometry & Trigonometry':'#0e7490','Statistics & Probability':'#065f46','Number & Algebra':'#92400e','Complex Numbers':'#9d174d','General':'#374151','All Topics':'#374151' };
+  if (!Object.keys(topics).length) {
+    topicEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft);padding:4px 0">No questions asked yet. Start chatting with HAN!</div>';
   } else {
-    topicEl.innerHTML = Object.entries(topics).sort((a, b) => b[1] - a[1]).map(([topic, count]) => {
-      const assessed = topicSelfAssessed[topic] || 0;
-      const correct = topicCorrect[topic] || 0;
-      const acc = assessed >= 2 ? Math.round((correct / assessed) * 100) : null;
-      const pct = Math.round((count / maxCount) * 100);
-      const color = topicColors[topic] || '#1d4ed8';
-      const accBadge = acc !== null
-        ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:5px;background:${acc>=70?'#dcfce7':acc>=40?'#fef9c3':'#fee2e2'};color:${acc>=70?'#16a34a':acc>=40?'#92400e':'#dc2626'}">${acc}%</span>`
-        : '';
-      return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center"><span style="font-size:12px;font-weight:600;color:var(--text)">${topic}${accBadge}</span><span style="font-size:12px;color:var(--text-soft)">${count} q${count!==1?'s':''}</span></div><div style="background:var(--bg);border-radius:4px;height:6px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px"></div></div></div>`;
+    topicEl.innerHTML = Object.entries(topics).sort((a,b)=>b[1]-a[1]).map(([topic, count]) => {
+      const assessed = topicSelfAssessed[topic]||0, correct = topicCorrect[topic]||0;
+      const acc = assessed>=2 ? Math.round((correct/assessed)*100) : null;
+      const pct = Math.round((count/maxCount)*100);
+      const color = topicColors[topic]||'#374151';
+      const accBadge = acc!==null ? `<span class="prog-topic-acc" style="background:${acc>=70?'#dcfce7':acc>=40?'#fef9c3':'#fee2e2'};color:${acc>=70?'#15803d':acc>=40?'#92400e':'#dc2626'}">${acc}%</span>` : '';
+      return `<div class="prog-topic-item"><div class="prog-topic-header"><span class="prog-topic-name">${topic}</span><div class="prog-topic-right">${accBadge}<span class="prog-topic-count">${count} q${count!==1?'s':''}</span></div></div><div class="prog-topic-bar-track"><div class="prog-topic-bar-fill" style="width:${pct}%;background:${color}"></div></div></div>`;
     }).join('');
   }
 
-  // Focus areas
+  // ── Focus areas ──
   const weakEl = document.getElementById('weakAreas');
   const allTopicsList = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra'];
-  const practiced = Object.keys(topics), notPracticed = allTopicsList.filter(t => !practiced.includes(t));
-  // Prioritize topics with low accuracy (>= 2 self-assessed) or least practiced
-  const weakByAcc = Object.entries(topicSelfAssessed).filter(([t, n]) => n >= 2 && Math.round(((topicCorrect[t]||0)/n)*100) < 50).map(e => e[0]);
-  const leastPracticed = Object.entries(topics).sort((a, b) => a[1] - b[1]).slice(0, 2).map(e => e[0]);
-  const focusAreas = [...new Set([...weakByAcc, ...notPracticed, ...leastPracticed])].slice(0, 3);
+  const practiced = Object.keys(topics);
+  const notPracticed = allTopicsList.filter(t=>!practiced.includes(t));
+  const weakByAcc = Object.entries(topicSelfAssessed).filter(([t,n])=>n>=2&&Math.round(((topicCorrect[t]||0)/n)*100)<50).map(e=>e[0]);
+  const leastPracticed = Object.entries(topics).sort((a,b)=>a[1]-b[1]).slice(0,2).map(e=>e[0]);
+  const focusAreas = [...new Set([...weakByAcc,...notPracticed,...leastPracticed])].slice(0,3);
+  const topicIcons = { 'Calculus':'∫','Functions':'f(x)','Geometry & Trigonometry':'△','Statistics & Probability':'σ','Number & Algebra':'∑','Complex Numbers':'𝑖' };
   if (totalAsked < 3) {
     weakEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">Ask at least 3 questions to see your focus areas.</div>';
-  } else if (focusAreas.length === 0) {
+  } else if (!focusAreas.length) {
     weakEl.innerHTML = '<div style="font-size:13px;color:var(--green);font-weight:600">🎉 Great work! You\'ve covered all topics.</div>';
   } else {
     weakEl.innerHTML = focusAreas.map(t => {
-      const assessed = topicSelfAssessed[t] || 0;
-      const acc = assessed >= 2 ? Math.round(((topicCorrect[t]||0)/assessed)*100) : null;
-      const reason = acc !== null && acc < 50 ? `${acc}% accuracy — needs work` : topics[t] ? `Only ${topics[t]} question${topics[t]!==1?'s':''} asked` : 'Not practiced yet';
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--ice-light);border-radius:8px;margin-bottom:8px;cursor:pointer" onclick="usePromptAndSwitch('Give me a practice question on ${t}')"><span style="font-size:18px">📌</span><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${t}</div><div style="font-size:11px;color:var(--text-soft)">${reason}</div></div><span style="font-size:11px;color:var(--blue);font-weight:600">Practice →</span></div>`;
+      const assessed = topicSelfAssessed[t]||0;
+      const acc = assessed>=2 ? Math.round(((topicCorrect[t]||0)/assessed)*100) : null;
+      const reason = acc!==null&&acc<50 ? `${acc}% accuracy — needs work` : topics[t] ? `Only ${topics[t]} question${topics[t]!==1?'s':''} asked` : 'Not practiced yet';
+      return `<div class="prog-focus-item" onclick="usePromptAndSwitch('Give me a practice question on ${t}')"><div class="prog-focus-icon">${topicIcons[t]||'·'}</div><div class="prog-focus-text"><div class="prog-focus-name">${t}</div><div class="prog-focus-reason">${reason}</div></div><div class="prog-focus-cta">Practice →</div></div>`;
     }).join('');
   }
 
-  // Recent activity
+  // ── Recent activity ──
   const actEl = document.getElementById('recentActivity');
   const activity = data.recentActivity || [];
-  if (activity.length === 0) {
+  const actColors = { 'Calculus':'#1e3a8a','Functions':'#5b21b6','Geometry & Trigonometry':'#0e7490','Statistics & Probability':'#065f46','Number & Algebra':'#92400e','General':'#6b7280','All Topics':'#6b7280' };
+  if (!activity.length) {
     actEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">No activity yet. Start asking HAN questions!</div>';
   } else {
-    actEl.innerHTML = activity.slice(0, 8).map(a => {
-      const icon = a.outcome === true ? '<span style="color:var(--green);font-size:11px;font-weight:700"> ✓</span>' : a.outcome === false ? '<span style="color:var(--gold);font-size:11px;font-weight:700"> ↩</span>' : '';
-      return `<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:5px;flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--text)">${a.topic}${icon}</div><div style="font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.question||'(Image question)'}</div></div><div style="font-size:10px;color:var(--text-soft);white-space:nowrap">${getTimeAgo(a.time)}</div></div>`;
+    actEl.innerHTML = activity.slice(0,8).map(a => {
+      const dot = actColors[a.topic]||'#6b7280';
+      const outcome = a.outcome===true?'<span style="color:var(--green);font-weight:700">✓</span>':a.outcome===false?'<span style="color:var(--gold);font-weight:700">↩</span>':'';
+      return `<div class="prog-activity-item"><div class="prog-activity-dot" style="background:${dot}"></div><div class="prog-activity-body"><div class="prog-activity-topic">${a.topic} ${outcome}</div><div class="prog-activity-q">${a.question||'(Image question)'}</div></div><div class="prog-activity-time">${getTimeAgo(a.time)}</div></div>`;
     }).join('');
   }
 }
