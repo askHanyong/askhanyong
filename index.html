@@ -57,8 +57,8 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 .welcome-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px 16px; flex:1; }
 .welcome-avatar { width:68px; height:68px; background:linear-gradient(135deg,#0a1628,#1a3068); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#C9A84C; letter-spacing:1px; margin-bottom:14px; box-shadow:0 8px 32px rgba(14,28,51,0.3), 0 0 0 1px rgba(201,168,76,0.2); font-family:'Playfair Display',serif; }
 .welcome-screen h2 { font-size:21px; font-weight:700; color:var(--text); margin-bottom:6px; font-family:'Playfair Display',serif; }
-.welcome-screen p { font-size:13px; color:var(--text-mid); line-height:1.6; max-width:300px; margin-bottom:20px; }
-.welcome-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:340px; }
+.welcome-screen p { font-size:13px; color:var(--text-mid); line-height:1.6; max-width:480px; margin-bottom:20px; }
+.welcome-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; max-width:560px; }
 .welcome-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:14px 12px; cursor:pointer; transition:all 0.2s; text-align:left; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
 .welcome-card:hover { border-color:rgba(201,168,76,0.5); box-shadow:0 4px 16px rgba(14,28,51,0.1); transform:translateY(-2px); }
 .wc-icon { font-size:22px; margin-bottom:6px; }
@@ -348,7 +348,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .learn-close-btn { background:var(--bg); border:none; border-radius:50%; width:30px; height:30px; font-size:14px; cursor:pointer; color:var(--text-soft); display:flex; align-items:center; justify-content:center; }
 
 /* ── "Launch HAN" welcome CTA ── */
-.launch-han-cta { width:100%; max-width:340px; background:linear-gradient(135deg,#0a1628,#1a3068); border-radius:var(--radius); padding:14px 16px; cursor:pointer; display:flex; align-items:center; gap:14px; margin-top:12px; border:none; transition:opacity 0.2s; }
+.launch-han-cta { width:100%; max-width:560px; background:linear-gradient(135deg,#0a1628,#1a3068); border-radius:var(--radius); padding:14px 16px; cursor:pointer; display:flex; align-items:center; gap:14px; margin-top:12px; border:none; transition:opacity 0.2s; }
 .launch-han-cta:hover { opacity:0.9; }
 .launch-han-cta-icon { font-size:26px; flex-shrink:0; }
 .launch-han-cta-text { text-align:left; }
@@ -370,7 +370,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   .tab-btn { font-size:8px; padding:5px 2px 4px; }
   .tab-btn .tab-icon { font-size:15px; }
   .welcome-screen { padding:16px 12px; }
-  .welcome-cards { max-width:100%; }
+  .welcome-cards { max-width:100%; grid-template-columns:1fr 1fr; }
   .welcome-card { padding:12px 10px; }
   header { padding:8px 12px; }
   .logo-text h1 { font-size:15px; }
