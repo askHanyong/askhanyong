@@ -16,6 +16,10 @@
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
 
+[[edge_functions]]
+  path = "/api/claude"
+  function = "claude"
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"

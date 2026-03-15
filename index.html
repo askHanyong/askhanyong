@@ -73,6 +73,8 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 .message.han .bubble { background:white; border:1px solid var(--border); border-top-left-radius:4px; box-shadow:0 1px 10px rgba(0,0,0,0.07); border-left:2.5px solid rgba(201,168,76,0.4); }
 .message.user .bubble { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1px solid rgba(30,58,138,0.12); border-top-right-radius:4px; }
 .bubble img { max-width:100%; border-radius:8px; margin-bottom:8px; }
+.stream-cursor { display:inline-block; width:2px; height:1em; background:var(--gold,#C9A84C); vertical-align:middle; margin-left:2px; animation:blink 0.8s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 .bubble h3 { font-size:14px; font-weight:700; color:var(--text); margin:10px 0 4px; }
 .bubble strong { font-weight:700; color:var(--text); }
 .bubble .step { background:var(--ice-light); border-left:3px solid var(--blue); padding:8px 12px; border-radius:0 8px 8px 0; margin:8px 0; }
@@ -2156,6 +2158,60 @@ Always choose bounds that show the full relevant domain of the function.`;
 }
 
 // ════════════════════════════════════════
+// STREAMING HELPERS
+// ════════════════════════════════════════
+function appendStreamingMessage() {
+  const ws = document.getElementById('welcomeScreen');
+  if (ws) ws.remove();
+  const area = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'message han';
+  const av = document.createElement('div');
+  av.className = 'av han';
+  av.textContent = 'HAN';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  div.appendChild(av);
+  div.appendChild(bubble);
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return bubble;
+}
+
+let _streamRenderScheduled = false;
+let _streamBubble = null;
+let _streamText = '';
+
+function scheduleStreamRender() {
+  if (_streamRenderScheduled) return;
+  _streamRenderScheduled = true;
+  requestAnimationFrame(() => {
+    _streamRenderScheduled = false;
+    if (_streamBubble) {
+      _streamBubble.innerHTML = formatResponse(_streamText) + '<span class="stream-cursor"></span>';
+      document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
+    }
+  });
+}
+
+function finalizeStreamingBubble(bubble, fullText) {
+  _streamBubble = null;
+  bubble.innerHTML = formatResponse(fullText);
+  const area = document.getElementById('chatArea');
+  area.scrollTop = area.scrollHeight;
+  setTimeout(() => { if (typeof initDesmosGraphs === 'function') initDesmosGraphs(); }, 150);
+  setTimeout(() => addSelfAssessment(bubble, selectedSubjectTopic), 150);
+  setTimeout(() => addSimilarBtn(bubble), 200);
+  setTimeout(() => addFeedbackBar(bubble, fullText), 250);
+  setTimeout(() => addShareBtn(bubble), 300);
+  setTimeout(() => addDownloadBtn(bubble), 320);
+  setTimeout(() => addTryNextSuggestions(bubble), 350);
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([bubble]).then(() => { area.scrollTop = area.scrollHeight; }).catch(() => {});
+  }
+}
+
+// ════════════════════════════════════════
 // SEND MESSAGE
 // ════════════════════════════════════════
 async function sendMessage() {
@@ -2192,16 +2248,51 @@ async function sendMessage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, system: getSystemPrompt(repositoryContext), messages: conversationHistory })
     });
-    const data = await response.json().catch(() => ({ error: { message: 'Non-JSON response (HTTP ' + response.status + ')' } }));
-    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
-    if (!data.content) throw new Error('No content in response');
-    const reply = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
-    conversationHistory.push({ role: 'assistant', content: reply });
+    if (!response.ok) {
+      const errText = await response.text();
+      let errMsg;
+      try { errMsg = JSON.parse(errText)?.error?.message; } catch (e) {}
+      throw new Error(errMsg || 'HTTP ' + response.status);
+    }
     removeTyping();
     const ind = document.getElementById('repoInd'); if (ind) ind.remove();
-    appendMessage('han', reply);
+
+    // --- Stream SSE from Claude ---
+    const bubble = appendStreamingMessage();
+    _streamBubble = bubble;
+    _streamText = '';
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullReply = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') break;
+        try {
+          const evt = JSON.parse(data);
+          if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+            fullReply += evt.delta.text;
+            _streamText = fullReply;
+            scheduleStreamRender();
+          }
+        } catch (e) {}
+      }
+    }
+
+    conversationHistory.push({ role: 'assistant', content: fullReply });
+    finalizeStreamingBubble(bubble, fullReply);
   } catch (err) {
     removeTyping();
+    _streamBubble = null;
     showToast('Error: ' + (err.message || String(err)));
     conversationHistory.pop();
   }
