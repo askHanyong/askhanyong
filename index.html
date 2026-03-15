@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0f1f3d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HAN">
 <title>askHanyong — IB Math AI Tutor</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -77,6 +83,12 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 .new-chat-btn { padding:5px 12px; background:var(--ice); border:1.5px solid var(--border); border-radius:14px; font-size:12px; font-weight:700; color:var(--blue); cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap; transition:background 0.15s; margin-right:6px; }
 .new-chat-btn:hover { background:var(--ice-light); }
+/* ── LaTeX toolbar ── */
+.latex-toolbar { display:none; flex-wrap:nowrap; overflow-x:auto; gap:3px; padding:5px 14px 4px; border-bottom:1px solid var(--border); background:var(--ice); flex-shrink:0; scrollbar-width:none; }
+.latex-toolbar::-webkit-scrollbar { display:none; }
+.latex-toolbar.show { display:flex; }
+.ltx-btn { flex-shrink:0; padding:3px 9px; background:white; border:1px solid var(--border); border-radius:8px; font-size:14px; cursor:pointer; font-family:'DM Mono','Courier New',monospace; color:var(--navy); transition:background 0.12s; line-height:1.4; }
+.ltx-btn:hover { background:var(--navy); color:white; border-color:var(--navy); }
 .recent-chats-row { margin-top:16px; width:100%; max-width:360px; }
 .recent-chats-label { font-size:11px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; text-align:left; }
 .recent-chat-chip { display:flex; align-items:center; gap:8px; width:100%; padding:9px 12px; background:white; border:1.5px solid var(--border); border-radius:10px; font-size:12px; color:var(--text); cursor:pointer; font-family:'Inter',sans-serif; text-align:left; transition:border-color 0.15s; margin-bottom:6px; }
@@ -325,6 +337,13 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .nudge-bar strong { color:#92400e; font-weight:700; }
 .nudge-upgrade-btn { padding:4px 12px; background:#f59e0b; color:white; border:none; border-radius:12px; font-size:11px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap; flex-shrink:0; }
 .nudge-close { margin-left:auto; background:none; border:none; color:#b45309; cursor:pointer; font-size:18px; line-height:1; padding:0 2px; flex-shrink:0; }
+
+/* ── PWA install bar ── */
+.pwa-bar { display:none; align-items:center; gap:8px; padding:7px 16px; background:linear-gradient(135deg,#0f1f3d,#1a3068); border-bottom:1.5px solid #2d4a8a; font-size:12px; color:rgba(255,255,255,0.85); flex-shrink:0; }
+.pwa-bar.show { display:flex; animation:fadeIn 0.25s; }
+.pwa-bar-icon { font-size:16px; flex-shrink:0; }
+.pwa-bar-text { flex:1; line-height:1.4; }
+.pwa-bar-btn { padding:4px 12px; background:#C9A84C; color:#0f1f3d; border:none; border-radius:12px; font-size:11px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap; flex-shrink:0; }
 
 /* ── Session banner (shown during a learning session) ── */
 .session-banner { display:none; background:linear-gradient(135deg,#0a1628,#1a3068); padding:7px 16px; align-items:center; gap:10px; flex-shrink:0; }
@@ -599,6 +618,14 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <button class="nudge-close" onclick="dismissNudge()" title="Dismiss">✕</button>
 </div>
 
+<!-- PWA install prompt -->
+<div class="pwa-bar" id="pwaBar">
+  <span class="pwa-bar-icon">📲</span>
+  <span class="pwa-bar-text">Add HAN to your home screen for instant access</span>
+  <button class="pwa-bar-btn" id="pwaInstallBtn">Install</button>
+  <button class="nudge-close" onclick="dismissPwaPrompt()" title="Dismiss">✕</button>
+</div>
+
 <!-- ══════════════ CHAT ══════════════ -->
 <div class="view-panel active" id="view-chat">
   <!-- Learning session banner -->
@@ -627,6 +654,8 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <button class="ctx-chip" data-group="topic" data-val="Number &amp; Algebra" onclick="setCtx(this,'topic')">Alg</button>
     <button class="ctx-chip hl-chip" data-group="topic" data-val="Complex Numbers" onclick="setCtx(this,'topic')">Cmplx</button>
   </div>
+  <!-- LaTeX quick-insert toolbar (shown when chat input is focused) -->
+  <div class="latex-toolbar" id="latexToolbar" role="toolbar" aria-label="Math symbols"></div>
   <div class="chat-area" id="chatArea">
     <div class="welcome-screen" id="welcomeScreen">
       <div class="welcome-avatar">HAN</div>
@@ -1032,7 +1061,8 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
     <!-- Email tab -->
     <div id="loginPanelEmail" style="display:none">
-      <div class="auth-form">
+      <!-- Sign-in form -->
+      <div id="loginSignInForm" class="auth-form">
         <div class="auth-field">
           <label class="auth-label">Email</label>
           <input class="auth-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')handleEmailLogin()">
@@ -1043,7 +1073,40 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         </div>
         <div class="auth-error" id="loginError"></div>
         <button class="modal-cta" style="margin-bottom:6px" onclick="handleEmailLogin()" id="loginSubmitBtn">Sign In</button>
-        <div style="text-align:center;font-size:13px;color:var(--text-mid)">New here? <span class="auth-link" onclick="showRegister()">Create an account</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-mid)">
+          <span>New here? <span class="auth-link" onclick="showRegister()">Create an account</span></span>
+          <span class="auth-link" onclick="showForgotPassword()">Forgot password?</span>
+        </div>
+      </div>
+      <!-- Forgot password: step 1 — enter email -->
+      <div id="loginForgotForm" class="auth-form" style="display:none">
+        <div style="font-size:13px;color:var(--text-mid);margin-bottom:14px;line-height:1.5">Enter your email and we'll send a reset code.</div>
+        <div class="auth-field">
+          <label class="auth-label">Email</label>
+          <input class="auth-input" id="forgotEmail" type="email" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')handleForgotPassword()">
+        </div>
+        <div class="auth-error" id="forgotError"></div>
+        <button class="modal-cta" style="margin-bottom:6px" onclick="handleForgotPassword()" id="forgotSubmitBtn">Send Reset Code</button>
+        <div style="text-align:center;font-size:13px"><span class="auth-link" onclick="showForgotPassword(false)">← Back to sign in</span></div>
+      </div>
+      <!-- Forgot password: step 2 — enter OTP + new password -->
+      <div id="loginResetForm" class="auth-form" style="display:none">
+        <div style="font-size:13px;color:var(--green);font-weight:600;margin-bottom:12px" id="resetSentMsg"></div>
+        <div class="auth-field">
+          <label class="auth-label">6-digit code</label>
+          <input class="auth-input" id="resetOtp" type="text" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" style="letter-spacing:0.15em;font-size:22px;text-align:center" onkeydown="if(event.key==='Enter')handleResetPassword()">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">New password</label>
+          <input class="auth-input" id="resetPassword" type="password" placeholder="At least 8 characters" onkeydown="if(event.key==='Enter')handleResetPassword()">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Confirm password</label>
+          <input class="auth-input" id="resetPasswordConfirm" type="password" placeholder="Repeat new password" onkeydown="if(event.key==='Enter')handleResetPassword()">
+        </div>
+        <div class="auth-error" id="resetError"></div>
+        <button class="modal-cta" style="margin-bottom:6px" onclick="handleResetPassword()" id="resetSubmitBtn">Reset Password</button>
+        <div style="text-align:center;font-size:13px"><span class="auth-link" onclick="showForgotPassword(false)">← Back to sign in</span></div>
       </div>
     </div>
     <div class="modal-note" style="margin-top:12px">Free · No credit card needed</div>
@@ -1796,6 +1859,79 @@ async function handleEmailRegister() {
   }
 }
 
+// ── Forgot / Reset password ──────────────────────────────────────
+function showForgotPassword(show = true) {
+  document.getElementById('loginSignInForm').style.display = show ? 'none' : '';
+  document.getElementById('loginForgotForm').style.display  = show ? '' : 'none';
+  document.getElementById('loginResetForm').style.display   = 'none';
+  if (show) {
+    document.getElementById('forgotError').textContent = '';
+    document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value;
+    document.getElementById('forgotEmail').focus();
+  } else {
+    document.getElementById('loginError').textContent = '';
+  }
+}
+
+async function handleForgotPassword() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const errEl = document.getElementById('forgotError');
+  const btn   = document.getElementById('forgotSubmitBtn');
+  errEl.textContent = '';
+  if (!email) { errEl.textContent = 'Please enter your email.'; return; }
+  btn.textContent = 'Sending…'; btn.disabled = true;
+  try {
+    const res  = await fetch(AUTH_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'forgot-password', email }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) { errEl.textContent = data.error || 'Could not send code. Please try again.'; return; }
+    // Move to OTP step
+    document.getElementById('loginForgotForm').style.display = 'none';
+    document.getElementById('loginResetForm').style.display  = '';
+    document.getElementById('resetSentMsg').textContent = `Code sent to ${email} — check your inbox (and spam).`;
+    document.getElementById('resetOtp').value = '';
+    document.getElementById('resetPassword').value = '';
+    document.getElementById('resetPasswordConfirm').value = '';
+    document.getElementById('resetError').textContent = '';
+    document.getElementById('resetOtp').focus();
+    // Store email for the reset step
+    document.getElementById('resetOtp').dataset.email = email;
+  } catch (e) {
+    errEl.textContent = 'Connection error. Please try again.';
+  } finally {
+    btn.textContent = 'Send Reset Code'; btn.disabled = false;
+  }
+}
+
+async function handleResetPassword() {
+  const email   = document.getElementById('resetOtp').dataset.email || '';
+  const otp     = document.getElementById('resetOtp').value.trim();
+  const pass    = document.getElementById('resetPassword').value;
+  const pass2   = document.getElementById('resetPasswordConfirm').value;
+  const errEl   = document.getElementById('resetError');
+  const btn     = document.getElementById('resetSubmitBtn');
+  errEl.textContent = '';
+  if (otp.length !== 6 || !/^\d+$/.test(otp)) { errEl.textContent = 'Enter the 6-digit code from your email.'; return; }
+  if (pass.length < 8)  { errEl.textContent = 'Password must be at least 8 characters.'; return; }
+  if (pass !== pass2)   { errEl.textContent = 'Passwords do not match.'; return; }
+  btn.textContent = 'Resetting…'; btn.disabled = true;
+  try {
+    const res  = await fetch(AUTH_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'reset-password', email, otp, password: pass }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) { errEl.textContent = data.error || 'Reset failed. Please try again.'; return; }
+    // Success — switch back to sign-in, pre-fill email
+    document.getElementById('loginResetForm').style.display  = 'none';
+    document.getElementById('loginSignInForm').style.display = '';
+    document.getElementById('loginEmail').value = email;
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').textContent = '';
+    showToast('Password reset! Please sign in with your new password.');
+  } catch (e) {
+    errEl.textContent = 'Connection error. Please try again.';
+  } finally {
+    btn.textContent = 'Reset Password'; btn.disabled = false;
+  }
+}
+
 // Restore session on page load
 (function restoreSession() {
   const saved = localStorage.getItem('han_session');
@@ -2200,6 +2336,61 @@ Always choose bounds that show the full relevant domain of the function.`;
 }
 
 // ════════════════════════════════════════
+// LATEX QUICK-INSERT TOOLBAR
+// ════════════════════════════════════════
+(function initLatexToolbar() {
+  const SYMBOLS = [
+    { label: '∫', insert: '∫ ' },
+    { label: '∑', insert: '∑ ' },
+    { label: '∏', insert: '∏ ' },
+    { label: '√', insert: '√' },
+    { label: '∞', insert: '∞' },
+    { label: 'π', insert: 'π' },
+    { label: 'θ', insert: 'θ' },
+    { label: 'α', insert: 'α' },
+    { label: 'β', insert: 'β' },
+    { label: 'λ', insert: 'λ' },
+    { label: 'μ', insert: 'μ' },
+    { label: '±', insert: '±' },
+    { label: '×', insert: '×' },
+    { label: '÷', insert: '÷' },
+    { label: '≤', insert: '≤' },
+    { label: '≥', insert: '≥' },
+    { label: '≠', insert: '≠' },
+    { label: '≈', insert: '≈' },
+    { label: '⇒', insert: '⇒' },
+    { label: '→', insert: '→' },
+    { label: 'x²', insert: 'x²' },
+    { label: 'x³', insert: 'x³' },
+    { label: '½', insert: '½' },
+    { label: '∂', insert: '∂' },
+    { label: '∈', insert: '∈' },
+    { label: '∉', insert: '∉' },
+    { label: '∀', insert: '∀' },
+    { label: '∃', insert: '∃' },
+  ];
+  const bar = document.getElementById('latexToolbar');
+  if (!bar) return;
+  bar.innerHTML = SYMBOLS.map(s =>
+    `<button class="ltx-btn" title="${s.insert}" onclick="ltxInsert(${JSON.stringify(s.insert)})">${s.label}</button>`
+  ).join('');
+  const inp = document.getElementById('userInput');
+  if (!inp) return;
+  inp.addEventListener('focus', () => bar.classList.add('show'));
+  inp.addEventListener('blur',  () => setTimeout(() => bar.classList.remove('show'), 150));
+})();
+
+function ltxInsert(text) {
+  const inp = document.getElementById('userInput');
+  if (!inp) return;
+  const start = inp.selectionStart, end = inp.selectionEnd;
+  inp.value = inp.value.slice(0, start) + text + inp.value.slice(end);
+  inp.selectionStart = inp.selectionEnd = start + text.length;
+  inp.focus();
+  autoResize(inp);
+}
+
+// ════════════════════════════════════════
 // CONVERSATION HISTORY (New Chat / Recent Chats)
 // ════════════════════════════════════════
 const MAX_SAVED_CHATS = 5;
@@ -2353,7 +2544,8 @@ async function sendMessage() {
   const questionType = uploadedImageBase64 ? 'upload' : 'typed';
   if (!canAskQuestion(questionType)) { showUpgrade(); return; }
   if (!isAdmin) incrementCount(questionType);
-  trackQuestion(selectedSubjectTopic || 'General', text);
+  _pwaMessageSent();
+  trackQuestion(selectedSubjectTopic || 'General', text, questionType);
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
   const imageDataUrl = uploadedImageBase64 ? `data:${uploadedImageType};base64,${uploadedImageBase64}` : null;
@@ -2773,6 +2965,28 @@ async function _syncProgressToServer(data) {
   } catch (e) { /* silent — localStorage is the fallback */ }
 }
 
+// Compute today's question counts from recentActivity and override localStorage counts.
+// This makes server data the authoritative source on login.
+function syncCountsFromServerData(serverData) {
+  if (!currentUser) return;
+  const today = new Date().toISOString().slice(0, 10);
+  const activity = serverData.recentActivity || [];
+  let serverTyped  = 0;
+  let serverUpload = 0;
+  activity.forEach(a => {
+    if (!a.time) return;
+    if (a.time.slice(0, 10) !== today) return;
+    if (a.type === 'upload') serverUpload++;
+    else serverTyped++;
+  });
+  const localTyped  = getCount('typed');
+  const localUpload = getCount('upload');
+  // Use whichever is higher — prevents server falling behind for this session
+  if (serverTyped  > localTyped)  localStorage.setItem(getTodayKey(currentUser.sub, 'typed'),  String(serverTyped));
+  if (serverUpload > localUpload) localStorage.setItem(getTodayKey(currentUser.sub, 'upload'), String(serverUpload));
+  updateLimitBar();
+}
+
 async function loadProgressFromServer() {
   if (!currentUser || !currentUser.email) return;
   try {
@@ -2789,19 +3003,21 @@ async function loadProgressFromServer() {
       if ((serverData.totalAsked || 0) >= (localData.totalAsked || 0)) {
         const key = getProgressKey();
         if (key) localStorage.setItem(key, JSON.stringify(Object.assign(_progressDefaults(), serverData)));
+        syncCountsFromServerData(serverData);
       } else {
-        // Local is ahead — push it to server
+        // Local is ahead — push it to server, but still sync counts from server for today
         _syncProgressToServer(localData);
+        syncCountsFromServerData(serverData);
       }
       renderProgress();
     }
   } catch (e) { /* silent — use local data */ }
 }
-function trackQuestion(topic, question) {
+function trackQuestion(topic, question, type) {
   const data = loadProgress();
   data.totalAsked = (data.totalAsked || 0) + 1;
   data.topicCounts[topic || 'General'] = (data.topicCounts[topic || 'General'] || 0) + 1;
-  data.recentActivity.unshift({ topic: topic || 'General', question: (question || '').substring(0, 80), time: new Date().toISOString(), outcome: null });
+  data.recentActivity.unshift({ topic: topic || 'General', question: (question || '').substring(0, 80), time: new Date().toISOString(), outcome: null, type: type || 'typed' });
   if (data.recentActivity.length > 20) data.recentActivity = data.recentActivity.slice(0, 20);
   const today = new Date().toISOString().slice(0, 10), yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
   data.weeklyActivity[today] = (data.weeklyActivity[today] || 0) + 1;
@@ -3576,6 +3792,55 @@ function startGiftCheckout() {
   window.open(url, '_blank');
   closeModal('upgradeOverlay');
   showToast('Opening gift checkout…');
+}
+
+// ════════════════════════════════════════
+// PWA — Service Worker + Install Prompt
+// ════════════════════════════════════════
+let _pwaPromptEvent = null;
+let _pwaMessageCount = 0;
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.warn('SW registration failed:', e));
+  });
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _pwaPromptEvent = e;
+  // Show after 3 typed messages if not already dismissed this session
+  if (!sessionStorage.getItem('han_pwa_dismissed')) {
+    _checkShowPwaPrompt();
+  }
+});
+
+function _checkShowPwaPrompt() {
+  if (_pwaMessageCount >= 3 && _pwaPromptEvent && !sessionStorage.getItem('han_pwa_dismissed')) {
+    document.getElementById('pwaBar').classList.add('show');
+    document.getElementById('pwaInstallBtn').onclick = async () => {
+      document.getElementById('pwaBar').classList.remove('show');
+      _pwaPromptEvent.prompt();
+      const { outcome } = await _pwaPromptEvent.userChoice;
+      _pwaPromptEvent = null;
+      if (outcome === 'accepted') showToast('HAN added to your home screen!');
+    };
+  }
+}
+
+function dismissPwaPrompt() {
+  document.getElementById('pwaBar').classList.remove('show');
+  sessionStorage.setItem('han_pwa_dismissed', '1');
+}
+
+// Hook into sendMessage to count messages for the install prompt
+const _origSendMessage = typeof sendMessage === 'function' ? sendMessage : null;
+// We increment the counter when a message is pushed to conversationHistory
+// (piggyback on the existing incrementCount call site instead of wrapping)
+// The counter is updated in the nudge/count flow via patchSendForPWA below.
+function _pwaMessageSent() {
+  _pwaMessageCount++;
+  _checkShowPwaPrompt();
 }
 </script>
 </body>

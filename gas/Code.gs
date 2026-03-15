@@ -31,14 +31,17 @@ function getAdminSecret() {
 function doGet(e) {
   const action = e.parameter.action;
 
-  if (action === 'addQuestion')     return addQuestion(e.parameter);
-  if (action === 'addPremiumUser')  return addPremiumUser(e.parameter);
-  if (action === 'checkPremium')    return checkPremium(e.parameter);
-  if (action === 'saveUser')        return saveUser(e.parameter);
-  if (action === 'registerUser')    return registerUser(e.parameter);
-  if (action === 'getUser')         return getUser(e.parameter);
-  if (action === 'loadProgress')    return loadProgress(e.parameter);
-  if (action === 'resetProgress')   return resetProgressGAS(e.parameter);
+  if (action === 'addQuestion')       return addQuestion(e.parameter);
+  if (action === 'addPremiumUser')    return addPremiumUser(e.parameter);
+  if (action === 'checkPremium')      return checkPremium(e.parameter);
+  if (action === 'saveUser')          return saveUser(e.parameter);
+  if (action === 'registerUser')      return registerUser(e.parameter);
+  if (action === 'getUser')           return getUser(e.parameter);
+  if (action === 'loadProgress')      return loadProgress(e.parameter);
+  if (action === 'resetProgress')     return resetProgressGAS(e.parameter);
+  if (action === 'storeResetToken')   return storeResetToken(e.parameter);
+  if (action === 'verifyResetToken')  return verifyResetToken(e.parameter);
+  if (action === 'updateUserPassword') return updateUserPassword(e.parameter);
 
   return ContentService
     .createTextOutput('HAN Admin GAS — OK')
@@ -327,6 +330,88 @@ function resetProgressGAS(params) {
   return ContentService
     .createTextOutput(JSON.stringify({ success: true }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Password reset tokens ─────────────────────────────────────────
+
+function getOrCreateResetSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('ResetTokens');
+  if (!sheet) {
+    sheet = ss.insertSheet('ResetTokens');
+    sheet.getRange(1, 1, 1, 3).setValues([['Email', 'OTP', 'ExpiresAt']]);
+  }
+  return sheet;
+}
+
+function storeResetToken(params) {
+  if (params.secret !== getAdminSecret()) {
+    return ContentService.createTextOutput(JSON.stringify({ error: 'Unauthorized' })).setMimeType(ContentService.MimeType.JSON);
+  }
+  const email = (params.email || '').toLowerCase().trim();
+  if (!email || !params.otp || !params.expiresAt) {
+    return ContentService.createTextOutput(JSON.stringify({ error: 'Missing fields' })).setMimeType(ContentService.MimeType.JSON);
+  }
+  const sheet = getOrCreateResetSheet();
+  const rows  = sheet.getDataRange().getValues();
+  const idx   = rows.findIndex((r, i) => i > 0 && r[0] === email);
+  if (idx > -1) {
+    sheet.getRange(idx + 1, 2, 1, 2).setValues([[params.otp, params.expiresAt]]);
+  } else {
+    sheet.appendRow([email, params.otp, params.expiresAt]);
+  }
+  // Send email via GAS MailApp
+  try {
+    MailApp.sendEmail({
+      to: email,
+      subject: 'askHanyong — your password reset code',
+      htmlBody:
+        '<div style="font-family:Inter,sans-serif;max-width:420px;margin:0 auto">' +
+        '<h2 style="color:#0f1f3d">Password Reset</h2>' +
+        '<p>Your 6-digit reset code is:</p>' +
+        '<div style="font-size:36px;font-weight:700;letter-spacing:0.2em;color:#0f1f3d;background:#f0f4ff;border-radius:8px;padding:16px 24px;display:inline-block;margin:8px 0">' + params.otp + '</div>' +
+        '<p style="color:#6b7280;font-size:13px">This code expires in 15 minutes. If you did not request a reset, you can ignore this email.</p>' +
+        '<p style="color:#6b7280;font-size:12px">— HAN · askHanyong</p>' +
+        '</div>',
+    });
+  } catch (mailErr) {
+    // Email failure — still store token so user can retry
+    Logger.log('Email send failed: ' + mailErr.message);
+  }
+  return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function verifyResetToken(params) {
+  if (params.secret !== getAdminSecret()) {
+    return ContentService.createTextOutput(JSON.stringify({ error: 'Unauthorized' })).setMimeType(ContentService.MimeType.JSON);
+  }
+  const email = (params.email || '').toLowerCase().trim();
+  const sheet = getOrCreateResetSheet();
+  const rows  = sheet.getDataRange().getValues();
+  const row   = rows.find((r, i) => i > 0 && r[0] === email);
+  if (!row) return ContentService.createTextOutput(JSON.stringify({ valid: false, error: 'No reset code found. Please request a new one.' })).setMimeType(ContentService.MimeType.JSON);
+  if (row[1] !== params.otp) return ContentService.createTextOutput(JSON.stringify({ valid: false, error: 'Incorrect code. Please check your email.' })).setMimeType(ContentService.MimeType.JSON);
+  if (new Date() > new Date(row[2])) return ContentService.createTextOutput(JSON.stringify({ valid: false, error: 'Code has expired. Please request a new one.' })).setMimeType(ContentService.MimeType.JSON);
+  // Clear the token
+  const idx = rows.findIndex((r, i) => i > 0 && r[0] === email);
+  if (idx > -1) sheet.deleteRow(idx + 1);
+  return ContentService.createTextOutput(JSON.stringify({ valid: true })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function updateUserPassword(params) {
+  if (params.secret !== getAdminSecret()) {
+    return ContentService.createTextOutput(JSON.stringify({ error: 'Unauthorized' })).setMimeType(ContentService.MimeType.JSON);
+  }
+  const email = (params.email || '').toLowerCase().trim();
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Users');
+  if (!sheet) return ContentService.createTextOutput(JSON.stringify({ error: 'Users sheet not found' })).setMimeType(ContentService.MimeType.JSON);
+  const rows = sheet.getDataRange().getValues();
+  // Headers: Email(0) | Name(1) | Country(2) | AuthMethod(3) | HashedPassword(4) | Last Seen(5)
+  const idx  = rows.findIndex((r, i) => i > 0 && r[0] === email);
+  if (idx === -1) return ContentService.createTextOutput(JSON.stringify({ error: 'User not found' })).setMimeType(ContentService.MimeType.JSON);
+  sheet.getRange(idx + 1, 5).setValue(params.hashedPassword);
+  return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
 }
 
 // ── Get a user by email (for login verification) ─────────────────

@@ -152,6 +152,55 @@ exports.handler = async (event) => {
     }
   }
 
+  // ── FORGOT PASSWORD ─────────────────────────────────────────────
+  if (action === 'forgot-password') {
+    const { email } = body;
+    if (!email) return json(400, { error: 'Email is required.' });
+    const normalEmail = email.toLowerCase().trim();
+
+    try {
+      // Verify user exists and has a password (not Google-only)
+      const user = await callGAS({ action: 'getUser', email: normalEmail, secret: GAS_ADMIN_SECRET });
+      if (!user || !user.found) return json(404, { error: 'No account found with that email.' });
+      if (!user.hashedPassword) return json(400, { error: 'This account uses Google Sign-In. Please sign in with Google instead.' });
+
+      // Generate 6-digit OTP
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+
+      // Store token and send email via GAS
+      await callGAS({ action: 'storeResetToken', email: normalEmail, otp, expiresAt, secret: GAS_ADMIN_SECRET });
+
+      return json(200, { success: true });
+    } catch (e) {
+      console.error('Forgot password error:', e.message);
+      return json(500, { error: 'Could not send reset code. Please try again.' });
+    }
+  }
+
+  // ── RESET PASSWORD ───────────────────────────────────────────────
+  if (action === 'reset-password') {
+    const { email, otp, password } = body;
+    if (!email || !otp || !password) return json(400, { error: 'All fields are required.' });
+    if (password.length < 8) return json(400, { error: 'Password must be at least 8 characters.' });
+    const normalEmail = email.toLowerCase().trim();
+
+    try {
+      // Verify OTP
+      const result = await callGAS({ action: 'verifyResetToken', email: normalEmail, otp, secret: GAS_ADMIN_SECRET });
+      if (!result || !result.valid) return json(400, { error: result?.error || 'Invalid or expired code. Please request a new one.' });
+
+      // Update password
+      const hashedPassword = hashPassword(password);
+      await callGAS({ action: 'updateUserPassword', email: normalEmail, hashedPassword, secret: GAS_ADMIN_SECRET });
+
+      return json(200, { success: true });
+    } catch (e) {
+      console.error('Reset password error:', e.message);
+      return json(500, { error: 'Password reset failed. Please try again.' });
+    }
+  }
+
   return json(400, { error: 'Unknown action.' });
 };
 
