@@ -598,6 +598,62 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .try-next-chip { text-align:left; padding:8px 12px; border:1.5px solid var(--border); border-radius:10px; background:var(--bg); font-size:12px; color:var(--text-mid); cursor:pointer; transition:all 0.15s; display:flex; justify-content:space-between; align-items:center; gap:8px; font-family:'Inter',sans-serif; width:100%; }
 .try-next-chip:hover { border-color:var(--blue); background:var(--ice-light); color:var(--text); }
 .try-next-chip .tnc-meta { font-size:10px; color:var(--text-soft); white-space:nowrap; flex-shrink:0; }
+
+/* ── Exam countdown ── */
+.exam-countdown { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,#fef3c7,#fde68a); border:1.5px solid #fbbf24; border-radius:20px; padding:5px 16px; font-size:12px; font-weight:700; color:#78350f; margin-bottom:14px; }
+.exam-days-num { font-size:22px; font-weight:800; color:#92400e; line-height:1; }
+
+/* ── Action chips (welcome screen shortcuts) ── */
+.welcome-actions { width:100%; max-width:560px; margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+.w-action { display:flex; align-items:center; gap:12px; padding:11px 14px; background:white; border:1.5px solid var(--border); border-radius:12px; cursor:pointer; font-family:'Inter',sans-serif; width:100%; text-align:left; transition:all 0.18s; }
+.w-action:hover { border-color:rgba(201,168,76,0.5); box-shadow:0 3px 14px rgba(0,0,0,0.08); transform:translateY(-1px); }
+.w-action-icon { font-size:20px; flex-shrink:0; width:28px; text-align:center; }
+.w-action-body { flex:1; min-width:0; }
+.w-action-body strong { font-size:13px; font-weight:700; color:var(--text); display:block; margin-bottom:1px; }
+.w-action-body span { font-size:11px; color:var(--text-soft); }
+.w-action-arr { color:var(--text-soft); font-size:16px; flex-shrink:0; }
+
+/* ── Command term badge ── */
+.cmd-badge { display:none; background:#fffbeb; border:1px solid #fbbf24; border-radius:8px; padding:6px 12px; font-size:11px; color:#78350f; margin-bottom:6px; line-height:1.6; }
+.cmd-badge.show { display:block; }
+.cmd-term { font-weight:700; background:#fde68a; padding:1px 5px; border-radius:4px; color:#92400e; }
+
+/* ── Topic heat map ── */
+.topic-heatmap { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.hm-tile { border:2px solid var(--border); border-radius:12px; padding:14px 10px 10px; cursor:pointer; text-align:center; transition:all 0.18s; background:white; }
+.hm-tile:hover { transform:translateY(-2px); box-shadow:0 4px 14px rgba(0,0,0,0.1); }
+.hm-tile.hm-green { border-color:#86efac; background:#f0fdf4; }
+.hm-tile.hm-amber { border-color:#fde68a; background:#fffbeb; }
+.hm-tile.hm-red { border-color:#fca5a5; background:#fef2f2; }
+.hm-tile.hm-gray { background:var(--bg); }
+.hm-icon { font-size:22px; margin-bottom:6px; line-height:1; }
+.hm-name { font-size:10px; font-weight:700; color:var(--text); margin-bottom:5px; line-height:1.3; }
+.hm-stat { font-size:16px; font-weight:800; }
+.hm-tile.hm-green .hm-stat { color:#16a34a; }
+.hm-tile.hm-amber .hm-stat { color:#92400e; }
+.hm-tile.hm-red .hm-stat { color:#dc2626; }
+.hm-tile.hm-gray .hm-stat { color:var(--text-soft); }
+.hm-sub { font-size:9px; color:var(--text-soft); margin-top:2px; }
+
+/* ── Formula sheet modal ── */
+.formula-modal-scroll { max-height:72vh; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:8px; }
+.formula-section { margin-bottom:20px; }
+.formula-section-hdr { font-size:11px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.formula-section-hdr::after { content:''; flex:1; height:1px; background:var(--border); }
+.formula-row { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:8px; margin-bottom:4px; }
+.formula-row.in-booklet { background:var(--bg); }
+.formula-row.memorise { background:#fef9c3; }
+.formula-expr { font-family:'DM Mono',monospace; flex:1; color:var(--text); font-size:12px; line-height:1.5; }
+.formula-desc { font-size:10px; color:var(--text-soft); flex-shrink:0; text-align:right; max-width:110px; line-height:1.3; }
+.formula-badge { font-size:9px; font-weight:700; padding:1px 6px; border-radius:6px; flex-shrink:0; white-space:nowrap; }
+.formula-badge.booklet { background:#dcfce7; color:#16a34a; }
+.formula-badge.mem { background:#fde68a; color:#92400e; }
+.formula-legend { display:flex; gap:14px; margin-bottom:14px; font-size:11px; color:var(--text-soft); align-items:center; flex-wrap:wrap; }
+
+@media (max-width:600px) {
+  .topic-heatmap { grid-template-columns:repeat(2,1fr); }
+  .welcome-actions { margin-top:8px; }
+}
 </style>
 </head>
 <body>
@@ -667,6 +723,8 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <button class="ctx-chip" data-group="topic" data-val="Statistics &amp; Probability" onclick="setCtx(this,'topic')">Stats</button>
     <button class="ctx-chip" data-group="topic" data-val="Number &amp; Algebra" onclick="setCtx(this,'topic')">Alg</button>
     <button class="ctx-chip hl-chip" data-group="topic" data-val="Complex Numbers" onclick="setCtx(this,'topic')">Cmplx</button>
+    <div class="ctx-sep"></div>
+    <button class="ctx-chip" onclick="openFormulaSheet()" title="IB Formula Booklet reference">📐</button>
   </div>
   <!-- LaTeX quick-insert toolbar (shown when chat input is focused) -->
   <div class="latex-toolbar" id="latexToolbar" role="toolbar" aria-label="Math symbols"></div>
@@ -675,6 +733,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div class="welcome-avatar">HAN</div>
       <h2>Annyeong! 👋</h2>
       <p>I'm HAN — your IB Math tutor built on Hanyong's 20+ years of examiner experience. Ask me anything.</p>
+      <div id="examCountdownBadge"></div>
       <div class="welcome-cards">
         <div class="welcome-card" onclick="usePrompt('Explain integration by parts with an IB HL example')"><div class="wc-icon">📐</div><div class="wc-title">Explain a concept</div><div class="wc-desc">Clear IB-style breakdown</div></div>
         <div class="welcome-card" onclick="document.getElementById('mainFileInput').click()"><div class="wc-icon">📸</div><div class="wc-title">Upload a question</div><div class="wc-desc">Photo → worked solution</div></div>
@@ -689,10 +748,29 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         </span>
         <span style="color:rgba(255,255,255,0.6);font-size:18px;flex-shrink:0">›</span>
       </button>
+      <div class="welcome-actions" id="welcomeActionChips">
+        <button class="w-action" onclick="launchStudyPlan()">
+          <span class="w-action-icon">📅</span>
+          <span class="w-action-body"><strong>Generate My Study Plan</strong><span id="studyPlanSubtext">Week-by-week plan based on your weak topics</span></span>
+          <span class="w-action-arr">›</span>
+        </button>
+        <button class="w-action" onclick="launchDiagnostic()">
+          <span class="w-action-icon">🔍</span>
+          <span class="w-action-body"><strong>What don't I know yet?</strong><span>5-question diagnostic to find your gaps</span></span>
+          <span class="w-action-arr">›</span>
+        </button>
+        <button class="w-action" onclick="checkMyWorking()">
+          <span class="w-action-icon">✏️</span>
+          <span class="w-action-body"><strong>Check My Working</strong><span>Paste your attempt — HAN marks it like an examiner</span></span>
+          <span class="w-action-arr">›</span>
+        </button>
+        <div id="resurfaceActionChip"></div>
+      </div>
       <div class="recent-chats-row" id="recentChatsRow" style="display:none"></div>
     </div>
   </div>
   <div class="input-area">
+    <div class="cmd-badge" id="cmdBadge"></div>
     <div class="image-preview-strip" id="previewStrip">
       <img id="previewThumb" class="preview-thumb" src="" alt="">
       <span style="font-size:12px;color:var(--text-mid)">Image attached</span>
@@ -850,6 +928,11 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div id="progWeekSection" class="prog-section" style="display:none">
         <div class="prog-section-title">This Week</div>
         <div id="weeklyActivity"></div>
+      </div>
+      <div class="prog-section">
+        <div class="prog-section-title">🗺 Mastery Map</div>
+        <div id="topicHeatmap" class="topic-heatmap" style="margin-bottom:14px"></div>
+        <div style="font-size:10px;color:var(--text-soft);text-align:center;margin-top:-6px">Tap a topic to practise it</div>
       </div>
       <div class="prog-section">
         <div class="prog-section-title">Questions by Topic</div>
@@ -1281,6 +1364,25 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       </div>
     </div>
     <iframe id="solutionIframe" src="" style="flex:1;border:none;width:100%" allowfullscreen loading="lazy"></iframe>
+  </div>
+</div>
+
+<!-- ══════════════ FORMULA SHEET MODAL ══════════════ -->
+<div class="modal-overlay" id="formulaOverlay" onclick="closeModalBg(event,'formulaOverlay')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:480px;text-align:left;padding:20px 20px 16px">
+    <button class="modal-close" onclick="closeModal('formulaOverlay')">✕</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <span style="font-size:28px">📐</span>
+      <div>
+        <div style="font-size:17px;font-weight:700;color:var(--text);font-family:'Playfair Display',serif">IB Formula Reference</div>
+        <div style="font-size:11px;color:var(--text-soft)">Key formulas — what's in the booklet vs what you must memorise</div>
+      </div>
+    </div>
+    <div class="formula-legend">
+      <span class="formula-legend-item"><span style="display:inline-block;width:10px;height:10px;background:#dcfce7;border-radius:2px"></span> In formula booklet</span>
+      <span class="formula-legend-item"><span style="display:inline-block;width:10px;height:10px;background:#fde68a;border-radius:2px"></span> Must memorise</span>
+    </div>
+    <div class="formula-modal-scroll" id="formulaContent"></div>
   </div>
 </div>
 
@@ -2348,7 +2450,14 @@ Tutoring approach:
 4. Add "Examiner Note" highlighting what the mark scheme rewards
 5. Flag "Common Mistake" students make on this question type
 
-IB rules: Use IB terminology (hence, show that, find the exact value). Use mark scheme format (M1, A1). Correct notation: f'(x), dy/dx, ∫, Σ.
+IB rules: Use IB terminology (hence, show that, find the exact value). Correct notation: f'(x), dy/dx, ∫, Σ.
+
+MARKING SCHEME AWARENESS: Always structure solutions the way an IB examiner marks them.
+- M marks (Method marks): awarded for a correct mathematical method, even if the final answer is wrong. Flag key M-mark steps with [M1].
+- A marks (Accuracy marks): awarded for a correct numerical or algebraic answer, conditional on the correct method. Flag with [A1].
+- R marks (Reasoning): for a valid explanation or justification. Flag with [R1] where relevant.
+- ft marks (follow-through): if a student carries an error forward but applies correct method. Mention when this applies.
+After each solution, include a brief line like "Mark allocation: X M marks + Y A marks = Z total" so the student knows where marks are awarded.
 
 ${repositoryContext ? `\n════════════════════\nHANYONG'S REPOSITORY — VERIFIED INSIGHTS (reference metadata only, no question text)\n════════════════════\n${repositoryContext}\n════════════════════\n` : ''}
 
@@ -3873,6 +3982,374 @@ function _pwaMessageSent() {
   _pwaMessageCount++;
   _checkShowPwaPrompt();
 }
+
+// ════════════════════════════════════════
+// FEATURE 1 — EXAM COUNTDOWN
+// ════════════════════════════════════════
+function getIBExamCountdown() {
+  const now = new Date();
+  const y = now.getFullYear();
+  // IB May session starts ~May 6; November session ~November 3
+  let mayDate = new Date(y, 4, 6);
+  let novDate = new Date(y, 10, 3);
+  if (now >= mayDate) mayDate = new Date(y + 1, 4, 6);
+  if (now >= novDate) novDate = new Date(y + 1, 10, 3);
+  const next = mayDate <= novDate
+    ? { date: mayDate, session: 'May ' + mayDate.getFullYear() }
+    : { date: novDate, session: 'Nov ' + novDate.getFullYear() };
+  const days = Math.ceil((next.date - now) / 86400000);
+  return { days, session: next.session };
+}
+
+function renderExamCountdown() {
+  const el = document.getElementById('examCountdownBadge');
+  if (!el) return;
+  const { days, session } = getIBExamCountdown();
+  const urgency = days <= 14 ? '#dc2626' : days <= 30 ? '#92400e' : '#78350f';
+  el.innerHTML = `<div class="exam-countdown">
+    <span class="exam-days-num" style="color:${urgency}">${days}</span>
+    <span>days to IB ${session} exams</span>
+    ${days <= 30 ? '<span>⚡</span>' : '<span>📅</span>'}
+  </div>`;
+}
+
+// ════════════════════════════════════════
+// FEATURE 2 — STUDY PLAN GENERATOR
+// ════════════════════════════════════════
+function getWeakTopics(data) {
+  if (!data) data = loadProgress();
+  const topicSelfAssessed = data.topicSelfAssessed || {};
+  const topicCorrect = data.topicCorrect || {};
+  const allTopics = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra'];
+  const weak = [];
+  // Topics with <50% accuracy
+  Object.entries(topicSelfAssessed).forEach(([t, n]) => {
+    if (n >= 2 && Math.round(((topicCorrect[t] || 0) / n) * 100) < 50) weak.push(t);
+  });
+  // Topics not practiced yet
+  const practiced = Object.keys(data.topicCounts || {});
+  allTopics.filter(t => !practiced.includes(t)).forEach(t => weak.push(t));
+  return [...new Set(weak)].slice(0, 4);
+}
+
+function launchStudyPlan() {
+  const data = loadProgress();
+  const weak = getWeakTopics(data);
+  const { days, session } = getIBExamCountdown();
+  const weeks = Math.max(1, Math.floor(days / 7));
+  const weakStr = weak.length ? `My weakest areas are: ${weak.join(', ')}.` : '';
+  const prompt = `Create a ${weeks}-week IB Math revision plan for me. I have ${days} days until my ${session} IB exams. I am doing ${selectedLevel}. ${weakStr} Give me a concrete week-by-week schedule covering all key syllabus topics, allocating more time to my weak areas. For each week, list exactly what to revise and what practice to do. End with a final 2-week exam sprint plan.`;
+  usePromptAndSwitch(prompt);
+}
+
+function updateStudyPlanSubtext() {
+  const el = document.getElementById('studyPlanSubtext');
+  if (!el) return;
+  const { days, session } = getIBExamCountdown();
+  const weeks = Math.floor(days / 7);
+  el.textContent = `${weeks} weeks to ${session} — personalised to your weak topics`;
+}
+
+// ════════════════════════════════════════
+// FEATURE 7 — SPACED REPETITION RESURFACE
+// ════════════════════════════════════════
+function getResurfaceTopic() {
+  const data = loadProgress();
+  const topicSelfAssessed = data.topicSelfAssessed || {};
+  const topicCorrect = data.topicCorrect || {};
+  const activity = data.recentActivity || [];
+  const now = Date.now();
+  const threeDaysAgo = now - 3 * 86400000;
+
+  // Find topics where student marked "need review" (outcome=false) more than 3 days ago
+  // and hasn't revisited since
+  const reviewNeeded = [];
+  for (const [t, n] of Object.entries(topicSelfAssessed)) {
+    if (n < 1) continue;
+    const acc = Math.round(((topicCorrect[t] || 0) / n) * 100);
+    if (acc >= 60) continue; // not weak enough
+    // Find last time this topic was asked
+    const lastActivity = activity.find(a => a.topic === t);
+    if (!lastActivity) continue;
+    const lastTime = new Date(lastActivity.time).getTime();
+    if (lastTime < threeDaysAgo) {
+      reviewNeeded.push({ topic: t, acc, daysSince: Math.floor((now - lastTime) / 86400000) });
+    }
+  }
+  if (!reviewNeeded.length) return null;
+  // Return the weakest one not recently visited
+  return reviewNeeded.sort((a, b) => a.acc - b.acc)[0];
+}
+
+function renderResurfaceChip() {
+  const el = document.getElementById('resurfaceActionChip');
+  if (!el) return;
+  const resurface = getResurfaceTopic();
+  if (!resurface) { el.innerHTML = ''; return; }
+  el.innerHTML = `<button class="w-action" onclick="usePromptAndSwitch('Give me a practice question on ${resurface.topic} to help me review — I need more work on this topic')">
+    <span class="w-action-icon">↩</span>
+    <span class="w-action-body"><strong>Revisit ${resurface.topic}</strong><span>You haven't practised this in ${resurface.daysSince} days · ${resurface.acc}% accuracy</span></span>
+    <span class="w-action-arr">›</span>
+  </button>`;
+}
+
+// ════════════════════════════════════════
+// FEATURE 8 — DIAGNOSTIC ("WHAT DON'T I KNOW?")
+// ════════════════════════════════════════
+function launchDiagnostic() {
+  const data = loadProgress();
+  const weak = getWeakTopics(data);
+  const topicContext = weak.length
+    ? `Focus on these areas where I'm struggling: ${weak.join(', ')}.`
+    : `Cover a range of topics across the IB ${selectedLevel} syllabus.`;
+  const prompt = `Run a 5-question IB ${selectedLevel} diagnostic to find my gaps. ${topicContext} Ask me one question at a time. After each answer I give, provide examiner-level feedback: tell me if my method earns the marks, what I got right, what I got wrong, and the correct approach. After all 5, give me a clear summary: my strengths, my critical weaknesses, and the top 3 things to prioritise before my exam.`;
+  usePromptAndSwitch(prompt);
+}
+
+// ════════════════════════════════════════
+// FEATURE 5 — CHECK MY WORKING
+// ════════════════════════════════════════
+function checkMyWorking() {
+  switchTab('chat');
+  setTimeout(() => {
+    const inp = document.getElementById('userInput');
+    inp.value = 'Check my working for this IB question — act as an IB examiner:\n\nQuestion: [paste the question here]\n\nMy working:\n[paste your working here]\n\nPlease: (1) award M marks and A marks as an examiner would, (2) identify any errors or missing steps, (3) show the fully correct solution, (4) tell me what would lose marks in an actual IB exam.';
+    autoResize(inp);
+    inp.focus();
+  }, 300);
+}
+
+// ════════════════════════════════════════
+// FEATURE 3 — IB COMMAND TERM DETECTION
+// ════════════════════════════════════════
+const IB_COMMAND_TERMS = {
+  'show that':       'Full working required — every step shown. The answer is given; you must prove it.',
+  'hence':           'Must use the result from the previous part — a fresh method will not earn "hence" marks.',
+  'prove':           'Formal proof required — clearly state each logical step.',
+  'deduce':          'Use a previous result to derive this — state what you\'re using.',
+  'hence or otherwise': 'Hint: use the previous result. Alternative methods are allowed but slower.',
+  'verify':          'Substitute and confirm both sides are equal — show the arithmetic.',
+  'write down':      'No working needed — state the answer directly.',
+  'state':           'Brief answer only — no working required.',
+  'sketch':          'Freehand-style graph — label key features (intercepts, asymptotes, turning points).',
+  'draw':            'Accurate, to-scale graph with labelled axes and key values.',
+  'find':            'Working required with a numerical or algebraic answer.',
+  'calculate':       'Numerical answer — show method alongside any GDC steps.',
+  'determine':       'Justify your answer — method and conclusion both needed.',
+  'solve':           'Find all values satisfying the equation or inequality. Check for multiple solutions.',
+  'expand':          'Multiply out fully and collect like terms.',
+  'simplify':        'Reduce to simplest form — combine like terms, cancel factors.',
+  'express':         'Rewrite in the specific form stated in the question.',
+};
+
+let _lastDetectedTerms = [];
+
+function checkCommandTerms(text) {
+  const lower = text.toLowerCase();
+  const found = [];
+  for (const [term, note] of Object.entries(IB_COMMAND_TERMS)) {
+    if (lower.includes(term)) found.push({ term, note });
+  }
+  _lastDetectedTerms = found;
+  const badge = document.getElementById('cmdBadge');
+  if (!badge) return;
+  if (!found.length) { badge.classList.remove('show'); badge.innerHTML = ''; return; }
+  badge.classList.add('show');
+  badge.innerHTML = found.map(f =>
+    `<span>⚡ Command term: <span class="cmd-term">${f.term}</span> — ${f.note}</span>`
+  ).join('<br>');
+}
+
+// Hook into textarea input to detect command terms in real time
+document.addEventListener('DOMContentLoaded', function () {
+  const inp = document.getElementById('userInput');
+  if (inp) {
+    inp.addEventListener('input', () => checkCommandTerms(inp.value));
+    inp.addEventListener('paste', () => setTimeout(() => checkCommandTerms(inp.value), 50));
+  }
+});
+
+// ════════════════════════════════════════
+// FEATURE 4 — MARKING SCHEME AWARENESS
+// (injected into sendMessage via getSystemPrompt override — see updated getSystemPrompt)
+// ════════════════════════════════════════
+// Extend the existing getSystemPrompt to add command term context when detected
+const _origGetSystemPrompt = getSystemPrompt;
+getSystemPrompt = function(repositoryContext) {
+  let base = _origGetSystemPrompt(repositoryContext);
+  // Inject detected command terms
+  if (_lastDetectedTerms.length) {
+    const termList = _lastDetectedTerms.map(f => `- "${f.term}": ${f.note}`).join('\n');
+    base += `\n\nDETECTED IB COMMAND TERMS IN THIS QUESTION:\n${termList}\nAdapt your solution specifically to what each command term demands — do NOT ignore these requirements.`;
+  }
+  return base;
+};
+
+// ════════════════════════════════════════
+// FEATURE 6 — TOPIC HEAT MAP (render hook)
+// ════════════════════════════════════════
+const TOPIC_META = {
+  'Calculus':                  { icon: '∫',    short: 'Calculus' },
+  'Functions':                 { icon: 'f(x)', short: 'Functions' },
+  'Geometry & Trigonometry':   { icon: '△',    short: 'Geometry & Trig' },
+  'Statistics & Probability':  { icon: 'σ',    short: 'Stats & Prob' },
+  'Number & Algebra':          { icon: '∑',    short: 'Number & Alg' },
+  'Complex Numbers':           { icon: '𝑖',    short: 'Complex No.' },
+};
+
+function renderTopicHeatmap(data) {
+  const el = document.getElementById('topicHeatmap');
+  if (!el) return;
+  const topicCounts = data.topicCounts || {};
+  const topicSelfAssessed = data.topicSelfAssessed || {};
+  const topicCorrect = data.topicCorrect || {};
+  const tiles = Object.entries(TOPIC_META).map(([topic, meta]) => {
+    const count = topicCounts[topic] || 0;
+    const assessed = topicSelfAssessed[topic] || 0;
+    const correct = topicCorrect[topic] || 0;
+    const acc = assessed >= 2 ? Math.round((correct / assessed) * 100) : null;
+    let colorClass = 'hm-gray';
+    let statText = count ? `${count}q` : '—';
+    let subText = count ? `${count} question${count !== 1 ? 's' : ''}` : 'not practised';
+    if (acc !== null) {
+      statText = acc + '%';
+      subText = `${count}q · ${acc}% accuracy`;
+      colorClass = acc >= 70 ? 'hm-green' : acc >= 40 ? 'hm-amber' : 'hm-red';
+    } else if (count > 0) {
+      colorClass = 'hm-amber'; // practiced but not self-assessed
+    }
+    return `<div class="hm-tile ${colorClass}" onclick="usePromptAndSwitch('Give me an IB ${selectedLevel} practice question on ${topic}')">
+      <div class="hm-icon">${meta.icon}</div>
+      <div class="hm-name">${meta.short}</div>
+      <div class="hm-stat">${statText}</div>
+      <div class="hm-sub">${subText}</div>
+    </div>`;
+  });
+  el.innerHTML = tiles.join('');
+}
+
+// Patch renderProgress to also call the heatmap renderer
+const _origRenderProgress = renderProgress;
+renderProgress = function() {
+  _origRenderProgress();
+  renderTopicHeatmap(loadProgress());
+};
+
+// ════════════════════════════════════════
+// FEATURE 9 — FORMULA QUICK REFERENCE
+// ════════════════════════════════════════
+const FORMULA_DATA = [
+  {
+    section: 'Number & Algebra',
+    items: [
+      { expr: 'uₙ = a + (n−1)d', desc: 'nth term (arithmetic)', booklet: true },
+      { expr: 'Sₙ = n/2 · (2a + (n−1)d)', desc: 'Sum of AP', booklet: true },
+      { expr: 'uₙ = ar^(n−1)', desc: 'nth term (geometric)', booklet: true },
+      { expr: 'Sₙ = a(rⁿ−1)/(r−1)', desc: 'Sum of GP', booklet: true },
+      { expr: 'S∞ = a/(1−r),  |r| < 1', desc: 'Sum to infinity', booklet: false },
+      { expr: 'ln(aˣ) = x·ln a', desc: 'Log power rule', booklet: false },
+      { expr: 'logₐb = ln b / ln a', desc: 'Change of base', booklet: false },
+    ]
+  },
+  {
+    section: 'Geometry & Trigonometry',
+    items: [
+      { expr: 'sin²θ + cos²θ = 1', desc: 'Pythagorean identity', booklet: true },
+      { expr: 'a/sin A = b/sin B = c/sin C', desc: 'Sine rule', booklet: true },
+      { expr: 'c² = a² + b² − 2ab·cosC', desc: 'Cosine rule', booklet: true },
+      { expr: 'Area = ½ab·sinC', desc: 'Triangle area', booklet: true },
+      { expr: 'tan θ = sin θ / cos θ', desc: 'tan identity', booklet: false },
+      { expr: 'sin(2θ) = 2sinθcosθ', desc: 'Double angle sin', booklet: true },
+      { expr: 'cos(2θ) = cos²θ − sin²θ', desc: 'Double angle cos', booklet: true },
+      { expr: 'Arc = rθ,  Area = ½r²θ', desc: 'Radians — arc/sector', booklet: true },
+    ]
+  },
+  {
+    section: 'Functions',
+    items: [
+      { expr: '(f∘g)(x) = f(g(x))', desc: 'Composite function', booklet: false },
+      { expr: 'If y = f(x) then x = f⁻¹(y)', desc: 'Inverse function', booklet: false },
+      { expr: 'Axis of symmetry: x = −b/2a', desc: 'Quadratic', booklet: false },
+      { expr: 'Discriminant: Δ = b²−4ac', desc: 'Nature of roots', booklet: false },
+    ]
+  },
+  {
+    section: 'Statistics & Probability',
+    items: [
+      { expr: 'P(A∪B) = P(A)+P(B)−P(A∩B)', desc: 'Addition rule', booklet: true },
+      { expr: 'P(A|B) = P(A∩B)/P(B)', desc: 'Conditional probability', booklet: true },
+      { expr: 'E(X) = Σ x·P(X=x)', desc: 'Expected value (discrete)', booklet: true },
+      { expr: 'Var(X) = E(X²) − [E(X)]²', desc: 'Variance', booklet: true },
+      { expr: 'z = (x − μ) / σ', desc: 'z-score (standardise)', booklet: false },
+      { expr: 'X ~ N(μ, σ²)', desc: 'Normal distribution notation', booklet: false },
+      { expr: 'r = Sₓᵧ / (Sₓ·Sᵧ)', desc: 'Pearson correlation', booklet: true },
+    ]
+  },
+  {
+    section: 'Calculus',
+    items: [
+      { expr: 'd/dx(xⁿ) = nxⁿ⁻¹', desc: 'Power rule', booklet: true },
+      { expr: '∫xⁿ dx = xⁿ⁺¹/(n+1) + C', desc: 'Power integral', booklet: true },
+      { expr: 'd/dx[f·g] = f\'g + fg\'', desc: 'Product rule', booklet: true },
+      { expr: 'd/dx[f/g] = (f\'g − fg\')/g²', desc: 'Quotient rule', booklet: true },
+      { expr: 'd/dx[f(g(x))] = f\'(g)·g\'', desc: 'Chain rule', booklet: true },
+      { expr: 'd/dx(eˣ) = eˣ', desc: 'Derivative of eˣ', booklet: true },
+      { expr: 'd/dx(ln x) = 1/x', desc: 'Derivative of ln x', booklet: true },
+      { expr: 'd/dx(sin x) = cos x', desc: 'Trig derivative', booklet: true },
+      { expr: 'd/dx(cos x) = −sin x', desc: 'Trig derivative', booklet: true },
+      { expr: 'Area = ∫ₐᵇ |f(x)| dx', desc: 'Area under curve', booklet: false },
+      { expr: 'Vol = π∫ₐᵇ [f(x)]² dx', desc: 'Volume of revolution', booklet: true },
+    ]
+  },
+  {
+    section: 'HL Only',
+    items: [
+      { expr: 'eⁱᶿ = cos θ + i·sin θ', desc: 'Euler\'s formula', booklet: true },
+      { expr: '(r·eⁱᶿ)ⁿ = rⁿ·eⁱⁿᶿ', desc: 'De Moivre\'s theorem', booklet: true },
+      { expr: 'eˣ = 1 + x + x²/2! + x³/3! + …', desc: 'Maclaurin series for eˣ', booklet: true },
+      { expr: 'sin x = x − x³/3! + x⁵/5! − …', desc: 'Maclaurin for sin x', booklet: true },
+      { expr: 'cos x = 1 − x²/2! + x⁴/4! − …', desc: 'Maclaurin for cos x', booklet: true },
+    ]
+  },
+];
+
+function openFormulaSheet() {
+  const content = document.getElementById('formulaContent');
+  if (content && !content.dataset.rendered) {
+    content.dataset.rendered = '1';
+    content.innerHTML = FORMULA_DATA.map(section => `
+      <div class="formula-section">
+        <div class="formula-section-hdr">${section.section}</div>
+        ${section.items.map(item => `
+          <div class="formula-row ${item.booklet ? 'in-booklet' : 'memorise'}">
+            <span class="formula-expr">${item.expr}</span>
+            <span class="formula-desc">${item.desc}</span>
+            <span class="formula-badge ${item.booklet ? 'booklet' : 'mem'}">${item.booklet ? 'booklet' : 'memorise'}</span>
+          </div>`).join('')}
+      </div>`).join('');
+  }
+  document.getElementById('formulaOverlay').classList.add('open');
+}
+
+function closeFormulaSheet() {
+  document.getElementById('formulaOverlay').classList.remove('open');
+}
+
+// ════════════════════════════════════════
+// WELCOME SCREEN INIT
+// ════════════════════════════════════════
+function initWelcomeExtras() {
+  renderExamCountdown();
+  updateStudyPlanSubtext();
+  renderResurfaceChip();
+}
+
+// Extend renderRecentChats to also init the welcome extras
+const _origRenderRecentChats = renderRecentChats;
+renderRecentChats = function() {
+  _origRenderRecentChats();
+  initWelcomeExtras();
+};
 </script>
 </body>
 </html>
