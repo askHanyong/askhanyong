@@ -1637,14 +1637,18 @@ function showUpgrade() {
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function closeModalBg(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
 
-function handleGoogleCredential(response) {
+async function handleGoogleCredential(response) {
   var payload = JSON.parse(atob(response.credential.split('.')[1]));
   payload.authMethod = 'google';
   currentUser = payload;
   localStorage.setItem('han_session', JSON.stringify(currentUser));
   // Exchange Google ID token for a HAN session token (used to authenticate /api/claude)
-  fetch(AUTH_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'google-session', idToken: response.credential }) })
-    .then(r => r.json()).then(d => { if (d.token) localStorage.setItem('han_token', d.token); }).catch(() => {});
+  // Await so the token is stored before the modal closes and the user can send a message.
+  try {
+    const r = await fetch(AUTH_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'google-session', idToken: response.credential }) });
+    const d = await r.json();
+    if (d.token) localStorage.setItem('han_token', d.token);
+  } catch (e) { console.error('Failed to get HAN session token:', e); }
   closeModal('loginOverlay');
   closeModal('registerOverlay');
   renderUserPill(payload);
@@ -1941,15 +1945,21 @@ async function handleResetPassword() {
 // Restore session on page load
 (function restoreSession() {
   const saved = localStorage.getItem('han_session');
-  if (saved) {
-    try {
-      currentUser = JSON.parse(saved);
-      renderUserPill(currentUser);
-      updateLimitBar();
-      checkAndSetPremium(currentUser);
-      loadProgressFromServer();
-    } catch(e) { localStorage.removeItem('han_session'); }
-  }
+  if (!saved) return;
+  try {
+    currentUser = JSON.parse(saved);
+    // If no HAN token exists, the session pre-dates authentication being enabled.
+    // Clear it so the user signs in fresh and gets a valid token.
+    if (!localStorage.getItem('han_token')) {
+      localStorage.removeItem('han_session');
+      currentUser = null;
+      return;
+    }
+    renderUserPill(currentUser);
+    updateLimitBar();
+    checkAndSetPremium(currentUser);
+    loadProgressFromServer();
+  } catch(e) { localStorage.removeItem('han_session'); }
 })();
 
 // ════════════════════════════════════════
