@@ -42,6 +42,9 @@ function doGet(e) {
   if (action === 'storeResetToken')   return storeResetToken(e.parameter);
   if (action === 'verifyResetToken')  return verifyResetToken(e.parameter);
   if (action === 'updateUserPassword') return updateUserPassword(e.parameter);
+  if (action === 'getEvalQuestions')  return getEvalQuestions(e.parameter);
+  if (action === 'saveEvalResult')    return saveEvalResult(e.parameter);
+  if (action === 'getAccuracyMetrics') return getAccuracyMetrics(e.parameter);
 
   return ContentService
     .createTextOutput('HAN Admin GAS — OK')
@@ -456,6 +459,211 @@ function getUser(params) {
       country:        row[2],
       authMethod:     row[3],
       hashedPassword: row[4],
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ACCURACY EVALUATION SYSTEM
+// ══════════════════════════════════════════════════════════════════
+
+// Evaluation sheet headers:
+// Question ID | Level | Topic | Subtopic | Marks | Difficulty |
+// Pct | ScoreJSON | Reasoning | EvaluatedAt
+const EVAL_HEADERS = [
+  'Question ID', 'Level', 'Topic', 'Subtopic', 'Marks', 'Difficulty',
+  'Pct', 'ScoreJSON', 'Reasoning', 'EvaluatedAt'
+];
+
+function getOrCreateEvalSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('Evaluation');
+  if (!sheet) {
+    sheet = ss.insertSheet('Evaluation');
+    sheet.getRange(1, 1, 1, EVAL_HEADERS.length).setValues([EVAL_HEADERS]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+// ── Return Questions that have Gold Answer + Key Steps filled ─────
+// Filters: level (optional), topic (optional), limit (optional, default 20)
+function getEvalQuestions(params) {
+  if (params.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Questions');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ questions: [] }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const rows    = sheet.getDataRange().getValues();
+  const headers = rows[0];
+
+  // Column indices (Questions sheet uses PARAM_TO_HEADER mapping)
+  const col = (name) => headers.indexOf(name);
+  const iId         = col('Question ID');
+  const iLevel      = col('Level');
+  const iTopic      = col('Topic');
+  const iSubtopic   = col('Subtopic');
+  const iMarks      = col('Marks');
+  const iDifficulty = col('Difficulty');
+  const iStatus     = col('Status');
+  // Evaluation-specific columns — must be added manually to the sheet
+  const iGoldAnswer = col('Gold Answer');
+  const iKeySteps   = col('Key Steps');
+  // The question text itself — stored as 'HAN Explanation' in some setups
+  // but the actual question prompt is needed. Use 'Question Text' if present,
+  // else fall back to the first non-ID column.
+  const iQuestion   = col('Question Text') !== -1 ? col('Question Text') : col('HAN Explanation');
+
+  const levelFilter = (params.level || '').trim();
+  const topicFilter = (params.topic || '').trim().toLowerCase();
+  const limit       = parseInt(params.limit || '20', 10);
+
+  const questions = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r[iId]) continue;
+    // Only include rows with Gold Answer filled
+    if (iGoldAnswer === -1 || !r[iGoldAnswer]) continue;
+
+    // Apply optional filters
+    if (levelFilter && r[iLevel] !== levelFilter) continue;
+    if (topicFilter && (r[iTopic] || '').toLowerCase().indexOf(topicFilter) === -1) continue;
+    // Skip non-active questions if Status column exists
+    if (iStatus !== -1 && r[iStatus] && r[iStatus] !== 'Active' && r[iStatus] !== '') continue;
+
+    questions.push({
+      questionId: String(r[iId]),
+      level:      r[iLevel]      || 'MAA HL',
+      topic:      r[iTopic]      || '',
+      subtopic:   r[iSubtopic]   || '',
+      marks:      r[iMarks]      || '',
+      difficulty: r[iDifficulty] || '',
+      question:   r[iQuestion]   || '',
+      goldAnswer: r[iGoldAnswer] || '',
+      keySteps:   iKeySteps !== -1 ? (r[iKeySteps] || '') : '',
+    });
+
+    if (questions.length >= limit) break;
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ questions }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Save a single evaluation result to the Evaluation sheet ──────
+function saveEvalResult(params) {
+  if (params.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const sheet = getOrCreateEvalSheet();
+  const rows  = sheet.getDataRange().getValues();
+  // Find existing row for this questionId + level (to update rather than duplicate)
+  const idx = rows.findIndex((r, i) => i > 0 && r[0] === params.questionId && r[1] === params.level);
+
+  const newRow = [
+    params.questionId  || '',
+    params.level       || '',
+    params.topic       || '',
+    params.subtopic    || '',
+    params.marks       || '',
+    params.difficulty  || '',
+    params.pct         || '0',
+    params.scoreJson   || '{}',
+    params.reasoning   || '',
+    params.evaluatedAt || new Date().toISOString(),
+  ];
+
+  if (idx > -1) {
+    sheet.getRange(idx + 1, 1, 1, newRow.length).setValues([newRow]);
+  } else {
+    sheet.appendRow(newRow);
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Aggregate accuracy metrics for the public badge ──────────────
+// Returns: overall %, by level (HL/SL), by topic, question count, last evaluated date
+function getAccuracyMetrics(params) {
+  // Public endpoint — no secret required, but accept secret for admin parity
+  const sheet = getOrCreateEvalSheet();
+  const rows  = sheet.getDataRange().getValues();
+
+  if (rows.length <= 1) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        overall: null,
+        questionCount: 0,
+        byLevel: {},
+        byTopic: {},
+        lastEvaluated: null,
+        message: 'No evaluation data yet. Run an evaluation first.',
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const headers = rows[0];
+  const iId     = headers.indexOf('Question ID');
+  const iLevel  = headers.indexOf('Level');
+  const iTopic  = headers.indexOf('Topic');
+  const iPct    = headers.indexOf('Pct');
+  const iDate   = headers.indexOf('EvaluatedAt');
+
+  const allPcts     = [];
+  const levelBuckets = {};
+  const topicBuckets = {};
+  let lastEvaluated = null;
+
+  for (let i = 1; i < rows.length; i++) {
+    const r    = rows[i];
+    if (!r[iId]) continue;
+    const pct   = parseInt(r[iPct] || '0', 10);
+    const level = r[iLevel] || 'MAA HL';
+    const topic = r[iTopic] || 'Other';
+    const dated = r[iDate]  || '';
+
+    allPcts.push(pct);
+
+    if (!levelBuckets[level]) levelBuckets[level] = [];
+    levelBuckets[level].push(pct);
+
+    if (!topicBuckets[topic]) topicBuckets[topic] = [];
+    topicBuckets[topic].push(pct);
+
+    if (!lastEvaluated || dated > lastEvaluated) lastEvaluated = dated;
+  }
+
+  const avg = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+
+  const byLevel = {};
+  for (const [k, v] of Object.entries(levelBuckets)) byLevel[k] = { avg: avg(v), count: v.length };
+
+  const byTopic = {};
+  for (const [k, v] of Object.entries(topicBuckets)) byTopic[k] = { avg: avg(v), count: v.length };
+
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      overall:       avg(allPcts),
+      questionCount: allPcts.length,
+      byLevel,
+      byTopic,
+      lastEvaluated,
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }

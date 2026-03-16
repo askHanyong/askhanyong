@@ -584,6 +584,27 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .about-stat-num { font-size:22px; font-weight:800; color:white; }
 .about-stat-lbl { font-size:10px; color:rgba(255,255,255,0.65); margin-top:3px; }
 
+/* ── Accuracy Badge ── */
+.acc-badge { display:flex; align-items:center; gap:14px; background:var(--ice-light); border:1.5px solid var(--blue-light); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
+.acc-score { text-align:center; min-width:64px; }
+.acc-score-num { font-size:36px; font-weight:900; font-family:'Inter',sans-serif; line-height:1; }
+.acc-score-lbl { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+.acc-score-num.green  { color:#16a34a; }
+.acc-score-num.amber  { color:#d97706; }
+.acc-score-num.red    { color:#dc2626; }
+.acc-score-num.gray   { color:var(--text-soft); }
+.acc-meta { flex:1; font-size:12px; color:var(--text-mid); line-height:1.7; }
+.acc-level-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+.acc-level-chip { font-size:11px; font-weight:700; padding:2px 9px; border-radius:20px; }
+.acc-level-chip.green { background:#dcfce7; color:#15803d; }
+.acc-level-chip.amber { background:#fef3c7; color:#92400e; }
+.acc-level-chip.red   { background:#fee2e2; color:#991b1b; }
+.acc-topics { margin-top:8px; display:flex; flex-direction:column; gap:4px; }
+.acc-topic-row { display:flex; align-items:center; gap:8px; font-size:11.5px; }
+.acc-topic-bar-wrap { flex:1; background:var(--border); border-radius:4px; height:5px; overflow:hidden; }
+.acc-topic-bar { height:100%; border-radius:4px; transition:width 0.4s; }
+.acc-loading { font-size:13px; color:var(--text-soft); text-align:center; padding:12px 0; }
+
 /* ── Share / Download buttons ── */
 .share-btn { padding:5px 12px; border:1.5px solid var(--border); border-radius:20px; background:white; font-size:12px; font-weight:600; color:var(--text-mid); cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.15s; margin-top:8px; font-family:'Inter',sans-serif; }
 .share-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--ice-light); }
@@ -980,6 +1001,11 @@ input[type=range] { flex:1; accent-color:var(--blue); }
           <p>HAN is an AI tutor trained on my teaching philosophy — two decades of teaching experience, including the IB Diploma Programme and IB Examining, condensed into one tool. It doesn't just solve problems; it teaches you how to solve them in a way that earns full marks.</p>
           <p>HAN knows mark schemes, understands where students commonly slip up, and explains mathematics the way a student would understand. Every response is built around helping you understand <em>why</em>, not just <em>what</em>.</p>
         </div>
+      </div>
+      <div class="about-section" id="accuracySection">
+        <div class="about-section-title">HAN Accuracy — Independently Verified</div>
+        <div id="accuracyBadge"><div class="acc-loading">Loading accuracy data…</div></div>
+        <p style="font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.6">Scored across real IB exam questions using a 5-dimension rubric (Final Answer, Method, Mark Scheme Fit, IB Presentation, Examiner Note). Max 8 points per question, normalised to %.</p>
       </div>
       <div class="about-section">
         <div class="about-section-title">The 45 Aspiration</div>
@@ -1509,6 +1535,7 @@ function switchTab(tab) {
   });
   if (tab === 'practice') initPractice();
   if (tab === 'mock') initMock();
+  if (tab === 'about') loadAccuracyBadge();
   if (tab === 'progress') {
     if (!currentUser && !isAdmin) {
       document.getElementById('progressSignInPrompt').style.display = 'block';
@@ -4333,6 +4360,79 @@ function openFormulaSheet() {
 
 function closeFormulaSheet() {
   document.getElementById('formulaOverlay').classList.remove('open');
+}
+
+// ════════════════════════════════════════
+// ACCURACY BADGE — About page
+// ════════════════════════════════════════
+let _accuracyLoaded = false;
+
+function scoreClass(pct) {
+  if (pct === null || pct === undefined) return 'gray';
+  if (pct >= 80) return 'green';
+  if (pct >= 60) return 'amber';
+  return 'red';
+}
+
+async function loadAccuracyBadge() {
+  if (_accuracyLoaded) return; // only fetch once per session
+  const el = document.getElementById('accuracyBadge');
+  if (!el) return;
+
+  try {
+    const res  = await fetch('/api/accuracy');
+    const data = await res.json();
+
+    if (data.error || data.overall === null) {
+      el.innerHTML = '<div class="acc-loading" style="color:var(--text-soft)">Accuracy data not yet available — evaluation in progress.</div>';
+      return;
+    }
+
+    const cls = scoreClass(data.overall);
+
+    // By-level chips
+    let levelChips = '';
+    for (const [lvl, info] of Object.entries(data.byLevel || {})) {
+      const lc = scoreClass(info.avg);
+      levelChips += `<span class="acc-level-chip ${lc}">${lvl}: ${info.avg}% (${info.count}q)</span>`;
+    }
+
+    // Top topics sorted by count (top 5)
+    const topicEntries = Object.entries(data.byTopic || {})
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 5);
+    let topicRows = '';
+    for (const [topic, info] of topicEntries) {
+      const tc   = scoreClass(info.avg);
+      const barColor = tc === 'green' ? '#16a34a' : tc === 'amber' ? '#d97706' : '#dc2626';
+      topicRows += `
+        <div class="acc-topic-row">
+          <span style="min-width:120px;color:var(--text-mid)">${topic}</span>
+          <div class="acc-topic-bar-wrap"><div class="acc-topic-bar" style="width:${info.avg}%;background:${barColor}"></div></div>
+          <span style="min-width:36px;text-align:right;color:var(--text-mid);font-weight:700">${info.avg}%</span>
+        </div>`;
+    }
+
+    const lastDate = data.lastEvaluated ? new Date(data.lastEvaluated).toLocaleDateString('en-SG', { year:'numeric', month:'short', day:'numeric' }) : '—';
+
+    el.innerHTML = `
+      <div class="acc-badge">
+        <div class="acc-score">
+          <div class="acc-score-num ${cls}">${data.overall}%</div>
+          <div class="acc-score-lbl">Overall</div>
+        </div>
+        <div class="acc-meta">
+          <div style="font-size:12.5px;font-weight:600;color:var(--text)">Verified on ${data.questionCount} IB exam questions</div>
+          <div style="font-size:11px;color:var(--text-soft);margin-top:1px">Last evaluated: ${lastDate}</div>
+          <div class="acc-level-row">${levelChips}</div>
+        </div>
+      </div>
+      ${topicRows ? `<div class="acc-topics">${topicRows}</div>` : ''}`;
+
+    _accuracyLoaded = true;
+  } catch (e) {
+    el.innerHTML = '<div class="acc-loading" style="color:var(--text-soft)">Could not load accuracy data.</div>';
+  }
 }
 
 // ════════════════════════════════════════
