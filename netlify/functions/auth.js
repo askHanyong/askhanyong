@@ -7,8 +7,9 @@
 
 const crypto = require('crypto');
 
-const SHEETS_URL      = process.env.SHEETS_URL;
+const SHEETS_URL       = process.env.SHEETS_URL;
 const GAS_ADMIN_SECRET = process.env.GAS_ADMIN_SECRET;
+const SESSION_SECRET   = process.env.SESSION_SECRET;
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  '*',
@@ -31,6 +32,18 @@ function verifyPassword(password, stored) {
   } catch (e) {
     return false;
   }
+}
+
+// ── Session token (HMAC-SHA256, 7-day expiry) ─────────────────────
+// Token format: base64(email):expiry_ms:hmac_hex
+// base64 and hex contain no ":" so splitting on ":" is unambiguous.
+function signSessionToken(email) {
+  if (!SESSION_SECRET) return null;
+  const expiry  = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+  const emailB64 = Buffer.from(email.toLowerCase()).toString('base64');
+  const payload  = `${emailB64}:${expiry}`;
+  const hmac     = crypto.createHmac('sha256', SESSION_SECRET).update(payload).digest('hex');
+  return `${payload}:${hmac}`;
 }
 
 // ── GAS fetch helper (handles GAS redirects) ─────────────────────
@@ -104,9 +117,11 @@ exports.handler = async (event) => {
         ts:             new Date().toISOString(),
       });
 
+      const token = signSessionToken(email.toLowerCase().trim());
       return json(200, {
         success: true,
-        user: { name: name.trim(), email: email.toLowerCase().trim(), country },
+        user:  { name: name.trim(), email: email.toLowerCase().trim(), country },
+        token,
       });
     } catch (e) {
       console.error('Register error:', e.message);
@@ -142,13 +157,36 @@ exports.handler = async (event) => {
         return json(401, { error: 'Incorrect password. Please try again.' });
       }
 
+      const token = signSessionToken(user.email);
       return json(200, {
         success: true,
-        user: { name: user.name, email: user.email, country: user.country || '' },
+        user:  { name: user.name, email: user.email, country: user.country || '' },
+        token,
       });
     } catch (e) {
       console.error('Login error:', e.message);
       return json(500, { error: 'Login failed. Please try again.' });
+    }
+  }
+
+  // ── GOOGLE SESSION ───────────────────────────────────────────────
+  // Exchange a Google ID token for a HAN session token.
+  // The edge function validates HAN tokens, not Google JWTs.
+  if (action === 'google-session') {
+    const { idToken } = body;
+    if (!idToken) return json(400, { error: 'idToken required.' });
+    try {
+      // Verify with Google's tokeninfo endpoint
+      const r = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`);
+      const g = await r.json();
+      if (!r.ok || g.error_description || !g.email) {
+        return json(401, { error: 'Invalid Google token.' });
+      }
+      const token = signSessionToken(g.email);
+      return json(200, { success: true, token });
+    } catch (e) {
+      console.error('Google session error:', e.message);
+      return json(500, { error: 'Could not verify Google token.' });
     }
   }
 

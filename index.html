@@ -1642,6 +1642,9 @@ function handleGoogleCredential(response) {
   payload.authMethod = 'google';
   currentUser = payload;
   localStorage.setItem('han_session', JSON.stringify(currentUser));
+  // Exchange Google ID token for a HAN session token (used to authenticate /api/claude)
+  fetch(AUTH_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'google-session', idToken: response.credential }) })
+    .then(r => r.json()).then(d => { if (d.token) localStorage.setItem('han_token', d.token); }).catch(() => {});
   closeModal('loginOverlay');
   closeModal('registerOverlay');
   renderUserPill(payload);
@@ -1712,6 +1715,7 @@ function showAccountMenu() {
 function logOut() {
   closeModal('userAccountModal');
   localStorage.removeItem('han_session');
+  localStorage.removeItem('han_token');
   sessionStorage.clear();
   currentUser = null;
   document.getElementById('userPillArea').innerHTML = '<button class="sign-in-btn" onclick="showLogin()">Sign in</button>';
@@ -1809,6 +1813,7 @@ async function handleEmailLogin() {
     const user = data.user;
     currentUser = { name: user.name, given_name: user.name.split(' ')[0], email: user.email, picture: null, sub: btoa(user.email), authMethod: 'email', country: user.country };
     localStorage.setItem('han_session', JSON.stringify(currentUser));
+    if (data.token) localStorage.setItem('han_token', data.token);
     closeModal('loginOverlay');
     renderUserPill(currentUser);
     updateLimitBar();
@@ -1845,6 +1850,7 @@ async function handleEmailRegister() {
     const user = data.user;
     currentUser = { name: user.name, given_name: user.name.split(' ')[0], email: user.email, picture: null, sub: btoa(user.email), authMethod: 'email', country: user.country };
     localStorage.setItem('han_session', JSON.stringify(currentUser));
+    if (data.token) localStorage.setItem('han_token', data.token);
     closeModal('registerOverlay');
     renderUserPill(currentUser);
     updateLimitBar();
@@ -2566,10 +2572,11 @@ async function sendMessage() {
       ind.textContent = "📚 Drawing from Hanyong's repository…";
       document.getElementById('chatArea').appendChild(ind);
     }
+    const hanToken = localStorage.getItem('han_token') || '';
     const response = await fetch('/api/claude', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, system: getSystemPrompt(repositoryContext), messages: conversationHistory })
+      headers: { 'Content-Type': 'application/json', 'X-HAN-Token': hanToken },
+      body: JSON.stringify({ messages: conversationHistory })
     });
     if (!response.ok) {
       const errText = await response.text();
