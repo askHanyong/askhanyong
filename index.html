@@ -2531,15 +2531,18 @@ ${repositoryContext ? `\n══════════════════�
 
 LATEX RULES: Write ALL math in LaTeX. Use \\( ... \\) for inline, \\[ ... \\] for display. Never write raw x^2.
 
-GRAPHS: CRITICAL RULE — whenever a question references a graph or diagram, you MUST render it as a real interactive Desmos graph. NEVER write "[Graph would show...]" or describe a graph in text. Always output:
-${fence}graph
-{"exprs":[{"latex":"ACTUAL_LATEX_FUNCTION","color":"#C9A84C"}],"bounds":{"left":-1,"right":9,"bottom":-3,"top":4}}
-${fence}
-For kinematics v = 1.5sin(0.6t) - 0.4t + 1, you would output:
+GRAPHS: CRITICAL RULE — whenever a question references OR includes a graph or diagram — including when you are GENERATING a similar/practice question — you MUST render it as a real interactive Desmos graph. NEVER write ASCII art, text-based diagrams, or describe a graph in words. NEVER use plain ``` code blocks for diagrams.
+
+For function graphs (e.g. kinematics v = 1.5sin(0.6t) - 0.4t + 1):
 ${fence}graph
 {"exprs":[{"latex":"y=1.5\\\\sin(0.6x)-0.4x+1","color":"#C9A84C","label":"v(t)"}],"bounds":{"left":-0.5,"right":9,"bottom":-3,"top":4}}
 ${fence}
-Always choose bounds that show the full relevant domain of the function.`;
+
+For GEOMETRIC DIAGRAMS (triangles, circles, etc.) — plot vertices as labeled points and draw segments. Example for triangle PQR with P at top, Q bottom-left, R bottom-right:
+${fence}graph
+{"exprs":[{"latex":"(0,4)","color":"#1d4ed8","label":"P","showLabel":true},{"latex":"(-3,0)","color":"#1d4ed8","label":"Q","showLabel":true},{"latex":"(3,0)","color":"#1d4ed8","label":"R","showLabel":true},{"latex":"\\\\operatorname{polygon}((0,4),(-3,0),(3,0))","color":"#C9A84C"}],"bounds":{"left":-5,"right":5,"bottom":-1,"top":5.5}}
+${fence}
+Scale the coordinates so the side lengths are visually proportional to the given measurements. Always choose bounds that show the full diagram with labels visible.`;
 }
 
 // ════════════════════════════════════════
