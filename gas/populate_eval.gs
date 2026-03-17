@@ -63,9 +63,11 @@ function solFilename_(p) {
 function findFile_(folderId, namePart) {
   const folder = DriveApp.getFolderById(folderId);
   const files  = folder.getFiles();
+  const target = namePart.toLowerCase();
   while (files.hasNext()) {
-    const f = files.next();
-    if (f.getName().toLowerCase().includes(namePart.toLowerCase())) return f;
+    const f    = files.next();
+    const base = f.getName().replace(/\.pdf$/i, '').toLowerCase();
+    if (base === target) return f;
   }
   return null;
 }
