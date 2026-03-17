@@ -24,3 +24,15 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# Serve landing.html at the root URL
+[[redirects]]
+  from = "/"
+  to = "/landing.html"
+  status = 200
+
+# /app is a clean alias for the main app
+[[redirects]]
+  from = "/app"
+  to = "/index.html"
+  status = 200

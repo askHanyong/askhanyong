@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>askHanyong — IB Math AI Tutor</title>
+<meta name="description" content="HAN gives you examiner-level IB Math guidance for every question — step-by-step, mark-scheme aware. Built by a 20-year IB teacher and former examiner. Free to start.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://askhanyong.com/">
+<meta property="og:title" content="askHanyong — IB Math AI Tutor">
+<meta property="og:description" content="Examiner-level IB Math guidance, always available. Built by Hanyong — 20+ years teaching IB, former IB examiner. Free to start.">
+<meta property="og:image" content="https://askhanyong.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="askHanyong — IB Math AI Tutor">
+<meta name="twitter:description" content="Examiner-level IB Math guidance, always available. Built by Hanyong — 20+ years teaching IB, former IB examiner. Free to start.">
+<meta name="twitter:image" content="https://askhanyong.com/og-image.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0e1c33;
+  --navy-dark: #0a1628;
+  --navy-mid: #1a3068;
+  --gold: #C9A84C;
+  --gold-light: #e4c97a;
+  --gold-pale: rgba(201,168,76,0.12);
+  --white: #ffffff;
+  --bg: #f5f4f1;
+  --text: #111827;
+  --text-mid: #4b5563;
+  --text-soft: #9ca3af;
+  --border: #e4e2dc;
+  --blue: #1e3a8a;
+  --green: #059669;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--text); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10, 22, 40, 0.96); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-badge {
+  width: 34px; height: 34px; background: var(--gold-pale);
+  border: 1.5px solid rgba(201,168,76,0.45); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px; color: var(--gold); letter-spacing: 1px;
+}
+.nav-brand { font-size: 16px; font-weight: 700; color: white; font-family: 'Playfair Display', serif; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-link { color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+.nav-link:hover { color: white; }
+.btn-nav-cta {
+  padding: 8px 18px; background: var(--gold); color: var(--navy-dark);
+  border: none; border-radius: 20px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-block;
+}
+.btn-nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0a1628 0%, #0e1c33 50%, #1a3068 100%);
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 20px; padding: 5px 14px; margin-bottom: 28px;
+  font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: 0.3px;
+}
+.hero-eyebrow::before { content: '✦'; font-size: 10px; }
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 6vw, 68px);
+  font-weight: 800; color: white; line-height: 1.1;
+  margin-bottom: 22px; max-width: 720px;
+}
+.hero h1 em { color: var(--gold); font-style: normal; }
+.hero-sub {
+  font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,0.68);
+  line-height: 1.7; max-width: 520px; margin: 0 auto 40px;
+}
+.hero-cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  padding: 15px 32px; background: var(--gold); color: var(--navy-dark);
+  border: none; border-radius: 50px; font-size: 15px; font-weight: 800;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 24px rgba(201,168,76,0.35);
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,168,76,0.45); }
+.btn-secondary {
+  padding: 15px 28px; background: rgba(255,255,255,0.1); color: white;
+  border: 1.5px solid rgba(255,255,255,0.25); border-radius: 50px;
+  font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+  text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.4); }
+.hero-note { margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* ── DEMO MOCKUP ── */
+.demo-wrap {
+  width: 100%; max-width: 480px; margin: 56px auto 0;
+  position: relative;
+}
+.demo-phone {
+  background: var(--bg); border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+}
+.demo-phone-bar {
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+}
+.demo-han-av {
+  width: 28px; height: 28px; background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.4); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 0.5px;
+}
+.demo-phone-title { font-size: 12px; font-weight: 600; color: white; }
+.demo-phone-sub { font-size: 10px; color: rgba(255,255,255,0.5); margin-left: auto; }
+.demo-chat { padding: 14px; display: flex; flex-direction: column; gap: 12px; background: #f5f4f1; }
+.demo-msg { display: flex; gap: 8px; align-items: flex-start; }
+.demo-msg.user { flex-direction: row-reverse; }
+.demo-av {
+  width: 26px; height: 26px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; flex-shrink: 0;
+}
+.demo-av.han { background: linear-gradient(135deg, #0e1c33, #1a3068); color: white; }
+.demo-av.user { background: #dbeafe; color: #1e3a8a; font-size: 11px; }
+.demo-bubble {
+  max-width: calc(100% - 40px); padding: 9px 12px; border-radius: 12px;
+  font-size: 12px; line-height: 1.6; color: var(--text);
+}
+.demo-msg.han .demo-bubble {
+  background: white; border: 1px solid #e4e2dc;
+  border-top-left-radius: 3px; border-left: 2.5px solid rgba(201,168,76,0.5);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+.demo-msg.user .demo-bubble {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid rgba(30,58,138,0.12); border-top-right-radius: 3px;
+}
+.demo-tag {
+  display: inline-block; background: #f0fdf4; border: 1px solid #86efac;
+  color: #166534; border-radius: 4px; font-size: 10px; font-weight: 600;
+  padding: 2px 6px; margin-bottom: 4px;
+}
+.demo-math { font-family: Georgia, serif; font-style: italic; color: #1e3a8a; font-weight: 600; }
+.demo-input-row {
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+  background: white; border-top: 1px solid #e4e2dc;
+}
+.demo-input {
+  flex: 1; padding: 8px 12px; border: 1.5px solid #e4e2dc; border-radius: 20px;
+  font-size: 12px; color: var(--text-soft); background: #f5f4f1;
+  font-family: 'Inter', sans-serif;
+}
+.demo-send {
+  width: 32px; height: 32px; background: linear-gradient(135deg, #0e1c33, #1e3a8a);
+  border: none; border-radius: 50%; cursor: pointer; color: white; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 16px 24px; display: flex; align-items: center; justify-content: center;
+  gap: 32px; flex-wrap: wrap;
+}
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-mid); font-weight: 500; }
+.trust-item strong { color: var(--text); }
+.trust-sep { width: 1px; height: 20px; background: var(--border); }
+
+/* ── SECTION COMMONS ── */
+.section { padding: 72px 24px; max-width: 1080px; margin: 0 auto; }
+.section-eyebrow {
+  font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 10px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800; color: var(--navy-dark); line-height: 1.15; margin-bottom: 16px;
+}
+.section-sub { font-size: 16px; color: var(--text-mid); line-height: 1.7; max-width: 560px; }
+
+/* ── FEATURES ── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px; margin-top: 48px;
+}
+.feature-card {
+  background: white; border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 28px 24px; transition: all 0.2s;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+.feature-card:hover { border-color: rgba(201,168,76,0.4); box-shadow: 0 8px 32px rgba(14,28,51,0.1); transform: translateY(-3px); }
+.feature-icon { font-size: 32px; margin-bottom: 14px; }
+.feature-title { font-size: 16px; font-weight: 700; color: var(--navy-dark); margin-bottom: 8px; }
+.feature-desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+
+/* ── CREATOR ── */
+.creator-section {
+  background: linear-gradient(135deg, #0a1628 0%, #0e1c33 55%, #1a3068 100%);
+  padding: 72px 24px;
+}
+.creator-inner {
+  max-width: 900px; margin: 0 auto;
+  display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center;
+}
+.creator-photo-wrap { flex-shrink: 0; }
+.creator-photo {
+  width: 180px; height: 180px; border-radius: 24px;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(201,168,76,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 72px; overflow: hidden;
+  /* Replace with: <img src="/hanyong.jpg" alt="Hanyong" style="width:100%;height:100%;object-fit:cover"> */
+}
+.creator-eyebrow { font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.creator-name { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 800; color: white; margin-bottom: 6px; }
+.creator-role { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 20px; }
+.creator-bio { font-size: 15px; color: rgba(255,255,255,0.78); line-height: 1.8; }
+.creator-bio p + p { margin-top: 12px; }
+.creator-creds { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.cred-chip {
+  padding: 6px 14px; background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.3); border-radius: 20px;
+  font-size: 12px; font-weight: 600; color: var(--gold);
+}
+
+/* ── HOW IT WORKS ── */
+.how-section { background: var(--bg); }
+.how-steps {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px; margin-top: 48px;
+}
+.how-step { text-align: center; padding: 0 16px; }
+.step-num {
+  width: 48px; height: 48px; background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 800; color: var(--gold);
+  margin: 0 auto 16px; font-family: 'Playfair Display', serif;
+}
+.step-title { font-size: 16px; font-weight: 700; color: var(--navy-dark); margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+.how-connector { display: none; }
+
+/* ── PRICING ── */
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; max-width: 680px; }
+.pricing-card {
+  border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 32px 28px; background: white;
+}
+.pricing-card.featured {
+  border-color: var(--gold); background: linear-gradient(145deg, #0a1628, #0e1c33);
+  position: relative; overflow: hidden;
+}
+.pricing-card.featured::before {
+  content: 'MOST POPULAR';
+  position: absolute; top: 16px; right: -24px;
+  background: var(--gold); color: var(--navy-dark);
+  font-size: 9px; font-weight: 800; letter-spacing: 1px;
+  padding: 4px 32px; transform: rotate(45deg); transform-origin: center;
+}
+.pricing-tier { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-soft); margin-bottom: 10px; }
+.pricing-card.featured .pricing-tier { color: rgba(255,255,255,0.5); }
+.pricing-price { font-size: 40px; font-weight: 800; color: var(--navy-dark); line-height: 1; margin-bottom: 4px; font-family: 'Playfair Display', serif; }
+.pricing-card.featured .pricing-price { color: var(--gold); }
+.pricing-period { font-size: 13px; color: var(--text-soft); margin-bottom: 20px; }
+.pricing-card.featured .pricing-period { color: rgba(255,255,255,0.5); }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.pricing-features li { display: flex; gap: 10px; font-size: 13px; color: var(--text-mid); }
+.pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.75); }
+.pricing-features li::before { content: '✓'; font-weight: 700; color: var(--green); flex-shrink: 0; }
+.pricing-card.featured .pricing-features li::before { color: var(--gold); }
+.btn-pricing {
+  width: 100%; padding: 13px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  font-family: 'Inter', sans-serif; text-decoration: none;
+  display: block; text-align: center; transition: all 0.2s;
+}
+.btn-pricing-free {
+  background: var(--bg); color: var(--navy-dark);
+  border: 2px solid var(--border);
+}
+.btn-pricing-free:hover { border-color: var(--navy-dark); }
+.btn-pricing-paid {
+  background: var(--gold); color: var(--navy-dark);
+  border: 2px solid var(--gold);
+  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+}
+.btn-pricing-paid:hover { background: var(--gold-light); transform: translateY(-1px); }
+.pricing-why { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 12px; line-height: 1.6; }
+
+/* ── CTA BAND ── */
+.cta-band {
+  background: linear-gradient(135deg, #0a1628 0%, #0e1c33 50%, #1a3068 100%);
+  padding: 80px 24px; text-align: center;
+}
+.cta-band h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 44px); font-weight: 800; color: white; margin-bottom: 16px; }
+.cta-band p { font-size: 16px; color: rgba(255,255,255,0.65); margin-bottom: 36px; }
+.cta-fine { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 16px; }
+
+/* ── FOOTER ── */
+footer {
+  background: #060e1c; padding: 32px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-brand { font-size: 14px; color: rgba(255,255,255,0.4); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  nav { padding: 0 16px; }
+  .nav-link { display: none; }
+  .creator-inner { grid-template-columns: 1fr; text-align: center; gap: 28px; }
+  .creator-photo { margin: 0 auto; width: 140px; height: 140px; font-size: 56px; }
+  .creator-creds { justify-content: center; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 100%; }
+  .trust-sep { display: none; }
+}
+@media (max-width: 480px) {
+  .hero-cta-group { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { width: 100%; max-width: 320px; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-badge">HAN</div>
+    <span class="nav-brand">askHanyong</span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="#how-it-works">How it works</a>
+    <a class="nav-link" href="#pricing">Pricing</a>
+    <a class="nav-link" href="#about">About</a>
+    <a class="btn-nav-cta" href="/index.html">Try HAN Free</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-eyebrow">IB Math · AI Tutor · Examiner-Level Guidance</div>
+  <h1>Your IB Math examiner,<br><em>always available</em></h1>
+  <p class="hero-sub">
+    HAN explains every question the way an examiner would — step-by-step, mark-scheme aware, and honest about where students lose marks.
+    Built by Hanyong: 20+ years teaching IB Math, former IB examiner.
+  </p>
+  <div class="hero-cta-group">
+    <a class="btn-primary" href="/index.html">
+      Try HAN Free — No Sign Up ✦
+    </a>
+    <a class="btn-secondary" href="/index.html#signin">
+      Sign In →
+    </a>
+  </div>
+  <p class="hero-note">Free to use · No credit card · Works on any device</p>
+
+  <!-- Demo Mockup -->
+  <div class="demo-wrap">
+    <div class="demo-phone">
+      <div class="demo-phone-bar">
+        <div class="demo-han-av">HAN</div>
+        <span class="demo-phone-title">Ask HAN</span>
+        <span class="demo-phone-sub">HL · Calculus</span>
+      </div>
+      <div class="demo-chat">
+        <div class="demo-msg user">
+          <div class="demo-av user">You</div>
+          <div class="demo-bubble">Find the equation of the tangent to <span class="demo-math">y = x³ − 3x</span> at <span class="demo-math">x = 2</span>.</div>
+        </div>
+        <div class="demo-msg han">
+          <div class="demo-av han">HAN</div>
+          <div class="demo-bubble">
+            <div class="demo-tag">✓ Examiner method</div><br>
+            <strong>Step 1 — Find the gradient</strong><br>
+            Differentiate: <span class="demo-math">y′ = 3x² − 3</span><br>
+            At <span class="demo-math">x = 2</span>: <span class="demo-math">m = 3(4) − 3 = 9</span><br><br>
+            <strong>Step 2 — Find the y-value</strong><br>
+            <span class="demo-math">y = 8 − 6 = 2</span>, so point is <span class="demo-math">(2, 2)</span><br><br>
+            <strong>Step 3 — Tangent equation</strong><br>
+            <span class="demo-math">y − 2 = 9(x − 2)</span><br>
+            ⇒ <span class="demo-math">y = 9x − 16</span>
+          </div>
+        </div>
+        <div class="demo-msg user">
+          <div class="demo-av user">You</div>
+          <div class="demo-bubble">Where do most students lose marks on this?</div>
+        </div>
+      </div>
+      <div class="demo-input-row">
+        <div class="demo-input">Ask any IB Math question…</div>
+        <button class="demo-send">➤</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRUST BAR ── -->
+<div class="trust-bar">
+  <div class="trust-item">🎓 <strong>20+</strong> years teaching IB Math</div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">📋 Former <strong>IB Examiner</strong></div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">🌏 Students in <strong>15+ countries</strong></div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">✅ HL &amp; SL · All topics</div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section class="section">
+  <div class="section-eyebrow">What HAN does</div>
+  <h2 class="section-title">Examiner-level guidance<br>for every question</h2>
+  <p class="section-sub">HAN doesn't just solve problems — it teaches you how to present your working the way that earns full marks.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <div class="feature-title">Step-by-step explanations</div>
+      <div class="feature-desc">Every answer is structured like an examiner's model solution — numbered steps, logical arrows, critical lines flagged.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📷</div>
+      <div class="feature-title">Photo any question</div>
+      <div class="feature-desc">Snap a photo of your textbook or past paper — HAN reads it and explains it instantly.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✍️</div>
+      <div class="feature-title">Mark my working</div>
+      <div class="feature-desc">Paste your attempt and HAN marks it like an examiner: what earned marks, what didn't, and why.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📝</div>
+      <div class="feature-title">Mock paper generator</div>
+      <div class="feature-desc">Generate custom mock papers by topic, difficulty, and marks — then attempt them with full worked solutions.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Progress tracking</div>
+      <div class="feature-desc">See your accuracy by topic, your daily streak, and which areas need the most work — all in one dashboard.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📚</div>
+      <div class="feature-title">Past paper library</div>
+      <div class="feature-desc">Browse and search real IB past paper questions filtered by year, session, paper, and difficulty.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-section">
+  <div class="section" id="how-it-works">
+    <div class="section-eyebrow">How it works</div>
+    <h2 class="section-title">Start in 30 seconds</h2>
+    <p class="section-sub">No setup. No downloads. Works immediately in your browser.</p>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Ask any question</div>
+        <div class="step-desc">Type a question, paste it from a past paper PDF, or photograph it with your phone.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div class="step-title">HAN explains it</div>
+        <div class="step-desc">Get a full examiner-style solution — step-by-step, with mark scheme awareness and common mistakes flagged.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div class="step-title">Learn, not just copy</div>
+        <div class="step-desc">Ask follow-ups, challenge your own working, or generate practice questions on the same concept.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CREATOR ── -->
+<section class="creator-section" id="about">
+  <div class="creator-inner">
+    <div class="creator-photo-wrap">
+      <div class="creator-photo">
+        <!-- Replace this div's content with:
+             <img src="/hanyong.jpg" alt="Hanyong Lim" style="width:100%;height:100%;object-fit:cover;border-radius:22px">
+        -->
+        👨‍🏫
+      </div>
+    </div>
+    <div>
+      <div class="creator-eyebrow">Built by</div>
+      <div class="creator-name">Hanyong Lim</div>
+      <div class="creator-role">IB Math Teacher · Former IB Examiner · Applied Mathematician</div>
+      <div class="creator-bio">
+        <p>I grew up passionate about mathematics — I studied through GCE A-Levels and went on to complete a degree in <strong>Applied Mathematics at the National University of Singapore</strong>.</p>
+        <p>After graduating I moved into teaching, and for the past <strong>20+ years</strong> I've taught IB Mathematics at both HL and SL. I've spent years as an <strong>IB examiner</strong> — marking real student scripts, writing mark schemes, and understanding exactly where students lose marks.</p>
+        <p>I built HAN because the difference between a 6 and a 7 is usually not mathematical ability — it's knowing how to present your work the way examiners expect. Every student deserves that knowledge, not just those who can afford a private tutor.</p>
+      </div>
+      <div class="creator-creds">
+        <span class="cred-chip">Applied Mathematics · NUS</span>
+        <span class="cred-chip">GCE A-Levels</span>
+        <span class="cred-chip">20+ Years IB Teaching</span>
+        <span class="cred-chip">Former IB Examiner</span>
+        <span class="cred-chip">HL &amp; SL Specialist</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section class="section" id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <h2 class="section-title">Free for every student.</h2>
+  <p class="section-sub">If HAN helps you, a one-time contribution keeps the servers running. Either way, keep using it — that's exactly why it was built.</p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-tier">Free</div>
+      <div class="pricing-price">S$0</div>
+      <div class="pricing-period">Always free</div>
+      <ul class="pricing-features">
+        <li>10 questions per day</li>
+        <li>5 photo uploads per day</li>
+        <li>Full step-by-step explanations</li>
+        <li>Past paper library access</li>
+        <li>Mock exam generator</li>
+        <li>Progress tracking</li>
+      </ul>
+      <a class="btn-pricing btn-pricing-free" href="/index.html">Start Free →</a>
+    </div>
+    <div class="pricing-card featured">
+      <div class="pricing-tier">Contributor</div>
+      <div class="pricing-price">S$45</div>
+      <div class="pricing-period">One-time · Unlimited forever</div>
+      <ul class="pricing-features">
+        <li>Unlimited questions &amp; uploads</li>
+        <li>Everything in Free</li>
+        <li>Priority support from Hanyong</li>
+        <li>Keeps HAN free for others</li>
+      </ul>
+      <a class="btn-pricing btn-pricing-paid" href="/index.html">Contribute S$45 →</a>
+      <p class="pricing-why">Why S$45? In IB, 45 is the perfect score. This tool exists to help you reach for that. The amount is intentional.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA BAND ── -->
+<section class="cta-band">
+  <h2>Your next exam session starts now.</h2>
+  <p>Ask your first question — no account needed.</p>
+  <a class="btn-primary" href="/index.html" style="display:inline-flex">
+    Try HAN Free ✦
+  </a>
+  <p class="cta-fine">Free · No credit card · Works on any device</p>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span class="footer-brand">© 2025 askHanyong · HAN = Help · Achieve · Nurture</span>
+  <div class="footer-links">
+    <a href="mailto:hanyong@askhanyong.com">Contact</a>
+    <a href="/index.html">Launch App</a>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -15,14 +15,14 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://askhanyong.com/">
 <meta property="og:title" content="askHanyong — IB Math AI Tutor">
-<meta property="og:description" content="Your personal IB Math AI tutor. Step-by-step explanations, mock exams, and progress tracking — built by a student who scored 45 in IB.">
+<meta property="og:description" content="Your personal IB Math AI tutor. Step-by-step explanations, mock exams, and progress tracking — built by a 20-year IB teacher and former examiner.">
 <meta property="og:image" content="https://askhanyong.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:site_name" content="askHanyong">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="askHanyong — IB Math AI Tutor">
-<meta name="twitter:description" content="Your personal IB Math AI tutor. Step-by-step explanations, mock exams, and progress tracking — built by a student who scored 45 in IB.">
+<meta name="twitter:description" content="Your personal IB Math AI tutor. Step-by-step explanations, mock exams, and progress tracking — built by a 20-year IB teacher and former examiner.">
 <meta name="twitter:image" content="https://askhanyong.com/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1512,7 +1512,21 @@ const STRIPE_GIFT_LINK = STRIPE_PAYMENT_LINK;
 
 const FREE_UPLOAD_LIMIT = 5;   // photo/screenshot questions
 const FREE_TYPED_LIMIT  = 10;  // typed text questions
+const GUEST_TYPED_LIMIT = 2;   // questions allowed without an account
 const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'hanyong';
+
+// ── Guest-mode helpers (no account required for first 2 questions) ──
+function getGuestTodayKey() { return 'han_guest_' + new Date().toISOString().slice(0, 10); }
+function getGuestCount()    { return parseInt(localStorage.getItem(getGuestTodayKey()) || '0'); }
+function incrementGuestCount() {
+  localStorage.setItem(getGuestTodayKey(), String(getGuestCount() + 1));
+  updateLimitBar();
+}
+function canGuestAsk() { return getGuestCount() < GUEST_TYPED_LIMIT; }
+function showGuestGate() {
+  showToast("You've used your 2 free questions — sign in to keep going for free!", 4000);
+  setTimeout(showLogin, 500);
+}
 
 // ════════════════════════════════════════
 // STATE
@@ -1714,7 +1728,21 @@ function incrementCount(type) {
 function updateLimitBar() {
   const bar = document.getElementById('limitBar'), txt = document.getElementById('limitText');
   const uploadFill = document.getElementById('limitFillUpload'), typedFill = document.getElementById('limitFillTyped');
-  if (!currentUser) { if (bar) bar.style.display = 'none'; return; }
+  if (!currentUser) {
+    if (!bar) return;
+    bar.style.display = 'flex';
+    bar.querySelectorAll('.limit-track-group, .limit-sep').forEach(el => el.style.display = 'none');
+    const upgradeBtn = bar.querySelector('.upgrade-btn-small');
+    const remaining = Math.max(0, GUEST_TYPED_LIMIT - getGuestCount());
+    if (txt) {
+      txt.style.cssText = '';
+      txt.textContent = remaining > 0
+        ? remaining + ' free question' + (remaining !== 1 ? 's' : '') + ' left — sign in to save progress'
+        : 'Sign in to continue — it\'s free!';
+    }
+    if (upgradeBtn) { upgradeBtn.textContent = 'Sign In'; upgradeBtn.onclick = showLogin; upgradeBtn.style.display = ''; }
+    return;
+  }
   if (bar) bar.style.display = 'flex';
 
   if (checkPremiumStatus() || isAdmin) {
@@ -2707,10 +2735,16 @@ async function sendMessage() {
   const input = document.getElementById('userInput');
   const text = input.value.trim();
   if (!text && !uploadedImageBase64) return;
-  if (!isAdmin && !currentUser) { showLogin(); return; }
+  if (!isAdmin && !currentUser) {
+    if (uploadedImageBase64) { showLogin(); return; }  // images require login
+    if (!canGuestAsk()) { showGuestGate(); return; }
+    // Guest is within the free quota — allow the question, count it
+    incrementGuestCount();
+    // Fall through to send
+  }
   const questionType = uploadedImageBase64 ? 'upload' : 'typed';
-  if (!canAskQuestion(questionType)) { showUpgrade(); return; }
-  if (!isAdmin) incrementCount(questionType);
+  if (!isAdmin && currentUser && !canAskQuestion(questionType)) { showUpgrade(); return; }
+  if (!isAdmin && currentUser) incrementCount(questionType);
   _pwaMessageSent();
   trackQuestion(selectedSubjectTopic || 'General', text, questionType);
   isLoading = true;
