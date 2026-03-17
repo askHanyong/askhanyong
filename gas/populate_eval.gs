@@ -20,27 +20,43 @@ const POP_CONFIG = {
 };
 
 // ── QID parser ────────────────────────────────────────────────────
-// Parses e.g. IBMAAHLN24P2TZ0Q1 → { level:'HL', session:'N', year:'24', paper:'P2', tz:'TZ0', question:1, paperKey:'N24-MAAHL-P2-TZ0' }
-// Also accepts legacy IBHLN23P2TZ1Q8 format (without MAA prefix)
-// TZ values: TZ0/TZ1/TZ2 (pre-2025), TZA/TZB/TZC (2025+)
+// IB format:  IBMAAHLN24P2TZ0Q1 → { source:'IB', level:'HL', session:'N', year:'24', paper:'P2', tz:'TZ0', question:1, paperKey:'N24-MAAHL-P2-TZ0' }
+//   Also accepts legacy IBHLN23P2TZ1Q8 (without MAA prefix); TZ: TZ0/1/2 (pre-2025), TZA/B/C (2025+)
+// External format: OXFMAAHP2Q7 / HANYMAAHQ12 → { source:'OXF', level:'HL', paper:'P2'|null, question:7, paperKey:null }
+//   Sources: OXF (Oxford), CAM (Cambridge), HANY (Hanyong custom), ALEV (A-Level), AMC (AMC/competition)
 function parseQID_(qid) {
-  const m = String(qid).match(/^IB(?:MAA)?(HL|SL)([MN])(\d{2})(P\d)(TZ[0-9A-C])Q(\d+)$/i);
-  if (!m) return null;
-  const level   = m[1].toUpperCase();
-  const session = m[2].toUpperCase();
-  const year    = m[3];
-  const paper   = m[4].toUpperCase();
-  const tz      = m[5].toUpperCase();
-  return {
-    level,
-    session,
-    year,
-    paper,
-    tz,
-    question: parseInt(m[6], 10),
-    // Unique key per exam paper (multiple questions share same physical PDF)
-    paperKey: `${session}${year}-MAA${level}-${paper}-${tz}`,
-  };
+  const s = String(qid);
+
+  // IB exam papers
+  const ibM = s.match(/^IB(?:MAA)?(HL|SL)([MN])(\d{2})(P\d)(TZ[0-9A-C])Q(\d+)$/i);
+  if (ibM) {
+    const level   = ibM[1].toUpperCase();
+    const session = ibM[2].toUpperCase();
+    const year    = ibM[3];
+    const paper   = ibM[4].toUpperCase();
+    const tz      = ibM[5].toUpperCase();
+    return {
+      source: 'IB',
+      level, session, year, paper, tz,
+      question: parseInt(ibM[6], 10),
+      // Unique key per exam paper (multiple questions share same physical PDF)
+      paperKey: `${session}${year}-MAA${level}-${paper}-${tz}`,
+    };
+  }
+
+  // External / non-IB questions
+  const extM = s.match(/^(OXF|CAM|HANY|ALEV|AMC)MAA(HL|SL)(?:(P\d))?Q(\d+)$/i);
+  if (extM) {
+    return {
+      source:   extM[1].toUpperCase(),
+      level:    extM[2].toUpperCase(),
+      paper:    extM[3] ? extM[3].toUpperCase() : null,
+      question: parseInt(extM[4], 10),
+      paperKey: null,  // no shared IB paper PDF
+    };
+  }
+
+  return null;
 }
 
 // ── Filename builders ─────────────────────────────────────────────
@@ -58,6 +74,10 @@ function msFilename_(p) {
   return `${p.session}${p.year} MAA${p.level} ${p.paper}${tz}_markscheme`;
 }
 function solFilename_(p) {
+  if (p.source !== 'IB') {
+    const paperPart = p.paper ? ` ${p.paper}` : '';
+    return `MAA ${p.level} ${p.source}${paperPart} Q${p.question} solutions`;
+  }
   return `MAA ${p.level} ${p.session}${p.year} ${p.paper} ${p.tz} solutions`;
 }
 

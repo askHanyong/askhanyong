@@ -184,51 +184,66 @@ header a:hover { color:white; }
 
       <div class="form-row cols-2">
         <div class="form-group">
+          <label class="form-label">Question Source</label>
+          <select class="form-select" id="p-source" onchange="handleSourceChange()">
+            <option value="ib">IB Exam</option>
+            <option value="OXF">Oxford Textbook</option>
+            <option value="CAM">Cambridge Textbook</option>
+            <option value="HANY">Hanyong (Custom)</option>
+            <option value="ALEV">A-Level</option>
+            <option value="AMC">AMC / Competition</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label class="form-label">Level</label>
           <select class="form-select" id="p-level">
             <option value="MAA HL">MAA HL (Higher Level)</option>
             <option value="MAA SL">MAA SL (Standard Level)</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Paper</label>
-          <select class="form-select" id="p-paper">
-            <option value="P1">Paper 1 (No GDC)</option>
-            <option value="P2">Paper 2 (GDC)</option>
-            <option value="P3">Paper 3</option>
-          </select>
-        </div>
       </div>
 
-      <div class="form-row cols-3">
-        <div class="form-group">
-          <label class="form-label">Session</label>
-          <select class="form-select" id="p-session">
-            <option value="May">May</option>
-            <option value="November">November</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Year</label>
-          <select class="form-select" id="p-year">
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Time Zone</label>
-          <select class="form-select" id="p-tz">
-            <option value="0">TZ0 (Single TZ, pre-2025)</option>
-            <option value="1">TZ1 (Americas, pre-2025)</option>
-            <option value="2">TZ2 (Europe/Africa/Asia, pre-2025)</option>
-            <option value="A">TZA (Zone A, 2025+)</option>
-            <option value="B">TZB (Zone B, 2025+)</option>
-            <option value="C">TZC (Zone C, 2025+)</option>
-          </select>
+      <div class="form-group">
+        <label class="form-label">Paper</label>
+        <select class="form-select" id="p-paper">
+          <option value="P1">Paper 1 (No GDC)</option>
+          <option value="P2">Paper 2 (GDC)</option>
+          <option value="P3">Paper 3</option>
+          <option value="">— Not applicable —</option>
+        </select>
+      </div>
+
+      <div id="ib-fields">
+        <div class="form-row cols-3">
+          <div class="form-group">
+            <label class="form-label">Session</label>
+            <select class="form-select" id="p-session">
+              <option value="May">May</option>
+              <option value="November">November</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year</label>
+            <select class="form-select" id="p-year">
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+              <option value="2021">2021</option>
+              <option value="2020">2020</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time Zone</label>
+            <select class="form-select" id="p-tz">
+              <option value="0">TZ0 (Single TZ, pre-2025)</option>
+              <option value="1">TZ1 (Americas, pre-2025)</option>
+              <option value="2">TZ2 (Europe/Africa/Asia, pre-2025)</option>
+              <option value="A">TZA (Zone A, 2025+)</option>
+              <option value="B">TZB (Zone B, 2025+)</option>
+              <option value="C">TZC (Zone C, 2025+)</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -242,7 +257,7 @@ header a:hover { color:white; }
 
       <div style="background:var(--ice-light);border:1px solid var(--ice);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px">
         <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px">Preview — Question ID prefix</div>
-        <div class="id-helper">IBMAA<span id="idPreview" class="id-preview">HLM25P2TZ0</span>Q<em>n</em></div>
+        <div class="id-helper"><span id="idPreview" class="id-preview">IBMAAHLN25P2TZ0</span>Q<em>n</em></div>
       </div>
 
       <div class="btn-row">
@@ -476,31 +491,53 @@ function goStep(n) {
 // ════════════════════════════
 // PAPER METADATA & ID PREVIEW
 // ════════════════════════════
-['p-level','p-session','p-year','p-paper','p-tz'].forEach(id => {
+['p-source','p-level','p-session','p-year','p-paper','p-tz'].forEach(id => {
   setTimeout(() => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', updateIdPreview);
   }, 0);
 });
 
+function isIbSource() {
+  return (document.getElementById('p-source')?.value || 'ib') === 'ib';
+}
+
+function handleSourceChange() {
+  const ibFields = document.getElementById('ib-fields');
+  if (ibFields) ibFields.style.display = isIbSource() ? '' : 'none';
+  updateIdPreview();
+}
+
 function updateIdPreview() {
-  const level   = (document.getElementById('p-level')?.value || 'MAA HL').replace('MAA ','').replace(' ','');
-  const session = (document.getElementById('p-session')?.value || 'May').charAt(0); // M or N
-  const year    = (document.getElementById('p-year')?.value || '2025').slice(2);    // last 2 digits
-  const paper   = (document.getElementById('p-paper')?.value || 'P2');
-  const tz      = (document.getElementById('p-tz')?.value || '0');
-  const preview = `${level}${session}${year}${paper}TZ${tz}`;
+  const level = (document.getElementById('p-level')?.value || 'MAA HL').replace('MAA ', '').replace(' ', '');
+  const paper = document.getElementById('p-paper')?.value || 'P2';
+  let preview;
+  if (isIbSource()) {
+    const session = (document.getElementById('p-session')?.value || 'May').charAt(0);
+    const year    = (document.getElementById('p-year')?.value || '2025').slice(2);
+    const tz      = (document.getElementById('p-tz')?.value || '0');
+    preview = `IBMAA${level}${session}${year}${paper}TZ${tz}`;
+  } else {
+    const source    = document.getElementById('p-source')?.value || 'OXF';
+    const paperPart = paper ? paper : '';
+    preview = `${source}MAA${level}${paperPart}`;
+  }
   const el = document.getElementById('idPreview');
   if (el) el.textContent = preview;
 }
 
 function getIdPrefix() {
-  const level   = (document.getElementById('p-level').value || 'MAA HL').replace('MAA ','').replace(' ','');
-  const session = (document.getElementById('p-session').value || 'May').charAt(0);
-  const year    = (document.getElementById('p-year').value || '2025').slice(2);
-  const paper   = (document.getElementById('p-paper').value || 'P2');
-  const tz      = (document.getElementById('p-tz').value || '0');
-  return `IBMAA${level}${session}${year}${paper}TZ${tz}`;
+  const level = (document.getElementById('p-level').value || 'MAA HL').replace('MAA ', '').replace(' ', '');
+  const paper = document.getElementById('p-paper').value || 'P2';
+  if (isIbSource()) {
+    const session = (document.getElementById('p-session').value || 'May').charAt(0);
+    const year    = (document.getElementById('p-year').value || '2025').slice(2);
+    const tz      = (document.getElementById('p-tz').value || '0');
+    return `IBMAA${level}${session}${year}${paper}TZ${tz}`;
+  }
+  const source    = document.getElementById('p-source').value || 'OXF';
+  const paperPart = paper ? paper : '';
+  return `${source}MAA${level}${paperPart}`;
 }
 
 // ════════════════════════════
@@ -783,7 +820,7 @@ function renderQCards() {
         <div class="form-row cols-2">
           <div class="form-group">
             <label class="form-label">Question ID</label>
-            <input class="form-input" id="qid-${i}" value="${qId}" placeholder="IBMAAHLN24P2TZ0Q1">
+            <input class="form-input" id="qid-${i}" value="${qId}" placeholder="e.g. IBMAAHLN24P2TZ0Q1 or OXFMAAHP2Q7">
           </div>
           <div class="form-group">
             <label class="form-label">Marks</label>
@@ -923,14 +960,24 @@ function renderSaveSummary() {
   const data = collectQuestionData();
   const level   = document.getElementById('p-level').value;
   const paper   = document.getElementById('p-paper').value;
-  const session = document.getElementById('p-session').value;
-  const year    = document.getElementById('p-year').value;
-  const tz      = document.getElementById('p-tz').value;
   const withSol = data.filter(q => q['Solution URL']).length;
   const withTopic = data.filter(q => q['Topic']).length;
 
+  let paperDesc;
+  if (isIbSource()) {
+    const session = document.getElementById('p-session').value;
+    const year    = document.getElementById('p-year').value;
+    const tz      = document.getElementById('p-tz').value;
+    paperDesc = `${level} ${paper} — ${session} ${year} TZ${tz}`;
+  } else {
+    const sourceNames = { OXF:'Oxford', CAM:'Cambridge', HANY:'Hanyong (Custom)', ALEV:'A-Level', AMC:'AMC / Competition' };
+    const source = document.getElementById('p-source').value;
+    const paperPart = paper ? ` — ${paper}` : '';
+    paperDesc = `${level}${paperPart} — ${sourceNames[source] || source}`;
+  }
+
   document.getElementById('saveSummary').innerHTML = `
-    📄 <strong>Paper:</strong> ${level} ${paper} — ${session} ${year} TZ${tz}<br>
+    📄 <strong>Paper:</strong> ${paperDesc}<br>
     🔢 <strong>Questions:</strong> ${data.length} total<br>
     ✍️ <strong>With solution URL:</strong> ${withSol} / ${data.length}<br>
     🏷️ <strong>With topic assigned:</strong> ${withTopic} / ${data.length}<br>
