@@ -753,7 +753,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="welcome-screen" id="welcomeScreen">
       <div class="welcome-avatar">HAN</div>
       <h2>Annyeong! 👋</h2>
-      <p>I'm HAN — your IB Math tutor built on Hanyong's 20+ years of examiner experience. Ask me anything.</p>
+      <p>I'm HAN — your IB Math tutor built on Hanyong's 20+ years of teaching Mathematics and experience as an IB examiner. Ask me anything.</p>
       <div id="examCountdownBadge"></div>
       <div class="welcome-cards">
         <div class="welcome-card" onclick="usePrompt('Explain integration by parts with an IB HL example')"><div class="wc-icon">📐</div><div class="wc-title">Explain a concept</div><div class="wc-desc">Clear IB-style breakdown</div></div>
@@ -1484,7 +1484,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <div class="onboard-ready-icon">HAN</div>
         <div class="onboard-ready-msg">
           <h3>You're all set!</h3>
-          <p>HAN is ready to tutor you with 20+ years of IB examiner expertise — tailored to your level and topic.</p>
+          <p>HAN is ready to tutor you with 20+ years of Mathematics teaching experience and IB examiner insight — tailored to your level and topic.</p>
         </div>
         <div class="onboard-context-preview">
           <div class="icon">🎯</div>
@@ -2488,7 +2488,7 @@ function getSystemPrompt(repositoryContext) {
     'Paper 3': 'PAPER 3 — PROBLEM SOLVING (HL only, GDC): Cross-topic, real-world modelling questions.'
   };
   const fence = '```';
-  return `You are HAN — an AI Math tutor built on the expertise of Hanyong Lim, an IB HL Mathematics Examiner with 20+ years of experience. HAN stands for Help · Achieve · Nurture.
+  return `You are HAN — an AI Math tutor built on the expertise of Hanyong Lim, a Mathematics teacher with 20+ years of experience (private tutoring, A-Levels, and IB) and a former IB HL Mathematics Examiner. HAN stands for Help · Achieve · Nurture.
 
 Your persona: Warm, encouraging, precise. You know exactly what examiners look for.
 
@@ -3584,7 +3584,7 @@ async function exportMockPDF() {
     const date = new Date().toLocaleDateString('en-SG', { day: 'numeric', month: 'long', year: 'numeric' });
     doc.text(`${paperType}  ·  ${mockPaperData.length} Questions  ·  ${totalMarks} Marks  ·  Generated ${date}`, margin + 10, 60);
     doc.setFontSize(8); doc.setTextColor(...gold);
-    doc.text('Built on 20+ years of IB HL Mathematics Examining experience', margin + 10, 68);
+    doc.text('Built on 20+ years of Mathematics teaching and IB Examining experience', margin + 10, 68);
     y = 85;
     const stats = [
       { label: 'Questions', val: String(mockPaperData.length) },
@@ -3870,7 +3870,7 @@ function downloadAnswerPDF(triggerBtn) {
     doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor(255, 255, 255);
     doc.text("HAN's Explanation", margin + 8, 26);
     doc.setFontSize(8); doc.setTextColor(...gold);
-    doc.text('askHanyong · IB Math AI Tutor · Built on 20+ years of examiner experience', margin + 8, 33);
+    doc.text('askHanyong · IB Math AI Tutor · Built on 20+ years of Mathematics teaching and IB examining', margin + 8, 33);
     const date = new Date().toLocaleDateString('en-SG', { day: 'numeric', month: 'long', year: 'numeric' });
     doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(160, 190, 230);
     const ctx = [selectedLevel, selectedPaper, selectedSubjectTopic !== 'All Topics' ? selectedSubjectTopic : null, date].filter(Boolean).join('  ·  ');
