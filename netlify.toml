@@ -32,8 +32,9 @@
   status = 200
   force = true
 
-# /app is a clean alias for the main app
+# /app serves the AI tutor (force ensures it's never caught by the root rewrite)
 [[redirects]]
   from = "/app"
   to = "/index.html"
   status = 200
+  force = true
