@@ -42,12 +42,22 @@ function parseQID_(qid) {
 }
 
 // ── Filename builders ─────────────────────────────────────────────
-// Paper:       "N23 MAAHL P2 TZ1"
-// Markscheme:  "N23 MAAHL P2 TZ1_markscheme"
-// Solutions:   "MAA HL N23 P2 TZ1 solutions"
-function paperFilename_(p)   { return `${p.session}${p.year} MAA${p.level} ${p.paper} ${p.tz}`; }
-function msFilename_(p)      { return `${p.session}${p.year} MAA${p.level} ${p.paper} ${p.tz}_markscheme`; }
-function solFilename_(p)     { return `MAA ${p.level} ${p.session}${p.year} ${p.paper} ${p.tz} solutions`; }
+// May papers:  "M24 MAAHL P2 TZ1"  / "M24 MAAHL P2 TZ1_markscheme"
+// Nov papers:  "N24 MAAHL P2"      / "N24 MAAHL P2_markscheme"  (no TZ suffix)
+// Solutions May:  "MAA HL M24 P2 TZ1 solutions"
+// Solutions Nov:  "MAA HL N24 P2 TZ0 solutions"  (TZ0 for November)
+function paperFilename_(p) {
+  const tz = p.session === 'N' ? '' : ` ${p.tz}`;
+  return `${p.session}${p.year} MAA${p.level} ${p.paper}${tz}`;
+}
+function msFilename_(p) {
+  const tz = p.session === 'N' ? '' : ` ${p.tz}`;
+  return `${p.session}${p.year} MAA${p.level} ${p.paper}${tz}_markscheme`;
+}
+function solFilename_(p) {
+  const tz = p.session === 'N' ? 'TZ0' : p.tz;
+  return `MAA ${p.level} ${p.session}${p.year} ${p.paper} ${tz} solutions`;
+}
 
 // ── Drive helpers ─────────────────────────────────────────────────
 function findFile_(folderId, namePart) {
@@ -298,7 +308,7 @@ function diagnoseDriveAccess() {
 // ── Test: verify file lookup before running the full job ──────────
 // Change TEST_QID to any Question ID from your sheet
 function testPdfLookup() {
-  const TEST_QID = 'IBHLN23P2TZ1Q8';
+  const TEST_QID = 'IBHLM24P2TZ1Q1';
 
   const p = parseQID_(TEST_QID);
   if (!p) { Logger.log('QID failed to parse: ' + TEST_QID); return; }
@@ -319,7 +329,7 @@ function testPdfLookup() {
 
 // ── Test: run a single question end-to-end (writes to sheet) ──────
 function testSingleQuestion() {
-  const TEST_QID = 'IBHLN23P2TZ1Q8'; // change to any QID that exists in your sheet
+  const TEST_QID = 'IBHLM24P2TZ1Q1'; // change to any QID that exists in your sheet
 
   const ss    = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(POP_CONFIG.QUESTIONS_SHEET);
