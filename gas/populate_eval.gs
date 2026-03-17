@@ -13,7 +13,7 @@
 
 const POP_CONFIG = {
   PAPERS_FOLDER_ID:    '1e6J1EWEsZX6Qk_bt2ND94aw1iXGkOS9V',
-  SOLUTIONS_FOLDER_ID: '1mfKgbit7SBrYTPke7biBgJRIqtH587C',
+  SOLUTIONS_FOLDER_ID: '1mfKgbit7SBrYTPPke7biBgJRIqtH587C',
   QUESTIONS_SHEET:     'Questions',
   CLAUDE_MODEL:        'claude-haiku-4-5-20251001', // swap to 'claude-sonnet-4-6' for higher accuracy
   PAPERS_PER_RUN:      3,   // papers to process per execution (stay inside 6-min GAS limit)
