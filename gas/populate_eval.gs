@@ -22,8 +22,9 @@ const POP_CONFIG = {
 // ── QID parser ────────────────────────────────────────────────────
 // Parses e.g. IBMAAHLN24P2TZ0Q1 → { level:'HL', session:'N', year:'24', paper:'P2', tz:'TZ0', question:1, paperKey:'N24-MAAHL-P2-TZ0' }
 // Also accepts legacy IBHLN23P2TZ1Q8 format (without MAA prefix)
+// TZ values: TZ0/TZ1/TZ2 (pre-2025), TZA/TZB/TZC (2025+)
 function parseQID_(qid) {
-  const m = String(qid).match(/^IB(?:MAA)?(HL|SL)([MN])(\d{2})(P\d)(TZ\d)Q(\d+)$/i);
+  const m = String(qid).match(/^IB(?:MAA)?(HL|SL)([MN])(\d{2})(P\d)(TZ[0-9A-C])Q(\d+)$/i);
   if (!m) return null;
   const level   = m[1].toUpperCase();
   const session = m[2].toUpperCase();
@@ -43,21 +44,21 @@ function parseQID_(qid) {
 }
 
 // ── Filename builders ─────────────────────────────────────────────
-// May papers:  "M24 MAAHL P2 TZ1"  / "M24 MAAHL P2 TZ1_markscheme"
-// Nov papers:  "N24 MAAHL P2"      / "N24 MAAHL P2_markscheme"  (no TZ suffix)
-// Solutions May:  "MAA HL M24 P2 TZ1 solutions"
-// Solutions Nov:  "MAA HL N24 P2 TZ0 solutions"  (TZ0 for November)
+// May papers:   "M24 MAAHL P2 TZ1"      / "M24 MAAHL P2 TZ1_markscheme"
+// Nov TZ0:      "N23 MAAHL P2"          / "N23 MAAHL P2_markscheme"  (single TZ, no suffix)
+// Nov TZ1/TZ2:  "N24 MAAHL P2 TZ1"     / "N24 MAAHL P2 TZ1_markscheme"
+// 2025+ TZA/B/C:"N25 MAAHL P2 TZA"     / "N25 MAAHL P2 TZA_markscheme"
+// Solutions:    "MAA HL M24 P2 TZ1 solutions" / "MAA HL N24 P2 TZ0 solutions"
 function paperFilename_(p) {
-  const tz = p.session === 'N' ? '' : ` ${p.tz}`;
+  const tz = (p.session === 'N' && p.tz === 'TZ0') ? '' : ` ${p.tz}`;
   return `${p.session}${p.year} MAA${p.level} ${p.paper}${tz}`;
 }
 function msFilename_(p) {
-  const tz = p.session === 'N' ? '' : ` ${p.tz}`;
+  const tz = (p.session === 'N' && p.tz === 'TZ0') ? '' : ` ${p.tz}`;
   return `${p.session}${p.year} MAA${p.level} ${p.paper}${tz}_markscheme`;
 }
 function solFilename_(p) {
-  const tz = p.session === 'N' ? 'TZ0' : p.tz;
-  return `MAA ${p.level} ${p.session}${p.year} ${p.paper} ${tz} solutions`;
+  return `MAA ${p.level} ${p.session}${p.year} ${p.paper} ${p.tz} solutions`;
 }
 
 // ── Drive helpers ─────────────────────────────────────────────────

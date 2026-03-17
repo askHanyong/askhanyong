@@ -222,9 +222,12 @@ header a:hover { color:white; }
         <div class="form-group">
           <label class="form-label">Time Zone</label>
           <select class="form-select" id="p-tz">
-            <option value="0">TZ0 (Single TZ)</option>
-            <option value="1">TZ1 (Americas)</option>
-            <option value="2">TZ2 (Europe/Africa/Asia)</option>
+            <option value="0">TZ0 (Single TZ, pre-2025)</option>
+            <option value="1">TZ1 (Americas, pre-2025)</option>
+            <option value="2">TZ2 (Europe/Africa/Asia, pre-2025)</option>
+            <option value="A">TZA (Zone A, 2025+)</option>
+            <option value="B">TZB (Zone B, 2025+)</option>
+            <option value="C">TZC (Zone C, 2025+)</option>
           </select>
         </div>
       </div>
