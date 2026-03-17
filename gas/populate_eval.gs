@@ -265,6 +265,19 @@ No explanation, no markdown code fences, just raw JSON.`,
   Logger.log(`This run: ${processedCount} paper(s) processed.`);
 }
 
+// ── Diagnostic: list first 20 files in each folder to check naming ──
+function listFolderFiles() {
+  ['PAPERS_FOLDER_ID', 'SOLUTIONS_FOLDER_ID'].forEach(key => {
+    Logger.log('\n=== ' + key + ' ===');
+    const files = DriveApp.getFolderById(POP_CONFIG[key]).getFiles();
+    let count = 0;
+    while (files.hasNext() && count < 20) {
+      Logger.log(files.next().getName());
+      count++;
+    }
+  });
+}
+
 // ── Diagnostic: check which account the script runs as + folder access ──
 function diagnoseDriveAccess() {
   Logger.log('Running as: ' + Session.getActiveUser().getEmail());
