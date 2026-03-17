@@ -265,6 +265,23 @@ No explanation, no markdown code fences, just raw JSON.`,
   Logger.log(`This run: ${processedCount} paper(s) processed.`);
 }
 
+// ── Diagnostic: check which account the script runs as + folder access ──
+function diagnoseDriveAccess() {
+  Logger.log('Running as: ' + Session.getActiveUser().getEmail());
+  try {
+    const root = DriveApp.getRootFolder();
+    Logger.log('Root folder OK: ' + root.getName());
+  } catch(e) {
+    Logger.log('Root folder ERROR: ' + e.message);
+  }
+  try {
+    const f = DriveApp.getFolderById(POP_CONFIG.PAPERS_FOLDER_ID);
+    Logger.log('Papers folder OK: ' + f.getName());
+  } catch(e) {
+    Logger.log('Papers folder ERROR: ' + e.message);
+  }
+}
+
 // ── Test: verify file lookup before running the full job ──────────
 // Change TEST_QID to any Question ID from your sheet
 function testPdfLookup() {
