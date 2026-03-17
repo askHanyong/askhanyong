@@ -189,9 +189,11 @@ header a:hover { color:white; }
             <option value="ib">IB Exam</option>
             <option value="OXF">Oxford Textbook</option>
             <option value="CAM">Cambridge Textbook</option>
+            <option value="HAE">Haese Textbook</option>
             <option value="HANY">Hanyong (Custom)</option>
             <option value="ALEV">A-Level</option>
             <option value="AMC">AMC / Competition</option>
+            <option value="OTH">Others</option>
           </select>
         </div>
         <div class="form-group">
@@ -970,7 +972,7 @@ function renderSaveSummary() {
     const tz      = document.getElementById('p-tz').value;
     paperDesc = `${level} ${paper} — ${session} ${year} TZ${tz}`;
   } else {
-    const sourceNames = { OXF:'Oxford', CAM:'Cambridge', HANY:'Hanyong (Custom)', ALEV:'A-Level', AMC:'AMC / Competition' };
+    const sourceNames = { OXF:'Oxford', CAM:'Cambridge', HAE:'Haese', HANY:'Hanyong (Custom)', ALEV:'A-Level', AMC:'AMC / Competition', OTH:'Others' };
     const source = document.getElementById('p-source').value;
     const paperPart = paper ? ` — ${paper}` : '';
     paperDesc = `${level}${paperPart} — ${sourceNames[source] || source}`;

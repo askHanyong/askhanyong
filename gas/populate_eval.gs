@@ -23,7 +23,7 @@ const POP_CONFIG = {
 // IB format:  IBMAAHLN24P2TZ0Q1 → { source:'IB', level:'HL', session:'N', year:'24', paper:'P2', tz:'TZ0', question:1, paperKey:'N24-MAAHL-P2-TZ0' }
 //   Also accepts legacy IBHLN23P2TZ1Q8 (without MAA prefix); TZ: TZ0/1/2 (pre-2025), TZA/B/C (2025+)
 // External format: OXFMAAHP2Q7 / HANYMAAHQ12 → { source:'OXF', level:'HL', paper:'P2'|null, question:7, paperKey:null }
-//   Sources: OXF (Oxford), CAM (Cambridge), HANY (Hanyong custom), ALEV (A-Level), AMC (AMC/competition)
+//   Sources: OXF (Oxford), CAM (Cambridge), HAE (Haese), HANY (Hanyong custom), ALEV (A-Level), AMC (AMC/competition), OTH (Others)
 function parseQID_(qid) {
   const s = String(qid);
 
@@ -45,7 +45,7 @@ function parseQID_(qid) {
   }
 
   // External / non-IB questions
-  const extM = s.match(/^(OXF|CAM|HANY|ALEV|AMC)MAA(HL|SL)(?:(P\d))?Q(\d+)$/i);
+  const extM = s.match(/^(OXF|CAM|HAE|HANY|ALEV|AMC|OTH)MAA(HL|SL)(?:(P\d))?Q(\d+)$/i);
   if (extM) {
     return {
       source:   extM[1].toUpperCase(),
