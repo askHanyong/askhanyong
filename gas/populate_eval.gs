@@ -20,9 +20,10 @@ const POP_CONFIG = {
 };
 
 // ── QID parser ────────────────────────────────────────────────────
-// Parses e.g. IBHLN23P2TZ1Q8 → { level:'HL', session:'N', year:'23', paper:'P2', tz:'TZ1', question:8, paperKey:'N23-MAAHL-P2-TZ1' }
+// Parses e.g. IBMAAHLN24P2TZ0Q1 → { level:'HL', session:'N', year:'24', paper:'P2', tz:'TZ0', question:1, paperKey:'N24-MAAHL-P2-TZ0' }
+// Also accepts legacy IBHLN23P2TZ1Q8 format (without MAA prefix)
 function parseQID_(qid) {
-  const m = String(qid).match(/^IB(HL|SL)([MN])(\d{2})(P\d)(TZ\d)Q(\d+)$/i);
+  const m = String(qid).match(/^IB(?:MAA)?(HL|SL)([MN])(\d{2})(P\d)(TZ\d)Q(\d+)$/i);
   if (!m) return null;
   const level   = m[1].toUpperCase();
   const session = m[2].toUpperCase();
@@ -205,6 +206,7 @@ No explanation, no markdown code fences, just raw JSON.`,
       );
       const texts = parseJson_(textsRaw);
 
+      Utilities.sleep(15000); // avoid 50k token/min rate limit
       // ── Extract gold answers (one API call for whole markscheme) ──
       Logger.log('  Extracting gold answers...');
       const answersRaw = claudePdf_(
@@ -222,6 +224,7 @@ No explanation, no markdown code fences, just raw JSON.`,
       );
       const answers = parseJson_(answersRaw);
 
+      Utilities.sleep(15000); // avoid 50k token/min rate limit
       // ── Extract key steps (one API call for whole solutions PDF) ──
       let steps = {};
       if (solB64) {
@@ -310,7 +313,7 @@ function diagnoseDriveAccess() {
 // ── Test: verify file lookup before running the full job ──────────
 // Change TEST_QID to any Question ID from your sheet
 function testPdfLookup() {
-  const TEST_QID = 'IBHLM24P2TZ1Q1';
+  const TEST_QID = 'IBMAAHLN24P2TZ0Q1';
 
   const p = parseQID_(TEST_QID);
   if (!p) { Logger.log('QID failed to parse: ' + TEST_QID); return; }
@@ -331,7 +334,7 @@ function testPdfLookup() {
 
 // ── Test: run a single question end-to-end (writes to sheet) ──────
 function testSingleQuestion() {
-  const TEST_QID = 'IBHLM24P2TZ1Q1'; // change to any QID that exists in your sheet
+  const TEST_QID = 'IBMAAHLN24P2TZ0Q1'; // change to any QID that exists in your sheet
 
   const ss    = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(POP_CONFIG.QUESTIONS_SHEET);
