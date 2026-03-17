@@ -127,6 +127,12 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
 .repo-indicator { text-align:center; font-size:11px; color:var(--gold); font-weight:600; padding:4px; }
 .similar-btn { margin-top:8px; padding:6px 14px; background:var(--ice-light); border:1px solid var(--blue); border-radius:16px; font-size:11px; font-weight:600; color:var(--blue); cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
+.mark-chip { display:inline-block; padding:1px 6px; border-radius:4px; font-size:10.5px; font-weight:700; margin-left:5px; vertical-align:middle; font-family:'DM Mono',monospace; line-height:1.6; }
+.mark-chip.m { background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd; }
+.mark-chip.a { background:#dcfce7; color:#166534; border:1px solid #86efac; }
+.mark-chip.r { background:#fef3c7; color:#92400e; border:1px solid #fcd34d; }
+.mark-chip.ft { background:#f3e8ff; color:#6b21a8; border:1px solid #c4b5fd; }
+.mark-total { background:#f0fdf4; border:1.5px solid #22c55e; border-radius:8px; padding:10px 16px; margin:12px 0 4px; font-size:12.5px; font-weight:600; color:#166534; display:inline-block; }
 .input-area { background:white; border-top:1px solid var(--border); padding:10px 14px; flex-shrink:0; }
 .image-preview-strip { display:none; align-items:center; gap:8px; margin-bottom:8px; padding:8px 10px; background:var(--bg); border-radius:8px; font-size:12px; color:var(--text-mid); }
 .image-preview-strip.show { display:flex; }
@@ -2467,6 +2473,11 @@ function formatResponse(text) {
   html = html.replace(/\[Examiner[^\]]*\]:\s*([^\n]+)/g, '<div class="examiner-note">$1</div>');
   html = html.replace(/Examiner(?:\'s)? [Nn]ote[:\s]+([^\n]+)/g, '<div class="examiner-note">$1</div>');
   html = html.replace(/Common [Mm]istake[:\s]+([^\n]+)/g, '<div class="warning">$1</div>');
+  html = html.replace(/Mark total:\s*([^\n<]+)/g, '<div class="mark-total">&#10003; Mark total: $1</div>');
+  html = html.replace(/\[M(\d+)\]/g, '<span class="mark-chip m">M$1</span>');
+  html = html.replace(/\[A(\d+)\]/g, '<span class="mark-chip a">A$1</span>');
+  html = html.replace(/\[R(\d+)\]/g, '<span class="mark-chip r">R$1</span>');
+  html = html.replace(/\[ft\]/gi, '<span class="mark-chip ft">ft</span>');
   html = html.replace(/\u0060([^\u0060]+)\u0060/g, '<code class="math-block">$1</code>');
   html = html.replace(/\n{2,}/g, '<br><br>');
   html = html.replace(/\n/g, '<br>');
@@ -2508,11 +2519,13 @@ Tutoring approach:
 IB rules: Use IB terminology (hence, show that, find the exact value). Correct notation: f'(x), dy/dx, ∫, Σ.
 
 MARKING SCHEME AWARENESS: Always structure solutions the way an IB examiner marks them.
-- M marks (Method marks): awarded for a correct mathematical method, even if the final answer is wrong. Flag key M-mark steps with [M1].
-- A marks (Accuracy marks): awarded for a correct numerical or algebraic answer, conditional on the correct method. Flag with [A1].
-- R marks (Reasoning): for a valid explanation or justification. Flag with [R1] where relevant.
-- ft marks (follow-through): if a student carries an error forward but applies correct method. Mention when this applies.
-After each solution, include a brief line like "Mark allocation: X M marks + Y A marks = Z total" so the student knows where marks are awarded.
+- M marks (Method marks): awarded for a correct mathematical method, even if the final answer is wrong. Place [M1] at the END of the step line where it is earned.
+- A marks (Accuracy marks): awarded for a correct numerical or algebraic answer, conditional on the correct method. Place [A1] at the END of the step line where it is earned.
+- R marks (Reasoning): for a valid explanation or justification. Place [R1] at the END of the step line where it is earned.
+- ft marks (follow-through): if a student carries an error forward but applies correct method. Place [ft] at the END of the line where it applies.
+CRITICAL: Put mark annotations INLINE at the end of the step line where the mark is earned — do NOT bundle them only at the end. Example: "Step 2: Differentiate \\(f(x) = 3x^2\\) → \\(f'(x) = 6x\\) [M1]"
+After the full solution, end with a mark total line in EXACTLY this format (on its own line):
+Mark total: XM + YA + ZR = N marks
 
 ${repositoryContext ? `\n════════════════════\nHANYONG'S REPOSITORY — VERIFIED INSIGHTS (reference metadata only, no question text)\n════════════════════\n${repositoryContext}\n════════════════════\n` : ''}
 
