@@ -1672,7 +1672,7 @@ function openPasteFromSheet() {
 // Format: IBMAAHL[N|M]{YY}P{n}TZ{n}Q{n}
 // e.g.  IBMAAHLN24P2TZ0Q9
 //         → Year:2024 Level:MAA HL Paper:P2 Session:November TZ:0 Q:9
-// TZ values: 0/1/2 (pre-2025), A/B/C (2025+)
+// TZ values: 0/1/2 (pre-2025), 1/2/3 (2025+)
 // ════════════════════════════════════════
 function parseQuestionId(qid) {
   if (!qid) return {};
@@ -1691,9 +1691,9 @@ function parseQuestionId(qid) {
     out.paper    = 'P' + m[3];
   }
 
-  // Time Zone (pre-2025: TZ0/TZ1/TZ2 → digit; 2025+: TZA/TZB/TZC → letter)
-  const tz = s.match(/TZ([0-9A-C])/i);
-  if (tz) out.tz = tz[1].toUpperCase();
+  // Time Zone (pre-2025: TZ0/TZ1/TZ2; 2025+: TZ1/TZ2/TZ3 — always a digit)
+  const tz = s.match(/TZ([0-9])/);
+  if (tz) out.tz = tz[1];
 
   // Question number
   const q = s.match(/Q(\d+)$/);

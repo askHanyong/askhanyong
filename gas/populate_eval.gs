@@ -21,14 +21,14 @@ const POP_CONFIG = {
 
 // ── QID parser ────────────────────────────────────────────────────
 // IB format:  IBMAAHLN24P2TZ0Q1 → { source:'IB', level:'HL', session:'N', year:'24', paper:'P2', tz:'TZ0', question:1, paperKey:'N24-MAAHL-P2-TZ0' }
-//   Also accepts legacy IBHLN23P2TZ1Q8 (without MAA prefix); TZ: TZ0/1/2 (pre-2025), TZA/B/C (2025+)
+//   Also accepts legacy IBHLN23P2TZ1Q8 (without MAA prefix); TZ: TZ0/1/2 (pre-2025), TZ1/2/3 (2025+)
 // External format: OXFMAAHP2Q7 / HANYMAAHQ12 → { source:'OXF', level:'HL', paper:'P2'|null, question:7, paperKey:null }
 //   Sources: OXF (Oxford), CAM (Cambridge), HAE (Haese), HANY (Hanyong custom), ALEV (A-Level), AMC (AMC/competition), OTH (Others)
 function parseQID_(qid) {
   const s = String(qid);
 
   // IB exam papers
-  const ibM = s.match(/^IB(?:MAA)?(HL|SL)([MN])(\d{2})(P\d)(TZ[0-9A-C])Q(\d+)$/i);
+  const ibM = s.match(/^IB(?:MAA)?(HL|SL)([MN])(\d{2})(P\d)(TZ[0-9])Q(\d+)$/i);
   if (ibM) {
     const level   = ibM[1].toUpperCase();
     const session = ibM[2].toUpperCase();
@@ -60,11 +60,11 @@ function parseQID_(qid) {
 }
 
 // ── Filename builders ─────────────────────────────────────────────
-// May papers:   "M24 MAAHL P2 TZ1"      / "M24 MAAHL P2 TZ1_markscheme"
-// Nov TZ0:      "N23 MAAHL P2"          / "N23 MAAHL P2_markscheme"  (single TZ, no suffix)
-// Nov TZ1/TZ2:  "N24 MAAHL P2 TZ1"     / "N24 MAAHL P2 TZ1_markscheme"
-// 2025+ TZA/B/C:"N25 MAAHL P2 TZA"     / "N25 MAAHL P2 TZA_markscheme"
-// Solutions:    "MAA HL M24 P2 TZ1 solutions" / "MAA HL N24 P2 TZ0 solutions"
+// May papers:    "M24 MAAHL P2 TZ1"     / "M24 MAAHL P2 TZ1_markscheme"
+// Nov TZ0:       "N23 MAAHL P2"         / "N23 MAAHL P2_markscheme"  (single TZ, no suffix)
+// Nov TZ1/TZ2:   "N24 MAAHL P2 TZ1"    / "N24 MAAHL P2 TZ1_markscheme"
+// 2025+ TZ1/2/3: "N25 MAAHL P2 TZ1"    / "N25 MAAHL P2 TZ1_markscheme"
+// Solutions:     "MAA HL M24 P2 TZ1 solutions" / "MAA HL N24 P2 TZ0 solutions"
 function paperFilename_(p) {
   const tz = (p.session === 'N' && p.tz === 'TZ0') ? '' : ` ${p.tz}`;
   return `${p.session}${p.year} MAA${p.level} ${p.paper}${tz}`;
