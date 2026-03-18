@@ -1098,14 +1098,25 @@ function showUpgrade() {
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function closeModalBg(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
 
-function handleGoogleCredential(response) {
+async function handleGoogleCredential(response) {
   var payload = JSON.parse(atob(response.credential.split('.')[1]));
   currentUser = payload;
   closeModal('loginOverlay');
   renderUserPill(payload);
   updateLimitBar();
+  // Detect country via IP geolocation (Google JWT does not include country)
+  let country = '';
+  try {
+    const geo = await fetch('https://ipapi.co/json/');
+    if (geo.ok) {
+      const geoData = await geo.json();
+      country = geoData.country_name || '';
+    }
+  } catch(e) {}
   // Save to Users sheet (backend deduplicates by email)
-  saveUserToSheet(payload);
+  saveUserToSheet(payload, country);
+  // Check premium status from server and update sessionStorage
+  checkPremiumFromServer(payload.email);
   // Show welcome modal only on first ever visit
   const seenKey = 'han_welcomed_' + payload.sub;
   if (!localStorage.getItem(seenKey)) {
@@ -1114,15 +1125,30 @@ function handleGoogleCredential(response) {
   }
 }
 
-async function saveUserToSheet(user) {
+async function saveUserToSheet(user, country) {
   try {
     const params = new URLSearchParams({
-      action: 'saveUser',
-      name:   user.name  || '',
-      email:  user.email || '',
-      ts:     new Date().toISOString()
+      action:  'saveUser',
+      name:    user.name  || '',
+      email:   user.email || '',
+      country: country    || '',
+      ts:      new Date().toISOString()
     });
     await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
+  } catch(e) {}
+}
+
+async function checkPremiumFromServer(email) {
+  if (!email) return;
+  try {
+    const res = await fetch('/api/check-premium?email=' + encodeURIComponent(email));
+    if (res.ok) {
+      const data = await res.json();
+      if (data.premium && currentUser) {
+        sessionStorage.setItem('han_premium_' + currentUser.sub, 'true');
+        updateLimitBar();
+      }
+    }
   } catch(e) {}
 }
 function renderUserPill(user) {
@@ -1135,6 +1161,13 @@ window.addEventListener('load', function () {
   if (typeof google === 'undefined') return;
   google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredential, auto_select: false });
   google.accounts.id.renderButton(document.getElementById('googleSignInBtn'), { theme: 'outline', size: 'large', width: 320, text: 'signin_with' });
+});
+
+// Re-check premium when user returns to the tab after completing Stripe checkout
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'visible' && currentUser && !checkPremiumStatus()) {
+    checkPremiumFromServer(currentUser.email);
+  }
 });
 
 // ════════════════════════════════════════
@@ -2134,7 +2167,12 @@ function startStripeCheckout() {
     return;
   }
   let url = STRIPE_PAYMENT_LINK;
-  if (currentUser && currentUser.email) url += (url.includes('?') ? '&' : '?') + 'prefilled_email=' + encodeURIComponent(currentUser.email);
+  if (currentUser && currentUser.email) {
+    const sep = url.includes('?') ? '&' : '?';
+    url += sep + 'prefilled_email=' + encodeURIComponent(currentUser.email);
+    // client_reference_id lets the webhook identify which user paid
+    url += '&client_reference_id=' + encodeURIComponent(currentUser.email);
+  }
   window.open(url, '_blank');
   closeModal('upgradeOverlay');
   dismissNudge();
