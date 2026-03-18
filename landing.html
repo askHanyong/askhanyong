@@ -314,6 +314,127 @@ nav {
 .btn-pricing-paid:hover { background: var(--gold-light); transform: translateY(-1px); }
 .pricing-why { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 12px; line-height: 1.6; }
 
+/* ── AI MARKING DEMO ── */
+.marking-section {
+  background: var(--bg); padding: 80px 24px;
+}
+.marking-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+}
+.marking-text { max-width: 480px; }
+.marking-checks {
+  list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 12px;
+}
+.marking-checks li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--text-mid); line-height: 1.5;
+}
+.marking-checks li::before {
+  content: '✓'; font-weight: 700; color: var(--green); flex-shrink: 0; margin-top: 1px;
+}
+.marking-mockup {
+  background: white; border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  box-shadow: 0 8px 40px rgba(14,28,51,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden; font-size: 13px;
+}
+.marking-mockup-bar {
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+}
+.marking-mockup-title { font-size: 12px; font-weight: 600; color: white; }
+.marking-mockup-badge {
+  margin-left: auto; background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.4); border-radius: 10px;
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  padding: 2px 8px; letter-spacing: 0.3px;
+}
+.marking-attempt {
+  background: #fffdf7; border-bottom: 1.5px solid #e4e2dc;
+  padding: 14px 16px;
+}
+.marking-attempt-label {
+  font-size: 10px; font-weight: 700; color: var(--text-soft);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;
+}
+.marking-attempt-q {
+  font-size: 12px; color: var(--text-mid); margin-bottom: 10px; line-height: 1.5;
+}
+.marking-attempt-work {
+  background: white; border: 1.5px solid #e4e2dc; border-radius: 8px;
+  padding: 10px 12px; font-size: 12px; line-height: 1.8; color: var(--text);
+  font-family: Georgia, serif;
+}
+.marking-response { padding: 14px 16px; }
+.marking-response-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 6px; padding: 3px 10px;
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+}
+.mark-line {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--border);
+  font-size: 12px; line-height: 1.5;
+}
+.mark-line:last-of-type { border-bottom: none; }
+.mark-tick { font-weight: 700; flex-shrink: 0; width: 16px; }
+.mark-tick.pass { color: var(--green); }
+.mark-tick.fail { color: #dc2626; }
+.mark-code {
+  background: #f0f9f4; border: 1px solid #86efac;
+  color: #166534; border-radius: 4px; font-size: 10px; font-weight: 700;
+  padding: 1px 5px; flex-shrink: 0;
+}
+.mark-code.lost { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+.mark-text { color: var(--text-mid); flex: 1; }
+.marking-score {
+  margin-top: 12px; padding: 10px 12px;
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  border-radius: 8px; display: flex; align-items: center; justify-content: space-between;
+}
+.marking-score-num {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  font-weight: 800; color: var(--gold);
+}
+.marking-score-label { font-size: 11px; color: rgba(255,255,255,0.55); }
+.marking-score-note { font-size: 11px; color: rgba(255,255,255,0.65); max-width: 180px; text-align: right; line-height: 1.4; }
+.marking-cta-strip {
+  max-width: 1080px; margin: 48px auto 0;
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  border-radius: var(--radius); padding: 36px 40px;
+  display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+  box-shadow: 0 8px 40px rgba(14,28,51,0.2);
+}
+.marking-cta-text h3 {
+  font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800;
+  color: white; margin-bottom: 6px;
+}
+.marking-cta-text p { font-size: 14px; color: rgba(255,255,255,0.6); }
+.marking-cta-btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.btn-marking-primary {
+  padding: 13px 26px; background: var(--gold); color: var(--navy-dark);
+  border: none; border-radius: 50px; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+}
+.btn-marking-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+.btn-marking-secondary {
+  padding: 13px 22px; background: transparent; color: rgba(255,255,255,0.8);
+  border: 1.5px solid rgba(255,255,255,0.25); border-radius: 50px;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-marking-secondary:hover { border-color: rgba(255,255,255,0.5); color: white; }
+@media (max-width: 768px) {
+  .marking-inner { grid-template-columns: 1fr; gap: 40px; }
+  .marking-text { max-width: 100%; }
+  .marking-cta-strip { flex-direction: column; align-items: flex-start; padding: 28px 24px; }
+}
+
 /* ── CTA BAND ── */
 .cta-band {
   background: linear-gradient(135deg, #0a1628 0%, #0e1c33 50%, #1a3068 100%);
@@ -484,6 +605,94 @@ fetch('/api/accuracy').then(r => r.json()).then(d => {
       <div class="feature-icon">📚</div>
       <div class="feature-title">Past paper library</div>
       <div class="feature-desc">Browse and search real IB past paper questions filtered by year, session, paper, and difficulty.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AI MARKING DEMO ── -->
+<section class="marking-section" id="marking-demo">
+  <div class="marking-inner">
+
+    <!-- Left: text -->
+    <div class="marking-text">
+      <div class="section-eyebrow">AI Marking</div>
+      <h2 class="section-title">See what Hanyong's<br>AI marking looks like</h2>
+      <p class="section-sub">Paste your working and HAN marks it exactly like an examiner — telling you which steps earned marks, which didn't, and why.</p>
+      <ul class="marking-checks">
+        <li>Method marks vs accuracy marks, explained line by line</li>
+        <li>Exactly where marks were lost and how to recover them</li>
+        <li>How an examiner would read and score your solution</li>
+        <li>What to correct before the real exam</li>
+      </ul>
+    </div>
+
+    <!-- Right: mockup -->
+    <div class="marking-mockup">
+      <div class="marking-mockup-bar">
+        <div class="demo-han-av">HAN</div>
+        <span class="marking-mockup-title">Mark My Working</span>
+        <span class="marking-mockup-badge">✦ Examiner Mode</span>
+      </div>
+
+      <!-- Student's attempt -->
+      <div class="marking-attempt">
+        <div class="marking-attempt-label">Your working</div>
+        <div class="marking-attempt-q">
+          Differentiate <span class="demo-math">y = x²ln(x)</span> with respect to <span class="demo-math">x</span>. &nbsp;[4 marks]
+        </div>
+        <div class="marking-attempt-work">
+          Let <span class="demo-math">u = x²</span>, &nbsp;<span class="demo-math">u′ = 2x</span><br>
+          Let <span class="demo-math">v = ln x</span>, &nbsp;<span class="demo-math">v′ = 1/x</span><br>
+          <span class="demo-math">dy/dx = u′v = 2x · ln x</span>
+        </div>
+      </div>
+
+      <!-- HAN's marking -->
+      <div class="marking-response">
+        <div class="marking-response-label">✦ Examiner Marking</div>
+
+        <div class="mark-line">
+          <span class="mark-tick pass">✓</span>
+          <span class="mark-code">M1</span>
+          <span class="mark-text">Product rule correctly identified — <em>u</em> and <em>v</em> set up properly</span>
+        </div>
+        <div class="mark-line">
+          <span class="mark-tick pass">✓</span>
+          <span class="mark-code">A1</span>
+          <span class="mark-text"><span class="demo-math">u′ = 2x</span> correct</span>
+        </div>
+        <div class="mark-line">
+          <span class="mark-tick pass">✓</span>
+          <span class="mark-code">A1</span>
+          <span class="mark-text"><span class="demo-math">v′ = 1/x</span> correct</span>
+        </div>
+        <div class="mark-line">
+          <span class="mark-tick fail">✗</span>
+          <span class="mark-code lost">A1</span>
+          <span class="mark-text">Missing second term — product rule requires <span class="demo-math">u′v + uv′</span>, not just <span class="demo-math">u′v</span>. Answer should be <span class="demo-math">2x·ln x + x</span></span>
+        </div>
+
+        <div class="marking-score">
+          <div>
+            <div class="marking-score-num">3 / 4</div>
+            <div class="marking-score-label">marks awarded</div>
+          </div>
+          <div class="marking-score-note">You set the product rule up correctly. You just forgot to add the <em>uv′</em> term at the end.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CTA strip -->
+  <div class="marking-cta-strip">
+    <div class="marking-cta-text">
+      <h3>Stop guessing what earns marks.</h3>
+      <p>Get your working marked by HAN — free to try, examiner-accurate.</p>
+    </div>
+    <div class="marking-cta-btns">
+      <a class="btn-marking-primary" href="/app">Try It Free ✦</a>
+      <a class="btn-marking-secondary" href="#pricing">See plans →</a>
     </div>
   </div>
 </section>
