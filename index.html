@@ -4635,10 +4635,10 @@ function shareRefLink(platform) {
 }
 
 // Hook renderProgress to init referral section
-const _origRenderProgress = typeof renderProgress === 'function' ? renderProgress : null;
-if (_origRenderProgress) {
+const _origRenderProgress2 = typeof renderProgress === 'function' ? renderProgress : null;
+if (_origRenderProgress2) {
   window.renderProgress = function() {
-    _origRenderProgress.call(this);
+    _origRenderProgress2.call(this);
     initReferralSection();
   };
 }
