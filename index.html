@@ -1465,8 +1465,8 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 <div class="toast" id="toast"></div>
 
 <!-- ══════════════ ONBOARDING OVERLAY ══════════════ -->
-<div class="onboard-overlay" id="onboardOverlay">
-  <div class="onboard-card">
+<div class="onboard-overlay" id="onboardOverlay" onclick="if(event.target===this)skipOnboarding()">
+  <div class="onboard-card" onclick="event.stopPropagation()">
     <div class="onboard-header">
       <div class="onboard-logo">
         <div class="onboard-badge">HAN</div>
@@ -3867,6 +3867,14 @@ function addShareBtn(bubble) {
     }
   };
   bubble.appendChild(btn);
+}
+
+// On page load: handle #signin hash (from landing page "Sign In" link)
+if (window.location.hash === '#signin') {
+  window.history.replaceState({}, '', window.location.pathname);
+  const tryOpen = () => { if (!currentUser) showLogin(); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryOpen);
+  else tryOpen();
 }
 
 // On page load: pre-fill from ?q= param
