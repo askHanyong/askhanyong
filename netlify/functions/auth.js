@@ -65,12 +65,6 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers: CORS_HEADERS, body: 'Method Not Allowed' };
   }
 
-  // Fail fast with a clear message if env vars are missing
-  if (!SHEETS_URL) {
-    console.error('auth.js: SHEETS_URL env var is not set');
-    return json(500, { error: 'Server configuration error: SHEETS_URL missing. Please contact support.' });
-  }
-
   let body;
   try {
     body = JSON.parse(event.body);
@@ -82,6 +76,11 @@ exports.handler = async (event) => {
 
   // ── REGISTER ────────────────────────────────────────────────────
   if (action === 'register') {
+    // GAS is required for register/login/password-reset — fail fast with a clear message
+    if (!SHEETS_URL) {
+      console.error('auth.js: SHEETS_URL env var is not set');
+      return json(500, { error: 'Server configuration error: SHEETS_URL missing. Please contact support.' });
+    }
     const { name, email, country, password } = body;
 
     if (!name || !email || !country || !password) {
@@ -131,6 +130,10 @@ exports.handler = async (event) => {
 
   // ── LOGIN ───────────────────────────────────────────────────────
   if (action === 'login') {
+    if (!SHEETS_URL) {
+      console.error('auth.js: SHEETS_URL env var is not set');
+      return json(500, { error: 'Server configuration error: SHEETS_URL missing. Please contact support.' });
+    }
     const { email, password } = body;
 
     if (!email || !password) {
@@ -192,6 +195,10 @@ exports.handler = async (event) => {
 
   // ── FORGOT PASSWORD ─────────────────────────────────────────────
   if (action === 'forgot-password') {
+    if (!SHEETS_URL) {
+      console.error('auth.js: SHEETS_URL env var is not set');
+      return json(500, { error: 'Server configuration error: SHEETS_URL missing. Please contact support.' });
+    }
     const { email } = body;
     if (!email) return json(400, { error: 'Email is required.' });
     const normalEmail = email.toLowerCase().trim();
@@ -218,6 +225,10 @@ exports.handler = async (event) => {
 
   // ── RESET PASSWORD ───────────────────────────────────────────────
   if (action === 'reset-password') {
+    if (!SHEETS_URL) {
+      console.error('auth.js: SHEETS_URL env var is not set');
+      return json(500, { error: 'Server configuration error: SHEETS_URL missing. Please contact support.' });
+    }
     const { email, otp, password } = body;
     if (!email || !otp || !password) return json(400, { error: 'All fields are required.' });
     if (password.length < 8) return json(400, { error: 'Password must be at least 8 characters.' });
