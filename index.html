@@ -403,6 +403,18 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .launch-han-cta-text strong { font-size:13px; font-weight:700; color:white; display:block; }
 .launch-han-cta-text span { font-size:11px; color:rgba(255,255,255,0.7); }
 
+/* ── Safe area insets (iPhone notch / home indicator) ── */
+.tab-nav { padding-bottom: max(5px, env(safe-area-inset-bottom, 5px)); }
+.toast  { bottom: max(80px, calc(70px + env(safe-area-inset-bottom, 0px))); }
+
+/* ── Email capture / referral styles ── */
+.ref-link-row { display:flex; gap:8px; margin-top:10px; }
+.ref-link-input { flex:1; padding:9px 12px; border:1.5px solid #a7f3d0; border-radius:8px; font-size:12px; font-family:'DM Mono','Courier New',monospace; color:var(--text); background:white; outline:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ref-share-row { display:flex; gap:8px; margin-top:10px; }
+.ref-share-btn { flex:1; padding:9px 6px; background:white; border:1.5px solid var(--border); border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; color:var(--text-mid); transition:border-color 0.15s; }
+.ref-share-btn:hover { border-color:var(--green); color:var(--green); }
+
+
 /* ── Mobile polish ── */
 @media (max-width:600px) {
   .context-bar { flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:7px 12px; gap:5px; }
@@ -972,6 +984,22 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <div class="prog-section-title">Recent Activity</div>
         <div id="recentActivity"></div>
       </div>
+      <div class="prog-section" id="referralSection" style="display:none">
+        <div class="prog-section-title">Share HAN</div>
+        <div style="background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1.5px solid #a7f3d0;border-radius:var(--radius);padding:16px 14px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px">Help a classmate find HAN</div>
+          <div style="font-size:12px;color:var(--text-mid);margin-bottom:12px;line-height:1.6">HAN is already free for everyone — sharing your link helps more IB students find it before their exams.</div>
+          <div class="ref-link-row">
+            <input id="refLinkInput" type="text" class="ref-link-input" readonly>
+            <button onclick="copyRefLink()" id="copyRefBtn" style="padding:9px 16px;background:var(--green);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0">Copy</button>
+          </div>
+          <div class="ref-share-row">
+            <button class="ref-share-btn" onclick="shareRefLink('whatsapp')">💬 WhatsApp</button>
+            <button class="ref-share-btn" onclick="shareRefLink('telegram')">✈ Telegram</button>
+            <button class="ref-share-btn" onclick="shareRefLink('native')">📤 Share</button>
+          </div>
+        </div>
+      </div>
       <div class="prog-reset-row">
         <button class="prog-reset-btn" onclick="resetProgress()">Reset Progress</button>
       </div>
@@ -1282,6 +1310,23 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
     <div id="googleSignInBtnReg" style="display:flex;justify-content:center;margin-top:12px"></div>
     <div class="modal-note" style="margin-top:10px">Free · No credit card needed</div>
+  </div>
+</div>
+
+<!-- Email capture modal (shown after guest's 1st question) -->
+<div class="modal-overlay" id="emailCaptureModal" onclick="closeModalBg(event,'emailCaptureModal')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:360px">
+    <button class="modal-close" onclick="closeModal('emailCaptureModal')">✕</button>
+    <div class="modal-icon">📈</div>
+    <h2>Get 10 free questions/day</h2>
+    <p style="margin-bottom:16px">You've used 1 free question. Create a free account to unlock 10 typed questions and 5 photo uploads every day — no credit card needed.</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+      <input id="captureEmail" type="email" class="auth-input" placeholder="your@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')handleEmailCapture()">
+      <input id="captureName" type="text" class="auth-input" placeholder="First name (optional)" autocomplete="given-name">
+    </div>
+    <button class="modal-cta" id="captureSubmitBtn" onclick="handleEmailCapture()" style="margin-bottom:8px">Create Free Account →</button>
+    <button onclick="closeModal('emailCaptureModal')" style="width:100%;background:none;border:none;color:var(--text-soft);font-size:12px;cursor:pointer;padding:6px;font-family:'Inter',sans-serif">Continue without saving</button>
+    <div class="modal-note">Free forever · No credit card</div>
   </div>
 </div>
 
@@ -4444,6 +4489,107 @@ renderRecentChats = function() {
   _origRenderRecentChats();
   initWelcomeExtras();
 };
+
+// ════════════════════════════════════════
+// EMAIL CAPTURE — guest → free account funnel
+// ════════════════════════════════════════
+(function patchFinalizeForEmailCapture() {
+  const orig = window.finalizeStreamingBubble;
+  if (typeof orig !== 'function') return;
+  window.finalizeStreamingBubble = function(bubble, fullText) {
+    orig.call(this, bubble, fullText);
+    // After 1st guest question answered, nudge toward sign-up (once per device)
+    if (!currentUser && !isAdmin) {
+      const count = getGuestCount();
+      const nudgeKey = 'han_email_nudge_shown';
+      if (count >= 1 && !localStorage.getItem(nudgeKey)) {
+        localStorage.setItem(nudgeKey, '1');
+        setTimeout(() => {
+          document.getElementById('emailCaptureModal').classList.add('open');
+        }, 2800);
+      }
+    }
+  };
+})();
+
+function handleEmailCapture() {
+  const email = (document.getElementById('captureEmail').value || '').trim();
+  const name  = (document.getElementById('captureName').value || '').trim();
+  if (!email || !email.includes('@')) {
+    showToast('Please enter a valid email address.');
+    return;
+  }
+  closeModal('emailCaptureModal');
+  // Pre-fill and open the existing register overlay
+  const regEmail = document.getElementById('regEmail');
+  const regName  = document.getElementById('regName');
+  if (regEmail) regEmail.value = email;
+  if (regName && name) regName.value = name;
+  document.getElementById('registerOverlay').classList.add('open');
+  setTimeout(() => {
+    const regPw = document.getElementById('regPassword');
+    if (regPw) regPw.focus();
+  }, 200);
+}
+
+// ════════════════════════════════════════
+// REFERRAL SYSTEM
+// ════════════════════════════════════════
+function getReferralLink() {
+  if (!currentUser) return '';
+  // Generate a short hash of the user's email or sub as a ref param
+  const id = currentUser.email || currentUser.sub || '';
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) { hash = ((hash << 5) - hash) + id.charCodeAt(i); hash |= 0; }
+  const code = Math.abs(hash).toString(36).slice(0, 8);
+  return 'https://askhanyong.com/app?ref=' + code;
+}
+
+function initReferralSection() {
+  if (!currentUser) return;
+  const section = document.getElementById('referralSection');
+  if (!section) return;
+  section.style.display = '';
+  const input = document.getElementById('refLinkInput');
+  if (input) input.value = getReferralLink();
+}
+
+function copyRefLink() {
+  const link = getReferralLink();
+  if (!link) return;
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = document.getElementById('copyRefBtn');
+    if (btn) { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+    showToast('Referral link copied!');
+  }).catch(() => {
+    showToast('Could not copy — ' + link);
+  });
+}
+
+function shareRefLink(platform) {
+  const link = getReferralLink();
+  const msg  = 'I use HAN for IB Math — it gives examiner-level explanations for every question. Free to use! ' + link;
+  if (platform === 'whatsapp') {
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  } else if (platform === 'telegram') {
+    window.open('https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent('HAN — IB Math AI Tutor, free to use'), '_blank');
+  } else if (platform === 'native' && navigator.share) {
+    navigator.share({ title: 'askHanyong — IB Math AI Tutor', text: 'Examiner-level IB Math help, free for every student.', url: link }).catch(() => {});
+  } else {
+    copyRefLink();
+  }
+}
+
+// Hook renderProgress to init referral section
+const _origRenderProgress = typeof renderProgress === 'function' ? renderProgress : null;
+if (_origRenderProgress) {
+  window.renderProgress = function() {
+    _origRenderProgress.call(this);
+    initReferralSection();
+  };
+}
+
+// (PWA install prompt handled by existing implementation above)
 </script>
 </body>
 </html>

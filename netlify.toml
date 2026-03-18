@@ -38,3 +38,10 @@
   to = "/index.html"
   status = 200
   force = true
+
+# /accuracy serves the accuracy dashboard
+[[redirects]]
+  from = "/accuracy"
+  to = "/accuracy.html"
+  status = 200
+  force = true

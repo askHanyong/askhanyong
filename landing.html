@@ -433,7 +433,21 @@ footer {
   <div class="trust-item">🌏 Students in <strong>15+ countries</strong></div>
   <div class="trust-sep"></div>
   <div class="trust-item">✅ HL &amp; SL · All topics</div>
+  <div class="trust-sep"></div>
+  <a class="trust-item accuracy-badge" href="/accuracy" style="text-decoration:none;color:inherit;cursor:pointer" id="accuracyBadge">
+    <span id="accuracyBadgeInner">📊 <strong id="accuracyPct">—</strong>% accuracy on IB papers</span>
+  </a>
 </div>
+
+<script>
+// Load accuracy badge
+fetch('/api/accuracy').then(r => r.json()).then(d => {
+  if (d.overall) {
+    document.getElementById('accuracyPct').textContent = d.overall;
+    document.getElementById('accuracyBadge').title = d.questionCount + ' questions evaluated against official IB mark schemes';
+  }
+}).catch(() => {});
+</script>
 
 <!-- ── FEATURES ── -->
 <section class="section">
