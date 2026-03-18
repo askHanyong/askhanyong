@@ -45,3 +45,10 @@
   to = "/accuracy.html"
   status = 200
   force = true
+
+# /admin serves the admin dashboard
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+  force = true

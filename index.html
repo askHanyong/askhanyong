@@ -3595,7 +3595,35 @@ async function submitWaitlist() {
 // ════════════════════════════════════════
 // STRIPE
 // ════════════════════════════════════════
-function startStripeCheckout() {
+async function startStripeCheckout() {
+  const btn = document.getElementById('stripeCheckoutBtn');
+  const btnLabel = btn.querySelector('span');
+
+  // Try server-side dynamic checkout first (price from STRIPE_PRICE_ID env var)
+  try {
+    btn.disabled = true;
+    if (btnLabel) btnLabel.textContent = 'Opening…';
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: currentUser?.email || '' }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.open(data.url, '_blank');
+      closeModal('upgradeOverlay');
+      dismissNudge();
+      showToast('Opening secure checkout…');
+      return;
+    }
+  } catch (e) {
+    // fall through to static payment link
+  } finally {
+    btn.disabled = false;
+    if (btnLabel) btnLabel.textContent = 'Contribute S$45';
+  }
+
+  // Fallback: static Stripe payment link
   if (!STRIPE_PAYMENT_LINK || STRIPE_PAYMENT_LINK === 'YOUR_STRIPE_PAYMENT_LINK_HERE') {
     document.getElementById('stripeCheckoutBtn').style.display = 'none';
     document.getElementById('stripeNotReady').style.display = 'block';
@@ -3854,10 +3882,28 @@ function addShareBtn(bubble) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryFill);
     else tryFill();
   }
-  // On page load: show thank-you modal if returning from Stripe
+  // On page load: show thank-you modal if returning from Stripe checkout
   if (params.get('contributed') === '1') {
     window.history.replaceState({}, '', window.location.pathname);
-    const show = () => setTimeout(() => document.getElementById('thankYouOverlay').classList.add('open'), 500);
+    const show = () => {
+      // Poll premium status — Stripe webhook fires shortly after redirect
+      let attempts = 0;
+      const poll = setInterval(async () => {
+        attempts++;
+        if (currentUser) {
+          const key = 'han_premium_' + currentUser.sub;
+          if (!sessionStorage.getItem(key)) {
+            try {
+              const r = await fetch(SHEETS_URL + '?' + new URLSearchParams({ action: 'checkPremium', email: currentUser.email }));
+              const d = await r.json();
+              if (d.premium) { sessionStorage.setItem(key, 'true'); updateLimitBar(); }
+            } catch (e) {}
+          }
+        }
+        if (attempts >= 5) clearInterval(poll);
+      }, 3000);
+      setTimeout(() => document.getElementById('thankYouOverlay').classList.add('open'), 500);
+    };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show);
     else show();
   }
