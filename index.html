@@ -841,6 +841,10 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
     <div class="modal-note" style="margin-top:10px">Secure payment via Stripe · One-time charge, no subscription</div>
     <div class="modal-note">Beta pricing ends when we launch publicly 🚀</div>
+    <div style="margin-top:10px;text-align:center">
+      <span style="font-size:12px;color:var(--text-soft)">Already paid? </span>
+      <button onclick="verifyPayment()" style="background:none;border:none;font-size:12px;color:var(--blue);cursor:pointer;text-decoration:underline;padding:0;font-family:inherit">Verify my access</button>
+    </div>
   </div>
 </div>
 
@@ -1048,6 +1052,12 @@ function updateLimitBar() {
   const uploadFill = document.getElementById('limitFillUpload'), typedFill = document.getElementById('limitFillTyped');
   if (!currentUser) { if (bar) bar.style.display = 'none'; return; }
   if (bar) bar.style.display = 'flex';
+  if (isAdmin || checkPremiumStatus()) {
+    if (uploadFill) { uploadFill.style.width = '100%'; uploadFill.style.background = 'var(--green)'; }
+    if (typedFill)  { typedFill.style.width  = '100%'; typedFill.style.background  = 'var(--green)'; }
+    if (txt) txt.textContent = 'Unlimited access';
+    return;
+  }
   const uploads = getCount('upload'), typed = getCount('typed');
   const remU = Math.max(0, FREE_UPLOAD_LIMIT - uploads);
   const remT = Math.max(0, FREE_TYPED_LIMIT - typed);
@@ -1138,6 +1148,14 @@ async function saveUserToSheet(user, country) {
   } catch(e) {}
 }
 
+async function verifyPayment() {
+  if (!currentUser) { showToast('Please sign in first to verify your payment.'); return; }
+  showToast('Checking your payment status…');
+  await checkPremiumFromServer(currentUser.email);
+  if (!checkPremiumStatus()) showToast('No payment found for ' + currentUser.email + '. Contact Hanyong if you believe this is an error.');
+  else closeModal('upgradeOverlay');
+}
+
 async function checkPremiumFromServer(email) {
   if (!email) return;
   try {
@@ -1145,8 +1163,10 @@ async function checkPremiumFromServer(email) {
     if (res.ok) {
       const data = await res.json();
       if (data.premium && currentUser) {
+        const wasAlreadyPremium = checkPremiumStatus();
         sessionStorage.setItem('han_premium_' + currentUser.sub, 'true');
         updateLimitBar();
+        if (!wasAlreadyPremium) showToast('Unlimited access activated! Welcome to Premium.');
       }
     }
   } catch(e) {}
