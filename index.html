@@ -2635,6 +2635,18 @@ Scale the coordinates so the side lengths are visually proportional to the given
   if (!inp) return;
   inp.addEventListener('focus', () => bar.classList.add('show'));
   inp.addEventListener('blur',  () => setTimeout(() => bar.classList.remove('show'), 150));
+  // Prevent textarea blur when clicking a toolbar button (keeps cursor position)
+  bar.addEventListener('mousedown', function(e) {
+    if (e.target.closest('.ltx-btn')) e.preventDefault();
+  });
+  // Mobile: touchstart fires before blur — insert immediately
+  bar.addEventListener('touchstart', function(e) {
+    var btn = e.target.closest('.ltx-btn');
+    if (!btn) return;
+    e.preventDefault();
+    var text = btn.title;
+    if (text) ltxInsert(text);
+  }, { passive: false });
 })();
 
 function ltxInsert(text) {
