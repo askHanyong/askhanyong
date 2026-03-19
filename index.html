@@ -17,7 +17,7 @@
 <script>window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['\\[','\\]'],['$$','$$']], processEscapes: true }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] } };</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="/api/desmos-loader"></script>
+<script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
@@ -1847,14 +1847,6 @@ function removeTyping() { const t = document.getElementById('typingMsg'); if (t)
 // ════════════════════════════════════════
 // DESMOS
 // ════════════════════════════════════════
-// Warn once if running on Desmos trial key (set DESMOS_API_KEY in Netlify env vars)
-(function checkDesmosKeyType() {
-  fetch('/api/desmos-loader', { method: 'HEAD' }).then(function (r) {
-    if (r.headers.get('X-Desmos-Key-Type') === 'trial') {
-      console.warn('[askHanyong] Desmos is running on the trial API key — graphs will show a "Powered by Desmos" banner. Set DESMOS_API_KEY in your Netlify environment variables to use a production key.');
-    }
-  }).catch(function () {});
-})();
 function desmosToggle(el) { var f = el.previousElementSibling; f.style.height = f.style.height === '480px' ? '320px' : '480px'; }
 var _desmosConfigs = {};
 function buildDesmosEmbed(config) {
