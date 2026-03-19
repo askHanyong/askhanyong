@@ -28,33 +28,10 @@
  *   }
  */
 
-const crypto = require('crypto');
+const Stripe = require('stripe');
 const https  = require('https');
 
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzxhN5aEo2THjbhPENpyLb6OuKwTb2V7vxs_4-Zt13Po3e7euE3ciywAMFTyOoAOzadwA/exec';
-
-function verifyStripeSignature(payload, sigHeader, secret) {
-  // Stripe signature format: t=TIMESTAMP,v1=HMAC,...
-  const parts = {};
-  sigHeader.split(',').forEach(part => {
-    const [k, v] = part.split('=');
-    if (k && v) parts[k] = v;
-  });
-
-  if (!parts.t || !parts.v1) return false;
-
-  const signedPayload = parts.t + '.' + payload;
-  const expectedSig = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload, 'utf8')
-    .digest('hex');
-
-  // Constant-time comparison to prevent timing attacks
-  const expected = Buffer.from(expectedSig, 'hex');
-  const received = Buffer.from(parts.v1, 'hex');
-  if (expected.length !== received.length) return false;
-  return crypto.timingSafeEqual(expected, received);
-}
 
 function callGAS(params) {
   return new Promise((resolve) => {
@@ -102,19 +79,19 @@ exports.handler = async (event) => {
   }
 
   const rawBody = event.isBase64Encoded
-    ? Buffer.from(event.body, 'base64').toString('utf8')
+    ? Buffer.from(event.body, 'base64')
     : event.body;
 
-  if (!verifyStripeSignature(rawBody, sigHeader, webhookSecret)) {
-    console.error('Invalid Stripe signature');
-    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: 'Invalid signature' }) };
-  }
+  const stripe = Stripe(process.env.STRIPE_SECRET_KEY || 'sk_unused', {
+    apiVersion: '2026-02-25.clover',
+  });
 
   let stripeEvent;
   try {
-    stripeEvent = JSON.parse(rawBody);
-  } catch (e) {
-    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: 'Invalid JSON' }) };
+    stripeEvent = stripe.webhooks.constructEvent(rawBody, sigHeader, webhookSecret);
+  } catch (err) {
+    console.error('Stripe webhook verification failed:', err.message);
+    return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: err.message }) };
   }
 
   if (stripeEvent.type === 'checkout.session.completed') {
