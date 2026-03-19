@@ -59,6 +59,10 @@ header { background:linear-gradient(135deg,#1e3a5f,#1d4ed8); padding:10px 16px; 
 .ctx-chip { padding:4px 11px; border-radius:16px; font-size:11px; font-weight:600; border:1.5px solid var(--border); background:var(--bg); color:var(--text-mid); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
 .ctx-chip.active { background:var(--ice-light); border-color:var(--blue); color:var(--blue); }
 .ctx-sep { width:1px; height:16px; background:var(--border); margin:0 4px; }
+.math-bar { background:white; border-bottom:1px solid var(--border); padding:5px 10px; display:flex; gap:3px; flex-wrap:nowrap; overflow-x:auto; flex-shrink:0; scrollbar-width:none; }
+.math-bar::-webkit-scrollbar { display:none; }
+.math-btn { padding:4px 7px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:13px; cursor:pointer; font-family:'DM Mono',monospace; flex-shrink:0; transition:background 0.1s; line-height:1.3; }
+.math-btn:active { background:var(--ice); border-color:var(--blue); }
 .chat-area { flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:16px; scroll-behavior:smooth; }
 .chat-area::-webkit-scrollbar { width:4px; }
 .chat-area::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
@@ -464,6 +468,36 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <button class="ctx-chip" data-group="topic" data-val="Statistics &amp; Probability" onclick="setCtx(this,'topic')">Stats</button>
     <button class="ctx-chip" data-group="topic" data-val="Number &amp; Algebra" onclick="setCtx(this,'topic')">Alg</button>
     <button class="ctx-chip hl-chip" data-group="topic" data-val="Complex Numbers" onclick="setCtx(this,'topic')">Cmplx</button>
+  </div>
+  <div class="math-bar" id="mathBar">
+    <button class="math-btn" onclick="insertSymbol('∫')">∫</button>
+    <button class="math-btn" onclick="insertSymbol('∑')">∑</button>
+    <button class="math-btn" onclick="insertSymbol('Π')">Π</button>
+    <button class="math-btn" onclick="insertSymbol('√')">√</button>
+    <button class="math-btn" onclick="insertSymbol('∞')">∞</button>
+    <button class="math-btn" onclick="insertSymbol('π')">π</button>
+    <button class="math-btn" onclick="insertSymbol('θ')">θ</button>
+    <button class="math-btn" onclick="insertSymbol('α')">α</button>
+    <button class="math-btn" onclick="insertSymbol('β')">β</button>
+    <button class="math-btn" onclick="insertSymbol('λ')">λ</button>
+    <button class="math-btn" onclick="insertSymbol('μ')">μ</button>
+    <button class="math-btn" onclick="insertSymbol('±')">±</button>
+    <button class="math-btn" onclick="insertSymbol('×')">×</button>
+    <button class="math-btn" onclick="insertSymbol('÷')">÷</button>
+    <button class="math-btn" onclick="insertSymbol('≤')">≤</button>
+    <button class="math-btn" onclick="insertSymbol('≥')">≥</button>
+    <button class="math-btn" onclick="insertSymbol('≠')">≠</button>
+    <button class="math-btn" onclick="insertSymbol('≈')">≈</button>
+    <button class="math-btn" onclick="insertSymbol('⇒')">⇒</button>
+    <button class="math-btn" onclick="insertSymbol('→')">→</button>
+    <button class="math-btn" onclick="insertSymbol('x²')" style="font-size:11px">x²</button>
+    <button class="math-btn" onclick="insertSymbol('x³')" style="font-size:11px">x³</button>
+    <button class="math-btn" onclick="insertSymbol('½')">½</button>
+    <button class="math-btn" onclick="insertSymbol('∂')">∂</button>
+    <button class="math-btn" onclick="insertSymbol('∈')">∈</button>
+    <button class="math-btn" onclick="insertSymbol('∉')">∉</button>
+    <button class="math-btn" onclick="insertSymbol('∀')">∀</button>
+    <button class="math-btn" onclick="insertSymbol('∃')">∃</button>
   </div>
   <div class="chat-area" id="chatArea">
     <div class="welcome-screen" id="welcomeScreen">
@@ -1161,14 +1195,11 @@ async function saveUserToSheet(user, country) {
 
 function saveQuestionToHistory(email, topic, question) {
   if (!email || !question) return;
-  const params = new URLSearchParams({
-    action:   'saveHistory',
-    email,
-    topic:    topic || 'General',
-    question: question.substring(0, 300),
-    ts:       new Date().toISOString()
-  });
-  fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' }).catch(() => {});
+  fetch('/api/get-history', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, topic: topic || 'General', question: question.substring(0, 300), ts: new Date().toISOString() })
+  }).catch(() => {});
 }
 
 async function loadHistoryFromServer(email) {
@@ -1259,6 +1290,14 @@ function removeImage() {
 }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function insertSymbol(sym) {
+  const inp = document.getElementById('userInput');
+  inp.focus();
+  const start = inp.selectionStart, end = inp.selectionEnd;
+  inp.value = inp.value.substring(0, start) + sym + inp.value.substring(end);
+  inp.selectionStart = inp.selectionEnd = start + sym.length;
+  autoResize(inp);
+}
 
 // ── Ctrl+V / paste image support ──
 document.addEventListener('paste', function(e) {

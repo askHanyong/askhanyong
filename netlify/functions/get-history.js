@@ -90,6 +90,24 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers: corsHeaders, body: '' };
   }
 
+  // POST — save a history entry (avoids no-cors browser redirect issues)
+  if (event.httpMethod === 'POST') {
+    try {
+      const body = JSON.parse(event.body || '{}');
+      if (!body.email) return { statusCode: 400, headers: corsHeaders, body: 'Missing email' };
+      await fetchGAS({
+        action:   'saveHistory',
+        email:    body.email,
+        topic:    body.topic    || 'General',
+        question: (body.question || '').substring(0, 300),
+        ts:       body.ts       || new Date().toISOString()
+      });
+      return { statusCode: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true }) };
+    } catch (err) {
+      return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: err.message }) };
+    }
+  }
+
   if (event.httpMethod !== 'GET') {
     return { statusCode: 405, headers: corsHeaders, body: 'Method Not Allowed' };
   }
