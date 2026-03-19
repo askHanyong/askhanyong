@@ -2629,7 +2629,7 @@ Scale the coordinates so the side lengths are visually proportional to the given
   const bar = document.getElementById('latexToolbar');
   if (!bar) return;
   bar.innerHTML = SYMBOLS.map(s =>
-    `<button class="ltx-btn" title="${s.insert}" onclick="ltxInsert(${JSON.stringify(s.insert)})">${s.label}</button>`
+    `<button class="ltx-btn" title="${s.insert}" onclick="ltxInsert(this.title)">${s.label}</button>`
   ).join('');
   const inp = document.getElementById('userInput');
   if (!inp) return;
