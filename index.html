@@ -470,34 +470,34 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <button class="ctx-chip hl-chip" data-group="topic" data-val="Complex Numbers" onclick="setCtx(this,'topic')">Cmplx</button>
   </div>
   <div class="math-bar" id="mathBar">
-    <button class="math-btn" onclick="insertSymbol('∫')">∫</button>
-    <button class="math-btn" onclick="insertSymbol('∑')">∑</button>
-    <button class="math-btn" onclick="insertSymbol('Π')">Π</button>
-    <button class="math-btn" onclick="insertSymbol('√')">√</button>
-    <button class="math-btn" onclick="insertSymbol('∞')">∞</button>
-    <button class="math-btn" onclick="insertSymbol('π')">π</button>
-    <button class="math-btn" onclick="insertSymbol('θ')">θ</button>
-    <button class="math-btn" onclick="insertSymbol('α')">α</button>
-    <button class="math-btn" onclick="insertSymbol('β')">β</button>
-    <button class="math-btn" onclick="insertSymbol('λ')">λ</button>
-    <button class="math-btn" onclick="insertSymbol('μ')">μ</button>
-    <button class="math-btn" onclick="insertSymbol('±')">±</button>
-    <button class="math-btn" onclick="insertSymbol('×')">×</button>
-    <button class="math-btn" onclick="insertSymbol('÷')">÷</button>
-    <button class="math-btn" onclick="insertSymbol('≤')">≤</button>
-    <button class="math-btn" onclick="insertSymbol('≥')">≥</button>
-    <button class="math-btn" onclick="insertSymbol('≠')">≠</button>
-    <button class="math-btn" onclick="insertSymbol('≈')">≈</button>
-    <button class="math-btn" onclick="insertSymbol('⇒')">⇒</button>
-    <button class="math-btn" onclick="insertSymbol('→')">→</button>
-    <button class="math-btn" onclick="insertSymbol('x²')" style="font-size:11px">x²</button>
-    <button class="math-btn" onclick="insertSymbol('x³')" style="font-size:11px">x³</button>
-    <button class="math-btn" onclick="insertSymbol('½')">½</button>
-    <button class="math-btn" onclick="insertSymbol('∂')">∂</button>
-    <button class="math-btn" onclick="insertSymbol('∈')">∈</button>
-    <button class="math-btn" onclick="insertSymbol('∉')">∉</button>
-    <button class="math-btn" onclick="insertSymbol('∀')">∀</button>
-    <button class="math-btn" onclick="insertSymbol('∃')">∃</button>
+    <button class="math-btn" data-sym="∫">∫</button>
+    <button class="math-btn" data-sym="∑">∑</button>
+    <button class="math-btn" data-sym="Π">Π</button>
+    <button class="math-btn" data-sym="√">√</button>
+    <button class="math-btn" data-sym="∞">∞</button>
+    <button class="math-btn" data-sym="π">π</button>
+    <button class="math-btn" data-sym="θ">θ</button>
+    <button class="math-btn" data-sym="α">α</button>
+    <button class="math-btn" data-sym="β">β</button>
+    <button class="math-btn" data-sym="λ">λ</button>
+    <button class="math-btn" data-sym="μ">μ</button>
+    <button class="math-btn" data-sym="±">±</button>
+    <button class="math-btn" data-sym="×">×</button>
+    <button class="math-btn" data-sym="÷">÷</button>
+    <button class="math-btn" data-sym="≤">≤</button>
+    <button class="math-btn" data-sym="≥">≥</button>
+    <button class="math-btn" data-sym="≠">≠</button>
+    <button class="math-btn" data-sym="≈">≈</button>
+    <button class="math-btn" data-sym="⇒">⇒</button>
+    <button class="math-btn" data-sym="→">→</button>
+    <button class="math-btn" data-sym="x²" style="font-size:11px">x²</button>
+    <button class="math-btn" data-sym="x³" style="font-size:11px">x³</button>
+    <button class="math-btn" data-sym="½">½</button>
+    <button class="math-btn" data-sym="∂">∂</button>
+    <button class="math-btn" data-sym="∈">∈</button>
+    <button class="math-btn" data-sym="∉">∉</button>
+    <button class="math-btn" data-sym="∀">∀</button>
+    <button class="math-btn" data-sym="∃">∃</button>
   </div>
   <div class="chat-area" id="chatArea">
     <div class="welcome-screen" id="welcomeScreen">
@@ -1602,8 +1602,11 @@ function formatResponse(text) {
     } catch (e) { return ''; }
   });
   const latexBlocks = [];
+  // Protect LaTeX from markdown processing — extract all delimiters before any replacements
   html = html.replace(/\\\[[\s\S]*?\\\]/g, m => { latexBlocks.push(m); return `%%LB${latexBlocks.length - 1}%%`; });
   html = html.replace(/\\\([\s\S]*?\\\)/g, m => { latexBlocks.push(m); return `%%LB${latexBlocks.length - 1}%%`; });
+  html = html.replace(/\$\$[\s\S]*?\$\$/g, m => { latexBlocks.push(m.replace(/^\$\$([\s\S]*)\$\$$/, '\\[$1\\]')); return `%%LB${latexBlocks.length - 1}%%`; });
+  html = html.replace(/\$([^\$\n]+?)\$/g, m => { latexBlocks.push(m.replace(/^\$([^\$\n]+?)\$$/, '\\($1\\)')); return `%%LB${latexBlocks.length - 1}%%`; });
   html = html.replace(/^#{1,3}\s+(.+)$/gm, '<h3>$1</h3>');
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/(?:^|\n)(Step\s+\d+[:\.]?\s*)([^\n]+(?:\n(?!Step\s+\d).*)*)/g, (m, sl, content) => `<div class="step"><div class="step-num">${sl.trim()}</div>${content.trim()}</div>`);
@@ -1978,16 +1981,27 @@ function backToConfig() {
 document.addEventListener('DOMContentLoaded', function () {
   const mathBar = document.getElementById('mathBar');
   if (mathBar) {
-    // Desktop: mousedown.preventDefault() keeps focus in textarea so click fires with cursor intact
+    // Shared insert helper — reads symbol from data-sym attribute
+    function mathBtnInsert(btn) {
+      var sym = btn ? btn.getAttribute('data-sym') : null;
+      if (sym) insertSymbol(sym);
+    }
+    // Desktop: mousedown prevents textarea blur, then click fires normally
     mathBar.addEventListener('mousedown', function(e) {
-      if (e.target.classList.contains('math-btn')) e.preventDefault();
+      if (e.target.dataset.sym !== undefined) e.preventDefault();
     });
-    // Mobile: touchstart fires before blur, so we can insert at cursor and block the click entirely
+    // Desktop: click fires after mousedown (focus stays in textarea)
+    mathBar.addEventListener('click', function(e) {
+      var btn = e.target.dataset.sym !== undefined ? e.target : null;
+      if (btn) mathBtnInsert(btn);
+    });
+    // Mobile: touchstart fires before blur — insert immediately and block everything after
     mathBar.addEventListener('touchstart', function(e) {
-      const btn = e.target.closest('.math-btn');
-      if (!btn) return; // let scroll events pass through
-      e.preventDefault(); // prevents blur + prevents synthetic mousedown/click
-      insertSymbol(btn.textContent.trim());
+      var t = e.target;
+      var btn = t.dataset.sym !== undefined ? t : (t.parentElement && t.parentElement.dataset.sym !== undefined ? t.parentElement : null);
+      if (!btn) return; // not a button — allow bar scrolling
+      e.preventDefault(); // prevents blur + prevents synthetic click (no double-insert)
+      mathBtnInsert(btn);
     }, { passive: false });
   }
 
