@@ -1204,12 +1204,9 @@ async function saveQuestionToHistory(email, topic, question) {
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
   } catch(e) {
-    // Fallback: try direct GAS no-cors call
-    try {
-      const params = new URLSearchParams({ action: 'saveHistory', ...payload });
-      fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
-    } catch(_) {}
-    showToast('History sync issue: ' + e.message);
+    // Show admin-visible error so the GAS setup issue is obvious
+    const msg = (e.message || '').includes('GAS') ? e.message : 'History not saving — check Apps Script deployment';
+    if (isAdmin || (currentUser && currentUser.email)) showToast(msg);
   }
 }
 
@@ -1979,12 +1976,19 @@ function backToConfig() {
 // MOCK TOPIC SELECTOR
 // ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function () {
-  // Prevent math bar buttons from stealing focus (desktop only — mousedown doesn't fire on touch)
   const mathBar = document.getElementById('mathBar');
   if (mathBar) {
+    // Desktop: mousedown.preventDefault() keeps focus in textarea so click fires with cursor intact
     mathBar.addEventListener('mousedown', function(e) {
       if (e.target.classList.contains('math-btn')) e.preventDefault();
     });
+    // Mobile: touchstart fires before blur, so we can insert at cursor and block the click entirely
+    mathBar.addEventListener('touchstart', function(e) {
+      const btn = e.target.closest('.math-btn');
+      if (!btn) return; // let scroll events pass through
+      e.preventDefault(); // prevents blur + prevents synthetic mousedown/click
+      insertSymbol(btn.textContent.trim());
+    }, { passive: false });
   }
 
   document.querySelectorAll('.mock-topic').forEach(chip => {

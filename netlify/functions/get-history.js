@@ -70,7 +70,8 @@ function fetchGAS(params) {
           try {
             resolve(JSON.parse(body));
           } catch (e) {
-            resolve({ history: [] });
+            // GAS returned non-JSON (e.g. HTML error page) — signal failure clearly
+            resolve({ _gasParseError: true, _rawBody: body.substring(0, 200) });
           }
         });
       });
@@ -95,13 +96,18 @@ exports.handler = async (event) => {
     try {
       const body = JSON.parse(event.body || '{}');
       if (!body.email) return { statusCode: 400, headers: corsHeaders, body: 'Missing email' };
-      await fetchGAS({
+      const gasResult = await fetchGAS({
         action:   'saveHistory',
         email:    body.email,
         topic:    body.topic    || 'General',
         question: (body.question || '').substring(0, 300),
         ts:       body.ts       || new Date().toISOString()
       });
+      // If GAS doesn't have the saveHistory handler it returns non-JSON → fetchGAS gives { history: [] }
+      // Explicitly check for ok:true so the frontend can show a real error
+      if (gasResult.ok !== true) {
+        return { statusCode: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'GAS did not confirm save — add saveHistory handler to your Apps Script and redeploy' }) };
+      }
       return { statusCode: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true }) };
     } catch (err) {
       return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: err.message }) };
