@@ -31,7 +31,7 @@
 const Stripe = require('stripe');
 const https  = require('https');
 
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzxhN5aEo2THjbhPENpyLb6OuKwTb2V7vxs_4-Zt13Po3e7euE3ciywAMFTyOoAOzadwA/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbylVgX1pvK2sIhtPeSOmEtaMqjBcHOD1cw4Q-VycdnB1WvSK5f-LhFDyHEDav01D-LKQg/exec';
 
 function callGAS(params) {
   return new Promise((resolve) => {
