@@ -1204,10 +1204,10 @@ async function saveQuestionToHistory(email, topic, question) {
       ts:       new Date().toISOString()
     });
     await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
-    if (isAdmin) showToast('History saved ✓ (check sheet)');
+    showToast('History saved ✓ (check sheet)');
   } catch(e) {
     console.error('saveQuestionToHistory failed:', e);
-    if (isAdmin) showToast('History save error: ' + e.message);
+    showToast('History save error: ' + e.message);
   }
 }
 
@@ -1720,6 +1720,8 @@ async function sendMessage() {
       saveQuestionToHistory(currentUser.email, selectedSubjectTopic || 'General', text);
       serverHistory.unshift({ topic: selectedSubjectTopic || 'General', question: text.substring(0, 300), ts: new Date().toISOString() });
       if (serverHistory.length > 20) serverHistory = serverHistory.slice(0, 20);
+    } else if (isAdmin) {
+      showToast('DEBUG: not saving — no Google sign-in (currentUser is null)');
     }
   } catch (err) {
     removeTyping();
