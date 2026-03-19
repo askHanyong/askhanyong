@@ -470,34 +470,34 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <button class="ctx-chip hl-chip" data-group="topic" data-val="Complex Numbers" onclick="setCtx(this,'topic')">Cmplx</button>
   </div>
   <div class="math-bar" id="mathBar">
-    <button class="math-btn" data-sym="∫">∫</button>
-    <button class="math-btn" data-sym="∑">∑</button>
-    <button class="math-btn" data-sym="Π">Π</button>
-    <button class="math-btn" data-sym="√">√</button>
-    <button class="math-btn" data-sym="∞">∞</button>
-    <button class="math-btn" data-sym="π">π</button>
-    <button class="math-btn" data-sym="θ">θ</button>
-    <button class="math-btn" data-sym="α">α</button>
-    <button class="math-btn" data-sym="β">β</button>
-    <button class="math-btn" data-sym="λ">λ</button>
-    <button class="math-btn" data-sym="μ">μ</button>
-    <button class="math-btn" data-sym="±">±</button>
-    <button class="math-btn" data-sym="×">×</button>
-    <button class="math-btn" data-sym="÷">÷</button>
-    <button class="math-btn" data-sym="≤">≤</button>
-    <button class="math-btn" data-sym="≥">≥</button>
-    <button class="math-btn" data-sym="≠">≠</button>
-    <button class="math-btn" data-sym="≈">≈</button>
-    <button class="math-btn" data-sym="⇒">⇒</button>
-    <button class="math-btn" data-sym="→">→</button>
-    <button class="math-btn" data-sym="x²" style="font-size:11px">x²</button>
-    <button class="math-btn" data-sym="x³" style="font-size:11px">x³</button>
-    <button class="math-btn" data-sym="½">½</button>
-    <button class="math-btn" data-sym="∂">∂</button>
-    <button class="math-btn" data-sym="∈">∈</button>
-    <button class="math-btn" data-sym="∉">∉</button>
-    <button class="math-btn" data-sym="∀">∀</button>
-    <button class="math-btn" data-sym="∃">∃</button>
+    <button type="button" class="math-btn" data-sym="∫">∫</button>
+    <button type="button" class="math-btn" data-sym="∑">∑</button>
+    <button type="button" class="math-btn" data-sym="Π">Π</button>
+    <button type="button" class="math-btn" data-sym="√">√</button>
+    <button type="button" class="math-btn" data-sym="∞">∞</button>
+    <button type="button" class="math-btn" data-sym="π">π</button>
+    <button type="button" class="math-btn" data-sym="θ">θ</button>
+    <button type="button" class="math-btn" data-sym="α">α</button>
+    <button type="button" class="math-btn" data-sym="β">β</button>
+    <button type="button" class="math-btn" data-sym="λ">λ</button>
+    <button type="button" class="math-btn" data-sym="μ">μ</button>
+    <button type="button" class="math-btn" data-sym="±">±</button>
+    <button type="button" class="math-btn" data-sym="×">×</button>
+    <button type="button" class="math-btn" data-sym="÷">÷</button>
+    <button type="button" class="math-btn" data-sym="≤">≤</button>
+    <button type="button" class="math-btn" data-sym="≥">≥</button>
+    <button type="button" class="math-btn" data-sym="≠">≠</button>
+    <button type="button" class="math-btn" data-sym="≈">≈</button>
+    <button type="button" class="math-btn" data-sym="⇒">⇒</button>
+    <button type="button" class="math-btn" data-sym="→">→</button>
+    <button type="button" class="math-btn" data-sym="x²" style="font-size:11px">x²</button>
+    <button type="button" class="math-btn" data-sym="x³" style="font-size:11px">x³</button>
+    <button type="button" class="math-btn" data-sym="½">½</button>
+    <button type="button" class="math-btn" data-sym="∂">∂</button>
+    <button type="button" class="math-btn" data-sym="∈">∈</button>
+    <button type="button" class="math-btn" data-sym="∉">∉</button>
+    <button type="button" class="math-btn" data-sym="∀">∀</button>
+    <button type="button" class="math-btn" data-sym="∃">∃</button>
   </div>
   <div class="chat-area" id="chatArea">
     <div class="welcome-screen" id="welcomeScreen">
@@ -1989,17 +1989,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     // Desktop: mousedown prevents textarea blur, then click fires normally
     mathBar.addEventListener('mousedown', function(e) {
-      if (e.target.dataset.sym !== undefined) e.preventDefault();
+      if (e.target.closest('[data-sym]')) e.preventDefault();
     });
     // Desktop: click fires after mousedown (focus stays in textarea)
     mathBar.addEventListener('click', function(e) {
-      var btn = e.target.dataset.sym !== undefined ? e.target : null;
+      var btn = e.target.closest('[data-sym]');
       if (btn) mathBtnInsert(btn);
     });
     // Mobile: touchstart fires before blur — insert immediately and block everything after
     mathBar.addEventListener('touchstart', function(e) {
-      var t = e.target;
-      var btn = t.dataset.sym !== undefined ? t : (t.parentElement && t.parentElement.dataset.sym !== undefined ? t.parentElement : null);
+      var btn = e.target.closest('[data-sym]');
       if (!btn) return; // not a button — allow bar scrolling
       e.preventDefault(); // prevents blur + prevents synthetic click (no double-insert)
       mathBtnInsert(btn);
