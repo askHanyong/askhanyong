@@ -1193,13 +1193,24 @@ async function saveUserToSheet(user, country) {
   } catch(e) {}
 }
 
-function saveQuestionToHistory(email, topic, question) {
+async function saveQuestionToHistory(email, topic, question) {
   if (!email || !question) return;
-  fetch('/api/get-history', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, topic: topic || 'General', question: question.substring(0, 300), ts: new Date().toISOString() })
-  }).catch(() => {});
+  const payload = { email, topic: topic || 'General', question: question.substring(0, 300), ts: new Date().toISOString() };
+  try {
+    const res = await fetch('/api/get-history', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+  } catch(e) {
+    // Fallback: try direct GAS no-cors call
+    try {
+      const params = new URLSearchParams({ action: 'saveHistory', ...payload });
+      fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
+    } catch(_) {}
+    showToast('History sync issue: ' + e.message);
+  }
 }
 
 async function loadHistoryFromServer(email) {
@@ -1292,12 +1303,16 @@ function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(e
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 function insertSymbol(sym) {
   const inp = document.getElementById('userInput');
-  // Read position before focus() — focus() can reset selectionStart on mobile
-  const start = (document.activeElement === inp) ? inp.selectionStart : inp.value.length;
-  const end   = (document.activeElement === inp) ? inp.selectionEnd   : inp.value.length;
-  inp.value = inp.value.substring(0, start) + sym + inp.value.substring(end);
+  if (document.activeElement === inp) {
+    // Desktop: insert at cursor position
+    const start = inp.selectionStart, end = inp.selectionEnd;
+    inp.value = inp.value.substring(0, start) + sym + inp.value.substring(end);
+    inp.selectionStart = inp.selectionEnd = start + sym.length;
+  } else {
+    // Mobile: focus was lost on tap, append to end
+    inp.value += sym;
+  }
   inp.focus();
-  try { inp.selectionStart = inp.selectionEnd = start + sym.length; } catch(e) {}
   autoResize(inp);
 }
 
@@ -1964,10 +1979,10 @@ function backToConfig() {
 // MOCK TOPIC SELECTOR
 // ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function () {
-  // Prevent math bar buttons from stealing focus from the textarea
+  // Prevent math bar buttons from stealing focus (desktop only — mousedown doesn't fire on touch)
   const mathBar = document.getElementById('mathBar');
   if (mathBar) {
-    mathBar.addEventListener('pointerdown', function(e) {
+    mathBar.addEventListener('mousedown', function(e) {
       if (e.target.classList.contains('math-btn')) e.preventDefault();
     });
   }
