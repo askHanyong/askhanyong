@@ -1195,18 +1195,17 @@ async function saveUserToSheet(user, country) {
 
 async function saveQuestionToHistory(email, topic, question) {
   if (!email || !question) return;
-  const payload = { email, topic: topic || 'General', question: question.substring(0, 300), ts: new Date().toISOString() };
   try {
-    const res = await fetch('/api/get-history', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    const params = new URLSearchParams({
+      action:   'saveHistory',
+      email:    email,
+      topic:    topic || 'General',
+      question: question.substring(0, 300),
+      ts:       new Date().toISOString()
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
   } catch(e) {
-    // Show admin-visible error so the GAS setup issue is obvious
-    const msg = (e.message || '').includes('GAS') ? e.message : 'History not saving — check Apps Script deployment';
-    if (isAdmin || (currentUser && currentUser.email)) showToast(msg);
+    console.error('saveQuestionToHistory failed:', e);
   }
 }
 
@@ -1618,7 +1617,9 @@ function formatResponse(text) {
   html = html.replace(/\n/g, '<br>');
   latexBlocks.forEach((latex, i) => {
     const isDisplay = latex.startsWith('\\[');
-    html = html.replace(`%%LB${i}%%`, isDisplay ? `<div class="latex-display">${latex}</div>` : `<span class="latex-inline">${latex}</span>`);
+    // HTML-escape < > & so inequality signs in LaTeX aren't parsed as HTML tags
+    const safe = latex.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    html = html.replace(`%%LB${i}%%`, isDisplay ? `<div class="latex-display">${safe}</div>` : `<span class="latex-inline">${safe}</span>`);
   });
   return html;
 }
