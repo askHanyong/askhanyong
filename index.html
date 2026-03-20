@@ -14,6 +14,70 @@
 <meta name="twitter:description" content="Step-by-step explanations, mock exams &amp; progress tracking — Built by Hanyong: 20+ years teaching Mathematics and IB examiner.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "name": "askHanyong",
+      "url": "https://askhanyong.com",
+      "description": "AI-powered IB Math tutor built by a 20+ year IB examiner. Step-by-step explanations, mock papers and progress tracking for IB Math AA and AI students.",
+      "founder": {
+        "@type": "Person",
+        "name": "Hanyong",
+        "jobTitle": "IB Mathematics Examiner",
+        "description": "IB Mathematics examiner with 20+ years of teaching experience and 1,000+ students guided to top IB grades."
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between IB Math AI and IB Math AA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "IB Math AI (Applications and Interpretation) focuses on real-world applications using technology and statistics. IB Math AA (Analysis and Approaches) emphasises algebraic methods, formal proof and calculus. AI suits students heading into social sciences or business; AA suits those pursuing math-heavy STEM fields."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How hard is IB Math HL?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "IB Math HL is one of the most demanding IB courses. The global average grade is around 4–5 out of 7. It requires strong algebraic skills, abstract thinking, and consistent practice. With expert guidance and focused past-paper work, a grade 6 or 7 is achievable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What calculator is allowed in IB Math Paper 2?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "IB Math Paper 2 and Paper 3 permit a GDC (Graphical Display Calculator). Approved models include the TI-84 Plus CE, Casio fx-9860GII, and similar. Calculators with a CAS (Computer Algebra System) such as the TI-Nspire CAS are NOT permitted."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I improve my IB Math grade?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "To improve your IB Math grade: practise past papers under timed conditions, learn IB command terms (find vs show vs prove), understand what earns method marks vs answer marks, and work with an experienced IB examiner who knows the mark scheme. askHanyong provides AI tutoring built on 20+ years of IB examiner expertise."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is askHanyong free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes — askHanyong is free to start. Sign in with Google to get 5 free questions every day with no credit card required. Unlimited access is available for a one-time beta fee of S$45."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <script>window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['\\[','\\]'],['$$','$$']], processEscapes: true }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] } };</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -580,6 +644,12 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .download-btn:hover { border-color:var(--green); color:var(--green); background:#f0fdf4; }
 .download-btn:disabled { opacity:0.55; cursor:not-allowed; }
 
+/* ── Social proof strip ── */
+.social-proof-strip { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:10px 0 16px; }
+.sp-item { display:flex; align-items:center; gap:4px; font-size:11px; font-weight:600; color:var(--text-mid); }
+.sp-dot { width:3px; height:3px; background:var(--border); border-radius:50%; }
+.examiner-badge { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,#fef3c7,#fde68a); border:1.5px solid #fbbf24; border-radius:20px; padding:4px 12px; font-size:11px; font-weight:700; color:#78350f; margin-bottom:8px; }
+
 /* ── Try this next ── */
 .try-next-bar { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
 .try-next-label { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
@@ -698,7 +768,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <button class="history-btn" onclick="toggleHistorySidebar()" title="Chat history" id="historyToggleBtn">🕐</button>
     <a href="/landing.html" style="font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;font-weight:500;padding:4px 8px;border-radius:6px;transition:color 0.2s" onmouseover="this.style.color='rgba(255,255,255,0.85)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">About</a>
     <button class="new-chat-btn" id="newChatBtn" onclick="startNewChat()" title="New chat" style="display:none">＋ New</button>
-    <div id="userPillArea"><button class="sign-in-btn" onclick="showLogin()">Sign in</button></div>
+    <div id="userPillArea"><button class="sign-in-btn" onclick="showLogin()">Try Free</button></div>
   </div>
 </header>
 <div class="limit-bar" id="limitBar">
@@ -783,8 +853,16 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="chat-area" id="chatArea">
     <div class="welcome-screen" id="welcomeScreen">
       <div class="welcome-avatar">📐</div>
+      <div class="examiner-badge">🏅 Built by an IB Examiner</div>
       <h2>Annyeong! 👋</h2>
-      <p>I'm HAN — your IB Math tutor built on Hanyong's 20+ years of examiner experience. Ask me anything.</p>
+      <p>I'm HAN — your IB Math AI tutor. Ask me anything.</p>
+      <div class="social-proof-strip">
+        <span class="sp-item">🎓 20+ years teaching</span>
+        <span class="sp-dot"></span>
+        <span class="sp-item">📋 IB Math examiner</span>
+        <span class="sp-dot"></span>
+        <span class="sp-item">🌏 1,000+ students guided</span>
+      </div>
       <div class="welcome-cards">
         <div class="welcome-card" onclick="usePrompt('Explain integration by parts with an IB HL example')"><div class="wc-icon">📐</div><div class="wc-title">Explain a concept</div><div class="wc-desc">Clear IB-style breakdown</div></div>
         <div class="welcome-card" onclick="document.getElementById('mainFileInput').click()"><div class="wc-icon">📸</div><div class="wc-title">Upload a question</div><div class="wc-desc">Photo → worked solution</div></div>
@@ -955,7 +1033,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div style="font-size:40px;margin-bottom:12px">🔐</div>
       <div style="font-weight:700;font-size:15px;margin-bottom:6px">Sign in to track progress</div>
       <div style="font-size:13px;color:var(--text-soft);margin-bottom:18px">Your question history and weak topics are saved when you sign in.</div>
-      <button onclick="showLogin()" style="padding:10px 24px;background:var(--blue);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Sign In</button>
+      <button onclick="showLogin()" style="padding:10px 24px;background:var(--blue);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Try Free</button>
     </div>
     <div id="progressContent">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
@@ -1111,7 +1189,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <button class="modal-close" onclick="closeModal('loginOverlay')">✕</button>
     <div class="modal-icon">📐</div>
     <h2>Welcome to askHanyong</h2>
-    <p>Sign in to track your progress and get 5 free questions every day.</p>
+    <p>Get 5 free questions every day — no credit card needed.</p>
     <div id="googleSignInBtn"></div>
     <div class="modal-note" style="margin-top:10px">Free · No credit card needed</div>
   </div>
