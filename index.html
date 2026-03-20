@@ -1785,6 +1785,8 @@ function switchTab(tab) {
       document.getElementById('progressSignInPrompt').style.display = 'none';
       document.getElementById('progressContent').style.display = 'block';
       renderProgress();
+      // Lazy-load trend data if not yet fetched
+      if (!_ibTrendData) loadIbTrendData();
     }
   }
 }
@@ -3692,18 +3694,53 @@ function renderProgress() {
   const leastPracticed = Object.entries(topics).sort((a,b)=>a[1]-b[1]).slice(0,2).map(e=>e[0]);
   const focusAreas = [...new Set([...weakByAcc,...notPracticed,...leastPracticed])].slice(0,3);
   const topicIcons = { 'Calculus':'∫','Functions':'f(x)','Geometry & Trigonometry':'△','Statistics & Probability':'σ','Number & Algebra':'∑','Complex Numbers':'𝑖' };
+
+  let weakHtml = '';
   if (totalAsked < 3) {
-    weakEl.innerHTML = '<div style="font-size:13px;color:var(--text-soft)">Ask at least 3 questions to see your focus areas.</div>';
+    weakHtml = '<div style="font-size:13px;color:var(--text-soft);margin-bottom:16px">Ask at least 3 questions to see your personal focus areas.</div>';
   } else if (!focusAreas.length) {
-    weakEl.innerHTML = '<div style="font-size:13px;color:var(--green);font-weight:600">🎉 Great work! You\'ve covered all topics.</div>';
+    weakHtml = '<div style="font-size:13px;color:var(--green);font-weight:600;margin-bottom:16px">🎉 Great work! You\'ve covered all topics.</div>';
   } else {
-    weakEl.innerHTML = focusAreas.map(t => {
+    weakHtml = focusAreas.map(t => {
       const assessed = topicSelfAssessed[t]||0;
       const acc = assessed>=2 ? Math.round(((topicCorrect[t]||0)/assessed)*100) : null;
       const reason = acc!==null&&acc<50 ? `${acc}% accuracy — needs work` : topics[t] ? `Only ${topics[t]} question${topics[t]!==1?'s':''} asked` : 'Not practiced yet';
       return `<div class="prog-focus-item" onclick="usePromptAndSwitch('Give me a practice question on ${t}')"><div class="prog-focus-icon">${topicIcons[t]||'·'}</div><div class="prog-focus-text"><div class="prog-focus-name">${t}</div><div class="prog-focus-reason">${reason}</div></div><div class="prog-focus-cta">Practice →</div></div>`;
     }).join('');
   }
+
+  // ── IB Exam Trend section (appended below personal weak areas) ──
+  let trendHtml = '';
+  if (_ibTrendData && _ibTrendData.byTopic && Object.keys(_ibTrendData.byTopic).length > 0) {
+    const totalTrendMarks = _ibTrendData.totalMarks || 1;
+    const trendRanked = Object.entries(_ibTrendData.byTopic)
+      .filter(([,d]) => d.totalMarks > 0)
+      .sort((a,b) => b[1].totalMarks - a[1].totalMarks)
+      .slice(0, 4);
+    const trendItems = trendRanked.map(([topic, d], i) => {
+      const sharePct = Math.round((d.totalMarks / totalTrendMarks) * 100);
+      const icon = topicIcons[topic] || '·';
+      const barColor = ['#1e3a8a','#5b21b6','#0e7490','#065f46'][i] || '#374151';
+      return `<div class="prog-focus-item" onclick="usePromptAndSwitch('Give me a practice question on ${topic}')">
+        <div class="prog-focus-icon" style="background:${barColor}10;color:${barColor}">${icon}</div>
+        <div class="prog-focus-text">
+          <div class="prog-focus-name">${topic}</div>
+          <div class="prog-focus-reason">${d.totalMarks} marks · ${sharePct}% of IB papers 2022–2025</div>
+        </div>
+        <div class="prog-focus-cta">Practice →</div>
+      </div>`;
+    }).join('');
+    trendHtml = `
+      <div style="margin-top:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">📈 IB Exam Trends 2022–2025</div>
+        <div style="font-size:11px;color:var(--text-soft);margin-bottom:10px;line-height:1.5">These topics carry the most marks across recent IB papers — highest return on study time.</div>
+        ${trendItems}
+      </div>`;
+  } else if (!_ibTrendData) {
+    trendHtml = '<div style="font-size:11px;color:var(--text-soft);margin-top:12px">Loading IB exam trend data…</div>';
+  }
+
+  weakEl.innerHTML = weakHtml + trendHtml;
 
   // ── Recent activity ──
   const actEl = document.getElementById('recentActivity');
@@ -4801,6 +4838,7 @@ function closeFormulaSheet() {
 // ACCURACY BADGE — About page
 // ════════════════════════════════════════
 let _accuracyLoaded = false;
+let _ibTrendData = null; // cached trend data from /api/accuracy for use in Focus Areas
 
 function scoreClass(pct) {
   if (pct === null || pct === undefined) return 'gray';
@@ -4864,10 +4902,33 @@ async function loadAccuracyBadge() {
       </div>
       ${topicRows ? `<div class="acc-topics">${topicRows}</div>` : ''}`;
 
+    // Cache trend data globally so Focus Areas can use it
+    if (data.trendData) {
+      _ibTrendData = data.trendData;
+      // Re-render progress tab if it's visible so trend section populates
+      if (document.getElementById('view-progress')?.style.display !== 'none') {
+        renderProgress();
+      }
+    }
+
     _accuracyLoaded = true;
   } catch (e) {
     el.innerHTML = '<div class="acc-loading" style="color:var(--text-soft)">Could not load accuracy data.</div>';
   }
+}
+
+// ── Fetch IB trend data for the progress tab ─────────────────────
+async function loadIbTrendData() {
+  if (_ibTrendData) return; // already loaded
+  try {
+    const res  = await fetch('/api/accuracy');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.trendData) {
+      _ibTrendData = data.trendData;
+      renderProgress(); // refresh Focus Areas with trend data now available
+    }
+  } catch (e) { /* silent — trend data is additive */ }
 }
 
 // ════════════════════════════════════════

@@ -67,23 +67,24 @@ exports.handler = async (event) => {
     };
   }
 
-  // Fetch fresh metrics from GAS
+  // Fetch fresh metrics from GAS (accuracy + trend data in parallel)
   try {
-    const metrics = await gasGet({
-      action: 'getAccuracyMetrics',
-      secret: GAS_SECRET,
-    });
+    const [metrics, trendData] = await Promise.all([
+      gasGet({ action: 'getAccuracyMetrics', secret: GAS_SECRET }),
+      gasGet({ action: 'getTrendData',       secret: GAS_SECRET }).catch(() => null),
+    ]);
 
     if (metrics.error) {
       return { statusCode: 502, headers: CORS, body: JSON.stringify({ error: metrics.error }) };
     }
 
-    _cache = { data: metrics, fetchedAt: Date.now() };
+    const combined = { ...metrics, trendData: trendData || null };
+    _cache = { data: combined, fetchedAt: Date.now() };
 
     return {
       statusCode: 200,
       headers: { ...CORS, 'X-Cache': 'MISS' },
-      body: JSON.stringify(metrics),
+      body: JSON.stringify(combined),
     };
   } catch (e) {
     // If cache exists but stale, return stale rather than error

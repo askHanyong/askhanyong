@@ -45,6 +45,7 @@ function doGet(e) {
   if (action === 'getEvalQuestions')  return getEvalQuestions(e.parameter);
   if (action === 'saveEvalResult')    return saveEvalResult(e.parameter);
   if (action === 'getAccuracyMetrics') return getAccuracyMetrics(e.parameter);
+  if (action === 'getTrendData')      return getTrendData(e.parameter);
 
   return ContentService
     .createTextOutput('HAN Admin GAS — OK')
@@ -693,5 +694,79 @@ function getAccuracyMetrics(params) {
       byDimension,
       lastEvaluated,
     }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Aggregate exam trend data from the Questions sheet ────────────
+// Returns topic × marks statistics across years/sessions/levels.
+// Used for the "What to Focus On" trend analysis section.
+function getTrendData(params) {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Questions');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ byTopic: {}, byYear: {}, totalMarks: 0, totalQuestions: 0 }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const rows    = sheet.getDataRange().getValues();
+  const headers = rows[0];
+  const col     = (name) => headers.indexOf(name);
+
+  const iId       = col('Question ID');
+  const iLevel    = col('Level');
+  const iYear     = col('Year');
+  const iSession  = col('Session');
+  const iTopic    = col('Topic');
+  const iSubtopic = col('Subtopic');
+  const iMarks    = col('Marks');
+  const iStatus   = col('Status');
+  const iPaper    = col('Paper');
+
+  const levelFilter = (params.level || '').trim();
+
+  // byTopic: { topic: { totalMarks, questionCount, byYear: { year: marks }, byLevel: { level: marks } } }
+  // byYear:  { year:  { totalMarks, questionCount, byTopic: { topic: marks } } }
+  const byTopic      = {};
+  const byYear       = {};
+  let   totalMarks   = 0;
+  let   totalQuestions = 0;
+
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r[iId]) continue;
+    // Skip inactive questions if Status column exists
+    if (iStatus !== -1 && r[iStatus] && r[iStatus] !== 'Active' && r[iStatus] !== '') continue;
+
+    const level   = String(r[iLevel]   || '');
+    const topic   = String(r[iTopic]   || 'Other');
+    const year    = String(r[iYear]    || '');
+    const session = String(r[iSession] || '');
+    const marks   = parseInt(r[iMarks] || '0', 10) || 0;
+    const yearKey = year && session ? year + ' ' + session : year;
+
+    if (levelFilter && level !== levelFilter) continue;
+
+    totalMarks    += marks;
+    totalQuestions++;
+
+    // byTopic aggregation
+    if (!byTopic[topic]) byTopic[topic] = { totalMarks: 0, questionCount: 0, byYear: {}, byLevel: {} };
+    byTopic[topic].totalMarks    += marks;
+    byTopic[topic].questionCount++;
+    if (yearKey) byTopic[topic].byYear[yearKey]   = (byTopic[topic].byYear[yearKey]   || 0) + marks;
+    if (level)   byTopic[topic].byLevel[level]    = (byTopic[topic].byLevel[level]    || 0) + marks;
+
+    // byYear aggregation
+    if (yearKey) {
+      if (!byYear[yearKey]) byYear[yearKey] = { totalMarks: 0, questionCount: 0, byTopic: {} };
+      byYear[yearKey].totalMarks    += marks;
+      byYear[yearKey].questionCount++;
+      byYear[yearKey].byTopic[topic] = (byYear[yearKey].byTopic[topic] || 0) + marks;
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ byTopic, byYear, totalMarks, totalQuestions }))
     .setMimeType(ContentService.MimeType.JSON);
 }

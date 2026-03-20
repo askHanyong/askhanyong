@@ -270,6 +270,58 @@ footer {
 .coverage-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 1s ease-out; }
 .coverage-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-soft); }
 
+/* ── TREND SECTION ── */
+.trend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.trend-topic-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.trend-topic-row:last-child { border-bottom: none; }
+.trend-topic-rank {
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700;
+  color: var(--text-soft); min-width: 20px; text-align: center;
+}
+.trend-topic-name { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; min-width: 0; }
+.trend-topic-bar-wrap { width: 100px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+.trend-topic-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 1.2s ease-out; }
+.trend-topic-marks { font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--text); min-width: 54px; text-align: right; }
+
+.trend-year-grid { display: grid; gap: 12px; }
+.trend-year-row { display: flex; align-items: center; gap: 10px; }
+.trend-year-label { font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--text-mid); min-width: 64px; }
+.trend-year-bar-wrap { flex: 1; height: 20px; background: var(--border); border-radius: 6px; overflow: hidden; position: relative; display: flex; }
+.trend-year-seg { height: 100%; transition: width 1.2s ease-out; }
+.trend-year-total { font-size: 11px; color: var(--text-soft); min-width: 52px; text-align: right; font-family: 'DM Mono', monospace; }
+
+/* Focus recommendation cards */
+.focus-cards { display: flex; flex-direction: column; gap: 12px; }
+.focus-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: white; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.focus-card-rank {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--navy); color: white;
+  font-size: 12px; font-weight: 800; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+  font-family: 'DM Mono', monospace;
+}
+.focus-card-rank.rank-1 { background: var(--gold); color: var(--navy-dark); }
+.focus-card-rank.rank-2 { background: #94a3b8; }
+.focus-card-rank.rank-3 { background: #b45309; color: white; }
+.focus-card-body { flex: 1; }
+.focus-card-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.focus-card-meta { font-size: 12px; color: var(--text-mid); line-height: 1.5; }
+.focus-card-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 8px;
+  border-radius: 10px; flex-shrink: 0; align-self: center;
+}
+.focus-card-badge.badge-high   { background: #fef2f2; color: var(--red); }
+.focus-card-badge.badge-medium { background: var(--amber-bg); color: var(--amber); }
+.focus-card-badge.badge-steady { background: var(--green-bg); color: var(--green); }
+
 /* ── EMPTY STATE ── */
 .empty-state {
   text-align: center; padding: 48px 24px;
@@ -441,6 +493,38 @@ footer {
     </p>
     <div class="coverage-grid" id="coverageGrid">
       <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- TREND ANALYSIS -->
+  <div class="section-eyebrow">IB MAA 2022–2025</div>
+  <h2 class="section-title">Exam Trend Analysis</h2>
+  <p class="section-desc">How marks are distributed across topics in real IB papers — based on the questions in HAN's bank. The more marks a topic carries, the more it matters for your score.</p>
+
+  <div class="trend-grid" id="trendGrid">
+    <!-- Col 1: marks by topic -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="card-title-icon">📊</span> Marks by Topic</div>
+      <div id="trendTopicList">
+        <div style="text-align:center;padding:24px;color:var(--text-soft);font-size:13px">Loading trend data…</div>
+      </div>
+    </div>
+    <!-- Col 2: marks by year -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="card-title-icon">📅</span> Marks by Year &amp; Session</div>
+      <div id="trendYearList">
+        <div style="text-align:center;padding:24px;color:var(--text-soft);font-size:13px">Loading trend data…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT TO FOCUS ON NEXT -->
+  <div style="margin-top:28px">
+    <div class="section-eyebrow">Exam Intelligence</div>
+    <h2 class="section-title">What to Focus On Next</h2>
+    <p class="section-desc">Ranked by exam weight — the topics that consistently carry the most marks across 2022–2025 IB papers. Mastering these gives the highest return on study time.</p>
+    <div class="focus-cards" id="focusCards">
+      <div style="text-align:center;padding:24px;color:var(--text-soft);font-size:13px">Loading recommendations…</div>
     </div>
   </div>
 
@@ -697,6 +781,146 @@ function renderCoverage(byTopic) {
   });
 }
 
+// ── Segment colours for the year stacked bar ─────────────────────
+const TOPIC_COLOURS = {
+  'Calculus':                '#1e3a8a',
+  'Functions':               '#5b21b6',
+  'Geometry & Trigonometry': '#0e7490',
+  'Statistics & Probability':'#065f46',
+  'Number & Algebra':        '#92400e',
+  'Complex Numbers':         '#9d174d',
+};
+function topicColour(t) { return TOPIC_COLOURS[t] || '#6b7280'; }
+
+function renderTrendTopics(trendData) {
+  const el = document.getElementById('trendTopicList');
+  if (!trendData || !trendData.byTopic || Object.keys(trendData.byTopic).length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-soft);font-size:13px">Topic trend data will appear once questions are loaded into the question bank.</div>';
+    return;
+  }
+
+  const entries = Object.entries(trendData.byTopic)
+    .filter(([, d]) => d.totalMarks > 0)
+    .sort((a, b) => b[1].totalMarks - a[1].totalMarks);
+
+  const maxMarks = entries[0]?.[1].totalMarks || 1;
+
+  el.innerHTML = entries.map(([topic, d], i) => {
+    const pct = Math.round((d.totalMarks / maxMarks) * 100);
+    const sharePct = trendData.totalMarks > 0 ? Math.round((d.totalMarks / trendData.totalMarks) * 100) : 0;
+    return `
+      <div class="trend-topic-row">
+        <div class="trend-topic-rank">${i + 1}</div>
+        <div class="trend-topic-name">${topic}</div>
+        <div class="trend-topic-bar-wrap">
+          <div class="trend-topic-bar-fill" style="width:0%;background:${topicColour(topic)}" data-target="${pct}"></div>
+        </div>
+        <div class="trend-topic-marks">${d.totalMarks} mk<span style="font-size:10px;color:var(--text-soft);font-weight:400"> (${sharePct}%)</span></div>
+      </div>`;
+  }).join('');
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.trend-topic-bar-fill[data-target]').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  });
+}
+
+function renderTrendYears(trendData) {
+  const el = document.getElementById('trendYearList');
+  if (!trendData || !trendData.byYear || Object.keys(trendData.byYear).length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-soft);font-size:13px">Year breakdown will appear once questions span multiple sessions.</div>';
+    return;
+  }
+
+  // Sort years chronologically
+  const entries = Object.entries(trendData.byYear).sort((a, b) => a[0].localeCompare(b[0]));
+  const maxMarks = Math.max(...entries.map(([, d]) => d.totalMarks), 1);
+
+  // Collect all topics for legend
+  const allTopics = [...new Set(entries.flatMap(([, d]) => Object.keys(d.byTopic)))]
+    .sort((a, b) => {
+      const ta = trendData.byTopic[a]?.totalMarks || 0;
+      const tb = trendData.byTopic[b]?.totalMarks || 0;
+      return tb - ta;
+    });
+
+  el.innerHTML = `
+    <div class="trend-year-grid">
+      ${entries.map(([year, d]) => {
+        const barWidth = Math.round((d.totalMarks / maxMarks) * 100);
+        const segs = allTopics.map(t => {
+          const m = d.byTopic[t] || 0;
+          if (!m) return '';
+          const segPct = Math.round((m / d.totalMarks) * 100);
+          return `<div class="trend-year-seg" style="width:${segPct}%;background:${topicColour(t)}" title="${t}: ${m} marks"></div>`;
+        }).join('');
+        return `
+          <div class="trend-year-row">
+            <div class="trend-year-label">${year}</div>
+            <div class="trend-year-bar-wrap" style="max-width:${barWidth}%;min-width:40px">${segs}</div>
+            <div class="trend-year-total">${d.totalMarks} mk</div>
+          </div>`;
+      }).join('')}
+    </div>
+    <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+      ${allTopics.slice(0, 6).map(t =>
+        `<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--text-mid)">
+          <span style="width:8px;height:8px;border-radius:50%;background:${topicColour(t)};flex-shrink:0"></span>${t}
+        </span>`
+      ).join('')}
+    </div>`;
+}
+
+function renderFocusCards(trendData) {
+  const el = document.getElementById('focusCards');
+  if (!trendData || !trendData.byTopic || Object.keys(trendData.byTopic).length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-soft);font-size:13px">Focus recommendations will appear once questions are loaded.</div>';
+    return;
+  }
+
+  const total = trendData.totalMarks || 1;
+
+  // Rank topics by totalMarks
+  const ranked = Object.entries(trendData.byTopic)
+    .filter(([, d]) => d.totalMarks > 0)
+    .sort((a, b) => b[1].totalMarks - a[1].totalMarks)
+    .slice(0, 5);
+
+  const TOPIC_INSIGHT = {
+    'Calculus':                 'Differentiation, integration, and kinematics appear in almost every paper. Long multi-part questions make this the highest-mark topic.',
+    'Functions':                'Transformations, inverse functions, and graphing are tested frequently across P1 and P2. Essential for both HL and SL.',
+    'Statistics & Probability': 'Probability distributions, hypothesis testing, and regression. P2 GDC questions often hinge on knowing when to use which distribution.',
+    'Geometry & Trigonometry':  'Vectors and trig equations dominate. 3D vector geometry is an HL staple — expect it every session.',
+    'Number & Algebra':         'Sequences, logs, and the binomial theorem. Proof by induction appears exclusively in HL and can be rehearsed to near-perfection.',
+    'Complex Numbers':          'De Moivre\'s theorem and complex roots are HL-only but predictably structured — high reward for focused preparation.',
+  };
+
+  el.innerHTML = ranked.map(([topic, d], i) => {
+    const sharePct = Math.round((d.totalMarks / total) * 100);
+    const qCount   = d.questionCount;
+    const yearSpan = Object.keys(d.byYear || {}).length;
+    const insight  = TOPIC_INSIGHT[topic] || `Appears across ${yearSpan} session${yearSpan !== 1 ? 's' : ''} in HAN\'s question bank.`;
+    const badge    = i === 0 ? '<span class="focus-card-badge badge-high">Top priority</span>'
+                   : i <= 1  ? '<span class="focus-card-badge badge-medium">High value</span>'
+                              : '<span class="focus-card-badge badge-steady">Steady weight</span>';
+    const rankCls  = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+    return `
+      <div class="focus-card">
+        <div class="focus-card-rank ${rankCls}">${i + 1}</div>
+        <div class="focus-card-body">
+          <div class="focus-card-name">${topic}</div>
+          <div class="focus-card-meta">
+            <strong>${d.totalMarks} marks</strong> across ${qCount} question${qCount !== 1 ? 's' : ''} · ${sharePct}% of question bank ·
+            tested in ${yearSpan} session${yearSpan !== 1 ? 's' : ''}.<br>
+            <span style="margin-top:3px;display:inline-block">${insight}</span>
+          </div>
+        </div>
+        ${badge}
+      </div>`;
+  }).join('');
+}
+
 // ── Fetch and render ─────────────────────────────────────────────
 async function loadAccuracy() {
   try {
@@ -714,6 +938,9 @@ async function loadAccuracy() {
     renderTopics(data.byTopic || {});
     renderRubric(data.byDimension || {});
     renderCoverage(data.byTopic || {});
+    renderTrendTopics(data.trendData || null);
+    renderTrendYears(data.trendData || null);
+    renderFocusCards(data.trendData || null);
 
     if (data.lastEvaluated) {
       const el = document.getElementById('lastUpdated');
@@ -731,6 +958,9 @@ async function loadAccuracy() {
     renderTopics({});
     renderRubric(null);
     renderCoverage({});
+    renderTrendTopics(null);
+    renderTrendYears(null);
+    renderFocusCards(null);
     // Show note instead of error for first-time load
     const banner = document.getElementById('errorBanner');
     banner.style.display = 'block';
