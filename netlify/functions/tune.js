@@ -186,14 +186,20 @@ exports.handler = async (event) => {
 
   // ── Mode: han ─────────────────────────────────────────────────
   if (body.mode === 'han') {
-    const { question } = body;
-    if (!question?.trim()) {
-      return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'question required' }) };
+    const { question, imageBase64, imageType } = body;
+    if (!question?.trim() && !imageBase64) {
+      return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'question or image required' }) };
     }
+    // Build content array (text + optional image)
+    const userContent = [];
+    if (imageBase64) {
+      userContent.push({ type: 'image', source: { type: 'base64', media_type: imageType || 'image/jpeg', data: imageBase64 } });
+    }
+    userContent.push({ type: 'text', text: question?.trim() || 'Please solve this question.' });
     try {
       const answer = await callClaude(
         HAN_SYSTEM_PROMPT,
-        question.trim(),
+        userContent,
         'claude-sonnet-4-20250514',
         1500
       );

@@ -87,6 +87,24 @@ textarea.my-answer:focus { border-color:var(--gold); }
 .question-area { margin-bottom:16px; }
 .question-area textarea { min-height:100px; }
 
+/* Upload controls */
+.tune-upload-row { display:flex; align-items:center; gap:10px; margin-top:8px; }
+.tune-upload-btn {
+  display:inline-flex; align-items:center; gap:5px; cursor:pointer;
+  padding:7px 14px; border-radius:var(--radius-sm); border:1.5px solid var(--border);
+  background:white; color:var(--text-mid); font-size:12px; font-weight:600;
+  font-family:'DM Sans',sans-serif; transition:all 0.15s;
+}
+.tune-upload-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--ice-light); }
+.tune-preview-strip {
+  display:none; margin-top:8px; align-items:center; gap:10px;
+  padding:8px 10px; background:var(--bg); border-radius:var(--radius-sm); border:1.5px solid var(--border);
+}
+.tune-preview-strip.show { display:flex; }
+.tune-preview-strip img { height:52px; border-radius:4px; object-fit:cover; }
+.tune-remove-btn { font-size:12px; color:var(--red); background:none; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-weight:600; }
+.tune-remove-btn:hover { text-decoration:underline; }
+
 /* Buttons */
 .btn {
   padding:11px 22px; border-radius:var(--radius-sm); font-size:13px; font-weight:700;
@@ -221,6 +239,17 @@ textarea.my-answer:focus { border-color:var(--gold); }
       <div class="card-sub">Type any IB Math question — exactly as a student might ask it, or paste it directly from a paper.</div>
       <div class="question-area">
         <textarea id="questionInput" placeholder="e.g. Find the exact value of ∫₀¹ x·e^x dx.&#10;&#10;Or: The sum of the first n terms of an arithmetic sequence is Sn = 3n² − n. Find the common difference."></textarea>
+        <div class="tune-preview-strip" id="tunePreviewStrip">
+          <img id="tunePreviewThumb" src="" alt="question preview">
+          <button class="tune-remove-btn" onclick="removeTuneImage()">✕ Remove image</button>
+        </div>
+        <div class="tune-upload-row">
+          <label class="tune-upload-btn" title="Upload question photo">
+            📎 Upload image
+            <input id="tuneFileInput" type="file" accept="image/*" onchange="handleTuneImageUpload(event)" style="display:none">
+          </label>
+          <span style="font-size:12px;color:var(--text-soft)">or Ctrl+V to paste a screenshot</span>
+        </div>
       </div>
       <div class="btn-row">
         <button class="btn btn-primary" id="getHanBtn" onclick="getHanAnswer()">
@@ -365,6 +394,53 @@ textarea.my-answer:focus { border-color:var(--gold); }
 let adminSecret = '';
 let examples = [];   // { question, hanAnswer, myAnswer }
 let analysisText = '';
+let tuneImageBase64 = null, tuneImageType = null;
+
+// ── Image upload ──────────────────────────────────────────────────
+function handleTuneImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Please upload an image file', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    tuneImageBase64 = dataUrl.split(',')[1];
+    tuneImageType = file.type;
+    document.getElementById('tunePreviewThumb').src = dataUrl;
+    document.getElementById('tunePreviewStrip').classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeTuneImage() {
+  tuneImageBase64 = null; tuneImageType = null;
+  document.getElementById('tunePreviewStrip').classList.remove('show');
+  document.getElementById('tunePreviewThumb').src = '';
+  document.getElementById('tuneFileInput').value = '';
+}
+
+// Paste screenshot support
+document.addEventListener('paste', function(e) {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      e.preventDefault();
+      const file = items[i].getAsFile();
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        tuneImageBase64 = ev.target.result.split(',')[1];
+        tuneImageType = file.type;
+        document.getElementById('tunePreviewThumb').src = ev.target.result;
+        document.getElementById('tunePreviewStrip').classList.add('show');
+        document.getElementById('questionInput').focus();
+      };
+      reader.readAsDataURL(file);
+      break;
+    }
+  }
+});
 
 // ── Auth ──────────────────────────────────────────────────────────
 function checkAuth() {
@@ -389,13 +465,16 @@ function goPhase(n) {
 // ── Get HAN's answer ─────────────────────────────────────────────
 async function getHanAnswer() {
   const q = document.getElementById('questionInput').value.trim();
-  if (!q) { toast('Enter a question first', 'error'); return; }
+  if (!q && !tuneImageBase64) { toast('Enter a question or upload an image first', 'error'); return; }
 
   const btn = document.getElementById('getHanBtn');
   const status = document.getElementById('hanStatus');
   btn.disabled = true;
   btn.innerHTML = '<span class="spin">⟳</span> Asking HAN…';
   status.textContent = '';
+
+  const payload = { mode: 'han', question: q || 'Please solve this question.' };
+  if (tuneImageBase64) { payload.imageBase64 = tuneImageBase64; payload.imageType = tuneImageType; }
 
   try {
     const res = await fetch('/api/tune', {
@@ -404,7 +483,7 @@ async function getHanAnswer() {
         'Content-Type':  'application/json',
         'Authorization': `Bearer ${adminSecret}`,
       },
-      body: JSON.stringify({ mode: 'han', question: q }),
+      body: JSON.stringify(payload),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
@@ -446,6 +525,7 @@ function clearCurrent() {
   document.getElementById('hanOutput').value = '';
   document.getElementById('myAnswer').value = '';
   document.getElementById('comparisonCard').style.display = 'none';
+  removeTuneImage();
 }
 
 // ── Render example list ───────────────────────────────────────────
