@@ -603,6 +603,37 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .about-stat-num { font-size:22px; font-weight:800; color:white; }
 .about-stat-lbl { font-size:10px; color:rgba(255,255,255,0.65); margin-top:3px; }
 
+/* ── IA Helper ── */
+.ia-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.ia-hero { background:linear-gradient(135deg,#0a1628,#1a3068); padding:28px 20px 24px; text-align:center; color:white; flex-shrink:0; position:relative; overflow:hidden; }
+.ia-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.08) 0%, transparent 70%); pointer-events:none; }
+.ia-lock-badge { display:inline-flex; align-items:center; gap:7px; background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.4); border-radius:20px; padding:5px 14px; margin-bottom:14px; font-size:11px; font-weight:700; color:#C9A84C; letter-spacing:0.3px; }
+.ia-hero-title { font-size:20px; font-weight:800; font-family:'Playfair Display',serif; color:white; margin-bottom:6px; }
+.ia-hero-sub { font-size:12px; color:rgba(255,255,255,0.65); line-height:1.6; max-width:280px; margin:0 auto; }
+.ia-body { background:var(--bg); }
+.ia-coming-banner { margin:16px 16px 0; background:linear-gradient(135deg,#0a1628,#0e1c33); border-radius:14px; padding:20px 18px; text-align:center; }
+.ia-coming-banner h3 { font-size:15px; font-weight:800; color:white; font-family:'Playfair Display',serif; margin-bottom:6px; }
+.ia-coming-banner p { font-size:12px; color:rgba(255,255,255,0.6); line-height:1.6; margin-bottom:14px; }
+.ia-notify-btn { width:100%; padding:12px; background:var(--accent); color:var(--navy); border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:800; cursor:pointer; font-family:'Inter',sans-serif; }
+.ia-feature-list { padding:16px; display:flex; flex-direction:column; gap:10px; }
+.ia-feature-item { background:white; border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; display:flex; gap:12px; align-items:flex-start; position:relative; overflow:hidden; opacity:0.75; }
+.ia-feature-icon { font-size:22px; flex-shrink:0; margin-top:1px; }
+.ia-feature-text h4 { font-size:13px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.ia-feature-text p { font-size:12px; color:var(--text-soft); line-height:1.5; }
+.ia-lock-overlay { position:absolute; top:10px; right:10px; background:var(--bg); border:1.5px solid var(--border); border-radius:8px; padding:2px 8px; font-size:10px; font-weight:700; color:var(--text-soft); display:flex; align-items:center; gap:4px; }
+.ia-teaser-mockup { margin:0 16px 16px; background:white; border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; filter:blur(1.5px); pointer-events:none; user-select:none; }
+.ia-teaser-bar { background:linear-gradient(135deg,#0a1628,#0e1c33); padding:8px 12px; display:flex; align-items:center; gap:8px; }
+.ia-teaser-title { font-size:11px; font-weight:600; color:white; }
+.ia-teaser-badge { margin-left:auto; background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.4); border-radius:8px; font-size:9px; font-weight:700; color:#C9A84C; padding:2px 7px; }
+.ia-teaser-body { padding:12px; }
+.ia-filter-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.ia-chip-mock { padding:4px 10px; border-radius:12px; font-size:10px; font-weight:600; border:1.5px solid var(--border); background:var(--bg); color:var(--text-soft); }
+.ia-chip-mock.on { background:var(--navy); border-color:var(--navy); color:white; }
+.ia-topic-mock { background:var(--bg); border-radius:8px; padding:10px 12px; }
+.ia-topic-mock-row { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-mid); }
+.ia-topic-mock-row:last-child { border-bottom:none; }
+.ia-topic-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+
 /* ── Accuracy Badge ── */
 .acc-badge { display:flex; align-items:center; gap:14px; background:var(--ice-light); border:1.5px solid var(--blue-light); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
 .acc-score { text-align:center; min-width:64px; }
@@ -1071,6 +1102,96 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   </div>
 </div>
 
+<!-- ══════════════ IA HELPER ══════════════ -->
+<div class="view-panel" id="view-ia">
+  <div class="ia-scroll">
+    <div class="ia-hero">
+      <div class="ia-lock-badge">🔒 Coming with Monthly Subscription</div>
+      <div class="ia-hero-title">IA Helper</div>
+      <p class="ia-hero-sub">Expert Internal Assessment support — topic selection, structure checking, and examiner guidance, built by an IB Coordinator who has read hundreds of IAs.</p>
+    </div>
+    <div class="ia-body">
+      <div class="ia-coming-banner">
+        <h3>IA season is the most stressful part of IB.</h3>
+        <p>Most tutors give surface-level IA advice. HAN's IA Helper is built by someone who has supervised, assessed, and moderated IB Math IAs for years — and knows exactly what separates a 6 from a 7.</p>
+        <button class="ia-notify-btn" onclick="showIaNotify()">Notify Me When It's Live ✦</button>
+      </div>
+
+      <div class="ia-feature-list">
+        <div class="ia-feature-item">
+          <div class="ia-feature-icon">🎯</div>
+          <div class="ia-feature-text">
+            <h4>IA Topic Generator</h4>
+            <p>Get personalised topic ideas filtered by AA/AI and HL/SL — each with a research angle and a note on scope difficulty from an examiner's perspective.</p>
+          </div>
+          <div class="ia-lock-overlay">🔒 Soon</div>
+        </div>
+        <div class="ia-feature-item">
+          <div class="ia-feature-icon">📋</div>
+          <div class="ia-feature-text">
+            <h4>Structure Checker — Criteria A–E</h4>
+            <p>Paste your IA draft and HAN checks it against every criterion: Communication (A), Mathematical Presentation (B), Personal Engagement (C), Reflection (D), and Use of Mathematics (E).</p>
+          </div>
+          <div class="ia-lock-overlay">🔒 Soon</div>
+        </div>
+        <div class="ia-feature-item">
+          <div class="ia-feature-icon">🔬</div>
+          <div class="ia-feature-text">
+            <h4>Math Exploration Guidance</h4>
+            <p>Understand what "sophisticated mathematics" actually means at HL vs SL, and what examiners are looking for when they award full marks on Criterion E.</p>
+          </div>
+          <div class="ia-lock-overlay">🔒 Soon</div>
+        </div>
+        <div class="ia-feature-item">
+          <div class="ia-feature-icon">✍️</div>
+          <div class="ia-feature-text">
+            <h4>Examiner Notes on Your IA</h4>
+            <p>Get the kind of feedback that an IB Examiner would write in the margin — specific, direct, and focused on what will raise your score.</p>
+          </div>
+          <div class="ia-lock-overlay">🔒 Soon</div>
+        </div>
+      </div>
+
+      <!-- Blurred teaser mockup -->
+      <div style="position:relative;margin:0 16px 20px;">
+        <div class="ia-teaser-mockup">
+          <div class="ia-teaser-bar">
+            <div class="demo-han-av" style="font-size:9px">HAN</div>
+            <span class="ia-teaser-title">IA Topic Generator</span>
+            <span class="ia-teaser-badge">✦ AA · HL</span>
+          </div>
+          <div class="ia-teaser-body">
+            <div class="ia-filter-row">
+              <div class="ia-chip-mock on">AA</div>
+              <div class="ia-chip-mock">AI</div>
+              <div class="ia-chip-mock" style="margin-left:4px;">HL</div>
+              <div class="ia-chip-mock on">SL</div>
+            </div>
+            <div class="ia-topic-mock">
+              <div class="ia-topic-mock-row"><div class="ia-topic-dot"></div> The mathematics of spiral growth in nature (logarithmic spirals)</div>
+              <div class="ia-topic-mock-row"><div class="ia-topic-dot"></div> Modelling disease spread using differential equations</div>
+              <div class="ia-topic-mock-row"><div class="ia-topic-dot"></div> Exploring the Monty Hall Problem through conditional probability</div>
+              <div class="ia-topic-mock-row"><div class="ia-topic-dot"></div> The mathematics behind RSA encryption</div>
+            </div>
+          </div>
+        </div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(245,244,241,0.6);border-radius:var(--radius);">
+          <div style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:12px 18px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.1)">
+            <div style="font-size:20px;margin-bottom:4px">🔒</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)">Unlocks with Monthly Plan</div>
+            <div style="font-size:11px;color:var(--text-soft);margin-top:2px">Coming soon</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:0 16px 24px;font-size:12px;color:var(--text-soft);line-height:1.7">
+        The IA Helper will be available as part of the monthly subscription plan.<br>
+        Free and Contributor tiers continue with all existing features.
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Bottom Nav -->
 <nav class="tab-nav">
   <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="tab-icon">💬</span>Ask HAN</button>
@@ -1078,6 +1199,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <button class="tab-btn" id="tab-mock" onclick="switchTab('mock')"><span class="tab-icon">📝</span>Mock Paper</button>
   <button class="tab-btn" id="tab-progress" onclick="switchTab('progress')"><span class="tab-icon">📊</span>Progress</button>
   <button class="tab-btn" id="tab-about" onclick="switchTab('about')"><span class="tab-icon">👤</span>About</button>
+  <button class="tab-btn" id="tab-ia" onclick="switchTab('ia')" style="position:relative"><span class="tab-icon">📄</span>IA<span style="position:absolute;top:4px;right:6px;background:var(--accent);color:var(--navy);font-size:7px;font-weight:800;border-radius:4px;padding:1px 4px;line-height:1.4;letter-spacing:0.3px">NEW</span></button>
 </nav>
 
 <!-- ══════════════ BOTTOM SHEET (question detail) ══════════════ -->
@@ -1649,7 +1771,7 @@ let mockSelectedTopics = new Set(['All']), mockPaperData = [], practiceFiltered 
 // TAB SWITCHING
 // ════════════════════════════════════════
 function switchTab(tab) {
-  ['chat','practice','mock','progress','about'].forEach(t => {
+  ['chat','practice','mock','progress','about','ia'].forEach(t => {
     const v = document.getElementById('view-' + t), b = document.getElementById('tab-' + t);
     if (v) v.classList.toggle('active', t === tab);
     if (b) b.classList.toggle('active', t === tab);
@@ -1898,6 +2020,17 @@ function canAskQuestion(type) {
 // AUTH
 // ════════════════════════════════════════
 function showLogin() { document.getElementById('loginOverlay').classList.add('open'); }
+function showIaNotify() {
+  const email = currentUser ? currentUser.email : '';
+  const msg = email
+    ? `You're on the list, ${currentUser.given_name || email}! We'll notify you at ${email} when IA Helper launches.`
+    : "We'll let you know when IA Helper is live. Sign in so we can notify you.";
+  if (email) {
+    alert(msg);
+  } else {
+    showLogin();
+  }
+}
 function showUpgrade() {
   document.getElementById('upgradeOverlay').classList.add('open');
   // Reset waitlist form state
