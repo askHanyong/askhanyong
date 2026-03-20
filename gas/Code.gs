@@ -618,17 +618,20 @@ function getAccuracyMetrics(params) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  const headers = rows[0];
-  const iId     = headers.indexOf('Question ID');
-  const iLevel  = headers.indexOf('Level');
-  const iTopic  = headers.indexOf('Topic');
-  const iPct    = headers.indexOf('Pct');
-  const iDate   = headers.indexOf('EvaluatedAt');
+  const headers    = rows[0];
+  const iId        = headers.indexOf('Question ID');
+  const iLevel     = headers.indexOf('Level');
+  const iTopic     = headers.indexOf('Topic');
+  const iPct       = headers.indexOf('Pct');
+  const iScoreJson = headers.indexOf('ScoreJSON');
+  const iDate      = headers.indexOf('EvaluatedAt');
 
-  const allPcts     = [];
+  const DIM_MAXES = { final_answer: 2, method: 2, mark_scheme: 2, ib_presentation: 1, examiner_note: 1 };
+  const allPcts      = [];
   const levelBuckets = {};
   const topicBuckets = {};
-  let lastEvaluated = null;
+  const dimBuckets   = { final_answer: [], method: [], mark_scheme: [], ib_presentation: [], examiner_note: [] };
+  let lastEvaluated  = null;
 
   for (let i = 1; i < rows.length; i++) {
     const r    = rows[i];
@@ -647,22 +650,47 @@ function getAccuracyMetrics(params) {
     topicBuckets[topic].push(pct);
 
     if (!lastEvaluated || dated > lastEvaluated) lastEvaluated = dated;
+
+    // Parse per-dimension scores from ScoreJSON column
+    if (iScoreJson >= 0 && r[iScoreJson]) {
+      try {
+        const scores = JSON.parse(r[iScoreJson]);
+        Object.keys(DIM_MAXES).forEach(dim => {
+          if (scores[dim] !== undefined && scores[dim] !== null) {
+            dimBuckets[dim].push(Number(scores[dim]));
+          }
+        });
+      } catch(e) {}
+    }
   }
 
-  const avg = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+  const avg    = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length * 10) / 10 : null;
+  const avgPct = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
 
   const byLevel = {};
-  for (const [k, v] of Object.entries(levelBuckets)) byLevel[k] = { avg: avg(v), count: v.length };
+  for (const [k, v] of Object.entries(levelBuckets)) byLevel[k] = { avg: avgPct(v), count: v.length };
 
   const byTopic = {};
-  for (const [k, v] of Object.entries(topicBuckets)) byTopic[k] = { avg: avg(v), count: v.length };
+  for (const [k, v] of Object.entries(topicBuckets)) byTopic[k] = { avg: avgPct(v), count: v.length };
+
+  const byDimension = {};
+  for (const [dim, max] of Object.entries(DIM_MAXES)) {
+    const vals = dimBuckets[dim];
+    byDimension[dim] = {
+      avg:   avg(vals),
+      max,
+      pct:   vals.length ? Math.round(avg(vals) / max * 100) : null,
+      count: vals.length,
+    };
+  }
 
   return ContentService
     .createTextOutput(JSON.stringify({
-      overall:       avg(allPcts),
+      overall:       avgPct(allPcts),
       questionCount: allPcts.length,
       byLevel,
       byTopic,
+      byDimension,
       lastEvaluated,
     }))
     .setMimeType(ContentService.MimeType.JSON);

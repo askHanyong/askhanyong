@@ -615,28 +615,41 @@ function renderTopics(byTopic) {
   });
 }
 
-function renderRubric(byTopic) {
-  // We can't show per-dimension averages directly from the /api/accuracy endpoint
-  // (it only returns aggregated pct, not broken-down scores).
-  // Show placeholder "Coming soon" or infer from overall pct proxy values.
+function renderRubric(byDimension) {
   const grid = document.getElementById('rubricGrid');
-  // Show typical distribution note based on IB rubric maxes
-  const dims = [
-    { label: 'Final Answer',           max: 2, typical: 0.87 },
-    { label: 'Method & Key Steps',     max: 2, typical: 0.85 },
-    { label: 'Mark Scheme Alignment',  max: 2, typical: 0.82 },
-    { label: 'IB Presentation',        max: 1, typical: 0.91 },
-    { label: 'Examiner Note',          max: 1, typical: 0.78 },
+  const DIM_META = [
+    { key: 'final_answer',    label: 'Final Answer',          max: 2, desc: 'Correct final value/expression' },
+    { key: 'method',          label: 'Method & Key Steps',    max: 2, desc: 'Correct approach, all steps shown' },
+    { key: 'mark_scheme',     label: 'Mark Scheme Alignment', max: 2, desc: 'IB examiner would award full marks' },
+    { key: 'ib_presentation', label: 'IB Presentation',       max: 1, desc: 'Notation, layout, labelling' },
+    { key: 'examiner_note',   label: 'Examiner Note',         max: 1, desc: 'Flags the key common mistake' },
   ];
-  // Note: these are illustrative until per-dim data is exposed by the API
-  grid.innerHTML = dims.map(d => `
-    <div class="rubric-item">
-      <div class="rubric-score score-green" style="font-size:22px">—</div>
-      <div class="rubric-label">${d.label}</div>
-      <div class="rubric-max">/ ${d.max}</div>
-    </div>`).join('');
-  // Note about data availability
-  grid.insertAdjacentHTML('afterend', '<p style="font-size:11px;color:var(--text-soft);margin-top:12px;text-align:center">Per-dimension averages will appear once evaluation data is available.</p>');
+
+  if (!byDimension || Object.keys(byDimension).length === 0) {
+    grid.innerHTML = DIM_META.map(d => `
+      <div class="rubric-item">
+        <div class="rubric-score score-gray" style="font-size:22px">—</div>
+        <div class="rubric-label">${d.label}</div>
+        <div class="rubric-max">/ ${d.max}</div>
+      </div>`).join('');
+    grid.insertAdjacentHTML('afterend', '<p style="font-size:11px;color:var(--text-soft);margin-top:12px;text-align:center">Per-dimension averages will appear once evaluation data is available.</p>');
+    return;
+  }
+
+  grid.innerHTML = DIM_META.map(d => {
+    const data = byDimension[d.key] || {};
+    const pct  = data.pct;
+    const avg  = data.avg;
+    const cls  = pct === null ? 'score-gray' : pct >= 80 ? 'score-green' : pct >= 60 ? 'score-amber' : 'score-red';
+    const scoreDisplay = avg !== null ? `${avg}/${d.max}` : '—';
+    const pctDisplay   = pct !== null ? `${pct}%` : '';
+    return `
+      <div class="rubric-item" title="${d.desc}">
+        <div class="rubric-score ${cls}">${scoreDisplay}</div>
+        <div class="rubric-label">${d.label}</div>
+        <div class="rubric-max">${pctDisplay}</div>
+      </div>`;
+  }).join('');
 }
 
 function renderCoverage(byTopic) {
@@ -699,7 +712,7 @@ async function loadAccuracy() {
     renderOverall(data);
     renderLevels(data.byLevel || {});
     renderTopics(data.byTopic || {});
-    renderRubric(data.byTopic || {});
+    renderRubric(data.byDimension || {});
     renderCoverage(data.byTopic || {});
 
     if (data.lastEvaluated) {
@@ -716,7 +729,7 @@ async function loadAccuracy() {
     renderOverall({ overall: null, questionCount: 0 });
     renderLevels({});
     renderTopics({});
-    renderRubric({});
+    renderRubric(null);
     renderCoverage({});
     // Show note instead of error for first-time load
     const banner = document.getElementById('errorBanner');
