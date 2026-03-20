@@ -584,6 +584,33 @@ footer {
   .hero-cta-group { flex-direction: column; align-items: center; }
   .btn-primary, .btn-secondary { width: 100%; max-width: 320px; justify-content: center; }
 }
+
+/* ── WHATSAPP FLOAT ── */
+.wa-float {
+  position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.2);
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+}
+.wa-float:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.55), 0 4px 12px rgba(0,0,0,0.25); }
+.wa-float svg { width: 30px; height: 30px; fill: white; }
+
+/* ── WORKSHOPS ── */
+.workshops-label {
+  font-size: 10px; font-weight: 700; color: rgba(201,168,76,0.6);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-top: 20px; margin-bottom: 8px;
+}
+.cred-chip-sm {
+  padding: 4px 11px; background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+  font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.7);
+}
+.cred-chip-sm .cat {
+  font-size: 10px; color: rgba(201,168,76,0.8); font-weight: 700; margin-left: 4px;
+}
 </style>
 </head>
 <body>
@@ -861,10 +888,11 @@ fetch('/api/accuracy').then(r => r.json()).then(d => {
     <div>
       <div class="creator-eyebrow">Built by</div>
       <div class="creator-name">Hanyong Lim</div>
-      <div class="creator-role">IB Math Teacher · Former IB Examiner · Applied Mathematician</div>
+      <div class="creator-role">IB Math Teacher · Former IB Examiner · DP Coordinator · Applied Mathematician</div>
       <div class="creator-bio">
         <p>I grew up passionate about mathematics and went on to study <strong>Applied Mathematics at the National University of Singapore</strong>, then spent the next 20+ years teaching Mathematics across O-Levels, A-Levels, and IB in Singapore schools.</p>
-        <p>For several of those years, I worked as an <strong>IB examiner</strong> — marking real student scripts, writing mark schemes, and understanding exactly where students lose marks. What I kept noticing was this: students who clearly understood the mathematics, losing marks simply because of the way they present their work.</p>
+        <p>For several of those years, I worked as an <strong>IB Examiner</strong> — marking real student scripts from schools around the world and writing mark schemes. Every year I mark over 100 scripts. What this means in practice: I know in depth exactly what costs students marks. Not guessing, not theory — the real pattern from thousands of scripts reviewed over many years.</p>
+        <p>I also served as a <strong>DP Coordinator</strong> — the person responsible for running the entire IB Diploma Programme at the school. This role gave me a view no single subject teacher has: overseeing every student's full Diploma journey, training teachers on IB requirements, managing the examination process end-to-end, and supporting students through the Extended Essay, Theory of Knowledge, and CAS. I understand how IB schools evaluate students from every angle.</p>
         <p>The difference between a 5, a 6, and a 7 is rarely about ability. It's about structure, clarity, and knowing what an examiner is looking for. Every student deserves that knowledge. I built HAN so it's always there when they need it — patient, free, and trained on everything I've learned over 20 years.</p>
       </div>
       <div class="creator-creds">
@@ -872,8 +900,32 @@ fetch('/api/accuracy').then(r => r.json()).then(d => {
         <span class="cred-chip">O, A-Levels &amp; IB</span>
         <span class="cred-chip">20+ Years Teaching Maths</span>
         <span class="cred-chip">Former IB Examiner</span>
+        <span class="cred-chip">DP Coordinator</span>
         <span class="cred-chip">HL &amp; SL Specialist</span>
       </div>
+      <div class="workshops-label">IB Professional Development &amp; Training</div>
+      <div class="creator-creds">
+        <span class="cred-chip-sm">Extended Essay <span class="cat">Cat 3</span></span>
+        <span class="cred-chip-sm">Theory of Knowledge <span class="cat">Cat 1</span></span>
+        <span class="cred-chip-sm">Mathematics AA HL <span class="cat">Cat 1</span></span>
+        <span class="cred-chip-sm">Mathematics AA HL <span class="cat">Cat 2</span></span>
+        <span class="cred-chip-sm">Mathematics AA HL — IA Focus <span class="cat">Cat 3</span></span>
+        <span class="cred-chip-sm">Approaches to Teaching &amp; Learning <span class="cat">Cat 3</span></span>
+        <span class="cred-chip-sm">IBDP Coordinator <span class="cat">Cat 2</span></span>
+        <span class="cred-chip-sm">MAA HL — Current Syllabus <span class="cat">Cat 3</span></span>
+        <span class="cred-chip-sm">DP Leading the Learning <span class="cat">Cat 2</span></span>
+        <span class="cred-chip-sm">IB Conferences <span class="cat">multiple</span></span>
+      </div>
+      <details style="margin-top:18px;">
+        <summary style="font-size:12px;color:rgba(255,255,255,0.45);cursor:pointer;user-select:none;list-style:none;display:inline-flex;align-items:center;gap:6px;">
+          <span style="color:rgba(201,168,76,0.6);font-size:11px;">▸</span> What does a DP Coordinator actually do?
+        </summary>
+        <div style="margin-top:12px;padding:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.75;">
+          <p>The DP Coordinator runs the IB Diploma Programme at the school. Every IB World School offering the Diploma is required to have one — this is the person who ensures the programme meets IB standards from the first day of Year 1 through to the final exams.</p>
+          <p style="margin-top:10px;">In practice, this means: registering every student for their IB exams, overseeing the Extended Essay, Theory of Knowledge, and CAS, keeping the school compliant with IB regulations, supporting teachers on marking requirements and syllabus changes, and advocating for students in special circumstances — illness, learning needs, family emergencies.</p>
+          <p style="margin-top:10px;">Think of the DP Coordinator as the bridge between the school, the students, the teachers, and the IB organisation itself. A good coordinator understands the full picture of what a student needs to complete the Diploma — not just one subject, but everything.</p>
+        </div>
+      </details>
     </div>
   </div>
 </section>
@@ -923,6 +975,13 @@ fetch('/api/accuracy').then(r => r.json()).then(d => {
   </a>
   <p class="cta-fine">Free · No credit card · Works on any device</p>
 </section>
+
+<!-- ── WHATSAPP FLOAT ── -->
+<a class="wa-float" href="https://wa.me/6580448247" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
 
 <!-- ── FOOTER ── -->
 <footer>
