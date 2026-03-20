@@ -1039,7 +1039,12 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       </div>
       <div class="about-section" id="accuracySection">
         <div class="about-section-title">HAN Accuracy — Independently Verified</div>
-        <div id="accuracyBadge"><div class="acc-loading">Loading accuracy data…</div></div>
+        <div style="background:var(--ice-light);border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center">
+          <div style="font-size:22px;margin-bottom:8px">🔬</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Evaluation in progress</div>
+          <div style="font-size:12px;color:var(--text-soft);line-height:1.6">HAN is being scored on real IB exam questions. Verified accuracy results will appear here once the evaluation batch is complete.</div>
+          <a href="/accuracy" target="_blank" style="display:inline-block;margin-top:12px;font-size:12px;font-weight:600;color:var(--blue);text-decoration:none">View Accuracy Dashboard →</a>
+        </div>
         <p style="font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.6">Scored across real IB exam questions using a 5-dimension rubric (Final Answer, Method, Mark Scheme Fit, IB Presentation, Examiner Note). Max 8 points per question, normalised to %.</p>
       </div>
       <div class="about-section">
@@ -1199,6 +1204,20 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
     <button class="modal-cta" onclick="closeModal('welcomeModal')" style="margin-bottom:8px">Start Asking HAN →</button>
     <div style="font-size:12px;color:var(--text-soft);text-align:center;cursor:pointer" onclick="closeModal('welcomeModal');showUpgrade()">Support the project →</div>
+  </div>
+</div>
+
+<!-- Country picker modal (shown after Google sign-in when country unknown) -->
+<div class="modal-overlay" id="countryPromptModal" onclick="closeModalBg(event,'countryPromptModal')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:360px">
+    <div class="modal-icon">🌍</div>
+    <h2 style="margin-bottom:6px">Where are you from?</h2>
+    <p style="margin-bottom:16px;font-size:13px;color:var(--text-mid);line-height:1.6">Help us understand which IB students we're reaching around the world.</p>
+    <select class="auth-select" id="countryPromptSelect" style="width:100%;margin-bottom:16px">
+      <option value="">Select your country / territory…</option>
+    </select>
+    <button class="modal-cta" onclick="saveGoogleCountry()" style="margin-bottom:8px">Save</button>
+    <div style="font-size:12px;color:var(--text-soft);text-align:center;cursor:pointer" onclick="closeModal('countryPromptModal')">Skip for now</div>
   </div>
 </div>
 
@@ -1601,7 +1620,7 @@ function switchTab(tab) {
   });
   if (tab === 'practice') initPractice();
   if (tab === 'mock') initMock();
-  if (tab === 'about') loadAccuracyBadge();
+  // accuracy badge is now a static placeholder — no fetch needed
   if (tab === 'progress') {
     if (!currentUser && !isAdmin) {
       document.getElementById('progressSignInPrompt').style.display = 'block';
@@ -1885,9 +1904,20 @@ async function handleGoogleCredential(response) {
   loadProgressFromServer();
   // Show welcome modal only on first ever visit
   const seenKey = 'han_welcomed_' + payload.sub;
-  if (!localStorage.getItem(seenKey)) {
+  const isFirstVisit = !localStorage.getItem(seenKey);
+  if (isFirstVisit) {
     localStorage.setItem(seenKey, '1');
     setTimeout(() => document.getElementById('welcomeModal').classList.add('open'), 400);
+  }
+  // Prompt for country if not yet captured for this Google user
+  const storedCountry = localStorage.getItem('han_country_' + payload.email);
+  if (!storedCountry) {
+    // Delay past the welcome modal on first visit so modals don't stack
+    const delay = isFirstVisit ? 2800 : 600;
+    setTimeout(() => document.getElementById('countryPromptModal').classList.add('open'), delay);
+  } else {
+    currentUser.country = storedCountry;
+    localStorage.setItem('han_session', JSON.stringify(currentUser));
   }
 }
 
@@ -1957,6 +1987,7 @@ function switchUser() {
 }
 window.addEventListener('load', function () {
   populateCountrySelect();
+  populateCountryPromptSelect();
   if (typeof google === 'undefined') return;
   google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredential, auto_select: false });
   google.accounts.id.renderButton(document.getElementById('googleSignInBtn'), { theme: 'outline', size: 'large', width: 300, text: 'signin_with' });
@@ -2005,6 +2036,29 @@ function populateCountrySelect() {
     opt.value = t; opt.textContent = t;
     sel.appendChild(opt);
   });
+}
+
+function populateCountryPromptSelect() {
+  const sel = document.getElementById('countryPromptSelect');
+  if (!sel) return;
+  TERRITORIES.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    sel.appendChild(opt);
+  });
+}
+
+function saveGoogleCountry() {
+  const sel = document.getElementById('countryPromptSelect');
+  const country = sel ? sel.value : '';
+  if (!country) { sel && sel.focus(); return; }
+  if (currentUser) {
+    currentUser.country = country;
+    localStorage.setItem('han_session', JSON.stringify(currentUser));
+    localStorage.setItem('han_country_' + currentUser.email, country);
+    saveUserToSheet(currentUser);
+  }
+  closeModal('countryPromptModal');
 }
 
 function switchLoginTab(tab) {
