@@ -79,3 +79,10 @@
   to = "/admin.html"
   status = 200
   force = true
+
+# /tune serves the style-capture prompt tuning tool (admin only)
+[[redirects]]
+  from = "/tune"
+  to = "/tune.html"
+  status = 200
+  force = true

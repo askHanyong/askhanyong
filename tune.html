@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAN Prompt Tuning — Style Capture</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#1e3a5f; --blue:#1d4ed8; --blue-mid:#2563eb; --blue-light:#3b82f6;
+  --ice:#dbeafe; --ice-light:#eff6ff; --white:#ffffff; --bg:#f1f5f9; --bg-mid:#e8eef7;
+  --text:#1e293b; --text-mid:#475569; --text-soft:#94a3b8; --border:#e2e8f0;
+  --green:#10b981; --gold:#C9A84C; --red:#ef4444;
+  --radius:14px; --radius-sm:8px;
+  --shadow:0 2px 12px rgba(0,0,0,0.06); --shadow-md:0 4px 20px rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+/* Header */
+header {
+  background:linear-gradient(135deg,#1e3a5f,#1d4ed8);
+  padding:14px 24px; display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 2px 12px rgba(0,0,0,0.2);
+}
+header h1 { font-size:18px; font-weight:700; color:white; }
+header a { font-size:12px; color:rgba(255,255,255,0.7); text-decoration:none; }
+header a:hover { color:white; }
+.badge { background:rgba(201,168,76,0.3); border:1px solid #c9a84c; color:#f59e0b; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; }
+
+/* Auth gate */
+#authGate { max-width:400px; margin:80px auto; background:white; border-radius:var(--radius); padding:40px; box-shadow:var(--shadow-md); text-align:center; }
+#authGate h2 { font-size:20px; font-weight:700; margin-bottom:8px; }
+#authGate p { font-size:13px; color:var(--text-soft); margin-bottom:24px; }
+.auth-input { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:14px; font-family:'DM Sans',sans-serif; outline:none; }
+.auth-input:focus { border-color:var(--blue); }
+.auth-btn { width:100%; margin-top:12px; padding:12px; background:var(--blue); color:white; border:none; border-radius:var(--radius-sm); font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.auth-btn:hover { background:var(--blue-mid); }
+
+/* Layout */
+#appContent { display:none; max-width:1200px; margin:0 auto; padding:24px 16px 80px; }
+
+/* Phase tabs */
+.phase-tabs { display:flex; gap:0; background:white; border-radius:var(--radius); border:1.5px solid var(--border); overflow:hidden; margin-bottom:24px; }
+.phase-tab { flex:1; padding:14px 12px; text-align:center; font-size:12px; font-weight:600; color:var(--text-soft); border-right:1px solid var(--border); cursor:pointer; transition:all 0.2s; }
+.phase-tab:last-child { border-right:none; }
+.phase-tab.active { background:var(--ice-light); color:var(--blue); }
+.phase-tab.done { background:var(--bg); color:var(--green); }
+.phase-tab .tab-num { display:block; font-size:18px; font-weight:800; margin-bottom:3px; }
+.phase-tab .tab-label { font-size:11px; }
+
+/* Cards */
+.card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:20px; box-shadow:var(--shadow); }
+.card-title { font-size:16px; font-weight:700; margin-bottom:6px; }
+.card-sub { font-size:13px; color:var(--text-soft); margin-bottom:18px; line-height:1.5; }
+
+/* Info banner */
+.info-banner { background:linear-gradient(135deg,#1e3a5f10,#1d4ed808); border:1.5px solid var(--ice); border-radius:var(--radius); padding:18px 20px; margin-bottom:20px; }
+.info-banner h3 { font-size:14px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+.info-banner p { font-size:13px; color:var(--text-mid); line-height:1.6; }
+.info-banner ul { font-size:13px; color:var(--text-mid); line-height:1.8; margin-left:18px; }
+
+/* Split view */
+.split { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:768px) { .split { grid-template-columns:1fr; } }
+
+.pane { display:flex; flex-direction:column; gap:8px; }
+.pane-label {
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
+  color:var(--text-soft); display:flex; align-items:center; gap:6px;
+}
+.pane-label .dot { width:8px; height:8px; border-radius:50%; }
+.dot-ai { background:#3b82f6; }
+.dot-you { background:var(--gold); }
+
+textarea {
+  width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  font-size:13px; font-family:'DM Mono',monospace; color:var(--text);
+  outline:none; resize:vertical; line-height:1.7; background:white;
+}
+textarea:focus { border-color:var(--blue); }
+textarea.han-output { background:#f8fafc; color:var(--text-mid); min-height:280px; }
+textarea.my-answer { min-height:280px; border-color:rgba(201,168,76,0.4); }
+textarea.my-answer:focus { border-color:var(--gold); }
+
+/* Question input */
+.question-area { margin-bottom:16px; }
+.question-area textarea { min-height:100px; }
+
+/* Buttons */
+.btn {
+  padding:11px 22px; border-radius:var(--radius-sm); font-size:13px; font-weight:700;
+  cursor:pointer; font-family:'DM Sans',sans-serif; border:none; transition:all 0.15s;
+  display:inline-flex; align-items:center; gap:7px;
+}
+.btn:disabled { opacity:0.4; cursor:not-allowed; }
+.btn-primary { background:var(--blue); color:white; }
+.btn-primary:hover:not(:disabled) { background:var(--blue-mid); }
+.btn-gold { background:var(--gold); color:white; }
+.btn-gold:hover:not(:disabled) { background:#b8933f; }
+.btn-green { background:var(--green); color:white; }
+.btn-green:hover:not(:disabled) { background:#059669; }
+.btn-outline { background:white; color:var(--blue); border:1.5px solid var(--blue); }
+.btn-outline:hover:not(:disabled) { background:var(--ice-light); }
+.btn-danger { background:white; color:var(--red); border:1.5px solid var(--red); }
+.btn-danger:hover:not(:disabled) { background:#fef2f2; }
+.btn-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px; }
+
+/* Spinner */
+.spin { display:inline-block; animation:spin 1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Example list */
+.examples-list { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+.example-item {
+  border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  padding:14px 16px; display:flex; align-items:center; gap:12px; background:white;
+}
+.example-num { font-size:20px; font-weight:800; color:var(--blue); min-width:32px; }
+.example-preview { flex:1; }
+.example-preview .q { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.example-preview .meta { font-size:11px; color:var(--text-soft); }
+.example-remove { font-size:18px; cursor:pointer; color:var(--text-soft); padding:4px 8px; border-radius:6px; border:none; background:none; }
+.example-remove:hover { color:var(--red); background:#fef2f2; }
+
+/* Counter badge */
+.counter-wrap { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.counter { font-size:13px; font-weight:700; }
+.counter-badge {
+  background:var(--ice); color:var(--blue); border:1px solid var(--ice);
+  font-size:11px; font-weight:800; padding:3px 10px; border-radius:12px;
+}
+.counter-badge.ready { background:#d1fae5; color:#065f46; border-color:#a7f3d0; }
+
+/* Analysis output */
+#analysisPhase { display:none; }
+.analysis-out {
+  background:#0f1729; color:#e2e8f0; border-radius:var(--radius); padding:24px;
+  font-family:'DM Mono',monospace; font-size:12px; line-height:1.8;
+  white-space:pre-wrap; overflow-x:auto; min-height:200px;
+}
+.copy-wrap { display:flex; justify-content:flex-end; margin-top:12px; }
+
+/* Status */
+.status-ok { color:var(--green); font-size:13px; font-weight:600; }
+.status-err { color:var(--red); font-size:13px; font-weight:600; }
+
+/* Toast */
+.toast {
+  position:fixed; bottom:24px; right:24px; background:var(--text); color:white;
+  padding:12px 20px; border-radius:var(--radius-sm); font-size:13px; font-weight:600;
+  box-shadow:var(--shadow-md); z-index:1000; opacity:0; transform:translateY(10px);
+  transition:all 0.3s; pointer-events:none;
+}
+.toast.show { opacity:1; transform:translateY(0); }
+.toast.success { background:var(--green); }
+.toast.error { background:var(--red); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎯 HAN Prompt Tuning — Style Capture</h1>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="badge">ADMIN ONLY</span>
+    <a href="/admin">← Admin</a>
+  </div>
+</header>
+
+<!-- Auth gate -->
+<div id="authGate">
+  <div style="font-size:48px;margin-bottom:16px">🔐</div>
+  <h2>Admin Access</h2>
+  <p>Enter your admin secret to access the style tuning tool</p>
+  <input class="auth-input" type="password" id="secretInput" placeholder="Admin secret key"
+    onkeydown="if(event.key==='Enter')checkAuth()">
+  <button class="auth-btn" onclick="checkAuth()">Sign In</button>
+  <div id="authError" style="color:var(--red);font-size:13px;margin-top:10px;display:none">Incorrect secret. Try again.</div>
+</div>
+
+<!-- Main content -->
+<div id="appContent">
+
+  <!-- Phase tabs -->
+  <div class="phase-tabs">
+    <div class="phase-tab active" id="tab-1" onclick="goPhase(1)">
+      <span class="tab-num">1</span>
+      <span class="tab-label">Collect Examples</span>
+    </div>
+    <div class="phase-tab" id="tab-2" onclick="goPhase(2)">
+      <span class="tab-num">2</span>
+      <span class="tab-label">Analyse Style</span>
+    </div>
+    <div class="phase-tab" id="tab-3" onclick="goPhase(3)">
+      <span class="tab-num">3</span>
+      <span class="tab-label">New Prompt</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 1: Collect Examples                          -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="phase-1">
+
+    <div class="info-banner">
+      <h3>How this works</h3>
+      <p>For each example, you:</p>
+      <ul>
+        <li>Type an IB Math question below</li>
+        <li>Click <strong>Get HAN's Answer</strong> — see what the current AI produces</li>
+        <li>Write your ideal version on the right — exactly how you would explain it</li>
+        <li>Click <strong>Save Example</strong> — add it to the collection</li>
+        <li>Repeat for 3–5 diverse questions (different topics, styles)</li>
+        <li>Then move to Phase 2 to analyse the style gaps</li>
+      </ul>
+    </div>
+
+    <!-- Question input -->
+    <div class="card">
+      <div class="card-title">Ask a question</div>
+      <div class="card-sub">Type any IB Math question — exactly as a student might ask it, or paste it directly from a paper.</div>
+      <div class="question-area">
+        <textarea id="questionInput" placeholder="e.g. Find the exact value of ∫₀¹ x·e^x dx.&#10;&#10;Or: The sum of the first n terms of an arithmetic sequence is Sn = 3n² − n. Find the common difference."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="getHanBtn" onclick="getHanAnswer()">
+          ⚡ Get HAN's Answer
+        </button>
+        <span id="hanStatus" style="font-size:13px;color:var(--text-soft)"></span>
+      </div>
+    </div>
+
+    <!-- Side-by-side comparison -->
+    <div class="card" id="comparisonCard" style="display:none">
+      <div class="card-title">Compare &amp; Capture Your Style</div>
+      <div class="card-sub">Read what HAN wrote, then write exactly how <em>you</em> would explain it — your words, your rhythm, your emphasis. Don't polish; write naturally.</div>
+
+      <div class="split">
+        <div class="pane">
+          <div class="pane-label">
+            <span class="dot dot-ai"></span> HAN's current answer
+          </div>
+          <textarea class="han-output" id="hanOutput" readonly></textarea>
+        </div>
+        <div class="pane">
+          <div class="pane-label">
+            <span class="dot dot-you"></span> Your version — how Hanyong would say it
+          </div>
+          <textarea class="my-answer" id="myAnswer" placeholder="Write your ideal explanation here…"></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="saveExample()" id="saveBtn">
+          ✓ Save Example
+        </button>
+        <button class="btn btn-outline" onclick="clearCurrent()">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Collected examples -->
+    <div class="card">
+      <div class="card-title">Collected Examples</div>
+
+      <div class="counter-wrap">
+        <span class="counter">Examples saved:</span>
+        <span class="counter-badge" id="counterBadge">0</span>
+        <span id="counterHint" style="font-size:12px;color:var(--text-soft)">Add at least 2 to enable analysis (3–5 recommended)</span>
+      </div>
+
+      <div class="examples-list" id="examplesList">
+        <div style="font-size:13px;color:var(--text-soft);padding:8px 0">No examples yet. Add your first one above.</div>
+      </div>
+
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-green" id="analyseBtn" disabled onclick="goPhase(2)">
+          → Analyse Style
+        </button>
+        <span id="analyseHint" style="font-size:12px;color:var(--text-soft)">Save at least 2 examples first</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 2: Analyse Style                            -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="phase-2" style="display:none">
+
+    <div class="info-banner">
+      <h3>Style Analysis</h3>
+      <p>Claude will compare all your examples against HAN's current output and identify the specific gaps in phrasing, structure, emphasis, and tone. It will then propose new prompt rules and a full updated system prompt.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ready to analyse</div>
+      <div class="card-sub" id="analyseReadySub">Collected examples will be compared.</div>
+
+      <div id="analysisRunning" style="display:none">
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--blue);font-weight:600;margin:16px 0">
+          <span class="spin">⟳</span> Analysing style differences… this takes 30–60 seconds.
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="runAnalyseBtn" onclick="runAnalysis()">
+          🔬 Run Style Analysis
+        </button>
+        <button class="btn btn-outline" onclick="goPhase(1)">← Back</button>
+      </div>
+    </div>
+
+    <div class="card" id="analysisResultCard" style="display:none">
+      <div class="card-title">Analysis Results</div>
+      <div class="card-sub">Review the style analysis and new prompt rules below.</div>
+      <div class="analysis-out" id="analysisOut"></div>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="copyAnalysis()">📋 Copy Analysis</button>
+        <button class="btn btn-green" onclick="goPhase(3)">→ See Full Updated Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 3: New Prompt                               -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="phase-3" style="display:none" id="analysisPhase">
+
+    <div class="info-banner">
+      <h3>Your updated system prompt</h3>
+      <p>The full updated HAN system prompt is below — scroll to the bottom of the analysis in Phase 2 to find the "FULL UPDATED SYSTEM PROMPT" section, or copy the entire analysis and paste it into your edge function.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">How to apply this</div>
+      <div class="card-sub">Copy the new system prompt and paste it into <code>netlify/edge-functions/claude.js</code> as the <code>HAN_SYSTEM_PROMPT</code> constant — and into <code>netlify/functions/tune.js</code> and <code>netlify/functions/evaluate.js</code> to keep them in sync.</div>
+
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;font-size:13px;font-family:'DM Mono',monospace;line-height:1.8;color:var(--text-mid)">
+        Files to update:
+        <br>• <strong>netlify/edge-functions/claude.js</strong> — <code>HAN_SYSTEM_PROMPT</code>
+        <br>• <strong>netlify/functions/evaluate.js</strong>  — <code>HAN_SYSTEM_PROMPT</code>
+        <br>• <strong>netlify/functions/tune.js</strong>       — <code>HAN_SYSTEM_PROMPT</code>
+      </div>
+
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn btn-outline" onclick="goPhase(2)">← Back to Analysis</button>
+        <button class="btn btn-gold" onclick="copyAnalysis()">📋 Copy Full Analysis</button>
+        <button class="btn btn-danger" onclick="resetAll()">🔄 Start Over</button>
+      </div>
+    </div>
+
+    <!-- Summary of examples used -->
+    <div class="card">
+      <div class="card-title">Examples used in this run</div>
+      <div class="examples-list" id="summaryList"></div>
+    </div>
+  </div>
+
+</div><!-- /appContent -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+let adminSecret = '';
+let examples = [];   // { question, hanAnswer, myAnswer }
+let analysisText = '';
+
+// ── Auth ──────────────────────────────────────────────────────────
+function checkAuth() {
+  const val = document.getElementById('secretInput').value.trim();
+  if (!val) return;
+  adminSecret = val;
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('appContent').style.display = 'block';
+}
+
+// ── Phase navigation ─────────────────────────────────────────────
+function goPhase(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById(`phase-${i}`).style.display = i===n ? 'block' : 'none';
+    const tab = document.getElementById(`tab-${i}`);
+    tab.classList.toggle('active', i===n);
+  });
+  if (n === 2) updateAnalyseReady();
+  if (n === 3) updateSummary();
+}
+
+// ── Get HAN's answer ─────────────────────────────────────────────
+async function getHanAnswer() {
+  const q = document.getElementById('questionInput').value.trim();
+  if (!q) { toast('Enter a question first', 'error'); return; }
+
+  const btn = document.getElementById('getHanBtn');
+  const status = document.getElementById('hanStatus');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⟳</span> Asking HAN…';
+  status.textContent = '';
+
+  try {
+    const res = await fetch('/api/tune', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${adminSecret}`,
+      },
+      body: JSON.stringify({ mode: 'han', question: q }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+    document.getElementById('hanOutput').value = data.answer;
+    document.getElementById('myAnswer').value = '';
+    document.getElementById('comparisonCard').style.display = 'block';
+    document.getElementById('myAnswer').focus();
+    status.textContent = '';
+
+  } catch (e) {
+    status.textContent = '⚠ ' + e.message;
+    status.style.color = 'var(--red)';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '⚡ Get HAN\'s Answer';
+  }
+}
+
+// ── Save example ─────────────────────────────────────────────────
+function saveExample() {
+  const question  = document.getElementById('questionInput').value.trim();
+  const hanAnswer = document.getElementById('hanOutput').value.trim();
+  const myAnswer  = document.getElementById('myAnswer').value.trim();
+
+  if (!question)  { toast('Question is empty', 'error'); return; }
+  if (!hanAnswer) { toast('Get HAN\'s answer first', 'error'); return; }
+  if (!myAnswer)  { toast('Write your version first', 'error'); return; }
+
+  examples.push({ question, hanAnswer, myAnswer });
+  renderExamples();
+  clearCurrent();
+  toast(`Example ${examples.length} saved`, 'success');
+  updateAnalyseBtn();
+}
+
+function clearCurrent() {
+  document.getElementById('questionInput').value = '';
+  document.getElementById('hanOutput').value = '';
+  document.getElementById('myAnswer').value = '';
+  document.getElementById('comparisonCard').style.display = 'none';
+}
+
+// ── Render example list ───────────────────────────────────────────
+function renderExamples() {
+  const list = document.getElementById('examplesList');
+  const badge = document.getElementById('counterBadge');
+  badge.textContent = examples.length;
+  badge.className = 'counter-badge' + (examples.length >= 2 ? ' ready' : '');
+
+  if (!examples.length) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text-soft);padding:8px 0">No examples yet. Add your first one above.</div>';
+    return;
+  }
+
+  list.innerHTML = examples.map((ex, i) => `
+    <div class="example-item">
+      <div class="example-num">${i+1}</div>
+      <div class="example-preview">
+        <div class="q">${escHtml(ex.question.slice(0,100))}${ex.question.length>100?'…':''}</div>
+        <div class="meta">${ex.hanAnswer.split(/\s+/).length} words (HAN) · ${ex.myAnswer.split(/\s+/).length} words (yours)</div>
+      </div>
+      <button class="example-remove" onclick="removeExample(${i})" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeExample(i) {
+  examples.splice(i, 1);
+  renderExamples();
+  updateAnalyseBtn();
+}
+
+function updateAnalyseBtn() {
+  const btn  = document.getElementById('analyseBtn');
+  const hint = document.getElementById('analyseHint');
+  const ready = examples.length >= 2;
+  btn.disabled = !ready;
+  hint.textContent = ready
+    ? `${examples.length} example${examples.length!==1?'s':''} ready — click to analyse`
+    : 'Save at least 2 examples first';
+  hint.style.color = ready ? 'var(--green)' : 'var(--text-soft)';
+}
+
+// ── Analysis ─────────────────────────────────────────────────────
+function updateAnalyseReady() {
+  document.getElementById('analyseReadySub').textContent =
+    `${examples.length} example${examples.length!==1?'s':''} will be compared. Claude will analyse the style gaps and generate new prompt rules.`;
+}
+
+async function runAnalysis() {
+  if (examples.length < 2) { toast('Need at least 2 examples', 'error'); return; }
+
+  const btn = document.getElementById('runAnalyseBtn');
+  const running = document.getElementById('analysisRunning');
+  const resultCard = document.getElementById('analysisResultCard');
+
+  btn.disabled = true;
+  running.style.display = 'block';
+  resultCard.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/tune', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${adminSecret}`,
+      },
+      body: JSON.stringify({ mode: 'analyze', examples }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+    analysisText = data.analysis;
+    document.getElementById('analysisOut').textContent = analysisText;
+    resultCard.style.display = 'block';
+    document.getElementById('tab-2').classList.add('done');
+    toast('Analysis complete', 'success');
+
+  } catch (e) {
+    toast('Analysis failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    running.style.display = 'none';
+  }
+}
+
+function copyAnalysis() {
+  if (!analysisText) { toast('Run the analysis first', 'error'); return; }
+  navigator.clipboard.writeText(analysisText).then(() => toast('Copied to clipboard', 'success'));
+}
+
+// ── Phase 3 summary ───────────────────────────────────────────────
+function updateSummary() {
+  const list = document.getElementById('summaryList');
+  list.innerHTML = examples.map((ex, i) => `
+    <div class="example-item">
+      <div class="example-num">${i+1}</div>
+      <div class="example-preview">
+        <div class="q">${escHtml(ex.question.slice(0,120))}${ex.question.length>120?'…':''}</div>
+        <div class="meta">${ex.hanAnswer.split(/\s+/).length} words (HAN) · ${ex.myAnswer.split(/\s+/).length} words (yours)</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function resetAll() {
+  if (!confirm('Clear all examples and start over?')) return;
+  examples = [];
+  analysisText = '';
+  renderExamples();
+  updateAnalyseBtn();
+  document.getElementById('analysisResultCard').style.display = 'none';
+  document.getElementById('analysisOut').textContent = '';
+  [1,2,3].forEach(i => document.getElementById(`tab-${i}`).classList.remove('done'));
+  goPhase(1);
+  toast('Reset — ready to start again');
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' '+type : '');
+  setTimeout(() => el.className = 'toast', 3000);
+}
+
+// ── Util ──────────────────────────────────────────────────────────
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
