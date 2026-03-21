@@ -1285,6 +1285,10 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
     Ask HAN
   </button>
+  <button class="tab-btn" id="tab-feedback" onclick="fbOpen()" aria-label="Share feedback">
+    <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+    Feedback
+  </button>
   <button class="tab-btn" id="tab-practice" onclick="switchTab('practice')">
     <span class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
     Practice
@@ -5449,13 +5453,7 @@ if (_origRenderProgress2) {
   </div>
 </div>
 
-<!-- Floating trigger button -->
-<button class="fb-trigger" onclick="fbOpen()" aria-label="Share feedback">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </svg>
-  Feedback
-</button>
+<!-- Floating trigger button (hidden – moved into tab nav) -->
 
 <!-- Backdrop + Modal -->
 <div class="fb-backdrop" id="fbBackdrop" onclick="fbClose(event)">
