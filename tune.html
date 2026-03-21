@@ -83,6 +83,14 @@ textarea.han-output { background:#f8fafc; color:var(--text-mid); min-height:280p
 textarea.my-answer { min-height:280px; border-color:rgba(201,168,76,0.4); }
 textarea.my-answer:focus { border-color:var(--gold); }
 
+.upload-btn {
+  font-size:11px; font-family:inherit; font-weight:600; cursor:pointer;
+  padding:3px 10px; border-radius:20px; border:1.5px solid var(--gold);
+  color:var(--gold); background:transparent; white-space:nowrap;
+  transition:background 0.15s, color 0.15s;
+}
+.upload-btn:hover { background:var(--gold); color:#fff; }
+
 /* Question input */
 .question-area { margin-bottom:16px; }
 .question-area textarea { min-height:100px; }
@@ -272,8 +280,12 @@ textarea.my-answer:focus { border-color:var(--gold); }
           <textarea class="han-output" id="hanOutput" readonly></textarea>
         </div>
         <div class="pane">
-          <div class="pane-label">
-            <span class="dot dot-you"></span> Your version — how Hanyong would say it
+          <div class="pane-label" style="display:flex;align-items:center;justify-content:space-between;">
+            <span><span class="dot dot-you"></span> Your version — how Hanyong would say it</span>
+            <label class="upload-btn" title="Upload a text file">
+              ↑ Upload file
+              <input type="file" id="myAnswerUpload" accept=".txt,.md" style="display:none" onchange="uploadMyAnswer(this)">
+            </label>
           </div>
           <textarea class="my-answer" id="myAnswer" placeholder="Write your ideal explanation here…"></textarea>
         </div>
@@ -526,6 +538,18 @@ function clearCurrent() {
   document.getElementById('myAnswer').value = '';
   document.getElementById('comparisonCard').style.display = 'none';
   removeTuneImage();
+}
+
+function uploadMyAnswer(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('myAnswer').value = e.target.result;
+  };
+  reader.readAsText(file);
+  // Reset input so the same file can be re-uploaded if needed
+  input.value = '';
 }
 
 // ── Render example list ───────────────────────────────────────────
