@@ -725,6 +725,31 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   .topic-heatmap { grid-template-columns:repeat(2,1fr); }
   .welcome-actions { margin-top:8px; }
 }
+
+/* ── Nav SVG Icons ── */
+.tab-icon { display:flex; align-items:center; justify-content:center; width:22px; height:22px; }
+.tab-icon svg { width:20px; height:20px; stroke:var(--text-soft); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.18s; }
+.tab-btn.active .tab-icon svg { stroke:#C9A84C; }
+
+/* ── Nav Streak Pill (header) ── */
+.nav-streak-pill { display:none; align-items:center; gap:3px; background:rgba(201,168,76,0.12); border:1.5px solid rgba(201,168,76,0.35); border-radius:16px; padding:3px 8px 3px 5px; }
+.nav-streak-pill svg { width:13px; height:13px; flex-shrink:0; }
+.nav-streak-pill span { font-size:11px; font-weight:800; color:#C9A84C; line-height:1; }
+.nav-streak-pill.visible { display:flex; }
+
+/* ── Achievement Badges ── */
+.badges-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.badge-item { display:flex; flex-direction:column; align-items:center; gap:5px; }
+.badge-shell { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.badge-shell.earned { background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(228,201,122,0.28)); border:2px solid #C9A84C; box-shadow:0 2px 12px rgba(201,168,76,0.3); }
+.badge-shell.locked { background:var(--bg); border:2px solid var(--border); }
+.badge-shell svg { width:22px; height:22px; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.badge-shell.earned svg { stroke:#C9A84C; }
+.badge-shell.locked svg { stroke:#d1d5db; }
+.badge-name { font-size:9px; font-weight:700; text-align:center; line-height:1.3; text-transform:uppercase; letter-spacing:0.3px; max-width:56px; }
+.badge-shell.earned + .badge-name { color:var(--text-mid); }
+.badge-shell.locked + .badge-name { color:var(--text-soft); }
+.badge-cat-label { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.6px; margin:10px 0 8px; }
 </style>
 </head>
 <body>
@@ -736,6 +761,10 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="header-right">
     <a href="/landing.html" style="font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;font-weight:500;padding:4px 8px;border-radius:6px;transition:color 0.2s" onmouseover="this.style.color='rgba(255,255,255,0.85)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">About</a>
     <button class="new-chat-btn" id="newChatBtn" onclick="startNewChat()" title="New chat" style="display:none">＋ New</button>
+    <div id="navStreakPill" class="nav-streak-pill" title="Your current streak">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+      <span id="navStreakCount">0</span>
+    </div>
     <div id="userPillArea"><button class="sign-in-btn" onclick="showLogin()">Sign in</button></div>
   </div>
 </header>
@@ -997,6 +1026,10 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div id="progressContent">
       <div id="progStreakHero"></div>
       <div id="progStatsRow" class="prog-stats-row"></div>
+      <div class="prog-section" id="progBadgesSection">
+        <div class="prog-section-title">Achievements</div>
+        <div id="progBadgesGrid"></div>
+      </div>
       <div id="progWeekSection" class="prog-section" style="display:none">
         <div class="prog-section-title">This Week</div>
         <div id="weeklyActivity"></div>
@@ -1192,12 +1225,30 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 
 <!-- Bottom Nav -->
 <nav class="tab-nav">
-  <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="tab-icon">💬</span>Ask HAN</button>
-  <button class="tab-btn" id="tab-practice" onclick="switchTab('practice')"><span class="tab-icon">📚</span>Practice</button>
-  <button class="tab-btn" id="tab-mock" onclick="switchTab('mock')"><span class="tab-icon">📝</span>Mock Paper</button>
-  <button class="tab-btn" id="tab-progress" onclick="switchTab('progress')"><span class="tab-icon">📊</span>Progress</button>
-  <button class="tab-btn" id="tab-about" onclick="switchTab('about')"><span class="tab-icon">👤</span>About</button>
-  <button class="tab-btn" id="tab-ia" onclick="switchTab('ia')" style="position:relative"><span class="tab-icon">📄</span>IA<span style="position:absolute;top:4px;right:6px;background:var(--accent);color:var(--navy);font-size:7px;font-weight:800;border-radius:4px;padding:1px 4px;line-height:1.4;letter-spacing:0.3px">NEW</span></button>
+  <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')">
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+    Ask HAN
+  </button>
+  <button class="tab-btn" id="tab-practice" onclick="switchTab('practice')">
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+    Practice
+  </button>
+  <button class="tab-btn" id="tab-mock" onclick="switchTab('mock')">
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg></span>
+    Mock Paper
+  </button>
+  <button class="tab-btn" id="tab-progress" onclick="switchTab('progress')" style="position:relative">
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
+    Progress
+  </button>
+  <button class="tab-btn" id="tab-about" onclick="switchTab('about')">
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+    About
+  </button>
+  <button class="tab-btn" id="tab-ia" onclick="switchTab('ia')" style="position:relative">
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="12" y1="9" x2="8" y2="9"/></svg></span>
+    IA<span style="position:absolute;top:4px;right:6px;background:var(--accent);color:var(--navy);font-size:7px;font-weight:800;border-radius:4px;padding:1px 4px;line-height:1.4;letter-spacing:0.3px">NEW</span>
+  </button>
 </nav>
 
 <!-- ══════════════ BOTTOM SHEET (question detail) ══════════════ -->
@@ -2405,6 +2456,8 @@ async function handleResetPassword() {
     renderUserPill(currentUser);
     updateLimitBar();
     checkAndSetPremium(currentUser);
+    // Show streak pill immediately from local data while server syncs
+    (function() { const d = loadProgress(); const s = d.streak || 0; if (s > 0) { const p = document.getElementById('navStreakPill'); const c = document.getElementById('navStreakCount'); if (p && c) { c.textContent = s; p.classList.add('visible'); } } })();
     loadProgressFromServer();
   } catch(e) { localStorage.removeItem('han_session'); }
 })();
@@ -3645,6 +3698,57 @@ function renderProgress() {
       <div class="prog-stat-value" style="color:${accDisplay.color}">${accDisplay.value}</div>
       <div class="prog-stat-label">${accDisplay.label}</div>
     </div>`;
+
+  // ── Nav streak pill ──
+  const navPill = document.getElementById('navStreakPill');
+  const navStreakCount = document.getElementById('navStreakCount');
+  if (streak > 0) { navStreakCount.textContent = streak; navPill.classList.add('visible'); }
+  else { navPill.classList.remove('visible'); }
+
+  // ── Achievement badges ──
+  const IB_TOPICS = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra','Complex Numbers'];
+  const _bt = data.topicCounts || {};
+  const maxTopicCount = Object.values(_bt).length ? Math.max(...Object.values(_bt)) : 0;
+  const SVG = {
+    flame: `<svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`,
+    msg: `<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+    compass: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
+    target: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+    star: `<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    book: `<svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+    zap: `<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  };
+  const BADGES = [
+    // Streak
+    { cat:'Streak', name:'First Flame',    icon:SVG.flame,   desc:'1-day streak',    earned: streak >= 1 },
+    { cat:'Streak', name:'On a Roll',      icon:SVG.flame,   desc:'3-day streak',    earned: streak >= 3 },
+    { cat:'Streak', name:'Week Warrior',   icon:SVG.flame,   desc:'7-day streak',    earned: streak >= 7 },
+    { cat:'Streak', name:'Monthly Legend', icon:SVG.star,    desc:'30-day streak',   earned: streak >= 30 },
+    // Volume
+    { cat:'Volume', name:'Curious Mind',   icon:SVG.msg,     desc:'10 questions',    earned: totalAsked >= 10 },
+    { cat:'Volume', name:'Dedicated',      icon:SVG.msg,     desc:'50 questions',    earned: totalAsked >= 50 },
+    { cat:'Volume', name:'Century Club',   icon:SVG.zap,     desc:'100 questions',   earned: totalAsked >= 100 },
+    { cat:'Volume', name:'Scholar',        icon:SVG.zap,     desc:'500 questions',   earned: totalAsked >= 500 },
+    // Topics
+    { cat:'Topics', name:'Explorer',       icon:SVG.compass, desc:'3 topics covered',earned: Object.keys(_bt).length >= 3 },
+    { cat:'Topics', name:'Well-Rounded',   icon:SVG.compass, desc:'All 6 IB topics', earned: IB_TOPICS.every(t => _bt[t] > 0) },
+    { cat:'Topics', name:'Deep Diver',     icon:SVG.book,    desc:'20+ in one topic',earned: maxTopicCount >= 20 },
+    // Accuracy
+    { cat:'Accuracy', name:'Sharp Eye',    icon:SVG.target,  desc:'70%+ accuracy',   earned: accuracy !== null && accuracy >= 70 && totalSelfAssessed >= 10 },
+    { cat:'Accuracy', name:'Top of Class', icon:SVG.target,  desc:'90%+ accuracy',   earned: accuracy !== null && accuracy >= 90 && totalSelfAssessed >= 10 },
+  ];
+  const badgesBycat = {};
+  BADGES.forEach(b => { if (!badgesBycat[b.cat]) badgesBycat[b.cat] = []; badgesBycat[b.cat].push(b); });
+  const badgeEl = document.getElementById('progBadgesGrid');
+  badgeEl.innerHTML = Object.entries(badgesBycat).map(([cat, badges]) =>
+    `<div class="badge-cat-label">${cat}</div>
+     <div class="badges-grid">${badges.map(b =>
+      `<div class="badge-item" title="${b.desc}">
+         <div class="badge-shell ${b.earned?'earned':'locked'}">${b.icon}</div>
+         <div class="badge-name" style="color:${b.earned?'var(--text-mid)':'var(--text-soft)'}">${b.name}</div>
+       </div>`
+    ).join('')}</div>`
+  ).join('');
 
   // ── Weekly chart ──
   const weekEl = document.getElementById('weeklyActivity');
