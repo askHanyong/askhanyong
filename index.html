@@ -39,6 +39,14 @@
   --green:#059669; --gold:#f59e0b; --accent:#C9A84C; --red:#ef4444;
   --radius:14px; --radius-sm:8px; --shadow:0 1px 8px rgba(0,0,0,0.07); --shadow-md:0 6px 28px rgba(0,0,0,0.11);
 }
+[data-theme="dark"] {
+  --bg:#111318; --bg-mid:#1a1d26; --white:#1e2230;
+  --text:#e4e7f0; --text-mid:#9ca3af; --text-soft:#6b7280;
+  --border:#2a2d3e; --ice:#1e2230; --ice-light:#111318;
+  --shadow:0 1px 8px rgba(0,0,0,0.4); --shadow-md:0 6px 28px rgba(0,0,0,0.6);
+}
+.dark-toggle-btn { background:none; border:none; cursor:pointer; font-size:16px; padding:4px 6px; border-radius:8px; line-height:1; color:rgba(255,255,255,0.7); transition:color 0.2s; }
+.dark-toggle-btn:hover { color:white; }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
 header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%); padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-shrink:0; position:relative; z-index:10; box-shadow:0 2px 16px rgba(0,0,0,0.28); }
@@ -820,6 +828,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
       <span id="navStreakCount">0</span>
     </div>
+    <button id="darkToggleBtn" class="dark-toggle-btn" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
     <div id="userPillArea"><button class="sign-in-btn" onclick="showLogin()">Sign in</button></div>
   </div>
 </header>
@@ -915,11 +924,16 @@ input[type=range] { flex:1; accent-color:var(--blue); }
           <span class="w-action-body"><strong>What don't I know yet?</strong><span>5-question diagnostic to find your gaps</span></span>
           <span class="w-action-arr">›</span>
         </button>
-        <button class="w-action" onclick="checkMyWorking()">
-          <span class="w-action-icon">✏️</span>
-          <span class="w-action-body"><strong>Check My Working</strong><span>Paste your attempt — HAN marks it like an examiner</span></span>
-          <span class="w-action-arr">›</span>
-        </button>
+        <div style="display:flex;gap:8px;width:100%">
+          <button class="w-action" style="flex:1" onclick="checkMyWorking()">
+            <span class="w-action-icon">✏️</span>
+            <span class="w-action-body"><strong>Check My Working</strong><span>Paste your attempt — HAN marks it</span></span>
+            <span class="w-action-arr">›</span>
+          </button>
+          <button class="w-action" style="flex:0 0 auto;padding:12px 14px" onclick="checkMyWorkingCamera()" title="Take a photo of your working">
+            <span style="font-size:20px">📸</span>
+          </button>
+        </div>
         <div id="resurfaceActionChip"></div>
       </div>
       <div class="recent-chats-row" id="recentChatsRow" style="display:none"></div>
@@ -1055,13 +1069,14 @@ input[type=range] { flex:1; accent-color:var(--blue); }
           <button class="mock-topic" data-val="Complex Numbers">Complex Numbers</button>
         </div></div>
         <div><div class="mock-section-title">Target Marks</div><div class="marks-row"><div class="marks-num" id="marksVal">40</div><input type="range" min="10" max="120" value="40" step="5" id="marksSlider" oninput="marksSliderChange(this.value)"><div class="marks-hint">~<span id="timeHint">52</span> min</div></div></div>
-        <div><button class="generate-btn" onclick="generateMock()">⚡ Generate My Mock Paper</button><div class="generate-note">Selects real past paper questions from Hanyong's verified bank</div></div>
+        <div><button class="generate-btn" onclick="generateMock()">⚡ Generate My Mock Paper</button><div class="generate-note" id="mockUsageNote">Selects real past paper questions from Hanyong's verified bank</div></div>
       </div>
     </div>
     <div class="mock-paper-screen" id="mockPaper">
-      <div style="display:flex;gap:10px;margin-bottom:12px">
+      <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
         <button class="mock-back" onclick="backToConfig()">← New Paper</button>
         <button class="mock-back" id="pdfExportBtn" onclick="exportMockPDF()" style="background:white;border-color:#1d4ed8;color:#1d4ed8;display:flex;align-items:center;gap:6px">📄 Export PDF</button>
+        <button class="mock-back" id="shareMockBtn" onclick="shareMockResult()" style="background:white;border-color:var(--green);color:var(--green);display:flex;align-items:center;gap:6px">📤 Share</button>
       </div>
       <div class="paper-header" id="paperHeader"></div>
       <div id="paperQuestions"></div>
@@ -1122,6 +1137,12 @@ input[type=range] { flex:1; accent-color:var(--blue); }
             <button class="ref-share-btn" onclick="shareRefLink('native')">📤 Share</button>
           </div>
         </div>
+      </div>
+      <div class="prog-section" style="padding-bottom:4px">
+        <button onclick="launchDiagnostic()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0e1c33,#1a3068);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px">
+          <span>🔍</span><span>What don't I know yet? — Re-run Diagnostic</span>
+        </button>
+        <div style="font-size:11px;color:var(--text-soft);text-align:center;margin-top:6px">5-question diagnostic to find your current gaps</div>
       </div>
       <div class="prog-reset-row">
         <button class="prog-reset-btn" onclick="resetProgress()">Reset Progress</button>
@@ -1851,7 +1872,24 @@ const STRIPE_GIFT_LINK = STRIPE_PAYMENT_LINK;
 const FREE_UPLOAD_LIMIT = 5;   // photo/screenshot questions
 const FREE_TYPED_LIMIT  = 10;  // typed text questions
 const GUEST_TYPED_LIMIT = 2;   // questions allowed without an account
+const FREE_MOCK_MONTH_LIMIT     = 3;   // mock papers per month (free tier)
+const FREE_PRACTICE_MONTH_LIMIT = 3;   // pasted questions per month (free tier)
 const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'hanyong';
+
+// ── Monthly usage helpers for Practice/Mock ──
+function getMonthKey() { return new Date().toISOString().slice(0, 7); }
+function getMockMonthCount()     { return parseInt(localStorage.getItem('han_mock_'     + getMonthKey()) || '0'); }
+function getPracticeMonthCount() { return parseInt(localStorage.getItem('han_prac_'     + getMonthKey()) || '0'); }
+function incrementMockCount()     { localStorage.setItem('han_mock_' + getMonthKey(), String(getMockMonthCount() + 1)); }
+function incrementPracticeCount() { localStorage.setItem('han_prac_' + getMonthKey(), String(getPracticeMonthCount() + 1)); }
+function canUseMock()     { return isAdmin || checkPremiumStatus() || getMockMonthCount()     < FREE_MOCK_MONTH_LIMIT; }
+function canUsePractice() { return isAdmin || checkPremiumStatus() || getPracticeMonthCount() < FREE_PRACTICE_MONTH_LIMIT; }
+function showPracticePaywall(type) {
+  const used  = type === 'mock' ? getMockMonthCount()     : getPracticeMonthCount();
+  const limit = type === 'mock' ? FREE_MOCK_MONTH_LIMIT   : FREE_PRACTICE_MONTH_LIMIT;
+  showToast(`You've used ${used}/${limit} free ${type === 'mock' ? 'mock papers' : 'practice questions'} this month. Contribute S$45 for unlimited access. 🎓`, 4500);
+  setTimeout(showUpgrade, 600);
+}
 
 // ── Guest-mode helpers (no account required for first 2 questions) ──
 function getGuestTodayKey() { return 'han_guest_' + new Date().toISOString().slice(0, 10); }
@@ -1918,8 +1956,10 @@ function updatePasteBtn() {
 }
 
 async function sendPastedQuestion() {
+  if (!canUsePractice()) { showPracticePaywall('practice'); return; }
   const text = (document.getElementById('pasteQText').value || '').trim();
   if (!text || text.length < 10) return;
+  incrementPracticeCount();
 
   // Sync context chips with paste selectors
   const level = document.getElementById('pasteLevel').value;
@@ -2062,6 +2102,7 @@ function incrementCount(type) {
   const key = getTodayKey(currentUser.sub, type);
   const count = parseInt(localStorage.getItem(key) || '0') + 1;
   localStorage.setItem(key, String(count));
+  localStorage.setItem('han_last_active_ts', String(Date.now()));
   updateLimitBar();
   checkNudge(type);
 }
@@ -3490,6 +3531,7 @@ function marksSliderChange(val) {
   document.getElementById('timeHint').textContent = Math.round(val * 1.3);
 }
 async function generateMock() {
+  if (!canUseMock()) { showPracticePaywall('mock'); return; }
   await ensureRepoLoaded();
   if (allRepoRecords.length === 0) { showToast('Repository still loading, please try again.'); return; }
   const paperType = document.querySelector('#mockPaperType .mock-chip.sel')?.dataset.val || 'P1';
@@ -3512,6 +3554,7 @@ async function generateMock() {
   }
   if (selected.length === 0) { showToast('Could not build paper. Try increasing target marks.'); return; }
   mockPaperData = selected;
+  incrementMockCount();
   renderMockPaper(selected, total, paperType, topics);
 }
 function renderMockPaper(qs, total, pt, topics) {
@@ -3553,6 +3596,22 @@ function renderMockPaper(qs, total, pt, topics) {
   }).join('');
   if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
   setTimeout(() => { if (typeof initDesmosGraphs === 'function') initDesmosGraphs(); }, 150);
+}
+function shareMockResult() {
+  const qs = mockPaperData;
+  const numQ = qs.length;
+  const marks = qs.reduce((s, q) => s + parseInt(q['Marks'] || 0), 0);
+  const topics = [...mockSelectedTopics].filter(t => t !== 'All');
+  const topicStr = topics.length ? topics.join(', ') : 'All Topics';
+  const text = `Just generated a ${numQ}-question IB Math mock paper (${marks} marks · ${topicStr}) on askHanyong — free IB Math AI tutor built by an IB examiner. Try it! 📝`;
+  const url = 'https://askhanyong.com/app';
+  if (navigator.share) {
+    navigator.share({ title: 'askHanyong Mock Paper', text, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text + '\n' + url).then(() => showToast('Copied to clipboard! Share it with classmates 📋', 3000)).catch(() => {
+      prompt('Copy this link to share:', url);
+    });
+  }
 }
 function toggleMQ(i) { document.getElementById('mqb' + i).classList.toggle('open'); document.getElementById('mqh' + i).classList.toggle('open'); }
 function askHANMockQ(i) {
@@ -4836,6 +4895,19 @@ function checkMyWorking() {
   }, 300);
 }
 
+function checkMyWorkingCamera() {
+  switchTab('chat');
+  // Pre-set context so the next message knows it's a working check
+  setTimeout(() => {
+    const inp = document.getElementById('userInput');
+    inp.value = 'Check my working in the photo — act as an IB examiner. Award M/A marks, identify errors, show the correct solution, and tell me what would lose marks in an actual IB exam.';
+    autoResize(inp);
+    // Open camera / file picker
+    const fileInput = document.getElementById('mainFileInput');
+    if (fileInput) fileInput.click();
+  }, 350);
+}
+
 // ════════════════════════════════════════
 // FEATURE 3 — IB COMMAND TERM DETECTION
 // ════════════════════════════════════════
@@ -4884,6 +4956,19 @@ document.addEventListener('DOMContentLoaded', function () {
     inp.addEventListener('input', () => checkCommandTerms(inp.value));
     inp.addEventListener('paste', () => setTimeout(() => checkCommandTerms(inp.value), 50));
   }
+
+  // ── Streak inactivity nudge ──
+  (function checkStreakNudge() {
+    const lastTs = localStorage.getItem('han_last_active_ts');
+    if (!lastTs) return;
+    const hoursAgo = (Date.now() - parseInt(lastTs)) / 3600000;
+    if (hoursAgo < 23) return;
+    const data = loadProgress();
+    const streak = data.streak || 0;
+    if (streak < 1) return;
+    const display = hoursAgo >= 48 ? Math.round(hoursAgo / 24) + ' days' : Math.round(hoursAgo) + 'h';
+    setTimeout(() => showToast(`🔥 You haven't practiced in ${display}! Keep your ${streak}-day streak alive →`, 6000), 2500);
+  })();
 });
 
 // ════════════════════════════════════════
@@ -5681,6 +5766,49 @@ window.showAchievementToast = function(emoji, name, desc) {
     if (e.key === 'Escape') fbClose(null);
   });
 })();
+
+// ════════════════════════════════════════
+// DARK MODE
+// ════════════════════════════════════════
+(function initDarkMode() {
+  const saved = localStorage.getItem('han_dark_mode');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.addEventListener('DOMContentLoaded', function () {
+      const btn = document.getElementById('darkToggleBtn');
+      if (btn) btn.textContent = '☀️';
+    });
+  }
+})();
+
+function toggleDarkMode() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const newTheme = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('han_dark_mode', newTheme);
+  const btn = document.getElementById('darkToggleBtn');
+  if (btn) btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+}
+
+// ════════════════════════════════════════
+// MOCK USAGE BADGE
+// ════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function () {
+  const note = document.getElementById('mockUsageNote');
+  if (!note) return;
+  function refreshMockNote() {
+    if (checkPremiumStatus() || isAdmin) { note.textContent = 'Selects real past paper questions from Hanyong\'s verified bank'; return; }
+    const used = getMockMonthCount(), limit = FREE_MOCK_MONTH_LIMIT;
+    const rem = Math.max(0, limit - used);
+    note.textContent = rem > 0
+      ? `${rem} free paper${rem !== 1 ? 's' : ''} remaining this month · Contribute S$45 for unlimited`
+      : 'Monthly limit reached — contribute S$45 for unlimited papers';
+    if (rem === 0) note.style.color = '#dc2626';
+  }
+  refreshMockNote();
+});
 </script>
 
 </body>
