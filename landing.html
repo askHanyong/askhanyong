@@ -1273,6 +1273,10 @@ fetch('/api/accuracy').then(r => r.json()).then(d => {
     btn.disabled = true;
     btn.textContent = 'Sending…';
 
+    // Pre-fill name/email from logged-in user if available
+    var userEmail = (typeof currentUser !== 'undefined' && currentUser) ? (currentUser.email || '') : '';
+    var userName  = (typeof currentUser !== 'undefined' && currentUser) ? (currentUser.name || currentUser.given_name || '') : '';
+
     try {
       var res = await fetch('/api/feedback', {
         method: 'POST',
@@ -1281,6 +1285,8 @@ fetch('/api/accuracy').then(r => r.json()).then(d => {
           type:    fbType,
           subject: subject,
           message: message,
+          name:    userName,
+          email:   userEmail,
           photos:  fbPhotos.map(function(p) { return p.dataUrl; }),
           page:    window.location.pathname,
         }),

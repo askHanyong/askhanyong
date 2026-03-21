@@ -81,9 +81,18 @@ function saveFeedback(body) {
 
   if (!sheet) {
     sheet = ss.insertSheet('Feedback');
-    sheet.appendRow(['Timestamp', 'Type', 'Subject', 'Message', 'Name', 'Email', 'Page', 'Photo URLs']);
+    sheet.appendRow(['Timestamp', 'Type', 'Subject', 'Message', 'Name', 'Email', 'Page', 'Photo URLs', 'Admin Reply']);
     sheet.setFrozenRows(1);
     sheet.setColumnWidth(4, 400); // Message column wider
+    sheet.setColumnWidth(9, 300); // Admin Reply column
+  } else {
+    // Add Admin Reply column if the sheet existed before this update
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    if (!headers.includes('Admin Reply')) {
+      const nextCol = sheet.getLastColumn() + 1;
+      sheet.getRange(1, nextCol).setValue('Admin Reply');
+      sheet.setColumnWidth(nextCol, 300);
+    }
   }
 
   // Save photos to Google Drive and collect view URLs
@@ -96,7 +105,7 @@ function saveFeedback(body) {
       body.photos.forEach(function(photo, i) {
         try {
           const matches = photo.match(/^data:([^;]+);base64,(.+)$/);
-          if (!matches) return;
+          if (!matches) { photoUrls.push('[Error: invalid photo format]'); return; }
           const mimeType = matches[1];
           const base64Data = matches[2];
           const ext = mimeType.split('/')[1] || 'jpg';
@@ -107,11 +116,11 @@ function saveFeedback(body) {
           file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
           photoUrls.push(file.getUrl());
         } catch (photoErr) {
-          // Skip individual failed photos — don't block the whole submission
+          photoUrls.push('[Photo error: ' + photoErr.message + ']');
         }
       });
     } catch (driveErr) {
-      // Drive unavailable — proceed without photo storage
+      photoUrls.push('[Drive error: ' + driveErr.message + ']');
     }
   }
 
@@ -124,11 +133,63 @@ function saveFeedback(body) {
     body.email   || '',
     body.page    || '',
     photoUrls.join('\n'),
+    '', // Admin Reply — filled in manually to trigger email
   ]);
 
   return ContentService
     .createTextOutput(JSON.stringify({ success: true }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Send reply email when admin fills in the Admin Reply column ───
+// This is an installable onEdit trigger — run createReplyTrigger() once to set it up.
+function onFeedbackReply(e) {
+  const sheet = e.range.getSheet();
+  if (sheet.getName() !== 'Feedback') return;
+
+  const col = e.range.getColumn();
+  const row = e.range.getRow();
+  if (row < 2) return; // skip header
+
+  // Find which column is Admin Reply
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const replyCol = headers.indexOf('Admin Reply') + 1;
+  if (col !== replyCol || replyCol === 0) return;
+
+  const replyText = e.range.getValue().toString().trim();
+  if (!replyText) return;
+
+  const emailCol  = headers.indexOf('Email') + 1;
+  const subjectCol = headers.indexOf('Subject') + 1;
+  const nameCol   = headers.indexOf('Name') + 1;
+
+  const toEmail = sheet.getRange(row, emailCol).getValue().toString().trim();
+  if (!toEmail) return;
+
+  const subject    = sheet.getRange(row, subjectCol).getValue().toString().trim();
+  const userName   = sheet.getRange(row, nameCol).getValue().toString().trim();
+  const salutation = userName ? ('Hi ' + userName.split(' ')[0] + ',') : 'Hi there,';
+
+  const emailBody = salutation + '\n\n' + replyText + '\n\n— Hanyong\nHAN · askhanyong.com';
+
+  GmailApp.sendEmail(toEmail, 'Re: ' + subject, emailBody, {
+    name: 'Hanyong from HAN',
+  });
+
+  // Highlight the cell green to confirm the email was sent
+  e.range.setBackground('#d9f7be');
+}
+
+// ── Run this once in the GAS editor to install the onEdit trigger ─
+function createReplyTrigger() {
+  ScriptApp.getProjectTriggers()
+    .filter(function(t) { return t.getHandlerFunction() === 'onFeedbackReply'; })
+    .forEach(function(t) { ScriptApp.deleteTrigger(t); });
+
+  ScriptApp.newTrigger('onFeedbackReply')
+    .forSpreadsheet(SpreadsheetApp.getActive())
+    .onEdit()
+    .create();
 }
 
 // ── Write a question row to the Questions sheet ──────────────────

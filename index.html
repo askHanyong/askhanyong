@@ -5377,8 +5377,9 @@ if (_origRenderProgress2) {
     btn.disabled = true;
     btn.textContent = 'Sending…';
 
-    // Pre-fill email from logged-in user if available
+    // Pre-fill name/email from logged-in user if available
     var userEmail = (typeof currentUser !== 'undefined' && currentUser) ? (currentUser.email || '') : '';
+    var userName  = (typeof currentUser !== 'undefined' && currentUser) ? (currentUser.name || currentUser.given_name || '') : '';
 
     try {
       var res = await fetch('/api/feedback', {
@@ -5388,6 +5389,7 @@ if (_origRenderProgress2) {
           type:    fbType,
           subject: subject,
           message: message,
+          name:    userName,
           email:   userEmail,
           photos:  fbPhotos.map(function(p) { return p.dataUrl; }),
           page:    window.location.pathname,
