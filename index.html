@@ -2576,6 +2576,9 @@ function handleImageUpload(event) {
   if (!file) return;
   const isPdf = file.type === 'application/pdf';
   if (!file.type.startsWith('image/') && !isPdf) { showToast('Please upload an image or PDF file'); return; }
+  const maxBytes = isPdf ? 32 * 1024 * 1024 : 20 * 1024 * 1024;
+  const maxLabel = isPdf ? '32 MB' : '20 MB';
+  if (file.size > maxBytes) { showToast(`File too large. Maximum size is ${maxLabel}.`); event.target.value = ''; return; }
   const reader = new FileReader();
   reader.onload = function (e) {
     const dataUrl = e.target.result;
@@ -3241,7 +3244,10 @@ async function sendMessage() {
       userContent.push({ type: 'image', source: { type: 'base64', media_type: uploadedImageType, data: uploadedImageBase64 } });
     }
   }
-  userContent.push({ type: 'text', text: text || 'Please solve this question.' });
+  const defaultUploadText = isPdfUpload
+    ? 'Please read my handwritten working in this PDF. Identify the question, transcribe my working clearly, then check it and give me full IB-style feedback — mark scheme, where I would gain or lose marks, and the correct solution if needed.'
+    : 'Please read my handwritten working in this image. Identify the question, transcribe my working clearly, then check it and give me full IB-style feedback — mark scheme, where I would gain or lose marks, and the correct solution if needed.';
+  userContent.push({ type: 'text', text: text || defaultUploadText });
   conversationHistory.push({ role: 'user', content: userContent });
   input.value = ''; input.style.height = 'auto'; removeImage();
   document.getElementById('newChatBtn').style.display = '';
