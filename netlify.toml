@@ -17,6 +17,11 @@
     Cache-Control = "no-cache, no-store, must-revalidate"
 
 [[headers]]
+  for = "/blog/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
   for = "/app"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Most Common Mistakes in IB Mathematics — And How to Avoid Them — askHanyong</title>
+<meta name="description" content="After marking hundreds of exam scripts, the same mistakes appear year after year. They're almost never about not knowing the mathematics — and that means they're all fixable.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://askhanyong.com/blog/common-mistakes">
+<meta property="og:title" content="The Most Common Mistakes in IB Mathematics — And How to Avoid Them">
+<meta property="og:description" content="After marking hundreds of exam scripts, the same mistakes appear year after year. They're almost never about not knowing the mathematics — and that means they're all fixable.">
+<meta property="og:image" content="https://askhanyong.com/og-preview.jpg">
+<meta property="og:site_name" content="askHanyong">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://askhanyong.com/blog/common-mistakes">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0e1c33; --navy-dark: #0a1628; --navy-mid: #1a3068;
+  --gold: #C9A84C; --gold-light: #e4c97a; --gold-pale: rgba(201,168,76,0.12);
+  --white: #ffffff; --bg: #f5f4f1; --text: #111827;
+  --text-mid: #4b5563; --text-soft: #9ca3af; --border: #e4e2dc;
+  --blue: #1e3a8a; --radius: 16px; --radius-sm: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--text); }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,22,40,0.96); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 60px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-badge { width: 34px; height: 34px; background: var(--gold-pale); border: 1.5px solid rgba(201,168,76,0.45); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--gold); letter-spacing: 1px; }
+.nav-brand { font-size: 16px; font-weight: 700; color: white; font-family: 'Playfair Display', serif; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-link { color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+.nav-link:hover { color: white; }
+.nav-link.active { color: var(--gold); }
+.btn-nav-cta { padding: 8px 18px; background: var(--gold); color: var(--navy-dark); border: none; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none; transition: background 0.2s, transform 0.15s; display: inline-block; }
+.btn-nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+.post-hero { background: linear-gradient(135deg, #0a1628 0%, #0e1c33 50%, #1a3068 100%); padding: 100px 24px 56px; position: relative; overflow: hidden; }
+.post-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 70%); pointer-events: none; }
+.post-hero-inner { max-width: 760px; margin: 0 auto; position: relative; }
+.post-back { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500; text-decoration: none; margin-bottom: 20px; transition: color 0.2s; }
+.post-back:hover { color: var(--gold); }
+.post-hero-cat { display: inline-flex; align-items: center; background: #fee2e2; color: #991b1b; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 18px; }
+.post-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(26px, 4vw, 42px); font-weight: 800; color: white; line-height: 1.15; margin-bottom: 20px; }
+.post-hero-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,0.55); }
+.post-hero-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+.post-hero-author { display: flex; align-items: center; gap: 8px; }
+.post-hero-author-av { width: 28px; height: 28px; border-radius: 7px; overflow: hidden; background: var(--navy-mid); flex-shrink: 0; }
+.post-hero-author-av img { width: 100%; height: 100%; object-fit: cover; }
+.post-hero-author-name { color: rgba(255,255,255,0.75); font-weight: 600; }
+.article-layout { max-width: 1080px; margin: 0 auto; padding: 56px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; }
+@media (max-width: 860px) { .article-layout { grid-template-columns: 1fr; gap: 40px; } .article-sidebar { order: 2; } }
+.article-body { min-width: 0; }
+.article-body h2 { font-family: 'Playfair Display', serif; font-size: clamp(20px, 2.5vw, 26px); font-weight: 800; color: var(--navy-dark); line-height: 1.2; margin: 40px 0 16px; padding-top: 8px; border-top: 1px solid var(--border); }
+.article-body h2:first-child { margin-top: 0; border-top: none; }
+.article-body h3 { font-size: 16px; font-weight: 700; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.5px; margin: 36px 0 8px; }
+.article-body p { font-size: 16px; color: var(--text-mid); line-height: 1.8; margin-bottom: 18px; }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; }
+.article-body li { font-size: 16px; color: var(--text-mid); line-height: 1.75; margin-bottom: 8px; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--navy-dark); }
+.mistake-number {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; background: var(--navy-dark); color: white;
+  border-radius: 8px; font-size: 13px; font-weight: 800; margin-bottom: 10px;
+  flex-shrink: 0;
+}
+.mistake-block { border-top: 1px solid var(--border); padding-top: 32px; margin-bottom: 8px; }
+.mistake-block:first-of-type { border-top: none; padding-top: 0; }
+.mistake-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 800; color: var(--navy-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+.fix-label { font-size: 12px; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 14px; margin-bottom: 6px; }
+.callout { background: var(--bg); border: 1.5px solid var(--border); border-left: 4px solid var(--gold); border-radius: var(--radius-sm); padding: 18px 20px; margin: 24px 0; }
+.callout p { margin: 0; font-size: 15px; color: var(--text); }
+.callout strong { color: var(--navy-dark); }
+.article-cta { background: linear-gradient(135deg, #0a1628, #0e1c33); border-radius: var(--radius); padding: 32px 28px; margin-top: 48px; text-align: center; }
+.article-cta h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 800; color: white; margin-bottom: 10px; }
+.article-cta p { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 20px; }
+.article-cta-btn { display: inline-block; padding: 12px 28px; background: var(--gold); color: var(--navy-dark); border-radius: 50px; font-size: 14px; font-weight: 800; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+.article-cta-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+.sidebar-block { background: white; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
+.sidebar-block:last-child { margin-bottom: 0; }
+.sidebar-title { font-size: 13px; font-weight: 700; color: var(--navy-dark); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.sidebar-author { display: flex; gap: 14px; align-items: flex-start; }
+.sidebar-author-photo { width: 56px; height: 56px; border-radius: 14px; overflow: hidden; background: var(--navy); flex-shrink: 0; }
+.sidebar-author-photo img { width: 100%; height: 100%; object-fit: cover; }
+.sidebar-author-name { font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-bottom: 3px; }
+.sidebar-author-role { font-size: 11px; color: var(--text-soft); line-height: 1.5; margin-bottom: 10px; }
+.sidebar-cred-list { display: flex; flex-direction: column; gap: 6px; }
+.sidebar-cred { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-mid); }
+.sidebar-cred::before { content: '✦'; color: var(--gold); font-size: 9px; flex-shrink: 0; }
+.related-list { display: flex; flex-direction: column; gap: 12px; }
+.related-item { text-decoration: none; display: block; }
+.related-item-title { font-size: 13px; font-weight: 600; color: var(--navy-dark); line-height: 1.4; margin-bottom: 3px; transition: color 0.15s; }
+.related-item:hover .related-item-title { color: var(--blue); }
+.related-item-cat { font-size: 11px; color: var(--text-soft); }
+.sidebar-cta { background: linear-gradient(135deg, #0a1628, #0e1c33); border-radius: var(--radius); padding: 22px 20px; text-align: center; }
+.sidebar-cta h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 800; color: white; margin-bottom: 8px; }
+.sidebar-cta p { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 16px; }
+.sidebar-cta-btn { display: block; padding: 11px; background: var(--gold); color: var(--navy-dark); border-radius: var(--radius-sm); font-size: 13px; font-weight: 800; text-decoration: none; transition: background 0.2s; }
+.sidebar-cta-btn:hover { background: var(--gold-light); }
+footer { background: #060e1c; padding: 32px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-brand { font-size: 14px; color: rgba(255,255,255,0.4); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+@media (max-width: 640px) { nav { padding: 0 16px; } .nav-link { display: none; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-badge">HAN</div>
+    <span class="nav-brand">askHanyong</span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="/#how-it-works">How it works</a>
+    <a class="nav-link" href="/#pricing">Pricing</a>
+    <a class="nav-link active" href="/blog">Blog</a>
+    <a class="btn-nav-cta" href="/app">Ask Free</a>
+  </div>
+</nav>
+
+<section class="post-hero">
+  <div class="post-hero-inner">
+    <a class="post-back" href="/blog">← Back to Blog</a>
+    <div class="post-hero-cat">Common Mistakes</div>
+    <h1>The Most Common Mistakes in IB Mathematics — And How to Avoid Them</h1>
+    <div class="post-hero-meta">
+      <div class="post-hero-author">
+        <div class="post-hero-author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+        <span class="post-hero-author-name">Hanyong Lim</span>
+      </div>
+      <div class="post-hero-meta-dot"></div>
+      <span>21 March 2026</span>
+      <div class="post-hero-meta-dot"></div>
+      <span>8 min read</span>
+    </div>
+  </div>
+</section>
+
+<div class="article-layout">
+  <article class="article-body">
+
+    <p>After years of teaching IB Mathematics and marking hundreds of exam scripts as an IB examiner, certain patterns appear again and again. The same mistakes, made by different students, in different years, across different schools.</p>
+    <p>What strikes me most is this: <strong>the majority of these mistakes have nothing to do with not knowing the mathematics.</strong> They are presentation errors, habit errors, and exam technique errors — all of which are entirely fixable with the right preparation.</p>
+    <p>For a deeper look at how examiners award marks, read our guide on <a href="/blog/how-examiners-mark">how IB examiners mark your paper</a>. Here are the most common mistakes, and what to do about them.</p>
+
+    <div class="mistake-block">
+      <div class="mistake-title"><span class="mistake-number">1</span> Not showing working</div>
+      <p>This is the single most costly mistake in IB Mathematics, and it happens more than you'd think. A student uses their calculator, gets the right answer, writes it down — and earns one mark out of four. The method marks, which make up the majority of the marks in most questions, require working to be shown. A correct answer alone is not enough.</p>
+      <div class="fix-label">What to do</div>
+      <p>Write down every step, even the ones that feel obvious. An examiner only awards marks for work that they can see. Write the setup, the method, and the key intermediate steps before writing the final answer.</p>
+    </div>
+
+    <div class="mistake-block">
+      <div class="mistake-title"><span class="mistake-number">2</span> Premature rounding</div>
+      <p>This mistake is subtle and surprisingly common. A student rounds an intermediate value — say, keeping three significant figures instead of the full calculator value — and carries that rounded number into the next step. By the time they reach the final answer, it falls just outside the accepted range in the mark scheme. The answer looks right. It might even feel right. But it earns no accuracy mark.</p>
+      <div class="fix-label">What to do</div>
+      <p>Keep full calculator values throughout your working. Only round at the very last step, to the degree of accuracy specified in the question. If no accuracy is specified, three significant figures is the IB standard.</p>
+    </div>
+
+    <div class="mistake-block">
+      <div class="mistake-title"><span class="mistake-number">3</span> Ignoring command terms</div>
+      <p>Every IB Math question contains a command term — write down, find, show that, hence, justify, prove. These are not decorative. They tell you exactly what the examiner expects and how they will mark your response.</p>
+      <p>"Write down" means no working is required — but also that no marks are available for method, so an incorrect answer earns nothing. "Hence" means you must use the result from the previous part. Any other method, however correct, will not earn method marks. "Justify" means a correct answer without a reason is incomplete.</p>
+      <div class="fix-label">What to do</div>
+      <p>Before attempting any question, read the command term first. Let it tell you what kind of response is expected before you start writing.</p>
+    </div>
+
+    <div class="mistake-block">
+      <div class="mistake-title"><span class="mistake-number">4</span> Missing the final conclusion</div>
+      <p>This happens most often in questions involving hypothesis testing, optimisation, or proof. A student completes all the correct calculations, arrives at the right value, and stops. No concluding statement. The last mark — which is almost always an R mark for reasoning — is not awarded. The mathematics is there, but the answer is incomplete.</p>
+      <div class="fix-label">What to do</div>
+      <p>Always finish your answer with a statement that directly addresses the question. If the question asks whether a function has a minimum, don't just find the second derivative — state explicitly what it tells you and why. If the question asks you to determine whether a result is significant, state your conclusion clearly in context.</p>
+    </div>
+
+    <div class="mistake-block">
+      <div class="mistake-title"><span class="mistake-number">5</span> Crossing out correct working</div>
+      <p>Under exam pressure, students sometimes cross out working they are unsure about, and replace it with something incorrect — or nothing at all. Once working is crossed out, an examiner cannot mark it. If that crossed-out working was correct, those marks are gone.</p>
+      <div class="fix-label">What to do</div>
+      <p>If you want to redo a solution, start it fresh on a new section of the page and label it clearly. Leave the original working intact unless you are completely certain it is wrong. For Section A, it is perfectly acceptable to write outside the given space — use additional booklets if needed, clearly labelled. An examiner will mark the clearest, most complete attempt — but only if it's visible.</p>
+    </div>
+
+    <div class="mistake-block">
+      <div class="mistake-title"><span class="mistake-number">6</span> Losing marks on "show that" questions</div>
+      <p>"Show that" questions behave differently from every other question type. The answer is given to you in the question. The examiner is not marking your answer — they are marking your path to it. Every logical step must be shown explicitly. Assumptions cannot be skipped. Circular reasoning — using the result to prove the result — earns no marks.</p>
+      <p>Many students rush "show that" questions because the answer feels obvious. That's exactly when marks are lost.</p>
+      <div class="fix-label">What to do</div>
+      <p>Slow down on "show that" questions. Write every step as if the person reading your work has never seen the question before. Your working must arrive at the given answer through clear, unambiguous steps — not assume it.</p>
+    </div>
+
+    <div class="mistake-block">
+      <div class="mistake-title"><span class="mistake-number">7</span> Mismanaging time in Paper 3 (HL)</div>
+      <p>This one is specific to HL students. Paper 3 is 60 minutes, two long investigations, and can be as long as 30 marks per question. The most common time management mistake is spending too long on a part you find difficult, losing the time needed to attempt the parts that follow.</p>
+      <div class="fix-label">What to do</div>
+      <p>If you are stuck on a part, write what you can, move on, and come back if time allows. In P3, the later parts of an investigation are not always harder than the earlier ones. Keep moving. For a full guide on how to approach P3, read our <a href="/blog/paper-3-guide">Paper 3 article</a>.</p>
+    </div>
+
+    <div class="mistake-block">
+      <div class="mistake-title"><span class="mistake-number">8</span> Not reading the question carefully enough</div>
+      <p>This sounds basic. It costs marks at every level, every year. Students misread the domain of a function, miss the word "exact," overlook "in the form a + bi," or answer for the wrong variable. The mathematics is correct — but it answers a question that wasn't asked.</p>
+      <div class="fix-label">What to do</div>
+      <p>After completing each answer, re-read the original question. Check that what you've written actually answers what was asked — the right variable, the right form, the right degree of accuracy.</p>
+    </div>
+
+    <h2>A final thought</h2>
+    <p>The gap between a 5 and a 7 in IB Math is rarely about mathematical knowledge. It's about these habits — the discipline to show working, to read carefully, to finish answers completely, and to write for the examiner rather than for yourself.</p>
+    <p>These are not things you develop overnight. But they are things you can build deliberately, with the right kind of practice.</p>
+
+    <div class="article-cta">
+      <h3>Practise answering the way examiners expect.</h3>
+      <p>HAN is trained on exactly this kind of examiner logic — free, available anytime, and built on 20+ years of IB marking experience.</p>
+      <a class="article-cta-btn" href="/app">Try HAN Free ✦</a>
+    </div>
+
+  </article>
+
+  <aside class="article-sidebar">
+    <div class="sidebar-block">
+      <div class="sidebar-title">About the Author</div>
+      <div class="sidebar-author">
+        <div class="sidebar-author-photo"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+        <div>
+          <div class="sidebar-author-name">Hanyong Lim</div>
+          <div class="sidebar-author-role">IB Math Teacher · IB Examiner · Former DP Coordinator</div>
+        </div>
+      </div>
+      <div class="sidebar-cred-list" style="margin-top:14px;">
+        <div class="sidebar-cred">Applied Mathematics · NUS</div>
+        <div class="sidebar-cred">20+ Years in Education</div>
+        <div class="sidebar-cred">IB Examiner</div>
+        <div class="sidebar-cred">Former DP Coordinator</div>
+      </div>
+    </div>
+
+    <div class="sidebar-block">
+      <div class="sidebar-title">Related Posts</div>
+      <div class="related-list">
+        <a class="related-item" href="/blog/how-examiners-mark">
+          <div class="related-item-title">How IB Examiners Mark Your Paper</div>
+          <div class="related-item-cat">Marking &amp; Mark Schemes</div>
+        </a>
+        <a class="related-item" href="/blog/paper-3-guide">
+          <div class="related-item-title">IB Math HL Paper 3 — What It Is and How to Approach It</div>
+          <div class="related-item-cat">Examiner Insights</div>
+        </a>
+        <a class="related-item" href="/blog/hl-vs-sl">
+          <div class="related-item-title">HL vs SL Mathematics — Which Should You Choose?</div>
+          <div class="related-item-cat">Exam Strategy</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-cta">
+      <h4>Put it into practice.</h4>
+      <p>Get your IB Math questions answered by an examiner-trained AI — free, anytime.</p>
+      <a class="sidebar-cta-btn" href="/app">Ask HAN Free ✦</a>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <span class="footer-brand">© 2025 askHanyong · HAN = Help · Achieve · Nurture</span>
+  <div class="footer-links">
+    <a href="mailto:hanyong@askhanyong.com">Contact</a>
+    <a href="/app">Launch App</a>
+    <a href="/blog">Blog</a>
+  </div>
+</footer>
+
+</body>
+</html>
