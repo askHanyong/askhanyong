@@ -41,7 +41,7 @@
 }
 [data-theme="dark"] {
   --bg:#111318; --bg-mid:#1a1d26; --white:#1e2230;
-  --text:#e4e7f0; --text-mid:#9ca3af; --text-soft:#6b7280;
+  --text:#e4e7f0; --text-mid:#b0b8cc; --text-soft:#9ca3af;
   --border:#2a2d3e; --ice:#1e2230; --ice-light:#111318;
   --shadow:0 1px 8px rgba(0,0,0,0.4); --shadow-md:0 6px 28px rgba(0,0,0,0.6);
 }
@@ -924,16 +924,11 @@ input[type=range] { flex:1; accent-color:var(--blue); }
           <span class="w-action-body"><strong>What don't I know yet?</strong><span>5-question diagnostic to find your gaps</span></span>
           <span class="w-action-arr">›</span>
         </button>
-        <div style="display:flex;gap:8px;width:100%">
-          <button class="w-action" style="flex:1" onclick="checkMyWorking()">
-            <span class="w-action-icon">✏️</span>
-            <span class="w-action-body"><strong>Check My Working</strong><span>Paste your attempt — HAN marks it</span></span>
-            <span class="w-action-arr">›</span>
-          </button>
-          <button class="w-action" style="flex:0 0 auto;padding:12px 14px" onclick="checkMyWorkingCamera()" title="Take a photo of your working">
-            <span style="font-size:20px">📸</span>
-          </button>
-        </div>
+        <button class="w-action" onclick="checkMyWorkingCamera()">
+          <span class="w-action-icon">📸</span>
+          <span class="w-action-body"><strong>Upload Photo or PDF</strong><span>HAN marks your working as an IB examiner</span></span>
+          <span class="w-action-arr">›</span>
+        </button>
         <div id="resurfaceActionChip"></div>
       </div>
       <div class="recent-chats-row" id="recentChatsRow" style="display:none"></div>
@@ -942,14 +937,15 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="input-area">
     <div class="cmd-badge" id="cmdBadge"></div>
     <div class="image-preview-strip" id="previewStrip">
-      <img id="previewThumb" class="preview-thumb" src="" alt="">
-      <span style="font-size:12px;color:var(--text-mid)">Image attached</span>
+      <img id="previewThumb" class="preview-thumb" src="" alt="" style="display:none">
+      <span id="previewPdfIcon" style="display:none;font-size:28px">📄</span>
+      <span id="previewLabel" style="font-size:12px;color:var(--text-mid)">File attached</span>
       <button class="remove-image-btn" onclick="removeImage()">✕</button>
     </div>
     <div class="input-row">
       <textarea id="userInput" placeholder="Ask any IB Math question..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
       <div class="input-btns">
-        <label class="upload-btn" title="Upload question photo">📎<input id="mainFileInput" type="file" accept="image/*" onchange="handleImageUpload(event)"></label>
+        <label class="upload-btn" title="Upload photo or PDF">📎<input id="mainFileInput" type="file" accept="image/*,application/pdf" onchange="handleImageUpload(event)"></label>
         <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
       </div>
     </div>
@@ -1909,7 +1905,7 @@ function showGuestGate() {
 // ════════════════════════════════════════
 let currentUser = null;
 let selectedLevel = 'MAA HL', selectedPaper = 'Paper 1', selectedSubjectTopic = 'All Topics';
-let uploadedImageBase64 = null, uploadedImageType = null;
+let uploadedImageBase64 = null, uploadedImageType = null, uploadedFileName = null;
 let conversationHistory = [], isLoading = false;
 let allRepoRecords = [], currentSheetRecord = null;
 let mockSelectedTopics = new Set(['All']), mockPaperData = [], practiceFiltered = [];
@@ -2578,21 +2574,38 @@ function showToast(msg) {
 function handleImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-  if (!file.type.startsWith('image/')) { showToast('Please upload an image file'); return; }
+  const isPdf = file.type === 'application/pdf';
+  if (!file.type.startsWith('image/') && !isPdf) { showToast('Please upload an image or PDF file'); return; }
   const reader = new FileReader();
   reader.onload = function (e) {
     const dataUrl = e.target.result;
     uploadedImageBase64 = dataUrl.split(',')[1];
     uploadedImageType = file.type;
-    document.getElementById('previewThumb').src = dataUrl;
+    uploadedFileName = file.name;
+    const thumb = document.getElementById('previewThumb');
+    const pdfIcon = document.getElementById('previewPdfIcon');
+    const label = document.getElementById('previewLabel');
+    if (isPdf) {
+      thumb.style.display = 'none';
+      pdfIcon.style.display = '';
+      label.textContent = file.name;
+    } else {
+      thumb.src = dataUrl;
+      thumb.style.display = '';
+      pdfIcon.style.display = 'none';
+      label.textContent = 'Image attached';
+    }
     document.getElementById('previewStrip').classList.add('show');
   };
   reader.readAsDataURL(file);
 }
 function removeImage() {
-  uploadedImageBase64 = null; uploadedImageType = null;
+  uploadedImageBase64 = null; uploadedImageType = null; uploadedFileName = null;
   document.getElementById('previewStrip').classList.remove('show');
   document.getElementById('previewThumb').src = '';
+  document.getElementById('previewThumb').style.display = 'none';
+  document.getElementById('previewPdfIcon').style.display = 'none';
+  document.getElementById('previewLabel').textContent = 'File attached';
 }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
@@ -2682,7 +2695,7 @@ HAN Explanation: ${f['HAN Explanation'] || 'N/A'}`;
 // ════════════════════════════════════════
 // CHAT RENDERING
 // ════════════════════════════════════════
-function appendMessage(role, content, imageDataUrl) {
+function appendMessage(role, content, imageDataUrl, pdfName) {
   const ws = document.getElementById('welcomeScreen');
   if (ws) ws.remove();
   const area = document.getElementById('chatArea');
@@ -2694,6 +2707,7 @@ function appendMessage(role, content, imageDataUrl) {
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
   if (imageDataUrl) { const img = document.createElement('img'); img.src = imageDataUrl; bubble.appendChild(img); }
+  if (pdfName) { const pd = document.createElement('div'); pd.style.cssText = 'display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg-mid);border-radius:8px;font-size:12px;color:var(--text-mid);margin-bottom:4px'; pd.innerHTML = '📄 ' + pdfName; bubble.appendChild(pd); }
   if (content) bubble.innerHTML += formatResponse(content);
   div.appendChild(av); div.appendChild(bubble);
   area.appendChild(div);
@@ -3216,10 +3230,17 @@ async function sendMessage() {
   showXpPop('+10 XP');
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
-  const imageDataUrl = uploadedImageBase64 ? `data:${uploadedImageType};base64,${uploadedImageBase64}` : null;
-  appendMessage('user', text, imageDataUrl);
+  const isPdfUpload = uploadedImageType === 'application/pdf';
+  const imageDataUrl = (uploadedImageBase64 && !isPdfUpload) ? `data:${uploadedImageType};base64,${uploadedImageBase64}` : null;
+  appendMessage('user', text, imageDataUrl, isPdfUpload ? uploadedFileName : null);
   const userContent = [];
-  if (uploadedImageBase64) userContent.push({ type: 'image', source: { type: 'base64', media_type: uploadedImageType, data: uploadedImageBase64 } });
+  if (uploadedImageBase64) {
+    if (isPdfUpload) {
+      userContent.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: uploadedImageBase64 } });
+    } else {
+      userContent.push({ type: 'image', source: { type: 'base64', media_type: uploadedImageType, data: uploadedImageBase64 } });
+    }
+  }
   userContent.push({ type: 'text', text: text || 'Please solve this question.' });
   conversationHistory.push({ role: 'user', content: userContent });
   input.value = ''; input.style.height = 'auto'; removeImage();
@@ -4900,7 +4921,7 @@ function checkMyWorkingCamera() {
   // Pre-set context so the next message knows it's a working check
   setTimeout(() => {
     const inp = document.getElementById('userInput');
-    inp.value = 'Check my working in the photo — act as an IB examiner. Award M/A marks, identify errors, show the correct solution, and tell me what would lose marks in an actual IB exam.';
+    inp.value = 'Check my working — act as an IB examiner. Award M/A marks, identify errors, show the correct solution, and tell me what would lose marks in an actual IB exam.';
     autoResize(inp);
     // Open camera / file picker
     const fileInput = document.getElementById('mainFileInput');
