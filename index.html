@@ -59,11 +59,13 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 .limit-fill { height:100%; background:var(--blue); border-radius:2px; transition:width 0.3s; }
 .limit-sep { width:1px; height:16px; background:var(--border); }
 .upgrade-btn-small { padding:3px 10px; background:var(--blue); color:white; border:none; border-radius:12px; font-size:11px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap; }
-.tab-nav { display:flex; flex-direction:row; background:white; border-top:1px solid var(--border); flex-shrink:0; box-shadow:0 -2px 16px rgba(0,0,0,0.06); }
-.tab-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:6px 4px 5px; gap:2px; border:none; background:none; cursor:pointer; color:var(--text-soft); font-size:9px; font-weight:600; font-family:'Inter',sans-serif; transition:color 0.18s; position:relative; }
-.tab-btn.active { color:var(--navy); }
-.tab-btn .tab-icon { font-size:17px; line-height:1; }
-.tab-btn.active::after { content:''; position:absolute; top:0; left:20%; right:20%; height:2px; background:linear-gradient(90deg,#C9A84C,#e4c97a); border-radius:0 0 4px 4px; }
+.tab-nav { display:flex; flex-direction:row; background:white; border-top:1px solid var(--border); flex-shrink:0; box-shadow:0 -2px 16px rgba(0,0,0,0.08); }
+.tab-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:7px 4px 6px; gap:3px; border:none; background:none; cursor:pointer; color:var(--text-soft); font-size:9px; font-weight:600; font-family:'Inter',sans-serif; transition:color 0.18s; position:relative; }
+.tab-btn.active { color:#C9A84C; }
+.tab-btn .tab-icon { font-size:19px; line-height:1; transition:transform 0.2s; }
+.tab-btn.active .tab-icon { transform:translateY(-1px); }
+.tab-btn svg { stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; width:21px; height:21px; }
+.tab-btn.active::after { content:''; position:absolute; top:0; left:15%; right:15%; height:2.5px; background:linear-gradient(90deg,#C9A84C,#f0d070); border-radius:0 0 6px 6px; }
 .view-panel { display:none; flex:1; flex-direction:column; min-height:0; overflow:hidden; }
 .view-panel.active { display:flex; }
 .context-bar { background:white; border-bottom:1px solid var(--border); padding:8px 14px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; flex-shrink:0; }
@@ -750,6 +752,55 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .badge-shell.earned + .badge-name { color:var(--text-mid); }
 .badge-shell.locked + .badge-name { color:var(--text-soft); }
 .badge-cat-label { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.6px; margin:10px 0 8px; }
+/* Enhanced badge visuals */
+.badge-shell { width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform 0.2s; }
+.badge-shell.earned { background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(228,201,122,0.35)); border:2px solid #C9A84C; box-shadow:0 4px 14px rgba(201,168,76,0.35); }
+.badge-shell.earned:hover { transform:scale(1.1); }
+.badge-emoji { font-size:26px; line-height:1; }
+.badge-shell.locked .badge-emoji { filter:grayscale(1); opacity:0.4; }
+
+/* XP / Level system */
+.xp-level-card { background:linear-gradient(135deg,#0a1628,#1a3068); border-radius:16px; padding:18px 16px; margin:0 16px 12px; color:white; }
+.xp-level-top { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.xp-level-badge { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; background:rgba(201,168,76,0.15); border:1.5px solid rgba(201,168,76,0.4); flex-shrink:0; }
+.xp-level-info { flex:1; }
+.xp-level-name { font-size:17px; font-weight:800; color:white; font-family:'Playfair Display',serif; }
+.xp-level-sub { font-size:11px; color:rgba(255,255,255,0.55); margin-top:2px; }
+.xp-bar-track { background:rgba(255,255,255,0.12); border-radius:6px; height:10px; overflow:hidden; }
+.xp-bar-fill { height:100%; border-radius:6px; background:linear-gradient(90deg,#C9A84C,#f0d070); transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+.xp-bar-labels { display:flex; justify-content:space-between; margin-top:5px; }
+.xp-bar-label { font-size:10px; color:rgba(255,255,255,0.45); font-weight:600; }
+
+/* Achievement toast (Discord-style) */
+.ach-toast {
+  position:fixed; bottom:88px; right:16px; z-index:9500;
+  background:#1e2936; border:1.5px solid rgba(201,168,76,0.5);
+  border-radius:14px; padding:12px 16px; display:flex; align-items:center; gap:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4); min-width:240px; max-width:300px;
+  transform:translateX(120%); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:none;
+}
+.ach-toast.show { transform:translateX(0); }
+.ach-toast-icon { font-size:32px; flex-shrink:0; }
+.ach-toast-body { flex:1; min-width:0; }
+.ach-toast-title { font-size:11px; font-weight:700; color:#C9A84C; text-transform:uppercase; letter-spacing:0.5px; }
+.ach-toast-name { font-size:14px; font-weight:800; color:white; margin-top:1px; }
+.ach-toast-desc { font-size:11px; color:rgba(255,255,255,0.55); margin-top:1px; }
+
+/* XP pop animation */
+@keyframes xp-pop {
+  0%   { opacity:0; transform:translateY(0) scale(0.8); }
+  20%  { opacity:1; transform:translateY(-20px) scale(1.1); }
+  80%  { opacity:1; transform:translateY(-32px) scale(1); }
+  100% { opacity:0; transform:translateY(-44px) scale(0.9); }
+}
+.xp-pop { position:fixed; z-index:9600; font-size:13px; font-weight:800; color:#C9A84C; pointer-events:none; animation:xp-pop 1.5s ease forwards; text-shadow:0 1px 4px rgba(0,0,0,0.4); }
+
+/* Level-up pill in header */
+.nav-level-pill { display:none; align-items:center; gap:4px; background:rgba(201,168,76,0.12); border:1.5px solid rgba(201,168,76,0.35); border-radius:16px; padding:3px 8px 3px 6px; }
+.nav-level-pill span.lvl-icon { font-size:13px; line-height:1; }
+.nav-level-pill span.lvl-label { font-size:11px; font-weight:800; color:#C9A84C; line-height:1; }
+.nav-level-pill.visible { display:flex; }
 </style>
 </head>
 <body>
@@ -761,6 +812,10 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="header-right">
     <a href="/landing.html" style="font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;font-weight:500;padding:4px 8px;border-radius:6px;transition:color 0.2s" onmouseover="this.style.color='rgba(255,255,255,0.85)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">About</a>
     <button class="new-chat-btn" id="newChatBtn" onclick="startNewChat()" title="New chat" style="display:none">＋ New</button>
+    <div id="navLevelPill" class="nav-level-pill" title="Your level" onclick="switchTab('progress')" style="cursor:pointer">
+      <span class="lvl-icon" id="navLevelIcon">⭐</span>
+      <span class="lvl-label" id="navLevelLabel">Rookie</span>
+    </div>
     <div id="navStreakPill" class="nav-streak-pill" title="Your current streak">
       <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
       <span id="navStreakCount">0</span>
@@ -1025,6 +1080,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     </div>
     <div id="progressContent">
       <div id="progStreakHero"></div>
+      <div id="progXPCard"></div>
       <div id="progStatsRow" class="prog-stats-row"></div>
       <div class="prog-section" id="progBadgesSection">
         <div class="prog-section-title">Achievements</div>
@@ -1230,15 +1286,15 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     Ask HAN
   </button>
   <button class="tab-btn" id="tab-practice" onclick="switchTab('practice')">
-    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
     Practice
   </button>
   <button class="tab-btn" id="tab-mock" onclick="switchTab('mock')">
-    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg></span>
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg></span>
     Mock Paper
   </button>
   <button class="tab-btn" id="tab-progress" onclick="switchTab('progress')" style="position:relative">
-    <span class="tab-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
     Progress
   </button>
   <button class="tab-btn" id="tab-about" onclick="switchTab('about')">
@@ -1246,7 +1302,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     About
   </button>
   <button class="tab-btn" id="tab-ia" onclick="switchTab('ia')" style="position:relative">
-    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="12" y1="9" x2="8" y2="9"/></svg></span>
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
     IA<span style="position:absolute;top:4px;right:6px;background:var(--accent);color:var(--navy);font-size:7px;font-weight:800;border-radius:4px;padding:1px 4px;line-height:1.4;letter-spacing:0.3px">NEW</span>
   </button>
 </nav>
@@ -3112,6 +3168,7 @@ async function sendMessage() {
   if (!isAdmin && currentUser) incrementCount(questionType);
   _pwaMessageSent();
   trackQuestion(selectedSubjectTopic || 'General', text, questionType);
+  showXpPop('+10 XP');
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
   const imageDataUrl = uploadedImageBase64 ? `data:${uploadedImageType};base64,${uploadedImageBase64}` : null;
@@ -3705,6 +3762,48 @@ function renderProgress() {
   if (streak > 0) { navStreakCount.textContent = streak; navPill.classList.add('visible'); }
   else { navPill.classList.remove('visible'); }
 
+  // ── XP & Level system ──
+  const XP_LEVELS = [
+    { min:0,    max:99,   name:'Rookie',      icon:'⭐' },
+    { min:100,  max:299,  name:'Explorer',    icon:'🧭' },
+    { min:300,  max:599,  name:'Scholar',     icon:'📚' },
+    { min:600,  max:999,  name:'Achiever',    icon:'🏅' },
+    { min:1000, max:1999, name:'Expert',      icon:'⚡' },
+    { min:2000, max:4999, name:'Master',      icon:'💎' },
+    { min:5000, max:Infinity, name:'Legend',  icon:'👑' },
+  ];
+  const xp = (totalAsked * 10) + (streak * 5) + (Object.keys(data.topicCounts||{}).length * 15) + (totalCorrect * 8);
+  const curLvl = XP_LEVELS.slice().reverse().find(l => xp >= l.min) || XP_LEVELS[0];
+  const nextLvl = XP_LEVELS[XP_LEVELS.indexOf(curLvl) + 1];
+  const xpInLevel = xp - curLvl.min;
+  const xpNeeded = nextLvl ? nextLvl.min - curLvl.min : 1;
+  const xpPct = nextLvl ? Math.min(100, Math.round((xpInLevel / xpNeeded) * 100)) : 100;
+
+  const xpCardEl = document.getElementById('progXPCard');
+  if (xpCardEl) {
+    xpCardEl.innerHTML = `<div class="xp-level-card">
+      <div class="xp-level-top">
+        <div class="xp-level-badge">${curLvl.icon}</div>
+        <div class="xp-level-info">
+          <div class="xp-level-name">${curLvl.icon} ${curLvl.name}</div>
+          <div class="xp-level-sub">${xp} XP total${nextLvl ? ' · ' + (nextLvl.min - xp) + ' XP to ' + nextLvl.name : ' · Max Level!'}</div>
+        </div>
+      </div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${xpPct}%"></div></div>
+      <div class="xp-bar-labels"><span class="xp-bar-label">${curLvl.name}</span>${nextLvl?`<span class="xp-bar-label">${nextLvl.name}</span>`:''}</div>
+    </div>`;
+  }
+
+  // Update header level pill
+  const navLvlPill = document.getElementById('navLevelPill');
+  const navLvlIcon = document.getElementById('navLevelIcon');
+  const navLvlLabel = document.getElementById('navLevelLabel');
+  if (navLvlPill && xp >= 0) {
+    if (navLvlIcon) navLvlIcon.textContent = curLvl.icon;
+    if (navLvlLabel) navLvlLabel.textContent = curLvl.name;
+    navLvlPill.classList.add('visible');
+  }
+
   // ── Achievement badges ──
   const IB_TOPICS = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra','Complex Numbers'];
   const _bt = data.topicCounts || {};
@@ -3720,23 +3819,34 @@ function renderProgress() {
   };
   const BADGES = [
     // Streak
-    { cat:'Streak', name:'First Flame',    icon:SVG.flame,   desc:'1-day streak',    earned: streak >= 1 },
-    { cat:'Streak', name:'On a Roll',      icon:SVG.flame,   desc:'3-day streak',    earned: streak >= 3 },
-    { cat:'Streak', name:'Week Warrior',   icon:SVG.flame,   desc:'7-day streak',    earned: streak >= 7 },
-    { cat:'Streak', name:'Monthly Legend', icon:SVG.star,    desc:'30-day streak',   earned: streak >= 30 },
+    { cat:'🔥 Streak', name:'First Flame',    emoji:'🔥', desc:'1-day streak',    earned: streak >= 1 },
+    { cat:'🔥 Streak', name:'On a Roll',      emoji:'💨', desc:'3-day streak',    earned: streak >= 3 },
+    { cat:'🔥 Streak', name:'Week Warrior',   emoji:'⚔️', desc:'7-day streak',    earned: streak >= 7 },
+    { cat:'🔥 Streak', name:'Monthly Legend', emoji:'🌟', desc:'30-day streak',   earned: streak >= 30 },
     // Volume
-    { cat:'Volume', name:'Curious Mind',   icon:SVG.msg,     desc:'10 questions',    earned: totalAsked >= 10 },
-    { cat:'Volume', name:'Dedicated',      icon:SVG.msg,     desc:'50 questions',    earned: totalAsked >= 50 },
-    { cat:'Volume', name:'Century Club',   icon:SVG.zap,     desc:'100 questions',   earned: totalAsked >= 100 },
-    { cat:'Volume', name:'Scholar',        icon:SVG.zap,     desc:'500 questions',   earned: totalAsked >= 500 },
+    { cat:'💬 Questions', name:'Curious Mind',   emoji:'🤔', desc:'Ask 10 questions',  earned: totalAsked >= 10 },
+    { cat:'💬 Questions', name:'Dedicated',      emoji:'📖', desc:'Ask 50 questions',  earned: totalAsked >= 50 },
+    { cat:'💬 Questions', name:'Century Club',   emoji:'💯', desc:'Ask 100 questions', earned: totalAsked >= 100 },
+    { cat:'💬 Questions', name:'Scholar',        emoji:'🎓', desc:'Ask 500 questions', earned: totalAsked >= 500 },
     // Topics
-    { cat:'Topics', name:'Explorer',       icon:SVG.compass, desc:'3 topics covered',earned: Object.keys(_bt).length >= 3 },
-    { cat:'Topics', name:'Well-Rounded',   icon:SVG.compass, desc:'All 6 IB topics', earned: IB_TOPICS.every(t => _bt[t] > 0) },
-    { cat:'Topics', name:'Deep Diver',     icon:SVG.book,    desc:'20+ in one topic',earned: maxTopicCount >= 20 },
+    { cat:'🗺 Topics', name:'Explorer',       emoji:'🧭', desc:'Cover 3 topics',   earned: Object.keys(_bt).length >= 3 },
+    { cat:'🗺 Topics', name:'Well-Rounded',   emoji:'🌐', desc:'All 6 IB topics',  earned: IB_TOPICS.every(t => _bt[t] > 0) },
+    { cat:'🗺 Topics', name:'Deep Diver',     emoji:'🤿', desc:'20+ in one topic', earned: maxTopicCount >= 20 },
     // Accuracy
-    { cat:'Accuracy', name:'Sharp Eye',    icon:SVG.target,  desc:'70%+ accuracy',   earned: accuracy !== null && accuracy >= 70 && totalSelfAssessed >= 10 },
-    { cat:'Accuracy', name:'Top of Class', icon:SVG.target,  desc:'90%+ accuracy',   earned: accuracy !== null && accuracy >= 90 && totalSelfAssessed >= 10 },
+    { cat:'🎯 Accuracy', name:'Sharp Eye',    emoji:'👁️', desc:'70%+ accuracy',   earned: accuracy !== null && accuracy >= 70 && totalSelfAssessed >= 10 },
+    { cat:'🎯 Accuracy', name:'Top of Class', emoji:'🏆', desc:'90%+ accuracy',   earned: accuracy !== null && accuracy >= 90 && totalSelfAssessed >= 10 },
   ];
+
+  // Check for newly earned badges (show toast)
+  const prevEarned = JSON.parse(localStorage.getItem('han_earned_badges')||'[]');
+  const nowEarned = BADGES.filter(b=>b.earned).map(b=>b.name);
+  const newlyEarned = nowEarned.filter(n=>!prevEarned.includes(n));
+  localStorage.setItem('han_earned_badges', JSON.stringify(nowEarned));
+  if (newlyEarned.length) {
+    const nb = BADGES.find(b=>b.name===newlyEarned[0]);
+    if (nb) showAchievementToast(nb.emoji, nb.name, nb.desc);
+  }
+
   const badgesBycat = {};
   BADGES.forEach(b => { if (!badgesBycat[b.cat]) badgesBycat[b.cat] = []; badgesBycat[b.cat].push(b); });
   const badgeEl = document.getElementById('progBadgesGrid');
@@ -3744,7 +3854,7 @@ function renderProgress() {
     `<div class="badge-cat-label">${cat}</div>
      <div class="badges-grid">${badges.map(b =>
       `<div class="badge-item" title="${b.desc}">
-         <div class="badge-shell ${b.earned?'earned':'locked'}">${b.icon}</div>
+         <div class="badge-shell ${b.earned?'earned':'locked'}"><span class="badge-emoji">${b.emoji}</span></div>
          <div class="badge-name" style="color:${b.earned?'var(--text-mid)':'var(--text-soft)'}">${b.name}</div>
        </div>`
     ).join('')}</div>`
@@ -5209,7 +5319,7 @@ if (_origRenderProgress2) {
 <style>
 /* ── Floating feedback button ── */
 .fb-trigger {
-  position: fixed; bottom: 24px; left: 24px; z-index: 9000;
+  position: fixed; bottom: 76px; left: 16px; z-index: 9000;
   display: flex; align-items: center; gap: 8px;
   background: #0e1c33; color: #C9A84C;
   border: 1.5px solid rgba(201,168,76,0.45);
@@ -5329,6 +5439,16 @@ if (_origRenderProgress2) {
 }
 </style>
 
+<!-- Achievement toast -->
+<div class="ach-toast" id="achToast">
+  <div class="ach-toast-icon" id="achToastIcon">🏆</div>
+  <div class="ach-toast-body">
+    <div class="ach-toast-title">Achievement Unlocked!</div>
+    <div class="ach-toast-name" id="achToastName"></div>
+    <div class="ach-toast-desc" id="achToastDesc"></div>
+  </div>
+</div>
+
 <!-- Floating trigger button -->
 <button class="fb-trigger" onclick="fbOpen()" aria-label="Share feedback">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -5407,6 +5527,36 @@ if (_origRenderProgress2) {
     </div>
   </div>
 </div>
+
+<!-- Achievement toast JS -->
+<script>
+window.showXpPop = function(text) {
+  var el = document.createElement('div');
+  el.className = 'xp-pop';
+  el.textContent = text;
+  // Position near send button
+  var btn = document.getElementById('sendBtn');
+  if (btn) {
+    var r = btn.getBoundingClientRect();
+    el.style.left = (r.left + r.width/2 - 20) + 'px';
+    el.style.top = (r.top - 10) + 'px';
+  } else {
+    el.style.right = '20px'; el.style.bottom = '100px';
+  }
+  document.body.appendChild(el);
+  setTimeout(function() { el.remove(); }, 1600);
+};
+
+window.showAchievementToast = function(emoji, name, desc) {
+  var t = document.getElementById('achToast');
+  if (!t) return;
+  document.getElementById('achToastIcon').textContent = emoji;
+  document.getElementById('achToastName').textContent = name;
+  document.getElementById('achToastDesc').textContent = desc;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 4000);
+};
+</script>
 
 <script>
 (function() {
