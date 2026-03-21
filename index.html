@@ -5098,5 +5098,334 @@ if (_origRenderProgress2) {
 })();
 
 </script>
+
+<!-- ════════════════════════════════════════════════════════════
+     FEEDBACK WIDGET — floating button + modal
+     ════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Floating feedback button ── */
+.fb-trigger {
+  position: fixed; bottom: 24px; left: 24px; z-index: 9000;
+  display: flex; align-items: center; gap: 8px;
+  background: #0e1c33; color: #C9A84C;
+  border: 1.5px solid rgba(201,168,76,0.45);
+  border-radius: 24px; padding: 10px 18px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  transition: background 0.2s, transform 0.15s;
+}
+.fb-trigger:hover { background: #1a3068; transform: translateY(-2px); }
+.fb-trigger svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── Backdrop ── */
+.fb-backdrop {
+  display: none; position: fixed; inset: 0; z-index: 9100;
+  background: rgba(10,22,40,0.7); backdrop-filter: blur(4px);
+}
+.fb-backdrop.open { display: flex; align-items: center; justify-content: center; }
+
+/* ── Modal ── */
+.fb-modal {
+  background: #fff; border-radius: 20px;
+  width: 100%; max-width: 480px; margin: 16px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+  overflow: hidden; font-family: 'Inter', sans-serif;
+  animation: fb-slide-up 0.25s ease;
+}
+@keyframes fb-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fb-header {
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;
+}
+.fb-header-title { color: #fff; font-size: 16px; font-weight: 700; }
+.fb-header-sub { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 2px; }
+.fb-close {
+  background: rgba(255,255,255,0.1); border: none; border-radius: 50%;
+  width: 32px; height: 32px; cursor: pointer; color: rgba(255,255,255,0.7);
+  font-size: 18px; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.fb-close:hover { background: rgba(255,255,255,0.2); color: #fff; }
+.fb-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+/* ── Type selector ── */
+.fb-type-row { display: flex; gap: 8px; }
+.fb-type-btn {
+  flex: 1; padding: 8px 4px; border-radius: 10px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid #e4e2dc; background: #f5f4f1; color: #4b5563;
+  cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.fb-type-btn span.fb-type-icon { font-size: 18px; }
+.fb-type-btn.active { border-color: #C9A84C; background: rgba(201,168,76,0.10); color: #0e1c33; }
+
+/* ── Form fields ── */
+.fb-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; display: block; }
+.fb-input, .fb-textarea {
+  width: 100%; padding: 10px 13px; border: 1.5px solid #e4e2dc;
+  border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif;
+  color: #111827; background: #fafaf9; outline: none;
+  transition: border-color 0.15s;
+}
+.fb-input:focus, .fb-textarea:focus { border-color: #C9A84C; background: #fff; }
+.fb-textarea { resize: vertical; min-height: 100px; }
+
+/* ── Photo upload ── */
+.fb-photo-area {
+  border: 1.5px dashed #e4e2dc; border-radius: 10px;
+  padding: 14px; text-align: center; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.fb-photo-area:hover { border-color: #C9A84C; background: rgba(201,168,76,0.04); }
+.fb-photo-area input { display: none; }
+.fb-photo-hint { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+.fb-photo-label { font-size: 13px; font-weight: 500; color: #4b5563; }
+.fb-photo-icon { font-size: 22px; margin-bottom: 4px; }
+.fb-previews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.fb-preview-item {
+  position: relative; width: 72px; height: 72px;
+  border-radius: 8px; overflow: hidden; border: 1.5px solid #e4e2dc;
+}
+.fb-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+.fb-preview-remove {
+  position: absolute; top: 2px; right: 2px;
+  background: rgba(0,0,0,0.6); color: #fff; border: none;
+  border-radius: 50%; width: 18px; height: 18px; font-size: 11px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;
+}
+
+/* ── Submit ── */
+.fb-submit {
+  width: 100%; padding: 13px; border: none; border-radius: 12px;
+  background: #C9A84C; color: #0a1628; font-size: 14px; font-weight: 700;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.fb-submit:hover:not(:disabled) { background: #e4c97a; transform: translateY(-1px); }
+.fb-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.fb-error { font-size: 12px; color: #dc2626; text-align: center; }
+
+/* ── Success state ── */
+.fb-success {
+  padding: 40px 24px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.fb-success-icon { font-size: 48px; }
+.fb-success h3 { font-size: 18px; font-weight: 700; color: #0e1c33; }
+.fb-success p { font-size: 14px; color: #4b5563; line-height: 1.6; }
+.fb-success-close {
+  margin-top: 8px; padding: 10px 28px; background: #0e1c33; color: #C9A84C;
+  border: none; border-radius: 20px; font-size: 13px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+}
+</style>
+
+<!-- Floating trigger button -->
+<button class="fb-trigger" onclick="fbOpen()" aria-label="Share feedback">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+  Feedback
+</button>
+
+<!-- Backdrop + Modal -->
+<div class="fb-backdrop" id="fbBackdrop" onclick="fbClose(event)">
+  <div class="fb-modal" id="fbModal">
+    <!-- Header -->
+    <div class="fb-header">
+      <div>
+        <div class="fb-header-title">Share your feedback</div>
+        <div class="fb-header-sub">Help us make HAN better for every student</div>
+      </div>
+      <button class="fb-close" onclick="fbClose(null)" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Form -->
+    <div class="fb-body" id="fbForm">
+      <!-- Type -->
+      <div>
+        <span class="fb-label">What kind of feedback?</span>
+        <div class="fb-type-row">
+          <button class="fb-type-btn active" data-type="issue" onclick="fbSetType(this)">
+            <span class="fb-type-icon">🐛</span>Issue
+          </button>
+          <button class="fb-type-btn" data-type="suggestion" onclick="fbSetType(this)">
+            <span class="fb-type-icon">💡</span>Suggestion
+          </button>
+          <button class="fb-type-btn" data-type="compliment" onclick="fbSetType(this)">
+            <span class="fb-type-icon">⭐</span>Love it
+          </button>
+        </div>
+      </div>
+
+      <!-- Subject -->
+      <div>
+        <label class="fb-label" for="fbSubject">Subject</label>
+        <input class="fb-input" id="fbSubject" type="text" placeholder="Brief summary of your feedback" maxlength="120">
+      </div>
+
+      <!-- Message -->
+      <div>
+        <label class="fb-label" for="fbMessage">Details</label>
+        <textarea class="fb-textarea" id="fbMessage" placeholder="Tell us more — what happened, what you'd like improved, or what you love about HAN..."></textarea>
+      </div>
+
+      <!-- Photos -->
+      <div>
+        <span class="fb-label">Photos <span style="font-weight:400;color:#9ca3af">(optional, up to 3)</span></span>
+        <label class="fb-photo-area" id="fbPhotoArea">
+          <input type="file" id="fbPhotoInput" accept="image/*" multiple onchange="fbAddPhotos(this)">
+          <div class="fb-photo-icon">📷</div>
+          <div class="fb-photo-label">Click to attach photos</div>
+          <div class="fb-photo-hint">Screenshots or photos help us understand the issue · JPG, PNG, GIF · 2 MB each</div>
+        </label>
+        <div class="fb-previews" id="fbPreviews"></div>
+      </div>
+
+      <!-- Error -->
+      <div class="fb-error" id="fbError" style="display:none"></div>
+
+      <!-- Submit -->
+      <button class="fb-submit" id="fbSubmitBtn" onclick="fbSubmit()">Send Feedback</button>
+    </div>
+
+    <!-- Success -->
+    <div class="fb-success" id="fbSuccess" style="display:none">
+      <div class="fb-success-icon">🎉</div>
+      <h3>Thank you!</h3>
+      <p>Your feedback has been received. Hanyong reviews every submission and uses them to keep improving HAN.</p>
+      <button class="fb-success-close" onclick="fbClose(null)">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var fbPhotos = [];
+  var fbType   = 'issue';
+
+  window.fbOpen = function() {
+    document.getElementById('fbBackdrop').classList.add('open');
+    document.getElementById('fbSubject').focus();
+  };
+
+  window.fbClose = function(e) {
+    if (e && e.target !== document.getElementById('fbBackdrop')) return;
+    document.getElementById('fbBackdrop').classList.remove('open');
+  };
+
+  window.fbSetType = function(btn) {
+    document.querySelectorAll('.fb-type-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    fbType = btn.dataset.type;
+  };
+
+  window.fbAddPhotos = function(input) {
+    var files = Array.from(input.files);
+    var remaining = 3 - fbPhotos.length;
+    if (remaining <= 0) { fbShowError('Maximum 3 photos allowed.'); return; }
+    files = files.slice(0, remaining);
+    files.forEach(function(file) {
+      if (file.size > 2 * 1024 * 1024) { fbShowError('Each photo must be under 2 MB.'); return; }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        fbPhotos.push({ dataUrl: ev.target.result, name: file.name });
+        fbRenderPreviews();
+      };
+      reader.readAsDataURL(file);
+    });
+    input.value = '';
+  };
+
+  window.fbRemovePhoto = function(idx) {
+    fbPhotos.splice(idx, 1);
+    fbRenderPreviews();
+  };
+
+  function fbRenderPreviews() {
+    var el = document.getElementById('fbPreviews');
+    el.innerHTML = '';
+    fbPhotos.forEach(function(p, i) {
+      el.innerHTML += '<div class="fb-preview-item">'
+        + '<img src="' + p.dataUrl + '" alt="photo ' + (i+1) + '">'
+        + '<button class="fb-preview-remove" onclick="fbRemovePhoto(' + i + ')">✕</button>'
+        + '</div>';
+    });
+    document.getElementById('fbPhotoArea').style.display = fbPhotos.length >= 3 ? 'none' : '';
+  }
+
+  function fbShowError(msg) {
+    var el = document.getElementById('fbError');
+    el.textContent = msg;
+    el.style.display = msg ? 'block' : 'none';
+  }
+
+  window.fbSubmit = async function() {
+    fbShowError('');
+    var subject = document.getElementById('fbSubject').value.trim();
+    var message = document.getElementById('fbMessage').value.trim();
+
+    if (!subject) { fbShowError('Please add a subject.'); return; }
+    if (message.length < 10) { fbShowError('Please add more detail (at least 10 characters).'); return; }
+
+    var btn = document.getElementById('fbSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    // Pre-fill email from logged-in user if available
+    var userEmail = (typeof currentUser !== 'undefined' && currentUser) ? (currentUser.email || '') : '';
+
+    try {
+      var res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type:    fbType,
+          subject: subject,
+          message: message,
+          email:   userEmail,
+          photos:  fbPhotos.map(function(p) { return p.dataUrl; }),
+          page:    window.location.pathname,
+        }),
+      });
+      var data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'Submission failed.');
+      document.getElementById('fbForm').style.display    = 'none';
+      document.getElementById('fbSuccess').style.display = 'flex';
+    } catch (err) {
+      fbShowError(err.message || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Send Feedback';
+    }
+  };
+
+  document.getElementById('fbBackdrop').addEventListener('transitionend', function() {
+    if (!this.classList.contains('open')) {
+      document.getElementById('fbForm').style.display    = '';
+      document.getElementById('fbSuccess').style.display = 'none';
+      document.getElementById('fbSubject').value = '';
+      document.getElementById('fbMessage').value = '';
+      document.getElementById('fbError').style.display = 'none';
+      document.getElementById('fbSubmitBtn').disabled = false;
+      document.getElementById('fbSubmitBtn').textContent = 'Send Feedback';
+      document.getElementById('fbPhotoArea').style.display = '';
+      document.getElementById('fbPreviews').innerHTML = '';
+      fbPhotos = [];
+      fbType = 'issue';
+      document.querySelectorAll('.fb-type-btn').forEach(function(b, i) {
+        b.classList.toggle('active', i === 0);
+      });
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') fbClose(null);
+  });
+})();
+</script>
+
 </body>
 </html>

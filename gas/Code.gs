@@ -57,9 +57,73 @@ function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
     if (body.action === 'saveProgress') return saveProgress(body);
+    if (body.action === 'saveFeedback') return saveFeedback(body);
   } catch (err) {}
   return ContentService
     .createTextOutput(JSON.stringify({ error: 'Invalid request' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Save user feedback to the Feedback sheet, photos to Drive ────
+function saveFeedback(body) {
+  if (body.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('Feedback');
+
+  if (!sheet) {
+    sheet = ss.insertSheet('Feedback');
+    sheet.appendRow(['Timestamp', 'Type', 'Subject', 'Message', 'Name', 'Email', 'Page', 'Photo URLs']);
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(4, 400); // Message column wider
+  }
+
+  // Save photos to Google Drive and collect view URLs
+  const photoUrls = [];
+  if (Array.isArray(body.photos) && body.photos.length > 0) {
+    try {
+      const folders = DriveApp.getFoldersByName('HAN Feedback Photos');
+      const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder('HAN Feedback Photos');
+
+      body.photos.forEach(function(photo, i) {
+        try {
+          const matches = photo.match(/^data:([^;]+);base64,(.+)$/);
+          if (!matches) return;
+          const mimeType = matches[1];
+          const base64Data = matches[2];
+          const ext = mimeType.split('/')[1] || 'jpg';
+          const ts = (body.ts || new Date().toISOString()).replace(/[:.]/g, '-');
+          const fileName = 'feedback_' + ts + '_' + (i + 1) + '.' + ext;
+          const blob = Utilities.newBlob(Utilities.base64Decode(base64Data), mimeType, fileName);
+          const file = folder.createFile(blob);
+          file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+          photoUrls.push(file.getUrl());
+        } catch (photoErr) {
+          // Skip individual failed photos — don't block the whole submission
+        }
+      });
+    } catch (driveErr) {
+      // Drive unavailable — proceed without photo storage
+    }
+  }
+
+  sheet.appendRow([
+    body.ts      || new Date().toISOString(),
+    body.type    || '',
+    body.subject || '',
+    body.message || '',
+    body.name    || '',
+    body.email   || '',
+    body.page    || '',
+    photoUrls.join('\n'),
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
