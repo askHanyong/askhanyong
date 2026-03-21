@@ -5131,6 +5131,8 @@ if (_origRenderProgress2) {
   box-shadow: 0 24px 64px rgba(0,0,0,0.35);
   overflow: hidden; font-family: 'Inter', sans-serif;
   animation: fb-slide-up 0.25s ease;
+  display: flex; flex-direction: column;
+  max-height: calc(100vh - 32px);
 }
 @keyframes fb-slide-up {
   from { opacity: 0; transform: translateY(20px); }
@@ -5149,7 +5151,7 @@ if (_origRenderProgress2) {
   transition: background 0.2s; flex-shrink: 0;
 }
 .fb-close:hover { background: rgba(255,255,255,0.2); color: #fff; }
-.fb-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.fb-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
 
 /* ── Type selector ── */
 .fb-type-row { display: flex; gap: 8px; }

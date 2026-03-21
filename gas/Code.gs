@@ -58,10 +58,14 @@ function doPost(e) {
     const body = JSON.parse(e.postData.contents);
     if (body.action === 'saveProgress') return saveProgress(body);
     if (body.action === 'saveFeedback') return saveFeedback(body);
-  } catch (err) {}
-  return ContentService
-    .createTextOutput(JSON.stringify({ error: 'Invalid request' }))
-    .setMimeType(ContentService.MimeType.JSON);
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unknown action: ' + (body.action || 'none') }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: err.message || 'Invalid request' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 // ── Save user feedback to the Feedback sheet, photos to Drive ────
