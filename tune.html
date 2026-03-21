@@ -282,9 +282,9 @@ textarea.my-answer:focus { border-color:var(--gold); }
         <div class="pane">
           <div class="pane-label" style="display:flex;align-items:center;justify-content:space-between;">
             <span><span class="dot dot-you"></span> Your version — how Hanyong would say it</span>
-            <label class="upload-btn" title="Upload a text file">
+            <label class="upload-btn" id="myAnswerUploadLabel" title="Upload a text file, image, or PDF of your handwriting">
               ↑ Upload file
-              <input type="file" id="myAnswerUpload" accept=".txt,.md" style="display:none" onchange="uploadMyAnswer(this)">
+              <input type="file" id="myAnswerUpload" accept=".txt,.md,image/*,application/pdf" style="display:none" onchange="uploadMyAnswer(this)">
             </label>
           </div>
           <textarea class="my-answer" id="myAnswer" placeholder="Write your ideal explanation here…"></textarea>
@@ -543,13 +543,49 @@ function clearCurrent() {
 function uploadMyAnswer(input) {
   const file = input.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('myAnswer').value = e.target.result;
-  };
-  reader.readAsText(file);
-  // Reset input so the same file can be re-uploaded if needed
   input.value = '';
+
+  // Plain text files — read directly into textarea
+  if (file.type === 'text/plain' || file.name.endsWith('.md') || file.name.endsWith('.txt')) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('myAnswer').value = e.target.result;
+    };
+    reader.readAsText(file);
+    return;
+  }
+
+  // Image or PDF — transcribe handwriting via API
+  const isImage = file.type.startsWith('image/');
+  const isPdf   = file.type === 'application/pdf';
+  if (!isImage && !isPdf) { toast('Please upload a .txt, .md, image, or PDF file', 'error'); return; }
+
+  const maxBytes = isPdf ? 32 * 1024 * 1024 : 20 * 1024 * 1024;
+  if (file.size > maxBytes) { toast(`File too large (max ${isPdf ? '32' : '20'} MB)`, 'error'); return; }
+
+  const label = document.getElementById('myAnswerUploadLabel');
+  label.textContent = '⟳ Reading…';
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const base64 = e.target.result.split(',')[1];
+    try {
+      const res = await fetch('/api/tune', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminSecret}` },
+        body: JSON.stringify({ mode: 'transcribe', imageBase64: base64, imageType: file.type }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      document.getElementById('myAnswer').value = data.text;
+      toast('Handwriting transcribed', 'success');
+    } catch (err) {
+      toast('Transcription failed: ' + err.message, 'error');
+    } finally {
+      label.textContent = '↑ Upload file';
+    }
+  };
+  reader.readAsDataURL(file);
 }
 
 // ── Render example list ───────────────────────────────────────────

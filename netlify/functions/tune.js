@@ -82,6 +82,7 @@ function callClaude(system, userMessage, model, maxTokens) {
         'Content-Type':      'application/json',
         'x-api-key':         ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
+        'anthropic-beta':    'pdfs-2024-09-25',
         'Content-Length':    Buffer.byteLength(body),
       },
     }, (res) => {
@@ -233,5 +234,27 @@ exports.handler = async (event) => {
     }
   }
 
-  return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'mode must be "han" or "analyze"' }) };
+  // ── Mode: transcribe ──────────────────────────────────────────
+  if (body.mode === 'transcribe') {
+    const { imageBase64, imageType } = body;
+    if (!imageBase64 || !imageType) {
+      return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'imageBase64 and imageType required' }) };
+    }
+    const isPdf = imageType === 'application/pdf';
+    const contentBlock = isPdf
+      ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: imageBase64 } }
+      : { type: 'image', source: { type: 'base64', media_type: imageType, data: imageBase64 } };
+    const userContent = [
+      contentBlock,
+      { type: 'text', text: 'Please transcribe all handwritten text and working from this ' + (isPdf ? 'PDF' : 'image') + ' exactly as written. Preserve mathematical notation, line breaks, and structure. Output only the transcribed content — no commentary.' },
+    ];
+    try {
+      const text = await callClaude('You are an expert at reading handwritten mathematical working. Transcribe faithfully without adding or omitting anything.', userContent, 'claude-sonnet-4-20250514', 2000);
+      return { statusCode: 200, headers: CORS, body: JSON.stringify({ text }) };
+    } catch (e) {
+      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: e.message }) };
+    }
+  }
+
+  return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'mode must be "han", "analyze", or "transcribe"' }) };
 };
