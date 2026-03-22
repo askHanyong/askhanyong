@@ -201,7 +201,7 @@ exports.handler = async (event) => {
       const answer = await callClaude(
         HAN_SYSTEM_PROMPT,
         userContent,
-        'claude-sonnet-4-20250514',
+        'claude-sonnet-4-6',
         1500
       );
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ answer }) };
@@ -225,7 +225,7 @@ exports.handler = async (event) => {
       const analysis = await callClaude(
         'You are an expert at analysing teaching styles and writing precise AI system prompts. Be specific and actionable.',
         buildAnalysisPrompt(examples),
-        'claude-sonnet-4-20250514',
+        'claude-sonnet-4-6',
         4096
       );
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ analysis }) };
@@ -249,7 +249,7 @@ exports.handler = async (event) => {
       { type: 'text', text: 'Please transcribe all handwritten text and working from this ' + (isPdf ? 'PDF' : 'image') + ' exactly as written. Preserve mathematical notation, line breaks, and structure. Output only the transcribed content — no commentary.' },
     ];
     try {
-      const text = await callClaude('You are an expert at reading handwritten mathematical working. Transcribe faithfully without adding or omitting anything.', userContent, 'claude-sonnet-4-20250514', 2000);
+      const text = await callClaude('You are an expert at reading handwritten mathematical working. Transcribe faithfully without adding or omitting anything.', userContent, 'claude-sonnet-4-6', 2000);
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ text }) };
     } catch (e) {
       return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: e.message }) };

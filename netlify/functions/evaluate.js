@@ -16,7 +16,7 @@ const GAS_URL = process.env.GAS_URL || '';          // Google Apps Script web ap
 const GAS_SECRET = process.env.GAS_ADMIN_SECRET || process.env.ADMIN_SECRET || '';
 
 // Models
-const HAN_MODEL   = 'claude-sonnet-4-20250514';    // same as production edge function
+const HAN_MODEL   = 'claude-sonnet-4-6';    // same as production edge function
 const JUDGE_MODEL = 'claude-haiku-4-5-20251001';   // cheaper for scoring
 
 const CORS = {

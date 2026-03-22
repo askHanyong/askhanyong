@@ -70,7 +70,7 @@ For example, for v = 3cos(0.4t) + 0.25t - 1.5, output:
 Always choose bounds that show the full relevant domain of the function.`;
 
 // ── Server-side limits ────────────────────────────────────────────
-const PINNED_MODEL      = 'claude-sonnet-4-20250514'; // enforced server-side
+const PINNED_MODEL      = 'claude-sonnet-4-6'; // enforced server-side
 const MAX_TOKENS        = 2000;                        // cap regardless of client request
 const MAX_HISTORY_TURNS = 8;                           // keep last 8 user+assistant pairs (16 messages)
 
