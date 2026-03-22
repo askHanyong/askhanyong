@@ -55,6 +55,8 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 .logo-text h1 { font-size:17px; font-weight:700; color:white; line-height:1.1; font-family:'Playfair Display',serif; }
 .logo-text span { font-size:10px; color:rgba(255,255,255,0.55); font-weight:400; letter-spacing:0.2px; }
 .header-right { display:flex; align-items:center; gap:8px; }
+.nav-about-link { font-size:12px; color:rgba(255,255,255,0.5); text-decoration:none; font-weight:500; padding:4px 8px; border-radius:6px; transition:color 0.2s; }
+.nav-about-link:hover { color:rgba(255,255,255,0.85); }
 .sign-in-btn { padding:7px 14px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:20px; color:white; font-size:12px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap; transition:background 0.2s; }
 .sign-in-btn:hover { background:rgba(255,255,255,0.25); }
 .user-pill { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:4px 12px 4px 4px; cursor:pointer; }
@@ -832,7 +834,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="logo-text"><h1>askHanyong</h1><span>IB Math AI Tutor</span></div>
   </div>
   <div class="header-right">
-    <a href="/landing.html" style="font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;font-weight:500;padding:4px 8px;border-radius:6px;transition:color 0.2s" onmouseover="this.style.color='rgba(255,255,255,0.85)'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">About</a>
+    <a href="/landing.html" class="nav-about-link">About</a>
     <button class="new-chat-btn" id="newChatBtn" onclick="startNewChat()" title="New chat" style="display:none">＋ New</button>
     <div id="navLevelPill" class="nav-level-pill" title="Your level" onclick="switchTab('progress')" style="cursor:pointer">
       <span class="lvl-icon" id="navLevelIcon">⭐</span>
@@ -1758,7 +1760,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div style="width:32px;height:32px;border:3px solid #e5e7eb;border-top-color:#2563eb;border-radius:50%;animation:spin 0.7s linear infinite"></div>
       <div style="margin-top:10px;font-size:12px;color:#6b7280">Loading PDF…</div>
     </div>
-    <iframe id="solutionIframe" src="" style="flex:1;border:none;width:100%" allowfullscreen loading="lazy" onload="solutionIframeLoaded()"></iframe>
+    <iframe id="solutionIframe" src="about:blank" style="flex:1;border:none;width:100%" allowfullscreen loading="lazy" onload="typeof solutionIframeLoaded==='function'&&solutionIframeLoaded()"></iframe>
   </div>
 </div>
 
