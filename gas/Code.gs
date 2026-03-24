@@ -31,21 +31,24 @@ function getAdminSecret() {
 function doGet(e) {
   const action = e.parameter.action;
 
-  if (action === 'addQuestion')       return addQuestion(e.parameter);
-  if (action === 'addPremiumUser')    return addPremiumUser(e.parameter);
-  if (action === 'checkPremium')      return checkPremium(e.parameter);
-  if (action === 'saveUser')          return saveUser(e.parameter);
-  if (action === 'registerUser')      return registerUser(e.parameter);
-  if (action === 'getUser')           return getUser(e.parameter);
-  if (action === 'loadProgress')      return loadProgress(e.parameter);
-  if (action === 'resetProgress')     return resetProgressGAS(e.parameter);
-  if (action === 'storeResetToken')   return storeResetToken(e.parameter);
-  if (action === 'verifyResetToken')  return verifyResetToken(e.parameter);
-  if (action === 'updateUserPassword') return updateUserPassword(e.parameter);
-  if (action === 'getEvalQuestions')  return getEvalQuestions(e.parameter);
-  if (action === 'saveEvalResult')    return saveEvalResult(e.parameter);
-  if (action === 'getAccuracyMetrics') return getAccuracyMetrics(e.parameter);
-  if (action === 'getTrendData')      return getTrendData(e.parameter);
+  if (action === 'addQuestion')             return addQuestion(e.parameter);
+  if (action === 'addPremiumUser')          return addPremiumUser(e.parameter);
+  if (action === 'checkPremium')            return checkPremium(e.parameter);
+  if (action === 'cancelPremiumUser')       return cancelPremiumUser(e.parameter);
+  if (action === 'updateSubscriptionStatus') return updateSubscriptionStatus(e.parameter);
+  if (action === 'getSubscriptionInfo')     return getSubscriptionInfo(e.parameter);
+  if (action === 'saveUser')                return saveUser(e.parameter);
+  if (action === 'registerUser')            return registerUser(e.parameter);
+  if (action === 'getUser')                 return getUser(e.parameter);
+  if (action === 'loadProgress')            return loadProgress(e.parameter);
+  if (action === 'resetProgress')           return resetProgressGAS(e.parameter);
+  if (action === 'storeResetToken')         return storeResetToken(e.parameter);
+  if (action === 'verifyResetToken')        return verifyResetToken(e.parameter);
+  if (action === 'updateUserPassword')      return updateUserPassword(e.parameter);
+  if (action === 'getEvalQuestions')        return getEvalQuestions(e.parameter);
+  if (action === 'saveEvalResult')          return saveEvalResult(e.parameter);
+  if (action === 'getAccuracyMetrics')      return getAccuracyMetrics(e.parameter);
+  if (action === 'getTrendData')            return getTrendData(e.parameter);
 
   return ContentService
     .createTextOutput('HAN Admin GAS — OK')
@@ -212,9 +215,32 @@ function addQuestion(params) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// ── Record a paying customer in the Premium sheet ─────────────────
-// Called by the Netlify stripe-webhook function after successful payment.
-// Protected by a shared secret to prevent unauthorised additions.
+// ── Premium sheet column indices (0-based) ────────────────────────
+// Email | Name | Stripe Customer ID | Stripe Subscription ID | Status | Graduation Month | Graduation Year | Date Added
+const PREMIUM_COLS = {
+  email:           0,
+  name:            1,
+  customerId:      2,
+  subscriptionId:  3,
+  status:          4,
+  gradMonth:       5,
+  gradYear:        6,
+  dateAdded:       7,
+};
+const PREMIUM_HEADERS = ['Email', 'Name', 'Stripe Customer ID', 'Stripe Subscription ID', 'Status', 'Graduation Month', 'Graduation Year', 'Date Added'];
+
+function ensurePremiumSheet(ss) {
+  let sheet = ss.getSheetByName('Premium');
+  if (!sheet) {
+    sheet = ss.insertSheet('Premium');
+    sheet.getRange(1, 1, 1, PREMIUM_HEADERS.length).setValues([PREMIUM_HEADERS]);
+  }
+  return sheet;
+}
+
+// ── Record a paying subscriber in the Premium sheet ───────────────
+// Called by stripe-webhook after checkout.session.completed.
+// Cols: Email | Name | Customer ID | Subscription ID | Status | Grad Month | Grad Year | Date Added
 function addPremiumUser(params) {
   if (params.secret !== getAdminSecret()) {
     return ContentService
@@ -222,23 +248,35 @@ function addPremiumUser(params) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName('Premium');
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ensurePremiumSheet(ss);
 
-  // Create the Premium sheet with headers if it doesn't exist yet
-  if (!sheet) {
-    sheet = ss.insertSheet('Premium');
-    sheet.getRange(1, 1, 1, 4).setValues([['Email', 'Name', 'Stripe Customer ID', 'Date Added']]);
+  const data = sheet.getDataRange().getValues();
+
+  // Check if email already has a row
+  let existingRow = -1;
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][PREMIUM_COLS.email] === params.email) {
+      existingRow = i + 1; // 1-indexed sheet row
+      break;
+    }
   }
 
-  // Avoid duplicates — check if email is already in the sheet
-  const data = sheet.getDataRange().getValues();
-  const alreadyExists = data.some(row => row[0] === params.email);
-  if (!alreadyExists) {
+  if (existingRow > 0) {
+    // Update existing row with new subscription details
+    sheet.getRange(existingRow, PREMIUM_COLS.subscriptionId + 1).setValue(params.subscriptionId || '');
+    sheet.getRange(existingRow, PREMIUM_COLS.status       + 1).setValue(params.status || 'active');
+    sheet.getRange(existingRow, PREMIUM_COLS.gradMonth    + 1).setValue(params.graduationMonth || '');
+    sheet.getRange(existingRow, PREMIUM_COLS.gradYear     + 1).setValue(params.graduationYear  || '');
+  } else {
     sheet.appendRow([
-      params.email      || '',
-      params.name       || '',
-      params.customerId || '',
+      params.email           || '',
+      params.name            || '',
+      params.customerId      || '',
+      params.subscriptionId  || '',
+      params.status          || 'active',
+      params.graduationMonth || '',
+      params.graduationYear  || '',
       new Date().toISOString(),
     ]);
   }
@@ -248,10 +286,10 @@ function addPremiumUser(params) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// ── Check whether an email address has premium access ────────────
-// Called by index.html after Google Sign-In.
+// ── Check whether an email has an active subscription ────────────
+// Returns { premium: bool, status?, graduationMonth?, graduationYear? }
 function checkPremium(params) {
-  const email = params.email || '';
+  const email = (params.email || '').toLowerCase().trim();
   if (!email) {
     return ContentService
       .createTextOutput(JSON.stringify({ premium: false }))
@@ -260,18 +298,165 @@ function checkPremium(params) {
 
   const ss    = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName('Premium');
-
   if (!sheet) {
     return ContentService
       .createTextOutput(JSON.stringify({ premium: false }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  const data      = sheet.getDataRange().getValues();
-  const isPremium = data.some(row => row[0] === email);
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (row[PREMIUM_COLS.email] === email) {
+      const status = row[PREMIUM_COLS.status] || 'active';
+      // Active if status is 'active' or pending cancellation (still within paid period)
+      const isPremium = (status === 'active' || status === 'cancel_at_period_end');
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          premium:         isPremium,
+          status,
+          graduationMonth: row[PREMIUM_COLS.gradMonth] || '',
+          graduationYear:  row[PREMIUM_COLS.gradYear]  || '',
+          subscriptionId:  row[PREMIUM_COLS.subscriptionId] || '',
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
 
   return ContentService
-    .createTextOutput(JSON.stringify({ premium: isPremium }))
+    .createTextOutput(JSON.stringify({ premium: false }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Get subscription info for a user (used by cancel-subscription) ─
+function getSubscriptionInfo(params) {
+  if (params.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const email = (params.email || '').toLowerCase().trim();
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Premium');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'No Premium sheet' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (row[PREMIUM_COLS.email] === email) {
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          subscriptionId:  row[PREMIUM_COLS.subscriptionId] || '',
+          status:          row[PREMIUM_COLS.status]         || '',
+          graduationMonth: row[PREMIUM_COLS.gradMonth]      || '',
+          graduationYear:  row[PREMIUM_COLS.gradYear]       || '',
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ error: 'User not found' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Mark a subscription as cancelled ────────────────────────────
+// Called by stripe-webhook on customer.subscription.deleted.
+// Can look up by email OR by customerId/subscriptionId.
+function cancelPremiumUser(params) {
+  if (params.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Premium');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true, note: 'No Premium sheet' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const email      = (params.email      || '').toLowerCase().trim();
+  const customerId = (params.customerId || '').trim();
+  const subId      = (params.subscriptionId || '').trim();
+
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    const row        = data[i];
+    const rowEmail   = row[PREMIUM_COLS.email];
+    const rowCustId  = row[PREMIUM_COLS.customerId];
+    const rowSubId   = row[PREMIUM_COLS.subscriptionId];
+
+    const matched = (email && rowEmail === email)
+      || (subId      && rowSubId  === subId)
+      || (customerId && rowCustId === customerId);
+
+    if (matched) {
+      sheet.getRange(i + 1, PREMIUM_COLS.status + 1).setValue('cancelled');
+      return ContentService
+        .createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true, note: 'Row not found' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Update subscription status ────────────────────────────────────
+// Called by stripe-webhook on invoice.paid or subscription.updated.
+function updateSubscriptionStatus(params) {
+  if (params.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Premium');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true, note: 'No Premium sheet' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const email      = (params.email      || '').toLowerCase().trim();
+  const customerId = (params.customerId || '').trim();
+  const subId      = (params.subscriptionId || '').trim();
+  const newStatus  = params.status || 'active';
+
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    const row       = data[i];
+    const rowEmail  = row[PREMIUM_COLS.email];
+    const rowCustId = row[PREMIUM_COLS.customerId];
+    const rowSubId  = row[PREMIUM_COLS.subscriptionId];
+
+    const matched = (email && rowEmail === email)
+      || (subId      && rowSubId  === subId)
+      || (customerId && rowCustId === customerId);
+
+    if (matched) {
+      sheet.getRange(i + 1, PREMIUM_COLS.status + 1).setValue(newStatus);
+      if (subId && !rowSubId) {
+        sheet.getRange(i + 1, PREMIUM_COLS.subscriptionId + 1).setValue(subId);
+      }
+      return ContentService
+        .createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true, note: 'Row not found' }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 

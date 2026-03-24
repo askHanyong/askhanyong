@@ -1,16 +1,18 @@
 // ════════════════════════════════════════════════════════════════
 // HAN Checkout — Netlify Function
-// Creates a Stripe Checkout session for the Contributor tier.
+// Creates a Stripe Checkout session for a monthly subscription.
+// Automatically sets cancel_at to the student's graduation date
+// (May or November of their 2nd IB year).
 //
 // Required env vars (set in Netlify dashboard):
-//   STRIPE_SECRET_KEY   — sk_live_... or sk_test_...
-//   STRIPE_PRICE_ID     — price_... (set once you decide the fee)
+//   STRIPE_SECRET_KEY      — sk_live_... or sk_test_...
+//   STRIPE_PRICE_ID        — price_... (recurring monthly price)
 //
 // Optional env vars:
-//   SITE_URL            — e.g. https://askhanyong.com (for redirects)
+//   SITE_URL               — e.g. https://askhanyong.com (for redirects)
 //
 // POST /api/checkout
-// Body: { email?: string }
+// Body: { email?: string, graduationMonth: 'may'|'nov', graduationYear: number }
 // Returns: { url: string }   — redirect the user to this URL
 // ════════════════════════════════════════════════════════════════
 
@@ -29,6 +31,18 @@ const CORS = {
 
 function json(statusCode, body) {
   return { statusCode, headers: CORS, body: JSON.stringify(body) };
+}
+
+// ── Compute graduation Unix timestamp ────────────────────────────
+// IB students graduate in May (session: May, end of month 31) or
+// November (session: Nov, end of month 30) of their chosen year.
+// We set cancel_at to the last day of that month at 23:59:59 UTC.
+function graduationTimestamp(month, year) {
+  // month: 'may' → 5, 'nov' → 11
+  const monthNum = month === 'nov' ? 11 : 5;
+  // Last day of that month
+  const lastDay = new Date(Date.UTC(year, monthNum, 0, 23, 59, 59));
+  return Math.floor(lastDay.getTime() / 1000);
 }
 
 // ── Raw Stripe API call (no npm dependency) ───────────────────────
@@ -80,22 +94,44 @@ exports.handler = async (event) => {
   }
 
   let email = '';
+  let graduationMonth = '';
+  let graduationYear  = 0;
   try {
-    const body = JSON.parse(event.body || '{}');
-    email = (body.email || '').toLowerCase().trim();
+    const body      = JSON.parse(event.body || '{}');
+    email           = (body.email           || '').toLowerCase().trim();
+    graduationMonth = (body.graduationMonth || '').toLowerCase().trim(); // 'may' | 'nov'
+    graduationYear  = parseInt(body.graduationYear, 10) || 0;
   } catch (e) {
     return json(400, { error: 'Invalid JSON' });
   }
 
-  // Build checkout session params
-  // Using 'payment' mode for a one-time contribution (not recurring subscription).
-  // Switch to 'subscription' + a recurring price if you want monthly billing.
+  // Validate graduation info
+  if (!['may', 'nov'].includes(graduationMonth)) {
+    return json(400, { error: 'graduationMonth must be "may" or "nov".' });
+  }
+  const currentYear = new Date().getFullYear();
+  if (!graduationYear || graduationYear < currentYear || graduationYear > currentYear + 3) {
+    return json(400, { error: 'graduationYear must be the current year or up to 3 years ahead.' });
+  }
+
+  // Compute graduation Unix timestamp for Stripe cancel_at
+  const cancelAtTs = graduationTimestamp(graduationMonth, graduationYear);
+  const nowTs = Math.floor(Date.now() / 1000);
+  if (cancelAtTs <= nowTs) {
+    return json(400, { error: 'Graduation date must be in the future.' });
+  }
+
+  // Build subscription checkout session params
   const params = {
-    'payment_method_types[]': 'card',
-    'line_items[0][price]': STRIPE_PRICE_ID,
-    'line_items[0][quantity]': '1',
-    'mode': 'payment',
-    'success_url': SITE_URL + '/app?contributed=1',
+    'payment_method_types[]':                  'card',
+    'line_items[0][price]':                    STRIPE_PRICE_ID,
+    'line_items[0][quantity]':                 '1',
+    'mode':                                    'subscription',
+    'subscription_data[cancel_at]':            String(cancelAtTs),
+    // Store graduation info in Stripe metadata for reference
+    'subscription_data[metadata][graduation_month]': graduationMonth,
+    'subscription_data[metadata][graduation_year]':  String(graduationYear),
+    'success_url': SITE_URL + '/app?subscribed=1',
     'cancel_url':  SITE_URL + '/app',
     'allow_promotion_codes': 'true',
   };
@@ -103,6 +139,8 @@ exports.handler = async (event) => {
   // Pre-fill email if we have one
   if (email) {
     params['customer_email'] = email;
+    // Pass email in metadata so webhook can retrieve it from the subscription
+    params['subscription_data[metadata][email]'] = email;
   }
 
   try {

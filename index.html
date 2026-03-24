@@ -859,13 +859,13 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="limit-track"><div class="limit-fill" id="limitFillTyped" style="width:0%"></div></div>
   </div>
   <span id="limitText" style="font-size:11px;color:var(--text-mid);white-space:nowrap"></span>
-  <button class="upgrade-btn-small" onclick="showUpgrade()">Contribute</button>
+  <button class="upgrade-btn-small" onclick="showUpgrade()">Subscribe</button>
 </div>
 
 <!-- Soft nudge bar (appears at 80% limit) -->
 <div class="nudge-bar" id="nudgeBar">
   <span>⚡ <span id="nudgeText">Almost at your limit</span></span>
-  <button class="nudge-upgrade-btn" onclick="showUpgrade()">Contribute S$45</button>
+  <button class="nudge-upgrade-btn" onclick="showUpgrade()">Subscribe S$15/mo</button>
   <button class="nudge-close" onclick="dismissNudge()" title="Dismiss">✕</button>
 </div>
 
@@ -1218,7 +1218,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div style="text-align:center;padding:12px 20px 4px;font-size:12px;color:var(--text-soft);letter-spacing:0.03em">HAN = Help · Achieve · Nurture</div>
       <div class="about-cta-row">
         <button class="modal-cta" onclick="switchTab('chat')" style="margin-bottom:8px">Start Asking HAN →</button>
-        <button onclick="showUpgrade()" style="width:100%;padding:11px;background:none;border:1.5px solid var(--blue);border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Inter',sans-serif">Support the Mission — S$45</button>
+        <button onclick="showUpgrade()" style="width:100%;padding:11px;background:none;border:1.5px solid var(--blue);border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Inter',sans-serif">Get Unlimited Access — S$15/mo</button>
       </div>
     </div>
   </div>
@@ -1644,8 +1644,18 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <div id="accountEmail" style="font-size:12px;color:var(--text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
       </div>
     </div>
+    <!-- Subscription status (shown only when user has an active subscription) -->
+    <div id="accountSubStatus" style="display:none;background:var(--ice-light);border:1.5px solid var(--blue);border-radius:10px;padding:10px 14px;margin-bottom:4px">
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:2px">ACTIVE SUBSCRIPTION</div>
+      <div id="accountSubDetail" style="font-size:12px;color:var(--text-mid);line-height:1.5"></div>
+    </div>
+    <div id="accountCancelWrap" style="display:none">
+      <button onclick="confirmCancelSubscription()" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#fff5f5;border:1.5px solid #fca5a5;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#dc2626;width:100%;text-align:left">
+        <span style="font-size:18px">❌</span> Cancel subscription
+      </button>
+    </div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <button onclick="closeModal('userAccountModal');showUpgrade()" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--ice-light);border:1.5px solid var(--blue);border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--blue);width:100%;text-align:left">
+      <button id="accountSupportBtn" onclick="closeModal('userAccountModal');showUpgrade()" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--ice-light);border:1.5px solid var(--blue);border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--blue);width:100%;text-align:left">
         <span style="font-size:18px">🙏</span> Support the project
       </button>
       <button onclick="switchUser()" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text-mid);width:100%;text-align:left">
@@ -1663,25 +1673,37 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <div class="modal-box" onclick="event.stopPropagation()" style="max-width:420px">
     <button class="modal-close" onclick="closeModal('upgradeOverlay')">✕</button>
     <div class="modal-icon">🎯</div>
-    <h2 style="font-size:19px">Support HAN's Mission</h2>
-    <p style="font-size:13px;color:var(--text-mid);line-height:1.6;margin-bottom:16px">askHanyong is <strong>free for every IB student</strong>. If it's helped you, a small contribution keeps it alive and growing — so more students can benefit.</p>
+    <h2 style="font-size:19px">Unlock Unlimited Access</h2>
+    <p style="font-size:13px;color:var(--text-mid);line-height:1.6;margin-bottom:16px">Subscribe monthly while you study. Automatically cancels when you graduate — no action needed.</p>
     <div style="background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1.5px solid var(--blue);border-radius:14px;padding:16px;margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <div style="font-size:34px;font-weight:800;color:var(--blue);font-family:'Playfair Display',serif;line-height:1">S$45</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="font-size:34px;font-weight:800;color:var(--blue);font-family:'Playfair Display',serif;line-height:1">S$15</div>
         <div style="text-align:left">
-          <div style="font-size:12px;font-weight:700;color:var(--text)">One-time · No subscription</div>
-          <div style="font-size:11px;color:var(--text-mid);line-height:1.4;margin-top:2px">Why S$45? In the IB, <strong style="color:var(--blue)">45 is the perfect score</strong> — the aspiration every student works towards.</div>
+          <div style="font-size:12px;font-weight:700;color:var(--text)">per month · auto-cancels at graduation</div>
+          <div style="font-size:11px;color:var(--text-mid);line-height:1.4;margin-top:2px">Cancel anytime. Stops automatically in <strong style="color:var(--blue)">May or Nov of your 2nd IB year</strong>.</div>
         </div>
       </div>
-      <div style="font-size:12px;color:var(--text-soft);border-top:1px solid rgba(29,78,216,0.12);padding-top:10px;margin-top:4px;margin-bottom:12px;line-height:1.5;font-style:italic">"I built this to be free. Your contribution helps keep the servers running and reach more students who need it." — Hanyong</div>
+      <!-- Graduation date selector -->
+      <div style="background:white;border:1.5px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">When do you graduate? (IB exam session)</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="gradMonthSelect" onchange="onGradChange()" style="flex:1;min-width:90px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);outline:none">
+            <option value="may">May</option>
+            <option value="nov">November</option>
+          </select>
+          <select id="gradYearSelect" onchange="onGradChange()" style="flex:1;min-width:80px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);outline:none">
+          </select>
+        </div>
+        <div id="gradPreview" style="font-size:11px;color:var(--text-mid);margin-top:6px;line-height:1.4"></div>
+      </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;text-align:left">
-        <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Unlimited questions — uploads & typed, every day</li>
+        <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Unlimited questions — uploads &amp; typed, every day</li>
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Full mock paper generator</li>
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Progress tracking dashboard</li>
-        <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Priority support from Hanyong</li>
+        <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Auto-cancels at graduation — nothing to remember</li>
       </ul>
     </div>
-    <button class="modal-cta" id="stripeCheckoutBtn" onclick="startStripeCheckout()" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#0e1c33,#1a3068)"><span>Contribute S$45</span><span style="font-size:16px">🙏</span></button>
+    <button class="modal-cta" id="stripeCheckoutBtn" onclick="startStripeCheckout()" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#0e1c33,#1a3068)"><span>Subscribe S$15/month</span><span style="font-size:16px">🎓</span></button>
     <div id="stripeNotReady" style="display:none">
       <div id="waitlistForm">
         <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;text-align:left">📋 Join the Waitlist</div>
@@ -1698,15 +1720,15 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <div style="font-size:12px;color:var(--text-soft)">Hanyong will be in touch soon.</div>
       </div>
     </div>
-    <div class="modal-note" style="margin-top:10px">Secure payment via Stripe</div>
+    <div class="modal-note" style="margin-top:10px">Secure payment via Stripe · Cancel anytime</div>
     <div style="margin-top:8px;text-align:center"><span style="font-size:11px;color:var(--text-soft);cursor:pointer" onclick="closeModal('upgradeOverlay')">Continue with free access →</span></div>
-    <div style="margin-top:8px;text-align:center"><span style="font-size:11px;color:var(--blue);cursor:pointer;font-weight:600" onclick="closeModal('upgradeOverlay');document.getElementById('thankYouOverlay').classList.add('open')">I just contributed →</span></div>
+    <div style="margin-top:8px;text-align:center"><span style="font-size:11px;color:var(--blue);cursor:pointer;font-weight:600" onclick="closeModal('upgradeOverlay');document.getElementById('thankYouOverlay').classList.add('open')">I just subscribed →</span></div>
 
     <!-- Gift section -->
     <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)">
       <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;text-align:left">🎁 Gift to a student</div>
       <p style="font-size:12px;color:var(--text-soft);line-height:1.55;margin-bottom:10px;text-align:left">Know someone preparing for IB exams? Give them unlimited access as a gift.</p>
-      <button onclick="startGiftCheckout()" style="width:100%;padding:12px;background:white;color:var(--navy);border:2px solid var(--navy);border-radius:var(--radius);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s" onmouseover="this.style.background='var(--ice-light)'" onmouseout="this.style.background='white'"><span>🎁</span><span>Gift Unlimited Access — S$45</span></button>
+      <button onclick="startGiftCheckout()" style="width:100%;padding:12px;background:white;color:var(--navy);border:2px solid var(--navy);border-radius:var(--radius);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s" onmouseover="this.style.background='var(--ice-light)'" onmouseout="this.style.background='white'"><span>🎁</span><span>Gift Unlimited Access</span></button>
     </div>
   </div>
 </div>
@@ -1899,7 +1921,7 @@ function canUsePractice() { return isAdmin || checkPremiumStatus() || getPractic
 function showPracticePaywall(type) {
   const used  = type === 'mock' ? getMockMonthCount()     : getPracticeMonthCount();
   const limit = type === 'mock' ? FREE_MOCK_MONTH_LIMIT   : FREE_PRACTICE_MONTH_LIMIT;
-  showToast(`You've used ${used}/${limit} free ${type === 'mock' ? 'mock papers' : 'practice questions'} this month. Contribute S$45 for unlimited access. 🎓`, 4500);
+  showToast(`You've used ${used}/${limit} free ${type === 'mock' ? 'mock papers' : 'practice questions'} this month. Subscribe for S$15/mo for unlimited access. 🎓`, 4500);
   setTimeout(showUpgrade, 600);
 }
 
@@ -2170,7 +2192,9 @@ function updateLimitBar() {
 function checkPremiumStatus() {
   const key = currentUser ? 'han_premium_' + currentUser.sub : null;
   if (!key) return false;
-  return sessionStorage.getItem(key) === 'true';
+  const val = sessionStorage.getItem(key);
+  // Accept 'true' (legacy), 'active', or 'cancel_at_period_end' (still within paid period)
+  return val === 'true' || val === 'active' || val === 'cancel_at_period_end';
 }
 function canAskQuestion(type) {
   if (isAdmin) return true;
@@ -2209,6 +2233,9 @@ function showUpgrade() {
     if (nameEl  && !nameEl.value)  nameEl.value  = currentUser.given_name || currentUser.name || '';
     if (emailEl && !emailEl.value) emailEl.value = currentUser.email || '';
   }
+  // Initialise graduation selectors and preview
+  initGradSelectors();
+  updateGradPreview();
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function closeModalBg(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
@@ -2261,8 +2288,14 @@ async function checkAndSetPremium(user) {
     const res  = await fetch(SHEETS_URL + '?' + params.toString());
     const data = await res.json();
     if (data.premium) {
-      sessionStorage.setItem('han_premium_' + user.sub, 'true');
+      // Store status (active or cancel_at_period_end) for UI rendering
+      const status = data.status || 'active';
+      sessionStorage.setItem('han_premium_' + user.sub, status);
+      // Cache graduation date for account modal display
+      if (data.graduationMonth) sessionStorage.setItem('han_grad_month_' + user.sub, data.graduationMonth);
+      if (data.graduationYear)  sessionStorage.setItem('han_grad_year_'  + user.sub, data.graduationYear);
       updateLimitBar();
+      updateAccountModal();
     }
   } catch(e) {}
 }
@@ -2300,6 +2333,7 @@ function showAccountMenu() {
   }
   document.getElementById('accountName').textContent = name;
   document.getElementById('accountEmail').textContent = email;
+  updateAccountModal();
   document.getElementById('userAccountModal').classList.add('open');
 }
 
@@ -4150,7 +4184,7 @@ function checkNudge(type) {
   if (type === 'typed' && count === 3 && !_nudgeSoftShownTyped) {
     _nudgeSoftShownTyped = true;
     document.getElementById('nudgeText').innerHTML =
-      `Students with unlimited access average <strong>40% more practice time</strong> — S$45, one-time`;
+      `Students with unlimited access average <strong>40% more practice time</strong> — S$15/month, cancel anytime`;
     document.getElementById('nudgeBar').classList.add('show');
     return;
   }
@@ -4284,34 +4318,78 @@ async function submitWaitlist() {
 }
 
 // ════════════════════════════════════════
-// STRIPE
+// STRIPE SUBSCRIPTION
 // ════════════════════════════════════════
+
+// ── Populate graduation year dropdown when the upgrade modal opens ─
+function initGradSelectors() {
+  const yearSel = document.getElementById('gradYearSelect');
+  if (!yearSel || yearSel.options.length > 0) return;
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  // IB students are in a 2-year programme — show this year through +3 years
+  for (let y = currentYear; y <= currentYear + 3; y++) {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    yearSel.appendChild(opt);
+  }
+  // Default to 2 years from now (most common: just started IB1)
+  yearSel.value = currentYear + 2;
+  updateGradPreview();
+}
+
+function updateGradPreview() {
+  const month = document.getElementById('gradMonthSelect')?.value;
+  const year  = parseInt(document.getElementById('gradYearSelect')?.value, 10);
+  const prev  = document.getElementById('gradPreview');
+  if (!prev || !month || !year) return;
+  const monthLabel = month === 'may' ? 'May' : 'November';
+  const now = new Date();
+  const gradDate = new Date(year, month === 'may' ? 4 : 10, 1);
+  const diffMs = gradDate - now;
+  const diffMonths = Math.max(1, Math.round(diffMs / (1000 * 60 * 60 * 24 * 30.5)));
+  prev.textContent = `Subscription auto-cancels ${monthLabel} ${year} · approx. ${diffMonths} month${diffMonths !== 1 ? 's' : ''} of access`;
+}
+
+// Expose for inline onchange handlers
+function onGradChange() { updateGradPreview(); }
+
 async function startStripeCheckout() {
-  const btn = document.getElementById('stripeCheckoutBtn');
+  const btn      = document.getElementById('stripeCheckoutBtn');
   const btnLabel = btn.querySelector('span');
 
-  // Try server-side dynamic checkout first (price from STRIPE_PRICE_ID env var)
+  const graduationMonth = document.getElementById('gradMonthSelect')?.value || 'may';
+  const graduationYear  = parseInt(document.getElementById('gradYearSelect')?.value, 10) || (new Date().getFullYear() + 2);
+
+  // Try server-side dynamic checkout first
   try {
     btn.disabled = true;
     if (btnLabel) btnLabel.textContent = 'Opening…';
     const res = await fetch('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: currentUser?.email || '' }),
+      body: JSON.stringify({
+        email: currentUser?.email || '',
+        graduationMonth,
+        graduationYear,
+      }),
     });
     const data = await res.json();
     if (data.url) {
-      window.open(data.url, '_blank');
+      window.location.href = data.url;
       closeModal('upgradeOverlay');
       dismissNudge();
-      showToast('Opening secure checkout…');
       return;
+    }
+    if (data.error) {
+      showToast(data.error, 3500);
     }
   } catch (e) {
     // fall through to static payment link
   } finally {
     btn.disabled = false;
-    if (btnLabel) btnLabel.textContent = 'Contribute S$45';
+    if (btnLabel) btnLabel.textContent = 'Subscribe S$15/month';
   }
 
   // Fallback: static Stripe payment link
@@ -4322,10 +4400,93 @@ async function startStripeCheckout() {
   }
   let url = STRIPE_PAYMENT_LINK;
   if (currentUser && currentUser.email) url += (url.includes('?') ? '&' : '?') + 'prefilled_email=' + encodeURIComponent(currentUser.email);
-  window.open(url, '_blank');
+  window.location.href = url;
   closeModal('upgradeOverlay');
   dismissNudge();
-  showToast('Opening secure checkout…');
+}
+
+// ── Manual subscription cancellation ─────────────────────────────
+function confirmCancelSubscription() {
+  const confirmed = confirm(
+    'Cancel your subscription?\n\n' +
+    'You will keep full access until the end of your current billing period, then revert to the free plan.\n\n' +
+    'Press OK to confirm cancellation.'
+  );
+  if (confirmed) cancelSubscription();
+}
+
+async function cancelSubscription() {
+  const sessionToken = localStorage.getItem('han_token');
+  if (!sessionToken) { showToast('Please sign in to manage your subscription.'); return; }
+
+  try {
+    showToast('Cancelling subscription…');
+    const res = await fetch('/api/cancel-subscription', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionToken,
+      },
+      body: JSON.stringify({}),
+    });
+    const data = await res.json();
+    if (data.success) {
+      // Update cached premium status to reflect pending cancel
+      if (currentUser) {
+        sessionStorage.setItem('han_premium_' + currentUser.sub, 'cancel_at_period_end');
+      }
+      updateAccountModal();
+      closeModal('userAccountModal');
+      const msg = data.alreadyCancelled
+        ? 'Your subscription was already cancelled.'
+        : `Subscription cancelled. You keep access until the end of your billing period.`;
+      showToast(msg, 4000);
+    } else {
+      showToast(data.error || 'Could not cancel. Please try again.', 3500);
+    }
+  } catch (e) {
+    showToast('Could not cancel. Please try again.', 3500);
+  }
+}
+
+// ── Update account modal to show subscription info ─────────────────
+function updateAccountModal() {
+  const subStatusEl  = document.getElementById('accountSubStatus');
+  const subDetailEl  = document.getElementById('accountSubDetail');
+  const cancelWrap   = document.getElementById('accountCancelWrap');
+  const supportBtn   = document.getElementById('accountSupportBtn');
+  if (!subStatusEl) return;
+
+  const key    = currentUser ? 'han_premium_' + currentUser.sub : null;
+  const status = key ? sessionStorage.getItem(key) : null;
+
+  if (status === 'true' || status === 'active' || status === 'cancel_at_period_end') {
+    subStatusEl.style.display = 'block';
+    if (cancelWrap)  cancelWrap.style.display  = 'block';
+    if (supportBtn)  supportBtn.style.display  = 'none';
+
+    if (status === 'cancel_at_period_end') {
+      subStatusEl.querySelector('.accountSubStatus div:first-child')?.setAttribute('style', 'font-size:11px;font-weight:700;color:var(--gold);margin-bottom:2px');
+      const heading = subStatusEl.querySelector('div');
+      if (heading) { heading.textContent = 'CANCELLATION PENDING'; heading.style.color = 'var(--gold)'; }
+      if (subDetailEl) subDetailEl.textContent = 'Your subscription is set to cancel at the end of the current billing period.';
+    } else {
+      const heading = subStatusEl.querySelector('div');
+      if (heading) { heading.textContent = 'ACTIVE SUBSCRIPTION'; heading.style.color = 'var(--green)'; }
+      // Show graduation date if stored
+      const gradMonth = sessionStorage.getItem('han_grad_month_' + currentUser?.sub) || '';
+      const gradYear  = sessionStorage.getItem('han_grad_year_'  + currentUser?.sub) || '';
+      if (subDetailEl) {
+        subDetailEl.textContent = gradMonth && gradYear
+          ? `Monthly plan · Auto-cancels ${gradMonth === 'may' ? 'May' : 'November'} ${gradYear}`
+          : 'Monthly plan · Unlimited access';
+      }
+    }
+  } else {
+    subStatusEl.style.display = 'none';
+    if (cancelWrap) cancelWrap.style.display = 'none';
+    if (supportBtn) supportBtn.style.display = '';
+  }
 }
 
 // ════════════════════════════════════════
@@ -4582,7 +4743,7 @@ if (window.location.hash === '#signin') {
     else tryFill();
   }
   // On page load: show thank-you modal if returning from Stripe checkout
-  if (params.get('contributed') === '1') {
+  if (params.get('contributed') === '1' || params.get('subscribed') === '1') {
     window.history.replaceState({}, '', window.location.pathname);
     const show = () => {
       // Poll premium status — Stripe webhook fires shortly after redirect
@@ -4591,15 +4752,23 @@ if (window.location.hash === '#signin') {
         attempts++;
         if (currentUser) {
           const key = 'han_premium_' + currentUser.sub;
-          if (!sessionStorage.getItem(key)) {
+          const cached = sessionStorage.getItem(key);
+          if (!cached || cached === 'false') {
             try {
               const r = await fetch(SHEETS_URL + '?' + new URLSearchParams({ action: 'checkPremium', email: currentUser.email }));
               const d = await r.json();
-              if (d.premium) { sessionStorage.setItem(key, 'true'); updateLimitBar(); }
+              if (d.premium) {
+                const status = d.status || 'active';
+                sessionStorage.setItem(key, status);
+                if (d.graduationMonth) sessionStorage.setItem('han_grad_month_' + currentUser.sub, d.graduationMonth);
+                if (d.graduationYear)  sessionStorage.setItem('han_grad_year_'  + currentUser.sub, d.graduationYear);
+                updateLimitBar();
+                updateAccountModal();
+              }
             } catch (e) {}
           }
         }
-        if (attempts >= 5) clearInterval(poll);
+        if (attempts >= 8) clearInterval(poll);
       }, 3000);
       setTimeout(() => document.getElementById('thankYouOverlay').classList.add('open'), 500);
     };
@@ -5453,7 +5622,7 @@ if (_origRenderProgress2) {
 
     if (currentUser && !checkPremiumStatus()) {
       // Logged-in free user → pitch upgrade
-      body.textContent = 'You\'ve got questions left today. Unlimited access means no limits — ever. A one-time S$45 keeps HAN running for every student.';
+      body.textContent = 'You\'ve got questions left today. Unlimited access means no limits — ever. Subscribe from S$15/month, auto-cancels when you graduate.';
       ctaBtn.textContent = 'Unlock Unlimited Access →';
       ctaBtn.onclick = () => { closeModal('exitIntentModal'); showUpgrade(); };
     } else if (!currentUser) {
@@ -5882,8 +6051,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const used = getMockMonthCount(), limit = FREE_MOCK_MONTH_LIMIT;
     const rem = Math.max(0, limit - used);
     note.textContent = rem > 0
-      ? `${rem} free paper${rem !== 1 ? 's' : ''} remaining this month · Contribute S$45 for unlimited`
-      : 'Monthly limit reached — contribute S$45 for unlimited papers';
+      ? `${rem} free paper${rem !== 1 ? 's' : ''} remaining this month · Subscribe S$15/mo for unlimited`
+      : 'Monthly limit reached — subscribe S$15/mo for unlimited papers';
     if (rem === 0) note.style.color = '#dc2626';
   }
   refreshMockNote();
