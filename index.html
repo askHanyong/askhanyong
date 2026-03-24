@@ -865,7 +865,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 <!-- Soft nudge bar (appears at 80% limit) -->
 <div class="nudge-bar" id="nudgeBar">
   <span>⚡ <span id="nudgeText">Almost at your limit</span></span>
-  <button class="nudge-upgrade-btn" onclick="showUpgrade()">Subscribe S$15/mo</button>
+  <button class="nudge-upgrade-btn" onclick="showUpgrade()">Subscribe S$19/mo</button>
   <button class="nudge-close" onclick="dismissNudge()" title="Dismiss">✕</button>
 </div>
 
@@ -1218,7 +1218,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div style="text-align:center;padding:12px 20px 4px;font-size:12px;color:var(--text-soft);letter-spacing:0.03em">HAN = Help · Achieve · Nurture</div>
       <div class="about-cta-row">
         <button class="modal-cta" onclick="switchTab('chat')" style="margin-bottom:8px">Start Asking HAN →</button>
-        <button onclick="showUpgrade()" style="width:100%;padding:11px;background:none;border:1.5px solid var(--blue);border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Inter',sans-serif">Get Unlimited Access — S$15/mo</button>
+        <button onclick="showUpgrade()" style="width:100%;padding:11px;background:none;border:1.5px solid var(--blue);border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Inter',sans-serif">Get Unlimited Access — S$19/mo</button>
       </div>
     </div>
   </div>
@@ -1677,7 +1677,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <p style="font-size:13px;color:var(--text-mid);line-height:1.6;margin-bottom:16px">Subscribe monthly while you study. Automatically cancels when you graduate — no action needed.</p>
     <div style="background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1.5px solid var(--blue);border-radius:14px;padding:16px;margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-        <div style="font-size:34px;font-weight:800;color:var(--blue);font-family:'Playfair Display',serif;line-height:1">S$15</div>
+        <div style="font-size:34px;font-weight:800;color:var(--blue);font-family:'Playfair Display',serif;line-height:1">S$19</div>
         <div style="text-align:left">
           <div style="font-size:12px;font-weight:700;color:var(--text)">per month · auto-cancels at graduation</div>
           <div style="font-size:11px;color:var(--text-mid);line-height:1.4;margin-top:2px">Cancel anytime. Stops automatically in <strong style="color:var(--blue)">May or Nov of your 2nd IB year</strong>.</div>
@@ -1703,7 +1703,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <li style="font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Auto-cancels at graduation — nothing to remember</li>
       </ul>
     </div>
-    <button class="modal-cta" id="stripeCheckoutBtn" onclick="startStripeCheckout()" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#0e1c33,#1a3068)"><span>Subscribe S$15/month</span><span style="font-size:16px">🎓</span></button>
+    <button class="modal-cta" id="stripeCheckoutBtn" onclick="startStripeCheckout()" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#0e1c33,#1a3068)"><span>Subscribe S$19/month</span><span style="font-size:16px">🎓</span></button>
     <div id="stripeNotReady" style="display:none">
       <div id="waitlistForm">
         <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;text-align:left">📋 Join the Waitlist</div>
@@ -1898,7 +1898,7 @@ const GOOGLE_CLIENT_ID = '328753347113-pm103e847sq15r21d1tj5rpu2vubg4dh.apps.goo
 
 // ★ STRIPE: Paste your Stripe Payment Link URL below after creating it in the Stripe dashboard
 // Example: 'https://buy.stripe.com/test_abc123xyz'
-// Steps: stripe.com/dashboard → Payment Links → + New → Recurring $15/month → Copy link URL
+// Steps: stripe.com/dashboard → Payment Links → + New → Recurring $19/month → Copy link URL
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/9B6dRbcsn3VA0uc8x887K00';
 // ★ GIFT: Set a separate Stripe link for gifting, or leave as STRIPE_PAYMENT_LINK to reuse the same one
 const STRIPE_GIFT_LINK = STRIPE_PAYMENT_LINK;
@@ -1921,7 +1921,7 @@ function canUsePractice() { return isAdmin || checkPremiumStatus() || getPractic
 function showPracticePaywall(type) {
   const used  = type === 'mock' ? getMockMonthCount()     : getPracticeMonthCount();
   const limit = type === 'mock' ? FREE_MOCK_MONTH_LIMIT   : FREE_PRACTICE_MONTH_LIMIT;
-  showToast(`You've used ${used}/${limit} free ${type === 'mock' ? 'mock papers' : 'practice questions'} this month. Subscribe for S$15/mo for unlimited access. 🎓`, 4500);
+  showToast(`You've used ${used}/${limit} free ${type === 'mock' ? 'mock papers' : 'practice questions'} this month. Subscribe for S$19/mo for unlimited access. 🎓`, 4500);
   setTimeout(showUpgrade, 600);
 }
 
@@ -4184,7 +4184,7 @@ function checkNudge(type) {
   if (type === 'typed' && count === 3 && !_nudgeSoftShownTyped) {
     _nudgeSoftShownTyped = true;
     document.getElementById('nudgeText').innerHTML =
-      `Students with unlimited access average <strong>40% more practice time</strong> — S$15/month, cancel anytime`;
+      `Students with unlimited access average <strong>40% more practice time</strong> — S$19/month, cancel anytime`;
     document.getElementById('nudgeBar').classList.add('show');
     return;
   }
@@ -4389,7 +4389,7 @@ async function startStripeCheckout() {
     // fall through to static payment link
   } finally {
     btn.disabled = false;
-    if (btnLabel) btnLabel.textContent = 'Subscribe S$15/month';
+    if (btnLabel) btnLabel.textContent = 'Subscribe S$19/month';
   }
 
   // Fallback: static Stripe payment link
@@ -5622,7 +5622,7 @@ if (_origRenderProgress2) {
 
     if (currentUser && !checkPremiumStatus()) {
       // Logged-in free user → pitch upgrade
-      body.textContent = 'You\'ve got questions left today. Unlimited access means no limits — ever. Subscribe from S$15/month, auto-cancels when you graduate.';
+      body.textContent = 'You\'ve got questions left today. Unlimited access means no limits — ever. Subscribe from S$19/month, auto-cancels when you graduate.';
       ctaBtn.textContent = 'Unlock Unlimited Access →';
       ctaBtn.onclick = () => { closeModal('exitIntentModal'); showUpgrade(); };
     } else if (!currentUser) {
@@ -6051,8 +6051,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const used = getMockMonthCount(), limit = FREE_MOCK_MONTH_LIMIT;
     const rem = Math.max(0, limit - used);
     note.textContent = rem > 0
-      ? `${rem} free paper${rem !== 1 ? 's' : ''} remaining this month · Subscribe S$15/mo for unlimited`
-      : 'Monthly limit reached — subscribe S$15/mo for unlimited papers';
+      ? `${rem} free paper${rem !== 1 ? 's' : ''} remaining this month · Subscribe S$19/mo for unlimited`
+      : 'Monthly limit reached — subscribe S$19/mo for unlimited papers';
     if (rem === 0) note.style.color = '#dc2626';
   }
   refreshMockNote();
