@@ -59,8 +59,9 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
-    if (body.action === 'saveProgress') return saveProgress(body);
-    if (body.action === 'saveFeedback') return saveFeedback(body);
+    if (body.action === 'saveProgress')           return saveProgress(body);
+    if (body.action === 'saveFeedback')           return saveFeedback(body);
+    if (body.action === 'sendLowConfidenceAlert') return sendLowConfidenceAlert(body);
     return ContentService
       .createTextOutput(JSON.stringify({ error: 'Unknown action: ' + (body.action || 'none') }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -69,6 +70,60 @@ function doPost(e) {
       .createTextOutput(JSON.stringify({ error: err.message || 'Invalid request' }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+// ── Send low-confidence alert email to the script owner ──────────
+// Called by evaluate.js after a batch run when any question scores ≤ 4/8.
+// Emails a summary with question IDs, topics, scores, and reasoning.
+function sendLowConfidenceAlert(body) {
+  if (body.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const flagged = Array.isArray(body.flagged) ? body.flagged : [];
+  if (flagged.length === 0) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true, skipped: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ownerEmail = Session.getEffectiveUser().getEmail();
+  const runId      = body.runId || 'unknown';
+  const total      = body.total || flagged.length;
+
+  // Build email body
+  const lines = [
+    'HAN Accuracy Alert — ' + flagged.length + ' low-confidence response(s) flagged',
+    'Run ID: ' + runId,
+    'Questions in this run: ' + total,
+    '',
+    '── Flagged Questions (' + flagged.length + ') ──',
+    '',
+  ];
+
+  flagged.forEach(function(q, i) {
+    lines.push((i + 1) + '. ' + q.questionId + ' · ' + (q.level || '') + ' · ' + (q.topic || ''));
+    lines.push('   Overall: ' + q.pct + '% | Exam-safe: ' + q.examSafePct + '%');
+    if (q.reasoning) lines.push('   Judge: ' + q.reasoning);
+    lines.push('');
+  });
+
+  lines.push('Review these in the Evaluation sheet and consider updating the Questions bank or system prompt.');
+  lines.push('');
+  lines.push('— HAN Admin · askhanyong.com');
+
+  GmailApp.sendEmail(
+    ownerEmail,
+    'HAN: ' + flagged.length + ' low-confidence question(s) flagged (run ' + runId + ')',
+    lines.join('\n'),
+    { name: 'HAN Accuracy Monitor' }
+  );
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true, alertSentTo: ownerEmail, flaggedCount: flagged.length }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 // ── Save user feedback to the Feedback sheet, photos to Drive ────
@@ -784,10 +839,21 @@ function getUser(params) {
 
 // Evaluation sheet headers:
 // Question ID | Level | Topic | Subtopic | Marks | Difficulty |
-// Pct | ScoreJSON | Reasoning | EvaluatedAt
+// Pct | ExamSafePct | LowConfidence | ScoreJSON | Reasoning | EvaluatedAt
+//
+// ExamSafePct  = (final_answer + method + mark_scheme) / 6 × 100
+//                The "exam-safe" composite: would an IB examiner award full marks?
+// LowConfidence = true when total score ≤ 4/8 — flagged for human review
 const EVAL_HEADERS = [
   'Question ID', 'Level', 'Topic', 'Subtopic', 'Marks', 'Difficulty',
-  'Pct', 'ScoreJSON', 'Reasoning', 'EvaluatedAt'
+  'Pct', 'ExamSafePct', 'LowConfidence', 'ScoreJSON', 'Reasoning', 'EvaluatedAt'
+];
+
+// EvalHistory sheet — append-only archive of every evaluation run.
+// Used to track improvement over time and powers the marketing repository.
+const EVAL_HISTORY_HEADERS = [
+  'RunId', 'Question ID', 'Level', 'Topic', 'Subtopic', 'Marks', 'Difficulty',
+  'Pct', 'ExamSafePct', 'LowConfidence', 'ScoreJSON', 'Reasoning', 'EvaluatedAt'
 ];
 
 function getOrCreateEvalSheet() {
@@ -796,6 +862,27 @@ function getOrCreateEvalSheet() {
   if (!sheet) {
     sheet = ss.insertSheet('Evaluation');
     sheet.getRange(1, 1, 1, EVAL_HEADERS.length).setValues([EVAL_HEADERS]);
+    sheet.setFrozenRows(1);
+  } else {
+    // Migrate: add any columns that exist in EVAL_HEADERS but not in the sheet
+    const existing = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    EVAL_HEADERS.forEach(function(h) {
+      if (existing.indexOf(h) === -1) {
+        const nextCol = sheet.getLastColumn() + 1;
+        sheet.getRange(1, nextCol).setValue(h);
+        existing.push(h);
+      }
+    });
+  }
+  return sheet;
+}
+
+function getOrCreateEvalHistorySheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('EvalHistory');
+  if (!sheet) {
+    sheet = ss.insertSheet('EvalHistory');
+    sheet.getRange(1, 1, 1, EVAL_HISTORY_HEADERS.length).setValues([EVAL_HISTORY_HEADERS]);
     sheet.setFrozenRows(1);
   }
   return sheet;
@@ -877,6 +964,7 @@ function getEvalQuestions(params) {
 }
 
 // ── Save a single evaluation result to the Evaluation sheet ──────
+// Also appends to EvalHistory (append-only marketing repository).
 function saveEvalResult(params) {
   if (params.secret !== getAdminSecret()) {
     return ContentService
@@ -884,12 +972,51 @@ function saveEvalResult(params) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  const sheet = getOrCreateEvalSheet();
-  const rows  = sheet.getDataRange().getValues();
-  // Find existing row for this questionId + level (to update rather than duplicate)
-  const idx = rows.findIndex((r, i) => i > 0 && r[0] === params.questionId && r[1] === params.level);
+  const sheet   = getOrCreateEvalSheet();
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const col     = function(name) { return headers.indexOf(name); };
 
-  const newRow = [
+  // Build a full-width row array keyed by header position
+  const ncols  = headers.length;
+  const newRow = new Array(ncols).fill('');
+
+  const now = params.evaluatedAt || new Date().toISOString();
+  const fieldMap = {
+    'Question ID':   params.questionId  || '',
+    'Level':         params.level       || '',
+    'Topic':         params.topic       || '',
+    'Subtopic':      params.subtopic    || '',
+    'Marks':         params.marks       || '',
+    'Difficulty':    params.difficulty  || '',
+    'Pct':           params.pct         || '0',
+    'ExamSafePct':   params.examSafePct || '0',
+    'LowConfidence': params.lowConfidence || 'false',
+    'ScoreJSON':     params.scoreJson   || '{}',
+    'Reasoning':     params.reasoning   || '',
+    'EvaluatedAt':   now,
+  };
+
+  for (const [header, value] of Object.entries(fieldMap)) {
+    const c = col(header);
+    if (c !== -1) newRow[c] = value;
+  }
+
+  const rows = sheet.getDataRange().getValues();
+  // Update existing row (same questionId + level) or append
+  const idx = rows.findIndex(function(r, i) {
+    return i > 0 && r[col('Question ID')] === params.questionId && r[col('Level')] === params.level;
+  });
+
+  if (idx > -1) {
+    sheet.getRange(idx + 1, 1, 1, ncols).setValues([newRow]);
+  } else {
+    sheet.appendRow(newRow);
+  }
+
+  // ── Append to EvalHistory (never overwrite — full run archive) ──
+  const historySheet = getOrCreateEvalHistorySheet();
+  const histRow = [
+    params.runId       || '',
     params.questionId  || '',
     params.level       || '',
     params.topic       || '',
@@ -897,16 +1024,13 @@ function saveEvalResult(params) {
     params.marks       || '',
     params.difficulty  || '',
     params.pct         || '0',
+    params.examSafePct || '0',
+    params.lowConfidence || 'false',
     params.scoreJson   || '{}',
     params.reasoning   || '',
-    params.evaluatedAt || new Date().toISOString(),
+    now,
   ];
-
-  if (idx > -1) {
-    sheet.getRange(idx + 1, 1, 1, newRow.length).setValues([newRow]);
-  } else {
-    sheet.appendRow(newRow);
-  }
+  historySheet.appendRow(histRow);
 
   return ContentService
     .createTextOutput(JSON.stringify({ success: true }))
@@ -914,9 +1038,14 @@ function saveEvalResult(params) {
 }
 
 // ── Aggregate accuracy metrics for the public badge ──────────────
-// Returns: overall %, by level (HL/SL), by topic, question count, last evaluated date
+// Returns: overall %, exam-safe accuracy (marketing stat), by level/topic/dimension,
+//          question count, total evaluations (from EvalHistory), last evaluated date.
+//
+// "Exam-safe" definition: ExamSafePct ≥ 83% — i.e. ≥5/6 on the three IB mark-bearing
+// dimensions (final_answer + method + mark_scheme). This is the defensible marketing stat:
+// "X% of questions solved to exam-safe standard, based on N+ questions tested."
 function getAccuracyMetrics(params) {
-  // Public endpoint — no secret required, but accept secret for admin parity
+  // Public endpoint — no secret required
   const sheet = getOrCreateEvalSheet();
   const rows  = sheet.getDataRange().getValues();
 
@@ -924,53 +1053,73 @@ function getAccuracyMetrics(params) {
     return ContentService
       .createTextOutput(JSON.stringify({
         overall: null,
+        examSafeAccuracy: null,
+        examSafeCount: 0,
         questionCount: 0,
+        totalEvaluations: 0,
         byLevel: {},
         byTopic: {},
+        byDimension: {},
         lastEvaluated: null,
         message: 'No evaluation data yet. Run an evaluation first.',
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  const headers    = rows[0];
-  const iId        = headers.indexOf('Question ID');
-  const iLevel     = headers.indexOf('Level');
-  const iTopic     = headers.indexOf('Topic');
-  const iPct       = headers.indexOf('Pct');
-  const iScoreJson = headers.indexOf('ScoreJSON');
-  const iDate      = headers.indexOf('EvaluatedAt');
+  const headers        = rows[0];
+  const iId            = headers.indexOf('Question ID');
+  const iLevel         = headers.indexOf('Level');
+  const iTopic         = headers.indexOf('Topic');
+  const iPct           = headers.indexOf('Pct');
+  const iExamSafePct   = headers.indexOf('ExamSafePct');
+  const iLowConfidence = headers.indexOf('LowConfidence');
+  const iScoreJson     = headers.indexOf('ScoreJSON');
+  const iDate          = headers.indexOf('EvaluatedAt');
 
   const DIM_MAXES = { final_answer: 2, method: 2, mark_scheme: 2, ib_presentation: 1, examiner_note: 1 };
-  const allPcts      = [];
-  const levelBuckets = {};
-  const topicBuckets = {};
-  const dimBuckets   = { final_answer: [], method: [], mark_scheme: [], ib_presentation: [], examiner_note: [] };
-  let lastEvaluated  = null;
+  const allPcts          = [];
+  const allExamSafePcts  = [];
+  const levelBuckets     = {};
+  const topicBuckets     = {};
+  const dimBuckets       = { final_answer: [], method: [], mark_scheme: [], ib_presentation: [], examiner_note: [] };
+  let lastEvaluated      = null;
+  let examSafeCount      = 0;
+  let lowConfidenceCount = 0;
 
   for (let i = 1; i < rows.length; i++) {
-    const r    = rows[i];
+    const r = rows[i];
     if (!r[iId]) continue;
-    const pct   = parseInt(r[iPct] || '0', 10);
-    const level = r[iLevel] || 'MAA HL';
-    const topic = r[iTopic] || 'Other';
-    const dated = r[iDate]  || '';
+
+    const pct          = parseInt(r[iPct] || '0', 10);
+    const examSafePct  = iExamSafePct >= 0 ? parseInt(r[iExamSafePct] || '0', 10) : Math.round(pct * 6 / 8); // fallback estimate
+    const level        = r[iLevel] || 'MAA HL';
+    const topic        = r[iTopic] || 'Other';
+    const dated        = r[iDate]  || '';
+    const isLowConf    = iLowConfidence >= 0 && r[iLowConfidence] === 'true';
 
     allPcts.push(pct);
+    allExamSafePcts.push(examSafePct);
 
-    if (!levelBuckets[level]) levelBuckets[level] = [];
-    levelBuckets[level].push(pct);
+    if (examSafePct >= 83) examSafeCount++;
+    if (isLowConf) lowConfidenceCount++;
 
-    if (!topicBuckets[topic]) topicBuckets[topic] = [];
-    topicBuckets[topic].push(pct);
+    if (!levelBuckets[level]) levelBuckets[level] = { pcts: [], examSafePcts: [], examSafeCount: 0 };
+    levelBuckets[level].pcts.push(pct);
+    levelBuckets[level].examSafePcts.push(examSafePct);
+    if (examSafePct >= 83) levelBuckets[level].examSafeCount++;
+
+    if (!topicBuckets[topic]) topicBuckets[topic] = { pcts: [], examSafePcts: [], examSafeCount: 0 };
+    topicBuckets[topic].pcts.push(pct);
+    topicBuckets[topic].examSafePcts.push(examSafePct);
+    if (examSafePct >= 83) topicBuckets[topic].examSafeCount++;
 
     if (!lastEvaluated || dated > lastEvaluated) lastEvaluated = dated;
 
-    // Parse per-dimension scores from ScoreJSON column
+    // Per-dimension breakdown from ScoreJSON
     if (iScoreJson >= 0 && r[iScoreJson]) {
       try {
         const scores = JSON.parse(r[iScoreJson]);
-        Object.keys(DIM_MAXES).forEach(dim => {
+        Object.keys(DIM_MAXES).forEach(function(dim) {
           if (scores[dim] !== undefined && scores[dim] !== null) {
             dimBuckets[dim].push(Number(scores[dim]));
           }
@@ -979,17 +1128,36 @@ function getAccuracyMetrics(params) {
     }
   }
 
-  const avg    = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length * 10) / 10 : null;
-  const avgPct = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+  const avg    = function(arr) { return arr.length ? Math.round(arr.reduce(function(a, b) { return a + b; }, 0) / arr.length * 10) / 10 : null; };
+  const avgPct = function(arr) { return arr.length ? Math.round(arr.reduce(function(a, b) { return a + b; }, 0) / arr.length) : null; };
 
   const byLevel = {};
-  for (const [k, v] of Object.entries(levelBuckets)) byLevel[k] = { avg: avgPct(v), count: v.length };
+  for (const k in levelBuckets) {
+    const v = levelBuckets[k];
+    byLevel[k] = {
+      avg:              avgPct(v.pcts),
+      examSafeAvg:      avgPct(v.examSafePcts),
+      examSafeAccuracy: v.pcts.length ? Math.round(v.examSafeCount / v.pcts.length * 100) : null,
+      count:            v.pcts.length,
+      examSafeCount:    v.examSafeCount,
+    };
+  }
 
   const byTopic = {};
-  for (const [k, v] of Object.entries(topicBuckets)) byTopic[k] = { avg: avgPct(v), count: v.length };
+  for (const k in topicBuckets) {
+    const v = topicBuckets[k];
+    byTopic[k] = {
+      avg:              avgPct(v.pcts),
+      examSafeAvg:      avgPct(v.examSafePcts),
+      examSafeAccuracy: v.pcts.length ? Math.round(v.examSafeCount / v.pcts.length * 100) : null,
+      count:            v.pcts.length,
+      examSafeCount:    v.examSafeCount,
+    };
+  }
 
   const byDimension = {};
-  for (const [dim, max] of Object.entries(DIM_MAXES)) {
+  for (const dim in DIM_MAXES) {
+    const max  = DIM_MAXES[dim];
     const vals = dimBuckets[dim];
     byDimension[dim] = {
       avg:   avg(vals),
@@ -999,10 +1167,26 @@ function getAccuracyMetrics(params) {
     };
   }
 
+  // Count total evaluations ever run (from EvalHistory — the marketing repository)
+  let totalEvaluations = allPcts.length; // fallback = same as questionCount
+  try {
+    const histSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('EvalHistory');
+    if (histSheet && histSheet.getLastRow() > 1) {
+      totalEvaluations = histSheet.getLastRow() - 1; // exclude header
+    }
+  } catch(e) {}
+
+  // examSafeAccuracy: % of unique questions passing exam-safe threshold (the marketing number)
+  const examSafeAccuracy = allPcts.length ? Math.round(examSafeCount / allPcts.length * 100) : null;
+
   return ContentService
     .createTextOutput(JSON.stringify({
-      overall:       avgPct(allPcts),
-      questionCount: allPcts.length,
+      overall:          avgPct(allPcts),
+      examSafeAccuracy,          // Marketing stat: "X% exam-safe"
+      examSafeCount,             // Count of passing questions
+      questionCount:    allPcts.length,     // Unique questions evaluated (for "based on N+ questions")
+      totalEvaluations,          // All-time evaluation count (from EvalHistory)
+      lowConfidenceCount,        // Questions flagged for human review
       byLevel,
       byTopic,
       byDimension,

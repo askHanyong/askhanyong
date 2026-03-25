@@ -88,6 +88,58 @@ Return exactly this JSON:
 }`;
 }
 
+// ── HTTP helper — POST to GAS (for large payloads like alert data) ──
+function gasPost(data) {
+  return new Promise((resolve, reject) => {
+    const url  = new URL(GAS_URL);
+    const body = Buffer.from(JSON.stringify(data), 'utf8');
+
+    const req = https.request({
+      hostname: url.hostname,
+      path:     url.pathname + url.search,
+      method:   'POST',
+      headers: {
+        'Content-Type':   'application/json',
+        'Content-Length': body.length,
+      },
+    }, (res) => {
+      // Follow redirect (GAS web apps always redirect once)
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        const loc = new URL(res.headers.location);
+        const r2 = https.request({
+          hostname: loc.hostname,
+          path:     loc.pathname + loc.search,
+          method:   'POST',
+          headers: {
+            'Content-Type':   'application/json',
+            'Content-Length': body.length,
+          },
+        }, (res2) => {
+          const chunks = [];
+          res2.on('data', c => chunks.push(c));
+          res2.on('end', () => {
+            try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
+            catch (e) { resolve({}); }
+          });
+        });
+        r2.on('error', reject);
+        r2.write(body);
+        r2.end();
+        return;
+      }
+      const chunks = [];
+      res.on('data', c => chunks.push(c));
+      res.on('end', () => {
+        try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
+        catch (e) { resolve({}); }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
 // ── HTTP helper — call Anthropic API (non-streaming) ─────────────
 function callAnthropic(model, systemPrompt, userMessage, maxTokens) {
   return new Promise((resolve, reject) => {
@@ -187,6 +239,12 @@ async function evaluateQuestion(q) {
     scores = { final_answer: 0, method: 0, mark_scheme: 0, ib_presentation: 0, examiner_note: 0, total: 0, reasoning: 'Parse error: ' + judgeRaw.slice(0, 100) };
   }
 
+  // Composite scores
+  const examSafeScore = (scores.final_answer || 0) + (scores.method || 0) + (scores.mark_scheme || 0);
+  const examSafePct   = Math.round((examSafeScore / 6) * 100);
+  // Low-confidence: ≤50% overall (≤4/8) — likely needs human review
+  const lowConfidence = scores.total <= 4;
+
   return {
     questionId:    q.questionId,
     level:         levelLabel,
@@ -197,6 +255,9 @@ async function evaluateQuestion(q) {
     hanResponse,
     scores,
     pct:           Math.round((scores.total / 8) * 100),
+    examSafeScore,
+    examSafePct,
+    lowConfidence,
     evaluatedAt:   new Date().toISOString(),
   };
 }
@@ -280,6 +341,9 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, evaluated: 0, message: 'No questions with gold answers found. Add Gold Answer + Key Steps to the Questions sheet first.' }) };
   }
 
+  // Unique ID for this evaluation run (used in EvalHistory for tracking)
+  const runId = new Date().toISOString().replace(/[:.]/g, '-');
+
   // Evaluate each question (sequentially to avoid rate limits)
   const results = [];
   const errors  = [];
@@ -292,18 +356,21 @@ exports.handler = async (event) => {
       // Save each result to GAS immediately so partial runs are persisted
       try {
         await gasGet({
-          action:     'saveEvalResult',
-          secret:     GAS_SECRET,
-          questionId: result.questionId,
-          level:      result.level,
-          topic:      result.topic,
-          subtopic:   result.subtopic,
-          marks:      result.marks,
-          difficulty: result.difficulty,
-          pct:        String(result.pct),
-          scoreJson:  JSON.stringify(result.scores),
-          reasoning:  result.scores.reasoning || '',
-          evaluatedAt: result.evaluatedAt,
+          action:       'saveEvalResult',
+          secret:       GAS_SECRET,
+          questionId:   result.questionId,
+          level:        result.level,
+          topic:        result.topic,
+          subtopic:     result.subtopic,
+          marks:        result.marks,
+          difficulty:   result.difficulty,
+          pct:          String(result.pct),
+          examSafePct:  String(result.examSafePct),
+          lowConfidence: result.lowConfidence ? 'true' : 'false',
+          scoreJson:    JSON.stringify(result.scores),
+          reasoning:    result.scores.reasoning || '',
+          evaluatedAt:  result.evaluatedAt,
+          runId,
         });
       } catch (saveErr) {
         errors.push({ questionId: q.questionId, phase: 'save', error: saveErr.message });
@@ -313,9 +380,34 @@ exports.handler = async (event) => {
     }
   }
 
+  // Send low-confidence alert to admin if any questions flagged
+  const lowConfidenceResults = results.filter(r => r.lowConfidence);
+  if (lowConfidenceResults.length > 0) {
+    try {
+      await gasPost({
+        action:  'sendLowConfidenceAlert',
+        secret:  GAS_SECRET,
+        runId,
+        total:   results.length,
+        flagged: lowConfidenceResults.map(r => ({
+          questionId:  r.questionId,
+          level:       r.level,
+          topic:       r.topic,
+          pct:         r.pct,
+          examSafePct: r.examSafePct,
+          reasoning:   r.scores.reasoning || '',
+        })),
+      });
+    } catch (alertErr) {
+      errors.push({ phase: 'alert', error: alertErr.message });
+    }
+  }
+
   // Compute summary
-  const pcts   = results.map(r => r.pct);
-  const avgPct = pcts.length ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : 0;
+  const pcts            = results.map(r => r.pct);
+  const avgPct          = pcts.length ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : 0;
+  const examSafeCount   = results.filter(r => r.examSafePct >= 83).length;
+  const examSafeAccuracyPct = results.length ? Math.round((examSafeCount / results.length) * 100) : 0;
 
   // Group by level
   const byLevel = {};
@@ -332,17 +424,23 @@ exports.handler = async (event) => {
     statusCode: 200,
     headers: CORS,
     body: JSON.stringify({
-      ok:         true,
-      evaluated:  results.length,
-      errors:     errors.length,
+      ok:                   true,
+      runId,
+      evaluated:            results.length,
+      errors:               errors.length,
       avgPct,
-      byLevel:    levelSummary,
-      results:    results.map(r => ({
-        questionId: r.questionId,
-        level:      r.level,
-        topic:      r.topic,
-        pct:        r.pct,
-        scores:     r.scores,
+      examSafeAccuracyPct,
+      examSafeCount,
+      lowConfidenceFlagged: lowConfidenceResults.length,
+      byLevel:              levelSummary,
+      results:              results.map(r => ({
+        questionId:   r.questionId,
+        level:        r.level,
+        topic:        r.topic,
+        pct:          r.pct,
+        examSafePct:  r.examSafePct,
+        lowConfidence: r.lowConfidence,
+        scores:       r.scores,
       })),
       errorDetails: errors,
     }),

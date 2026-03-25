@@ -69,6 +69,46 @@ For example, for v = 3cos(0.4t) + 0.25t - 1.5, output:
 \`\`\`
 Always choose bounds that show the full relevant domain of the function.`;
 
+// ── Real-time confidence heuristic ───────────────────────────────
+// Inspects the last user message for patterns associated with higher error rates
+// in batch evaluation. Emits X-HAN-Confidence: low|normal response header.
+// Client can read this before consuming the stream to show a "verify answer" badge.
+//
+// Patterns drawn from low-scoring batch eval observations:
+//   - Very short/vague prompts (< 25 chars of math content)
+//   - Known high-error-rate topics: Voronoi, Maclaurin/Taylor, complex-number proof,
+//     epsilon-delta, proof by induction combined with complex algebra
+const LOW_CONFIDENCE_PATTERNS = [
+  /\bvoronoi\b/i,
+  /\bmaclaurin\b/i,
+  /\btaylor\s+series\b/i,
+  /\bepsilon[-\s]delta\b/i,
+  /\bproof\s+by\s+induction\b.*\bcomplex\b/i,
+  /\bcomplex\b.*\bproof\s+by\s+induction\b/i,
+  /\bde\s+moivre\b/i,
+  /\binfinite\s+series\b/i,
+];
+
+function estimateConfidence(messages) {
+  // Find the last user message
+  const lastUser = Array.isArray(messages)
+    ? [...messages].reverse().find(function(m) { return m.role === 'user'; })
+    : null;
+  if (!lastUser) return 'normal';
+
+  const text = typeof lastUser.content === 'string'
+    ? lastUser.content
+    : JSON.stringify(lastUser.content);
+
+  // Very short questions are often ambiguous / missing context
+  if (text.trim().length < 25) return 'low';
+
+  for (const pattern of LOW_CONFIDENCE_PATTERNS) {
+    if (pattern.test(text)) return 'low';
+  }
+  return 'normal';
+}
+
 // ── Server-side limits ────────────────────────────────────────────
 const PINNED_MODEL      = 'claude-sonnet-4-6'; // enforced server-side
 const MAX_TOKENS        = 2000;                        // cap regardless of client request
@@ -160,8 +200,9 @@ export default async (request) => {
     );
   }
 
-  // Pin model and max_tokens server-side — ignore whatever client sends
+  // Estimate confidence before proxying — used to set response header
   const messages = Array.isArray(requestBody.messages) ? requestBody.messages : [];
+  const confidenceLevel = estimateConfidence(messages);
 
   // Cap conversation history to prevent inflated input tokens
   const cappedMessages = messages.length > MAX_HISTORY_TURNS * 2
@@ -200,10 +241,14 @@ export default async (request) => {
 
   return new Response(claudeResponse.body, {
     headers: {
-      'Content-Type':          'text/event-stream',
-      'Cache-Control':         'no-cache',
-      'X-Accel-Buffering':     'no',
-      'Access-Control-Allow-Origin': '*',
+      'Content-Type':                    'text/event-stream',
+      'Cache-Control':                   'no-cache',
+      'X-Accel-Buffering':               'no',
+      'Access-Control-Allow-Origin':     '*',
+      // Expose confidence header so client JS can read it before consuming the stream.
+      // Usage: const conf = response.headers.get('X-HAN-Confidence'); // 'low' | 'normal'
+      'X-HAN-Confidence':                confidenceLevel,
+      'Access-Control-Expose-Headers':   'X-HAN-Confidence',
     },
   });
 };
