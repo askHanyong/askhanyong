@@ -4826,12 +4826,13 @@ async function downloadAnswerPDF(triggerBtn) {
       results.forEach(r => { if (r) graphScreenshots[r.id] = r.dataUrl; });
     }
 
-    // Build answer HTML: use post-MathJax rendered HTML (SVGs are self-contained with fontCache:'none')
+    // Build answer HTML from pre-MathJax rawHtml (LaTeX delimiters intact) so the
+    // popup window can typeset math fresh — avoids SVG cross-window transfer issues.
     let answerHtml;
-    if (bubble) {
-      const srcHtml = bubble.innerHTML;
+    const pdfSrc = (bubble && bubble.dataset.rawHtml) ? bubble.dataset.rawHtml : null;
+    if (pdfSrc) {
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = srcHtml;
+      tempDiv.innerHTML = pdfSrc;
       // Replace each Desmos container with a screenshot image or a placeholder
       tempDiv.querySelectorAll('.desmos-container').forEach(container => {
         const frame = container.querySelector('.desmos-frame');
@@ -4845,7 +4846,7 @@ async function downloadAnswerPDF(triggerBtn) {
         container.replaceWith(replacement);
       });
       // Remove non-content UI elements
-      tempDiv.querySelectorAll('.download-btn,.share-btn,.try-next-bar,.feedback-bar,.similar-btn,.self-assess').forEach(el => el.remove());
+      tempDiv.querySelectorAll('.download-btn,.share-btn,.try-next-bar,.feedback-bar,.similar-btn,.self-assess,.self-assess-bar,.sa-done').forEach(el => el.remove());
       answerHtml = tempDiv.innerHTML;
     } else {
       // Fallback: re-render from raw history (no graphs captured)
@@ -4885,10 +4886,9 @@ body{font-family:Georgia,serif;font-size:11pt;color:#111827;padding:18mm 20mm;ma
 .latex-display{display:block;text-align:center;margin:10px 0;overflow-x:auto}
 .latex-inline{display:inline}
 code.math-block{font-family:monospace;background:#f3f4f6;padding:1px 4px;border-radius:3px}
-mjx-container[jax="SVG"]{direction:ltr}
-mjx-container[jax="SVG"] > svg{overflow:visible;min-height:1px}
-mjx-container[jax="SVG"][display="true"]{display:block;text-align:center;margin:0.5em 0}
-mjx-container[jax="SVG"][display="true"][width="full"]{display:flex}
+mjx-container{display:inline-block;line-height:0}
+mjx-container[display="true"]{display:block;text-align:center;margin:0.75em 0;line-height:1}
+mjx-container > svg{overflow:visible}
 .print-footer{margin-top:24px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:7.5pt;color:#9ca3af;font-family:Arial,sans-serif;text-align:center}
 @media print{body{padding:10mm 14mm}@page{margin:10mm}}
 </style></head><body>
@@ -4906,8 +4906,21 @@ ${questionHtml ? `<div class="question-box"><div class="question-label">Question
 </body></html>`);
     pw.document.close();
 
-    // Math is already rendered as self-contained SVG — just let the page paint then print
-    setTimeout(() => { pw.focus(); pw.print(); }, 400);
+    // Inject MathJax via DOM after document.close() — avoids </script> inside template literal.
+    // MathJax typesets the LaTeX in rawHtml and triggers print when done.
+    const mjCfg = pw.document.createElement('script');
+    mjCfg.textContent = 'window.MathJax={tex:{inlineMath:[["\\\\(","\\\\)"],["$","$"]],displayMath:[["\\\\[","\\\\]"],["$$","$$"]],processEscapes:true},svg:{fontCache:"global"}};';
+    pw.document.head.appendChild(mjCfg);
+    const mjSrc = pw.document.createElement('script');
+    mjSrc.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js';
+    mjSrc.async = true;
+    mjSrc.onload = function() {
+      if (pw.MathJax && pw.MathJax.startup && pw.MathJax.startup.promise) {
+        pw.MathJax.startup.promise.then(function() { setTimeout(function(){ pw.focus(); pw.print(); }, 150); });
+      } else { setTimeout(function(){ pw.focus(); pw.print(); }, 500); }
+    };
+    mjSrc.onerror = function() { setTimeout(function(){ pw.focus(); pw.print(); }, 500); };
+    pw.document.head.appendChild(mjSrc);
 
     showToast('Print dialog opening — choose "Save as PDF"');
   } catch (err) {
