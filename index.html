@@ -26,8 +26,8 @@
 <meta name="twitter:image" content="https://askhanyong.com/og-preview.jpg">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script>window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['\\[','\\]'],['$$','$$']], processEscapes: true }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] } };</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script>window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['\\[','\\]'],['$$','$$']], processEscapes: true }, svg: { fontCache: 'none' }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] } };</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -4826,10 +4826,10 @@ async function downloadAnswerPDF(triggerBtn) {
       results.forEach(r => { if (r) graphScreenshots[r.id] = r.dataUrl; });
     }
 
-    // Build answer HTML: use pre-MathJax HTML so popup's MathJax can re-typeset
+    // Build answer HTML: use post-MathJax rendered HTML (SVGs are self-contained with fontCache:'none')
     let answerHtml;
     if (bubble) {
-      const srcHtml = bubble.dataset.rawHtml || bubble.innerHTML;
+      const srcHtml = bubble.innerHTML;
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = srcHtml;
       // Replace each Desmos container with a screenshot image or a placeholder
@@ -4863,8 +4863,6 @@ async function downloadAnswerPDF(triggerBtn) {
 
     pw.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
 <title>HAN's Explanation</title>
-<script>window.MathJax={tex:{inlineMath:[['\\\\(','\\\\)'],['$','$']],displayMath:[['\\\\[','\\\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre']},startup:{ready(){MathJax.startup.defaultReady();MathJax.startup.promise.then(()=>window._mjReady=true);}}};<\/script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"><\/script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Georgia,serif;font-size:11pt;color:#111827;padding:18mm 20mm;max-width:210mm;margin:0 auto}
@@ -4887,6 +4885,10 @@ body{font-family:Georgia,serif;font-size:11pt;color:#111827;padding:18mm 20mm;ma
 .latex-display{display:block;text-align:center;margin:10px 0;overflow-x:auto}
 .latex-inline{display:inline}
 code.math-block{font-family:monospace;background:#f3f4f6;padding:1px 4px;border-radius:3px}
+mjx-container[jax="SVG"]{direction:ltr}
+mjx-container[jax="SVG"] > svg{overflow:visible;min-height:1px}
+mjx-container[jax="SVG"][display="true"]{display:block;text-align:center;margin:0.5em 0}
+mjx-container[jax="SVG"][display="true"][width="full"]{display:flex}
 .print-footer{margin-top:24px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:7.5pt;color:#9ca3af;font-family:Arial,sans-serif;text-align:center}
 @media print{body{padding:10mm 14mm}@page{margin:10mm}}
 </style></head><body>
@@ -4904,12 +4906,8 @@ ${questionHtml ? `<div class="question-box"><div class="question-label">Question
 </body></html>`);
     pw.document.close();
 
-    // Wait for MathJax to finish typesetting, then print
-    const tryPrint = () => {
-      if (pw._mjReady) { pw.focus(); pw.print(); }
-      else setTimeout(tryPrint, 200);
-    };
-    setTimeout(tryPrint, 300);
+    // Math is already rendered as self-contained SVG — just let the page paint then print
+    setTimeout(() => { pw.focus(); pw.print(); }, 400);
 
     showToast('Print dialog opening — choose "Save as PDF"');
   } catch (err) {
