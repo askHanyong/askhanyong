@@ -2776,6 +2776,7 @@ function appendMessage(role, content, imageDataUrl, pdfName) {
   }
   // Typeset MathJax immediately after inserting content, then re-scroll
   if (content && window.MathJax && MathJax.typesetPromise) {
+    bubble.dataset.rawHtml = bubble.innerHTML;
     MathJax.typesetPromise([bubble]).then(() => { area.scrollTop = area.scrollHeight; }).catch(() => {});
   }
   return bubble;
@@ -2972,7 +2973,9 @@ function formatResponse(text) {
   });
   const latexBlocks = [];
   html = html.replace(/\\\[[\s\S]*?\\\]/g, m => { latexBlocks.push(m); return `%%LB${latexBlocks.length - 1}%%`; });
+  html = html.replace(/\$\$[\s\S]*?\$\$/g, m => { latexBlocks.push(m); return `%%LB${latexBlocks.length - 1}%%`; });
   html = html.replace(/\\\([\s\S]*?\\\)/g, m => { latexBlocks.push(m); return `%%LB${latexBlocks.length - 1}%%`; });
+  html = html.replace(/(?<!\$)\$(?!\$)([^\$\n]+)\$(?!\$)/g, m => { latexBlocks.push(m); return `%%LB${latexBlocks.length - 1}%%`; });
   // Parse structured examiner marking blocks
   html = html.replace(/---EXAMINER MARKING---\r?\n([\s\S]*?)\r?\n---END MARKING---/g, function(match, content) {
     const escH = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -3024,7 +3027,7 @@ function formatResponse(text) {
   html = html.replace(/\n{2,}/g, '<br><br>');
   html = html.replace(/\n/g, '<br>');
   latexBlocks.forEach((latex, i) => {
-    const isDisplay = latex.startsWith('\\[');
+    const isDisplay = latex.startsWith('\\[') || latex.startsWith('$$');
     html = html.replace(`%%LB${i}%%`, isDisplay ? `<div class="latex-display">${latex}</div>` : `<span class="latex-inline">${latex}</span>`);
   });
   return html;
@@ -3292,6 +3295,7 @@ function finalizeStreamingBubble(bubble, fullText) {
   setTimeout(() => addDownloadBtn(bubble), 320);
   setTimeout(() => addTryNextSuggestions(bubble), 350);
   if (window.MathJax && MathJax.typesetPromise) {
+    bubble.dataset.rawHtml = bubble.innerHTML;
     MathJax.typesetPromise([bubble]).then(() => { area.scrollTop = area.scrollHeight; }).catch(() => {});
   }
 }
@@ -4822,12 +4826,14 @@ async function downloadAnswerPDF(triggerBtn) {
       results.forEach(r => { if (r) graphScreenshots[r.id] = r.dataUrl; });
     }
 
-    // Build answer HTML: use bubble's rendered HTML with Desmos replaced by screenshots
+    // Build answer HTML: use pre-MathJax HTML so popup's MathJax can re-typeset
     let answerHtml;
     if (bubble) {
-      const clone = bubble.cloneNode(true);
+      const srcHtml = bubble.dataset.rawHtml || bubble.innerHTML;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = srcHtml;
       // Replace each Desmos container with a screenshot image or a placeholder
-      clone.querySelectorAll('.desmos-container').forEach(container => {
+      tempDiv.querySelectorAll('.desmos-container').forEach(container => {
         const frame = container.querySelector('.desmos-frame');
         const dataUrl = frame && graphScreenshots[frame.id];
         const replacement = document.createElement('div');
@@ -4839,8 +4845,8 @@ async function downloadAnswerPDF(triggerBtn) {
         container.replaceWith(replacement);
       });
       // Remove non-content UI elements
-      clone.querySelectorAll('.download-btn,.share-btn,.try-next-bar,.feedback-bar,.similar-btn,.self-assess').forEach(el => el.remove());
-      answerHtml = clone.innerHTML;
+      tempDiv.querySelectorAll('.download-btn,.share-btn,.try-next-bar,.feedback-bar,.similar-btn,.self-assess').forEach(el => el.remove());
+      answerHtml = tempDiv.innerHTML;
     } else {
       // Fallback: re-render from raw history (no graphs captured)
       const lastAssistant = [...conversationHistory].reverse().find(m => m.role === 'assistant');
