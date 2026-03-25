@@ -4864,8 +4864,8 @@ async function downloadAnswerPDF(triggerBtn) {
 
     // Template literal contains ONLY static HTML — no ${} interpolations.
     // Dynamic content (answerHtml, ctx, questionHtml) is injected via DOM after
-    // document.close() to prevent backticks or </script> in AI responses from
-    // breaking the outer <script> block.
+    // document.close() to prevent backticks or script-close tags in AI responses from
+    // breaking the outer script block.
     pw.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>HAN\u2019s Explanation</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:11pt;color:#111827;padding:18mm 20mm;max-width:210mm;margin:0 auto}.print-header{background:#0e1c33;color:#fff;padding:14px 18px;border-radius:6px;margin-bottom:16px}.print-header h1{font-size:16pt;font-weight:bold;margin-bottom:4px}.print-header .subtitle{color:#c9a84c;font-size:8.5pt;font-family:Arial,sans-serif}.print-header .meta{color:#a0b9dc;font-size:8pt;margin-top:4px;font-family:Arial,sans-serif}.gold-rule{height:2px;background:#c9a84c;margin-bottom:14px}.question-box{background:#eff6ff;border:1px solid #1d4ed8;border-radius:6px;padding:10px 14px;margin-bottom:14px}.question-label{font-size:8pt;font-weight:bold;color:#1d4ed8;font-family:Arial,sans-serif;margin-bottom:4px}.section-title{font-size:11pt;font-weight:bold;color:#0e1c33;font-family:Arial,sans-serif;margin-bottom:3px}.section-rule{height:2px;background:#c9a84c;width:60px;margin-bottom:12px}.answer-body{line-height:1.7}.answer-body h3{font-size:11pt;font-weight:bold;color:#0e1c33;margin:12px 0 4px}.answer-body strong{font-weight:bold}.step{background:#eff6ff;border-left:3px solid #1d4ed8;padding:8px 12px;margin:8px 0;border-radius:0 4px 4px 0}.step .step-num{font-weight:bold;color:#1d4ed8;font-family:Arial,sans-serif;font-size:9pt;margin-bottom:2px}.examiner-note{background:#f0fdf4;border-left:3px solid #059669;padding:8px 12px;margin:8px 0;font-style:italic;color:#166534;border-radius:0 4px 4px 0}.warning{background:#fffdc3;border-left:3px solid #f59e0b;padding:8px 12px;margin:8px 0;color:#78350f;border-radius:0 4px 4px 0}.latex-display{display:block;text-align:center;margin:10px 0;overflow-x:auto}.latex-inline{display:inline}code.math-block{font-family:monospace;background:#f3f4f6;padding:1px 4px;border-radius:3px}mjx-container{display:inline-block;line-height:0}mjx-container[display="true"]{display:block;text-align:center;margin:.75em 0;line-height:1}mjx-container>svg{overflow:visible}.print-footer{margin-top:24px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:7.5pt;color:#9ca3af;font-family:Arial,sans-serif;text-align:center}@media print{body{padding:10mm 14mm}@page{margin:10mm}}</style></head><body><div class="print-header"><h1>HAN\u2019s Explanation</h1><div class="subtitle">askHanyong \u00b7 IB Math AI Tutor \u00b7 Built on 20+ years of Mathematics teaching and IB examining</div><div id="pdf-meta" class="meta"></div></div><div class="gold-rule"></div><div id="pdf-qbox"></div><div class="section-title">HAN\u2019s Explanation</div><div class="section-rule"></div><div id="pdf-answer" class="answer-body"></div><div class="print-footer">Powered by HAN \u00b7 Built by Hanyong Lim, IB HL Mathematics Examiner \u00b7 askhanyong.com</div></body></html>');
     pw.document.close();
 
@@ -4876,7 +4876,7 @@ async function downloadAnswerPDF(triggerBtn) {
     }
     pw.document.getElementById('pdf-answer').innerHTML = answerHtml;
 
-    // Inject MathJax via createElement — no </script> tag in the template literal above
+    // Inject MathJax via createElement — safe, no script-close tag in the string above
     var mjCfg = pw.document.createElement('script');
     mjCfg.textContent = 'window.MathJax={tex:{inlineMath:[["\\\\(","\\\\)"],["$","$"]],displayMath:[["\\\\[","\\\\]"],["$$","$$"]],processEscapes:true},svg:{fontCache:"global"}};';
     pw.document.head.appendChild(mjCfg);
