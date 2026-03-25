@@ -4826,12 +4826,12 @@ async function downloadAnswerPDF(triggerBtn) {
       results.forEach(r => { if (r) graphScreenshots[r.id] = r.dataUrl; });
     }
 
-    // Build answer HTML: use post-MathJax rendered HTML (SVGs are self-contained with fontCache:'none')
+    // Build answer HTML: use pre-MathJax rawHtml so the popup window can
+    // render LaTeX fresh with its own MathJax instance (avoids SVG cross-window issues)
     let answerHtml;
-    if (bubble) {
-      const srcHtml = bubble.innerHTML;
+    if (bubble && bubble.dataset.rawHtml) {
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = srcHtml;
+      tempDiv.innerHTML = bubble.dataset.rawHtml;
       // Replace each Desmos container with a screenshot image or a placeholder
       tempDiv.querySelectorAll('.desmos-container').forEach(container => {
         const frame = container.querySelector('.desmos-frame');
@@ -4845,10 +4845,10 @@ async function downloadAnswerPDF(triggerBtn) {
         container.replaceWith(replacement);
       });
       // Remove non-content UI elements
-      tempDiv.querySelectorAll('.download-btn,.share-btn,.try-next-bar,.feedback-bar,.similar-btn,.self-assess').forEach(el => el.remove());
+      tempDiv.querySelectorAll('.download-btn,.share-btn,.try-next-bar,.feedback-bar,.similar-btn,.self-assess,.self-assess-bar,.sa-done').forEach(el => el.remove());
       answerHtml = tempDiv.innerHTML;
     } else {
-      // Fallback: re-render from raw history (no graphs captured)
+      // Fallback: re-render from raw history
       const lastAssistant = [...conversationHistory].reverse().find(m => m.role === 'assistant');
       const rawAnswer = typeof lastAssistant?.content === 'string' ? lastAssistant.content : '';
       answerHtml = formatResponse(rawAnswer);
@@ -4885,13 +4885,31 @@ body{font-family:Georgia,serif;font-size:11pt;color:#111827;padding:18mm 20mm;ma
 .latex-display{display:block;text-align:center;margin:10px 0;overflow-x:auto}
 .latex-inline{display:inline}
 code.math-block{font-family:monospace;background:#f3f4f6;padding:1px 4px;border-radius:3px}
-mjx-container[jax="SVG"]{direction:ltr}
-mjx-container[jax="SVG"] > svg{overflow:visible;min-height:1px}
-mjx-container[jax="SVG"][display="true"]{display:block;text-align:center;margin:0.5em 0}
-mjx-container[jax="SVG"][display="true"][width="full"]{display:flex}
+mjx-container{display:inline-block;line-height:0}
+mjx-container[display="true"]{display:block;text-align:center;margin:0.75em 0;line-height:1}
+mjx-container > svg{overflow:visible}
 .print-footer{margin-top:24px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:7.5pt;color:#9ca3af;font-family:Arial,sans-serif;text-align:center}
 @media print{body{padding:10mm 14mm}@page{margin:10mm}}
-</style></head><body>
+</style>
+<script>
+// Fallback: print after 5s even if MathJax fails to load
+var _printTimer = setTimeout(function(){ window.focus(); window.print(); }, 5000);
+window.MathJax = {
+  tex: { inlineMath: [['\\\\(','\\\\)'],['$','$']], displayMath: [['\\\\[','\\\\]'],['$$','$$']], processEscapes: true },
+  svg: { fontCache: 'global' },
+  startup: {
+    ready: function() {
+      MathJax.startup.defaultReady();
+      MathJax.startup.promise.then(function() {
+        clearTimeout(_printTimer);
+        setTimeout(function(){ window.focus(); window.print(); }, 150);
+      });
+    }
+  }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+</head><body>
 <div class="print-header">
   <h1>HAN's Explanation</h1>
   <div class="subtitle">askHanyong · IB Math AI Tutor · Built on 20+ years of Mathematics teaching and IB examining</div>
@@ -4905,9 +4923,6 @@ ${questionHtml ? `<div class="question-box"><div class="question-label">Question
 <div class="print-footer">Powered by HAN · Built by Hanyong Lim, IB HL Mathematics Examiner · askhanyong.com</div>
 </body></html>`);
     pw.document.close();
-
-    // Math is already rendered as self-contained SVG — just let the page paint then print
-    setTimeout(() => { pw.focus(); pw.print(); }, 400);
 
     showToast('Print dialog opening — choose "Save as PDF"');
   } catch (err) {
