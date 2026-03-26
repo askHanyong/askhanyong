@@ -43,8 +43,8 @@ const SCRIPT_MONTHLY_LIMIT = 3;
 
 // Max pages sent to Claude in a single API call.
 // Batches are run in PARALLEL so total time ≈ slowest batch, not sum of all.
-// 8 pages per batch keeps JSON output well under the max_tokens limit.
-const BATCH_SIZE = 8;
+// 4 pages per batch: ~800–1200 output tokens → typically completes in <12s.
+const BATCH_SIZE = 4;
 
 const CORS = {
   'Content-Type':                'application/json',
@@ -194,7 +194,7 @@ async function markPaper(pages, paperInfo, studentName) {
     },
     body: JSON.stringify({
       model:      MODEL,
-      max_tokens: 6000,
+      max_tokens: 3000,
       system:     buildSystemPrompt(paperInfo),
       messages:   [{ role: 'user', content }],
     }),
