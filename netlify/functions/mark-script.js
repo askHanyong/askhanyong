@@ -42,8 +42,8 @@ const HITL_THRESHOLD = 0.72;
 const SCRIPT_MONTHLY_LIMIT = 3;
 
 // Max pages sent to Claude in a single API call.
-// Large scripts are split into batches to avoid function timeouts.
-const BATCH_SIZE = 15;
+// Batches are run in PARALLEL so total time ≈ slowest batch, not sum of all.
+const BATCH_SIZE = 12;
 
 const CORS = {
   'Content-Type':                'application/json',
@@ -193,7 +193,7 @@ async function markPaper(pages, paperInfo, studentName) {
     },
     body: JSON.stringify({
       model:      MODEL,
-      max_tokens: 6000,
+      max_tokens: 4000,
       system:     buildSystemPrompt(paperInfo),
       messages:   [{ role: 'user', content }],
     }),
@@ -381,10 +381,10 @@ exports.handler = async (event) => {
       for (let i = 0; i < pages.length; i += BATCH_SIZE) {
         batches.push(pages.slice(i, i + BATCH_SIZE));
       }
-      const batchResults = [];
-      for (const batch of batches) {
-        batchResults.push(await markPaper(batch, paperInfo || {}, studentName || 'Student'));
-      }
+      // Run all batches in PARALLEL — total time = slowest batch, not sum of all
+      const batchResults = await Promise.all(
+        batches.map(batch => markPaper(batch, paperInfo || {}, studentName || 'Student'))
+      );
       result = mergeMarkingResults(batchResults);
     }
   } catch (e) {
