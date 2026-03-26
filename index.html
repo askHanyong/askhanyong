@@ -6553,18 +6553,22 @@ function toggleDarkMode() {
     const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const pages = [];
     const MAX_PAGES = 30;
+    // For large PDFs (>10 pages) reduce resolution to stay within the 6 MB
+    // Netlify request-body limit and avoid function timeouts.
+    const isLarge = pdf.numPages > 10;
+    const SCALE   = isLarge ? 1.2 : 1.8; // ~1200 vs ~1800 px wide
+    const QUALITY = isLarge ? 0.65 : 0.82;
 
     for (let i = 1; i <= Math.min(pdf.numPages, MAX_PAGES); i++) {
       const page   = await pdf.getPage(i);
-      const vp     = page.getViewport({ scale: 1.8 }); // ~1800px wide for A4
+      const vp     = page.getViewport({ scale: SCALE });
       const canvas = document.createElement('canvas');
       canvas.width  = vp.width;
       canvas.height = vp.height;
       const ctx = canvas.getContext('2d');
       await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
-      // Compress as JPEG (quality 0.82) to keep payload manageable
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      const dataUrl = canvas.toDataURL('image/jpeg', QUALITY);
       const base64  = dataUrl.split(',')[1];
       pages.push({ data: base64, mediaType: 'image/jpeg' });
     }

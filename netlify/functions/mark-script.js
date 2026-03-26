@@ -34,6 +34,10 @@ const HITL_THRESHOLD = 0.72;
 // Free-tier users cannot use this feature (subscription required)
 const SCRIPT_MONTHLY_LIMIT = 3;
 
+// Max pages sent to Claude in a single API call.
+// Large scripts are split into batches to avoid function timeouts.
+const BATCH_SIZE = 15;
+
 const CORS = {
   'Content-Type':                'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -158,7 +162,7 @@ Use exactly this structure:
 }`;
 }
 
-// ── Call Claude with paper images ─────────────────────────────────
+// ── Call Claude with a batch of paper images ──────────────────────
 async function markPaper(pages, paperInfo, studentName) {
   const textPreamble = {
     type: 'text',
@@ -182,7 +186,7 @@ async function markPaper(pages, paperInfo, studentName) {
     },
     body: JSON.stringify({
       model:      MODEL,
-      max_tokens: 4096,
+      max_tokens: 6000,
       system:     buildSystemPrompt(paperInfo),
       messages:   [{ role: 'user', content }],
     }),
@@ -204,6 +208,66 @@ async function markPaper(pages, paperInfo, studentName) {
   } catch (e) {
     throw new Error('Could not parse marking response as JSON: ' + raw.slice(0, 200));
   }
+}
+
+// ── Merge questions from multiple batch results, deduplicating parts ──
+function mergeQuestions(allQuestions) {
+  const qMap = new Map();
+  for (const q of allQuestions) {
+    const key = String(q.number);
+    if (!qMap.has(key)) {
+      qMap.set(key, { number: q.number, parts: [], questionTotal: 0, questionMax: 0 });
+    }
+    const entry = qMap.get(key);
+    for (const part of (q.parts || [])) {
+      if (!entry.parts.find(p => p.part === part.part)) {
+        entry.parts.push(part);
+      }
+    }
+    entry.questionTotal = entry.parts.reduce((s, p) => s + (p.awarded  || 0), 0);
+    entry.questionMax   = entry.parts.reduce((s, p) => s + (p.maxMarks || 0), 0);
+  }
+  return [...qMap.values()].sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
+}
+
+// ── Merge results from multiple batch calls into one cohesive result ──
+function mergeMarkingResults(batchResults) {
+  const questions = mergeQuestions(batchResults.flatMap(r => r.questions || []));
+  const total    = questions.reduce((s, q) => s + (q.questionTotal || 0), 0);
+  const maxTotal = questions.reduce((s, q) => s + (q.questionMax   || 0), 0);
+
+  // Aggregate topic performance across batches
+  const topicMap = {};
+  for (const r of batchResults) {
+    for (const t of (r.topicPerformance || [])) {
+      if (!topicMap[t.topic]) topicMap[t.topic] = { topic: t.topic, awarded: 0, max: 0 };
+      topicMap[t.topic].awarded += t.awarded || 0;
+      topicMap[t.topic].max     += t.max     || 0;
+    }
+  }
+  const topicPerformance = Object.values(topicMap).map(t => ({
+    ...t,
+    percentage: t.max > 0 ? Math.round(t.awarded / t.max * 100) : 0,
+  }));
+
+  const strengths    = [...new Set(batchResults.flatMap(r => r.strengths    || []))].slice(0, 4);
+  const improvements = [...new Set(batchResults.flatMap(r => r.improvements || []))].slice(0, 4);
+  const overallFeedback = batchResults.map(r => r.overallFeedback || '').filter(Boolean).join(' ');
+  const confidence = Math.min(...batchResults.map(r =>
+    typeof r.confidence === 'number' ? r.confidence : 1.0
+  ));
+
+  return {
+    questions,
+    total,
+    maxTotal,
+    percentage: maxTotal > 0 ? Math.round(total / maxTotal * 100) : 0,
+    overallFeedback,
+    topicPerformance,
+    strengths,
+    improvements,
+    confidence,
+  };
 }
 
 // ── Handler ───────────────────────────────────────────────────────
@@ -286,10 +350,22 @@ exports.handler = async (event) => {
     };
   }
 
-  // ── Mark the paper ─────────────────────────────────────────────
+  // ── Mark the paper (batched for large scripts) ─────────────────
   let result;
   try {
-    result = await markPaper(pages, paperInfo || {}, studentName || 'Student');
+    if (pages.length <= BATCH_SIZE) {
+      result = await markPaper(pages, paperInfo || {}, studentName || 'Student');
+    } else {
+      const batches = [];
+      for (let i = 0; i < pages.length; i += BATCH_SIZE) {
+        batches.push(pages.slice(i, i + BATCH_SIZE));
+      }
+      const batchResults = [];
+      for (const batch of batches) {
+        batchResults.push(await markPaper(batch, paperInfo || {}, studentName || 'Student'));
+      }
+      result = mergeMarkingResults(batchResults);
+    }
   } catch (e) {
     console.error('mark-script: marking error:', e.message);
     return {
