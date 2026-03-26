@@ -43,7 +43,8 @@ const SCRIPT_MONTHLY_LIMIT = 3;
 
 // Max pages sent to Claude in a single API call.
 // Batches are run in PARALLEL so total time ≈ slowest batch, not sum of all.
-const BATCH_SIZE = 12;
+// 8 pages per batch keeps JSON output well under the max_tokens limit.
+const BATCH_SIZE = 8;
 
 const CORS = {
   'Content-Type':                'application/json',
@@ -193,7 +194,7 @@ async function markPaper(pages, paperInfo, studentName) {
     },
     body: JSON.stringify({
       model:      MODEL,
-      max_tokens: 4000,
+      max_tokens: 6000,
       system:     buildSystemPrompt(paperInfo),
       messages:   [{ role: 'user', content }],
     }),
@@ -205,6 +206,11 @@ async function markPaper(pages, paperInfo, studentName) {
   }
 
   const json = await resp.json();
+
+  if (json.stop_reason === 'max_tokens') {
+    throw new Error('Marking response was truncated (max_tokens reached). Try uploading fewer pages at a time.');
+  }
+
   const raw  = (json.content?.[0]?.text || '').trim()
     .replace(/^```[^\n]*\n?/m, '')
     .replace(/```\s*$/m, '')
@@ -318,6 +324,30 @@ exports.handler = async (event) => {
       await postGAS({ action: 'markScriptDownloaded', secret: GAS_ADMIN_SECRET, scriptId: incomingScriptId });
     } catch(e) { /* non-fatal */ }
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
+  }
+
+  // ── Quota-check-only action — returns remaining quota without marking ──
+  if (action === 'quotaCheckOnly') {
+    const qMonthKey   = new Date().toISOString().slice(0, 7);
+    const qUnlimited  = UNLIMITED_EMAILS.has(email.toLowerCase());
+    let qResult = { remaining: 0, isPremium: false, isUnlimited: false };
+    if (qUnlimited) {
+      qResult = { remaining: 999, isPremium: true, isUnlimited: true };
+    } else {
+      try {
+        const q = await callGAS({ action: 'checkScriptQuota', email, month: qMonthKey, secret: GAS_ADMIN_SECRET });
+        const isLegacy = q.tier === 'legacy' || q.isUnlimited === true;
+        qResult = {
+          remaining:   isLegacy ? 999 : (q.remaining ?? 0),
+          isPremium:   !!q.isPremium || isLegacy,
+          isUnlimited: isLegacy,
+        };
+      } catch (e) {
+        console.error('mark-script: quotaCheckOnly GAS error:', e.message);
+        qResult = { remaining: 1, isPremium: false, isUnlimited: false };
+      }
+    }
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, quota: qResult }) };
   }
 
   if (!Array.isArray(pages) || pages.length === 0) {

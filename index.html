@@ -6469,37 +6469,27 @@ function toggleDarkMode() {
       const resp = await fetch('/api/mark-script', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({ quotaCheckOnly: true }),
+        body: JSON.stringify({ action: 'quotaCheckOnly' }),
       });
-      // The endpoint will return 400 (missing pages) but quota info is always returned
-      // Actually, let's use a lighter path — call GAS directly is not possible from client
-      // Instead parse the 402 response which includes quota info
-      if (resp.status === 402) {
+      if (resp.ok) {
+        const d = await resp.json();
+        if (d.quota) { markQuotaCache = d.quota; return; }
+      } else if (resp.status === 402) {
         const d = await resp.json();
         markQuotaCache = { remaining: d.remaining ?? 0, isPremium: d.isPremium ?? false, isUnlimited: d.isUnlimited ?? false };
-      } else {
-        // 401 = not logged in, 400 = missing pages but auth ok → assume quota ok
-        const premStatus = checkPremiumStatus();
-        const isUnlimited = getUserTier() === 'legacy';
-        const monthKey = new Date().toISOString().slice(0, 7);
-        const used = parseInt(localStorage.getItem('han_mark_used_' + monthKey) || '0', 10);
-        markQuotaCache = {
-          remaining:   premStatus ? (isUnlimited ? 999 : Math.max(0, MARK_MONTH_LIMIT - used)) : 0,
-          isPremium:   !!premStatus,
-          isUnlimited,
-        };
+        return;
       }
-    } catch(e) {
-      const premStatus = checkPremiumStatus();
-      const isUnlimited = getUserTier() === 'legacy';
-      const monthKey = new Date().toISOString().slice(0, 7);
-      const used = parseInt(localStorage.getItem('han_mark_used_' + monthKey) || '0', 10);
-      markQuotaCache = {
-        remaining:   premStatus ? (isUnlimited ? 999 : Math.max(0, MARK_MONTH_LIMIT - used)) : 0,
-        isPremium:   !!premStatus,
-        isUnlimited,
-      };
-    }
+    } catch(e) { /* fall through to local estimate */ }
+    // Fallback: estimate from local cache if server is unreachable
+    const premStatus = checkPremiumStatus();
+    const isUnlimited = getUserTier() === 'legacy';
+    const monthKey = new Date().toISOString().slice(0, 7);
+    const used = parseInt(localStorage.getItem('han_mark_used_' + monthKey) || '0', 10);
+    markQuotaCache = {
+      remaining:   premStatus ? (isUnlimited ? 999 : Math.max(0, MARK_MONTH_LIMIT - used)) : 0,
+      isPremium:   !!premStatus,
+      isUnlimited,
+    };
   }
 
   // ── Drag-and-drop handlers ─────────────────────────────────────
