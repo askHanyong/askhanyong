@@ -184,48 +184,66 @@ header a:hover { color:white; }
 
       <div class="form-row cols-2">
         <div class="form-group">
+          <label class="form-label">Question Source</label>
+          <select class="form-select" id="p-source" onchange="handleSourceChange()">
+            <option value="ib">IB Exam</option>
+            <option value="OXF">Oxford Textbook</option>
+            <option value="CAM">Cambridge Textbook</option>
+            <option value="HAE">Haese Textbook</option>
+            <option value="HANY">Hanyong (Custom)</option>
+            <option value="ALEV">A-Level</option>
+            <option value="AMC">AMC / Competition</option>
+            <option value="OTH">Others</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label class="form-label">Level</label>
           <select class="form-select" id="p-level">
             <option value="MAA HL">MAA HL (Higher Level)</option>
             <option value="MAA SL">MAA SL (Standard Level)</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Paper</label>
-          <select class="form-select" id="p-paper">
-            <option value="P1">Paper 1 (No GDC)</option>
-            <option value="P2">Paper 2 (GDC)</option>
-            <option value="P3">Paper 3</option>
-          </select>
-        </div>
       </div>
 
-      <div class="form-row cols-3">
-        <div class="form-group">
-          <label class="form-label">Session</label>
-          <select class="form-select" id="p-session">
-            <option value="May">May</option>
-            <option value="November">November</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Year</label>
-          <select class="form-select" id="p-year">
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Time Zone</label>
-          <select class="form-select" id="p-tz">
-            <option value="0">TZ0 (Single TZ)</option>
-            <option value="1">TZ1 (Americas)</option>
-            <option value="2">TZ2 (Europe/Africa/Asia)</option>
-          </select>
+      <div class="form-group">
+        <label class="form-label">Paper</label>
+        <select class="form-select" id="p-paper">
+          <option value="P1">Paper 1 (No GDC)</option>
+          <option value="P2">Paper 2 (GDC)</option>
+          <option value="P3">Paper 3</option>
+          <option value="">— Not applicable —</option>
+        </select>
+      </div>
+
+      <div id="ib-fields">
+        <div class="form-row cols-3">
+          <div class="form-group">
+            <label class="form-label">Session</label>
+            <select class="form-select" id="p-session">
+              <option value="May">May</option>
+              <option value="November">November</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year</label>
+            <select class="form-select" id="p-year">
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+              <option value="2021">2021</option>
+              <option value="2020">2020</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time Zone</label>
+            <select class="form-select" id="p-tz">
+              <option value="0">TZ0 (Single TZ, pre-2025 Nov only)</option>
+              <option value="1">TZ1 (pre-2025: Americas / 2025+: Zone 1)</option>
+              <option value="2">TZ2 (pre-2025: Europe/Africa/Asia / 2025+: Zone 2)</option>
+              <option value="3">TZ3 (2025+: Zone 3)</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -239,7 +257,7 @@ header a:hover { color:white; }
 
       <div style="background:var(--ice-light);border:1px solid var(--ice);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px">
         <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px">Preview — Question ID prefix</div>
-        <div class="id-helper">IBMAA<span id="idPreview" class="id-preview">HLM25P2TZ0</span>Q<em>n</em></div>
+        <div class="id-helper"><span id="idPreview" class="id-preview">IBMAAHLN25P2TZ0</span>Q<em>n</em></div>
       </div>
 
       <div class="btn-row">
@@ -388,8 +406,8 @@ header a:hover { color:white; }
 // ════════════════════════════
 // CONSTANTS
 // ════════════════════════════
-const ADMIN_SECRET = 'hanyong-admin-2024'; // must match ADMIN_SECRET in netlify function
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbylVgX1pvK2sIhtPeSOmEtaMqjBcHOD1cw4Q-VycdnB1WvSK5f-LhFDyHEDav01D-LKQg/exec';
+let ADMIN_SECRET = ''; // set at login from user input
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzxhN5aEo2THjbhPENpyLb6OuKwTb2V7vxs_4-Zt13Po3e7euE3ciywAMFTyOoAOzadwA/exec';
 
 // PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -404,14 +422,37 @@ let extractedQuestions = []; // array of {questionNum, pages, marksHint, topicHi
 // ════════════════════════════
 // AUTH
 // ════════════════════════════
-function checkAuth() {
+async function checkAuth() {
   const val = document.getElementById('secretInput').value.trim();
-  if (val === ADMIN_SECRET) {
-    document.getElementById('authGate').style.display = 'none';
-    document.getElementById('appContent').style.display = 'block';
-    updateIdPreview();
-  } else {
-    document.getElementById('authError').style.display = 'block';
+  const errEl = document.getElementById('authError');
+  const btn = document.querySelector('#authGate .auth-btn');
+  if (!val) { errEl.textContent = 'Please enter the admin secret.'; errEl.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  errEl.style.display = 'none';
+
+  try {
+    const resp = await fetch('/api/admin-extract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + val },
+      body: JSON.stringify({ action: 'ping' })
+    });
+    if (resp.ok) {
+      ADMIN_SECRET = val;
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('appContent').style.display = 'block';
+      updateIdPreview();
+    } else {
+      errEl.textContent = resp.status === 401 ? 'Incorrect secret. Try again.' : 'Server error — check Netlify env vars.';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
   }
 }
 
@@ -450,31 +491,53 @@ function goStep(n) {
 // ════════════════════════════
 // PAPER METADATA & ID PREVIEW
 // ════════════════════════════
-['p-level','p-session','p-year','p-paper','p-tz'].forEach(id => {
+['p-source','p-level','p-session','p-year','p-paper','p-tz'].forEach(id => {
   setTimeout(() => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', updateIdPreview);
   }, 0);
 });
 
+function isIbSource() {
+  return (document.getElementById('p-source')?.value || 'ib') === 'ib';
+}
+
+function handleSourceChange() {
+  const ibFields = document.getElementById('ib-fields');
+  if (ibFields) ibFields.style.display = isIbSource() ? '' : 'none';
+  updateIdPreview();
+}
+
 function updateIdPreview() {
-  const level   = (document.getElementById('p-level')?.value || 'MAA HL').replace('MAA ','').replace(' ','');
-  const session = (document.getElementById('p-session')?.value || 'May').charAt(0); // M or N
-  const year    = (document.getElementById('p-year')?.value || '2025').slice(2);    // last 2 digits
-  const paper   = (document.getElementById('p-paper')?.value || 'P2');
-  const tz      = (document.getElementById('p-tz')?.value || '0');
-  const preview = `${level}${session}${year}${paper}TZ${tz}`;
+  const level = (document.getElementById('p-level')?.value || 'MAA HL').replace('MAA ', '').replace(' ', '');
+  const paper = document.getElementById('p-paper')?.value || 'P2';
+  let preview;
+  if (isIbSource()) {
+    const session = (document.getElementById('p-session')?.value || 'May').charAt(0);
+    const year    = (document.getElementById('p-year')?.value || '2025').slice(2);
+    const tz      = (document.getElementById('p-tz')?.value || '0');
+    preview = `IBMAA${level}${session}${year}${paper}TZ${tz}`;
+  } else {
+    const source    = document.getElementById('p-source')?.value || 'OXF';
+    const paperPart = paper ? paper : '';
+    preview = `${source}MAA${level}${paperPart}`;
+  }
   const el = document.getElementById('idPreview');
   if (el) el.textContent = preview;
 }
 
 function getIdPrefix() {
-  const level   = (document.getElementById('p-level').value || 'MAA HL').replace('MAA ','').replace(' ','');
-  const session = (document.getElementById('p-session').value || 'May').charAt(0);
-  const year    = (document.getElementById('p-year').value || '2025').slice(2);
-  const paper   = (document.getElementById('p-paper').value || 'P2');
-  const tz      = (document.getElementById('p-tz').value || '0');
-  return `IBMAA${level}${session}${year}${paper}TZ${tz}`;
+  const level = (document.getElementById('p-level').value || 'MAA HL').replace('MAA ', '').replace(' ', '');
+  const paper = document.getElementById('p-paper').value || 'P2';
+  if (isIbSource()) {
+    const session = (document.getElementById('p-session').value || 'May').charAt(0);
+    const year    = (document.getElementById('p-year').value || '2025').slice(2);
+    const tz      = (document.getElementById('p-tz').value || '0');
+    return `IBMAA${level}${session}${year}${paper}TZ${tz}`;
+  }
+  const source    = document.getElementById('p-source').value || 'OXF';
+  const paperPart = paper ? paper : '';
+  return `${source}MAA${level}${paperPart}`;
 }
 
 // ════════════════════════════
@@ -603,17 +666,20 @@ async function runExtraction() {
       const content = [];
       content.push({
         type: 'text',
-        text: `You are analysing pages ${batchStart}–${batchEnd} (document total: ${pdfPages.length} pages) from an IB Mathematics exam solutions PDF. These are Hanyong's handwritten worked solutions for ${level} ${paper}, ${session} ${year}, TZ${tz}.
+        text: `You are analysing pages ${batchStart}–${batchEnd} (document total: ${pdfPages.length} pages) from an IB Diploma Programme Mathematics exam solutions PDF. These are Hanyong's handwritten worked solutions for ${level} ${paper}, ${session} ${year}, TZ${tz}.
 
-Your task: identify EVERY question visible in these pages and which page numbers each question spans.
+Your task: identify EVERY question visible in these pages, which page numbers each question spans, and generate teaching content for each question.
 
 Return ONLY a valid JSON array — no markdown fencing, no explanation. Each element:
 {
   "questionNum": "Q1" | "Q2a" | "Q2b" etc.,
   "pages": [${batchStart}] (use the ORIGINAL document page numbers, ${batchStart}–${batchEnd}),
-  "marksHint": "6" or null,
-  "topicHint": "Calculus" or null,
+  "marksHint": "6" or null (read the mark allocation from the paper if visible, otherwise infer from solution length),
+  "topicHint": one of ["Calculus","Functions","Geometry & Trigonometry","Statistics & Probability","Number & Algebra","Complex Numbers"] or null (use exact string),
   "subtopicHint": "Integration by parts" or null,
+  "hanExplanation": "1–2 sentence key insight a student needs to solve this question (e.g. the core technique, substitution, or conceptual link to recognise)",
+  "commonMistakes": "1–2 sentence description of the most likely mark-losing errors students make on this type of question",
+  "examinerNote": "1 sentence on what the IB examiner specifically looks for or requires to award full marks",
   "notes": null
 }
 
@@ -622,6 +688,7 @@ Rules:
 - Use Q2a, Q2b for lettered sub-parts; group unclear sub-parts under parent
 - A question may span multiple pages — list all of them
 - Do not skip any question
+- Always provide hanExplanation, commonMistakes, and examinerNote — never leave them null
 
 Pages ${batchStart}–${batchEnd}:`
       });
@@ -636,8 +703,8 @@ Pages ${batchStart}–${batchEnd}:`
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1024,
-          system: 'You are a precise document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
+          max_tokens: 2048,
+          system: 'You are a precise IB Diploma Programme Mathematics expert and document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
           messages: [{ role: 'user', content }]
         })
       });
@@ -695,6 +762,21 @@ Pages ${batchStart}–${batchEnd}:`
 // ════════════════════════════
 const TOPICS = ['Calculus','Functions','Geometry & Trigonometry','Statistics & Probability','Number & Algebra','Complex Numbers'];
 
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function normalizeTopic(hint) {
+  if (!hint) return '';
+  const h = hint.toLowerCase().trim();
+  // Exact match (case-insensitive)
+  const exact = TOPICS.find(t => t.toLowerCase() === h);
+  if (exact) return exact;
+  // Partial match: topic starts with hint or hint is contained in topic
+  const partial = TOPICS.find(t => t.toLowerCase().startsWith(h) || h.startsWith(t.toLowerCase().split(' ')[0]));
+  return partial || '';
+}
+
 function renderQCards() {
   document.getElementById('qCardCount').textContent = extractedQuestions.length;
   const container = document.getElementById('qCardsContainer');
@@ -710,7 +792,8 @@ function renderQCards() {
     card.id = `qcard-${i}`;
 
     const pagesLabel = (q.pages || []).map(p => `<span class="page-badge">pg ${p}</span>`).join('');
-    const topicSel   = TOPICS.map(t => `<option value="${t}" ${t === q.topicHint ? 'selected' : ''}>${t}</option>`).join('');
+    const matchedTopic = normalizeTopic(q.topicHint);
+    const topicSel   = TOPICS.map(t => `<option value="${t}" ${t === matchedTopic ? 'selected' : ''}>${t}</option>`).join('');
 
     const driveBase = (document.getElementById('p-driveUrl').value || '').trim();
     const firstPage = (q.pages || [])[0] || 1;
@@ -737,7 +820,7 @@ function renderQCards() {
         <div class="form-row cols-2">
           <div class="form-group">
             <label class="form-label">Question ID</label>
-            <input class="form-input" id="qid-${i}" value="${qId}" placeholder="IBMAAHLN24P2TZ0Q1">
+            <input class="form-input" id="qid-${i}" value="${qId}" placeholder="e.g. IBMAAHLN24P2TZ0Q1 or OXFMAAHP2Q7">
           </div>
           <div class="form-group">
             <label class="form-label">Marks</label>
@@ -768,19 +851,19 @@ function renderQCards() {
 
         <div class="form-row" style="grid-template-columns:1fr">
           <div class="form-group">
-            <label class="form-label">HAN Explanation (optional — key insight for students)</label>
-            <textarea class="form-textarea" id="qhan-${i}" placeholder="e.g. Recognise this as a composite function — chain rule with substitution u = sin x…"></textarea>
+            <label class="form-label">HAN Explanation — key insight for students</label>
+            <textarea class="form-textarea" id="qhan-${i}" placeholder="e.g. Recognise this as a composite function — chain rule with substitution u = sin x…">${escHtml(q.hanExplanation)}</textarea>
           </div>
         </div>
 
         <div class="form-row cols-2">
           <div class="form-group">
-            <label class="form-label">Common Mistakes (optional)</label>
-            <textarea class="form-textarea" id="qmistakes-${i}" placeholder="e.g. Students often forget the +C when the integral has bounds…" style="min-height:60px"></textarea>
+            <label class="form-label">Common Mistakes</label>
+            <textarea class="form-textarea" id="qmistakes-${i}" placeholder="e.g. Students often forget the +C when the integral has bounds…" style="min-height:60px">${escHtml(q.commonMistakes)}</textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">Examiner Note (optional)</label>
-            <textarea class="form-textarea" id="qexnote-${i}" placeholder="e.g. Examiner requires explicit substitution shown…" style="min-height:60px"></textarea>
+            <label class="form-label">Examiner Note</label>
+            <textarea class="form-textarea" id="qexnote-${i}" placeholder="e.g. Examiner requires explicit substitution shown…" style="min-height:60px">${escHtml(q.examinerNote)}</textarea>
           </div>
         </div>
 
@@ -877,14 +960,24 @@ function renderSaveSummary() {
   const data = collectQuestionData();
   const level   = document.getElementById('p-level').value;
   const paper   = document.getElementById('p-paper').value;
-  const session = document.getElementById('p-session').value;
-  const year    = document.getElementById('p-year').value;
-  const tz      = document.getElementById('p-tz').value;
   const withSol = data.filter(q => q['Solution URL']).length;
   const withTopic = data.filter(q => q['Topic']).length;
 
+  let paperDesc;
+  if (isIbSource()) {
+    const session = document.getElementById('p-session').value;
+    const year    = document.getElementById('p-year').value;
+    const tz      = document.getElementById('p-tz').value;
+    paperDesc = `${level} ${paper} — ${session} ${year} TZ${tz}`;
+  } else {
+    const sourceNames = { OXF:'Oxford', CAM:'Cambridge', HAE:'Haese', HANY:'Hanyong (Custom)', ALEV:'A-Level', AMC:'AMC / Competition', OTH:'Others' };
+    const source = document.getElementById('p-source').value;
+    const paperPart = paper ? ` — ${paper}` : '';
+    paperDesc = `${level}${paperPart} — ${sourceNames[source] || source}`;
+  }
+
   document.getElementById('saveSummary').innerHTML = `
-    📄 <strong>Paper:</strong> ${level} ${paper} — ${session} ${year} TZ${tz}<br>
+    📄 <strong>Paper:</strong> ${paperDesc}<br>
     🔢 <strong>Questions:</strong> ${data.length} total<br>
     ✍️ <strong>With solution URL:</strong> ${withSol} / ${data.length}<br>
     🏷️ <strong>With topic assigned:</strong> ${withTopic} / ${data.length}<br>
@@ -904,31 +997,43 @@ async function saveToSheets() {
   const statusEl = document.getElementById('saveStatus');
   statusEl.style.display = 'none';
 
-  let saved = 0, failed = 0;
+  let saved = 0, failed = 0, lastError = '';
 
   for (const q of data) {
     try {
-      const params = new URLSearchParams({
-        action: 'addQuestion',
-        questionId:    q['Question ID'],
-        level:         q['Level'],
-        paper:         q['Paper'],
-        year:          q['Year'],
-        session:       q['Session'],
-        timeZone:      q['Time Zone'],
-        topic:         q['Topic'],
-        subtopic:      q['Subtopic'],
-        marks:         q['Marks'],
-        difficulty:    q['Difficulty'],
-        status:        q['Status'],
-        hanExplanation: q['HAN Explanation'],
-        commonMistakes: q['Common Mistakes'],
-        examinerNote:  q['Examiner Note'],
-        solutionUrl:   q['Solution URL'],
+      const resp = await fetch('/.netlify/functions/save-question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionId:     q['Question ID'],
+          level:          q['Level'],
+          paper:          q['Paper'],
+          year:           q['Year'],
+          session:        q['Session'],
+          timeZone:       q['Time Zone'],
+          topic:          q['Topic'],
+          subtopic:       q['Subtopic'],
+          marks:          q['Marks'],
+          difficulty:     q['Difficulty'],
+          status:         q['Status'],
+          hanExplanation: q['HAN Explanation'],
+          commonMistakes: q['Common Mistakes'],
+          examinerNote:   q['Examiner Note'],
+          solutionUrl:    q['Solution URL'],
+        }),
       });
-      await fetch(SHEETS_URL + '?' + params.toString(), { mode: 'no-cors' });
-      saved++;
-    } catch {
+      const result = await resp.json();
+      if (!resp.ok || result.error) {
+        lastError = result.error || result.gasBody || 'Unknown error';
+        console.error('save-question failed:', result);
+        failed++;
+      } else {
+        console.log('saved:', q['Question ID'], result.gasBody);
+        saved++;
+      }
+    } catch (err) {
+      lastError = err.message;
+      console.error('save-question error:', err);
       failed++;
     }
   }
@@ -939,11 +1044,11 @@ async function saveToSheets() {
   statusEl.className = 'save-result ' + (failed === 0 ? 'ok' : 'err');
   statusEl.style.display = 'block';
   if (failed === 0) {
-    statusEl.textContent = `✅ ${saved} questions sent to Google Sheets! Check your sheet for the new rows.`;
+    statusEl.textContent = `✅ ${saved} questions saved to Google Sheets!`;
     showToast(`${saved} questions saved!`, 'success');
   } else {
-    statusEl.textContent = `⚠️ ${saved} saved, ${failed} failed. Use the CSV export below as a fallback.`;
-    showToast('Some saves failed — use CSV export', 'error');
+    statusEl.textContent = `⚠️ ${saved} saved, ${failed} failed. Error: ${lastError}`;
+    showToast('Some saves failed — check console', 'error');
   }
 }
 

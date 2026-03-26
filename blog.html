@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From the Examiner's Desk — askHanyong Blog</title>
+<meta name="description" content="Long-form insights on IB Mathematics from an IB Examiner and DP Coordinator. What examiners actually look for, where students lose marks, and how to score a 7.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://askhanyong.com/blog">
+<meta property="og:title" content="From the Examiner's Desk — askHanyong Blog">
+<meta property="og:description" content="IB Math insights from an IB Examiner and DP Coordinator. Things competitors literally cannot write.">
+<meta property="og:image" content="https://askhanyong.com/og-preview.jpg">
+<meta property="og:site_name" content="askHanyong">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="From the Examiner's Desk — askHanyong Blog">
+<meta name="twitter:description" content="IB Math insights from an IB Examiner and DP Coordinator. Things competitors literally cannot write.">
+<meta name="twitter:image" content="https://askhanyong.com/og-preview.jpg">
+<link rel="canonical" href="https://askhanyong.com/blog">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0e1c33;
+  --navy-dark: #0a1628;
+  --navy-mid: #1a3068;
+  --gold: #C9A84C;
+  --gold-light: #e4c97a;
+  --gold-pale: rgba(201,168,76,0.12);
+  --white: #ffffff;
+  --bg: #f5f4f1;
+  --text: #111827;
+  --text-mid: #4b5563;
+  --text-soft: #9ca3af;
+  --border: #e4e2dc;
+  --blue: #1e3a8a;
+  --green: #059669;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--text); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10, 22, 40, 0.96); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-badge {
+  width: 34px; height: 34px; background: var(--gold-pale);
+  border: 1.5px solid rgba(201,168,76,0.45); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px; color: var(--gold); letter-spacing: 1px;
+}
+.nav-brand { font-size: 16px; font-weight: 700; color: white; font-family: 'Playfair Display', serif; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-link { color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+.nav-link:hover { color: white; }
+.nav-link.active { color: var(--gold); }
+.btn-nav-cta {
+  padding: 8px 18px; background: var(--gold); color: var(--navy-dark);
+  border: none; border-radius: 20px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  transition: background 0.2s, transform 0.15s; display: inline-block;
+}
+.btn-nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0a1628 0%, #0e1c33 50%, #1a3068 100%);
+  padding: 120px 24px 72px; text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 20px; padding: 5px 14px; margin-bottom: 24px;
+  font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: 0.3px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800; color: white; line-height: 1.12;
+  margin-bottom: 18px; max-width: 640px; margin-left: auto; margin-right: auto;
+}
+.hero h1 em { color: var(--gold); font-style: normal; }
+.hero-sub {
+  font-size: clamp(14px, 2vw, 17px); color: rgba(255,255,255,0.68);
+  line-height: 1.75; max-width: 520px; margin: 0 auto 32px;
+}
+.hero-credential-row {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;
+}
+.cred-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 24px; padding: 6px 14px;
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);
+}
+.cred-pill.gold {
+  background: rgba(201,168,76,0.14); border-color: rgba(201,168,76,0.4);
+  color: var(--gold);
+}
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 14px 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  position: sticky; top: 60px; z-index: 50;
+}
+.filter-label { font-size: 11px; font-weight: 700; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; }
+.filter-chip {
+  padding: 5px 13px; border-radius: 16px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--border); background: white; color: var(--text-mid);
+  cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+}
+.filter-chip:hover { border-color: var(--navy); color: var(--navy); }
+.filter-chip.active { background: var(--navy); border-color: var(--navy); color: white; }
+
+/* ── MAIN LAYOUT ── */
+.blog-layout {
+  max-width: 1080px; margin: 0 auto; padding: 56px 24px 80px;
+  display: grid; grid-template-columns: 1fr 320px; gap: 56px; align-items: start;
+}
+@media (max-width: 860px) {
+  .blog-layout { grid-template-columns: 1fr; gap: 40px; }
+  .blog-sidebar { order: -1; }
+}
+
+/* ── POST GRID ── */
+.posts-section-label {
+  font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+.posts-section-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.posts-grid { display: flex; flex-direction: column; gap: 28px; }
+
+/* ── POST CARD ── */
+.post-card {
+  background: white; border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 28px 28px 24px; transition: all 0.2s;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05); position: relative; overflow: hidden;
+}
+.post-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: transparent; transition: background 0.2s;
+}
+.post-card:hover { border-color: rgba(201,168,76,0.5); box-shadow: 0 8px 32px rgba(14,28,51,0.1); transform: translateY(-2px); }
+.post-card:hover::before { background: var(--gold); }
+.post-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.post-category {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 11px; border-radius: 12px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.cat-marking { background: #fef3c7; color: #92400e; }
+.cat-examiner { background: #ede9fe; color: #4c1d95; }
+.cat-ia { background: #d1fae5; color: #065f46; }
+.cat-mistakes { background: #fee2e2; color: #991b1b; }
+.cat-strategy { background: #dbeafe; color: #1e3a8a; }
+.cat-coordinator { background: rgba(201,168,76,0.15); color: #78350f; }
+.cat-technique { background: #ccfbf1; color: #0f766e; }
+.post-meta { font-size: 11px; color: var(--text-soft); display: flex; align-items: center; gap: 8px; }
+.post-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
+.post-title {
+  font-family: 'Playfair Display', serif; font-size: clamp(18px, 2.5vw, 22px);
+  font-weight: 800; color: var(--navy-dark); line-height: 1.25;
+  margin-bottom: 10px; text-decoration: none; display: block;
+}
+.post-title:hover { color: var(--blue); }
+.post-excerpt { font-size: 14px; color: var(--text-mid); line-height: 1.75; margin-bottom: 18px; }
+.post-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.post-author { display: flex; align-items: center; gap: 8px; }
+.author-av {
+  width: 30px; height: 30px; border-radius: 8px; overflow: hidden;
+  background: var(--navy); flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+}
+.author-av img { width: 100%; height: 100%; object-fit: cover; }
+.author-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.author-role { font-size: 11px; color: var(--text-soft); }
+.post-read-link {
+  font-size: 12px; font-weight: 700; color: var(--blue); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px; transition: gap 0.15s;
+}
+.post-read-link:hover { gap: 7px; }
+
+/* ── COMING SOON STATE ── */
+.coming-soon-card {
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  border: 1.5px solid rgba(201,168,76,0.2); border-radius: var(--radius);
+  padding: 36px 32px; text-align: center;
+  box-shadow: 0 4px 24px rgba(14,28,51,0.15);
+}
+.coming-soon-icon { font-size: 40px; margin-bottom: 14px; }
+.coming-soon-card h3 {
+  font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800;
+  color: white; margin-bottom: 10px;
+}
+.coming-soon-card p { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.75; margin-bottom: 24px; max-width: 380px; margin-left: auto; margin-right: auto; }
+.notify-form { display: flex; gap: 8px; max-width: 400px; margin: 0 auto; }
+.notify-input {
+  flex: 1; padding: 11px 16px; border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 50px; background: rgba(255,255,255,0.08);
+  color: white; font-size: 13px; font-family: 'Inter', sans-serif;
+  outline: none; transition: border-color 0.2s;
+}
+.notify-input::placeholder { color: rgba(255,255,255,0.35); }
+.notify-input:focus { border-color: rgba(201,168,76,0.5); }
+.notify-btn {
+  padding: 11px 20px; background: var(--gold); color: var(--navy-dark);
+  border: none; border-radius: 50px; font-size: 13px; font-weight: 800;
+  cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap;
+  transition: background 0.2s;
+}
+.notify-btn:hover { background: var(--gold-light); }
+.notify-note { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 12px; }
+
+/* ── PREVIEW CARDS (teaser for upcoming posts) ── */
+.upcoming-label {
+  font-size: 11px; font-weight: 700; color: var(--text-soft); text-transform: uppercase;
+  letter-spacing: 1px; margin: 40px 0 16px; display: flex; align-items: center; gap: 10px;
+}
+.upcoming-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.upcoming-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) { .upcoming-grid { grid-template-columns: 1fr; } }
+.upcoming-card {
+  background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 18px 16px; opacity: 0.7;
+}
+.upcoming-cat { font-size: 10px; font-weight: 700; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
+.upcoming-title { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.4; }
+.upcoming-badge {
+  display: inline-block; margin-top: 10px; font-size: 10px; font-weight: 600;
+  color: var(--text-soft); background: white; border: 1px solid var(--border);
+  border-radius: 8px; padding: 2px 8px;
+}
+
+/* ── SIDEBAR ── */
+.sidebar-block {
+  background: white; border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 24px; margin-bottom: 24px;
+}
+.sidebar-block:last-child { margin-bottom: 0; }
+.sidebar-title {
+  font-size: 13px; font-weight: 700; color: var(--navy-dark); margin-bottom: 16px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.sidebar-author { display: flex; gap: 14px; align-items: flex-start; }
+.sidebar-author-photo {
+  width: 56px; height: 56px; border-radius: 14px; overflow: hidden;
+  background: var(--navy); flex-shrink: 0;
+}
+.sidebar-author-photo img { width: 100%; height: 100%; object-fit: cover; }
+.sidebar-author-name { font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-bottom: 3px; }
+.sidebar-author-role { font-size: 11px; color: var(--text-soft); line-height: 1.5; margin-bottom: 10px; }
+.sidebar-cred-list { display: flex; flex-direction: column; gap: 6px; }
+.sidebar-cred {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12px; color: var(--text-mid);
+}
+.sidebar-cred::before { content: '✦'; color: var(--gold); font-size: 9px; flex-shrink: 0; }
+.category-list { display: flex; flex-direction: column; gap: 2px; }
+.category-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px; border-radius: 8px; cursor: pointer; text-decoration: none;
+  transition: background 0.15s;
+}
+.category-row:hover { background: var(--bg); }
+.category-row-name { font-size: 13px; color: var(--text); font-weight: 500; }
+.category-row-count {
+  font-size: 11px; font-weight: 700; color: var(--text-soft);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1px 8px;
+}
+.sidebar-cta {
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  border-radius: var(--radius); padding: 22px 20px; text-align: center;
+}
+.sidebar-cta h4 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 800; color: white; margin-bottom: 8px; }
+.sidebar-cta p { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 16px; }
+.sidebar-cta-btn {
+  display: block; padding: 11px; background: var(--gold); color: var(--navy-dark);
+  border-radius: var(--radius-sm); font-size: 13px; font-weight: 800; text-decoration: none;
+  transition: background 0.2s;
+}
+.sidebar-cta-btn:hover { background: var(--gold-light); }
+
+/* ── FOOTER ── */
+footer {
+  background: #060e1c; padding: 32px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-brand { font-size: 14px; color: rgba(255,255,255,0.4); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ── MOBILE NAV ── */
+@media (max-width: 640px) {
+  nav { padding: 0 16px; }
+  .nav-link { display: none; }
+  .notify-form { flex-direction: column; }
+  .notify-btn { border-radius: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-badge">HAN</div>
+    <span class="nav-brand">askHanyong</span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="/#how-it-works">How it works</a>
+    <a class="nav-link" href="/#pricing">Pricing</a>
+    <a class="nav-link active" href="/blog">Blog</a>
+    <a class="btn-nav-cta" href="/app">Ask Free</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-eyebrow">✦ From the Examiner's Desk</div>
+  <h1>What IB Examiners<br><em>actually</em> look for</h1>
+  <p class="hero-sub">
+    Long-form insights on IB Mathematics from someone who has marked real student scripts, set IB Exam papers, written mark schemes, and run the Diploma Programme — written to help every student understand what examiners are really looking for.
+  </p>
+  <div class="hero-credential-row">
+    <div class="cred-pill">🎓 Applied Mathematics · NUS</div>
+    <div class="cred-pill">📚 O, A-Levels &amp; IB</div>
+    <div class="cred-pill">📅 20+ Years in Education</div>
+    <div class="cred-pill gold">📋 IB Examiner</div>
+    <div class="cred-pill">🏫 Former DP Coordinator</div>
+    <div class="cred-pill">✅ HL &amp; SL Specialist</div>
+  </div>
+</section>
+
+<!-- ── FILTER BAR ── -->
+<div class="filter-bar">
+  <span class="filter-label">Filter</span>
+  <button class="filter-chip active" onclick="filterPosts('all', this)">All Posts</button>
+  <button class="filter-chip" onclick="filterPosts('marking', this)">Marking &amp; Mark Schemes</button>
+  <button class="filter-chip" onclick="filterPosts('examiner', this)">Examiner Insights</button>
+  <button class="filter-chip" onclick="filterPosts('ia', this)">IA Guidance</button>
+  <button class="filter-chip" onclick="filterPosts('mistakes', this)">Common Mistakes</button>
+  <button class="filter-chip" onclick="filterPosts('strategy', this)">Exam Strategy</button>
+  <button class="filter-chip" onclick="filterPosts('technique', this)">Exam Technique</button>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="blog-layout">
+
+  <!-- Posts column -->
+  <main>
+    <div class="posts-section-label">Latest Posts</div>
+    <div class="posts-grid" id="postsGrid">
+
+      <div class="post-card" data-category="strategy">
+        <div class="post-card-top">
+          <span class="post-category cat-strategy">Exam Strategy</span>
+          <span class="post-meta">
+            <span class="post-meta-date">21 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">6 min read</span>
+          </span>
+        </div>
+        <a href="/blog/hl-vs-sl" class="post-title">HL vs SL Mathematics — Which Should You Choose?</a>
+        <p class="post-excerpt">One of the most common questions from students entering the IB Diploma. Here's what you actually need to know — from content depth and assessment structure to who each level really suits.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/hl-vs-sl" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="strategy">
+        <div class="post-card-top">
+          <span class="post-category cat-strategy">Exam Strategy</span>
+          <span class="post-meta">
+            <span class="post-meta-date">21 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">7 min read</span>
+          </span>
+        </div>
+        <a href="/blog/aa-vs-ai" class="post-title">Mathematics AA vs AI — Which Course Should You Choose?</a>
+        <p class="post-excerpt">Analysis &amp; Approaches or Applications &amp; Interpretation? Understanding the fundamental difference between these two courses before you choose could save you two years of frustration.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/aa-vs-ai" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="examiner">
+        <div class="post-card-top">
+          <span class="post-category cat-examiner">Examiner Insights</span>
+          <span class="post-meta">
+            <span class="post-meta-date">21 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">7 min read</span>
+          </span>
+        </div>
+        <a href="/blog/paper-3-guide" class="post-title">IB Math HL Paper 3 — What It Is and How to Approach It</a>
+        <p class="post-excerpt">Paper 3 is unlike any other IB exam. Here's everything you need to know — what it tests, why students struggle with it, and how to approach an investigation you've never seen before.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/paper-3-guide" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="examiner">
+        <div class="post-card-top">
+          <span class="post-category cat-examiner">Examiner Insights</span>
+          <span class="post-meta">
+            <span class="post-meta-date">21 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">9 min read</span>
+          </span>
+        </div>
+        <a href="/blog/ib-vs-a-levels" class="post-title">IB vs A-Levels — What's the Difference and Which Is Right for Your Child?</a>
+        <p class="post-excerpt">A straightforward comparison of the IB Diploma and A-Levels from someone who has taught and examined across both systems — what's actually different, and how to choose.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/ib-vs-a-levels" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="marking">
+        <div class="post-card-top">
+          <span class="post-category cat-marking">Marking &amp; Mark Schemes</span>
+          <span class="post-meta">
+            <span class="post-meta-date">21 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">6 min read</span>
+          </span>
+        </div>
+        <a href="/blog/how-examiners-mark" class="post-title">How IB Examiners Mark Your Paper — What Every Student Should Know</a>
+        <p class="post-excerpt">Understanding how IB examiners actually award marks — M marks, A marks, R marks, follow-through, and what "hence" really means — changes how you should write every answer.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/how-examiners-mark" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="mistakes">
+        <div class="post-card-top">
+          <span class="post-category cat-mistakes">Common Mistakes</span>
+          <span class="post-meta">
+            <span class="post-meta-date">21 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">8 min read</span>
+          </span>
+        </div>
+        <a href="/blog/common-mistakes" class="post-title">The Most Common Mistakes in IB Mathematics — And How to Avoid Them</a>
+        <p class="post-excerpt">After marking hundreds of exam scripts, the same mistakes appear again and again. They're almost never about not knowing the mathematics — and that means they're all fixable.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/common-mistakes" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="coordinator">
+        <div class="post-card-top">
+          <span class="post-category cat-coordinator">From the Coordinator</span>
+          <span class="post-meta">
+            <span class="post-meta-date">21 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">8 min read</span>
+          </span>
+        </div>
+        <a href="/blog/a-level-scoring-2026" class="post-title">Singapore A-Level Scoring Changes in 2026 — What Students and Parents Need to Know</a>
+        <p class="post-excerpt">From 2026, the maximum UAS drops from 90 to 70 rank points and the calculation is restructured. A clear explanation of what's changing and what it means practically for your child.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/a-level-scoring-2026" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="technique">
+        <div class="post-card-top">
+          <span class="post-category cat-technique">Exam Technique</span>
+          <span class="post-meta">
+            <span class="post-meta-date">23 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">7 min read</span>
+          </span>
+        </div>
+        <a href="/blog/past-papers" class="post-title">How to Use Past Papers Effectively</a>
+        <p class="post-excerpt">Past papers are the most powerful revision tool in IB Mathematics — but only if you use them right. Here is a five-step process for turning past paper practice into genuine score improvement.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/past-papers" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="technique">
+        <div class="post-card-top">
+          <span class="post-category cat-technique">Exam Technique</span>
+          <span class="post-meta">
+            <span class="post-meta-date">23 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">6 min read</span>
+          </span>
+        </div>
+        <a href="/blog/last-4-weeks" class="post-title">How to Revise IB Math in the Last 4 Weeks Before Exams</a>
+        <p class="post-excerpt">A structured four-week revision plan built around how IB Mathematics is actually examined — covering diagnosis, topic review, full papers, and final consolidation.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/last-4-weeks" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="technique">
+        <div class="post-card-top">
+          <span class="post-category cat-technique">Exam Technique</span>
+          <span class="post-meta">
+            <span class="post-meta-date">23 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">6 min read</span>
+          </span>
+        </div>
+        <a href="/blog/scoring-7" class="post-title">What a 7-Scoring Student Does Differently</a>
+        <p class="post-excerpt">After marking hundreds of exam scripts, the pattern is clear: scoring 7 is almost never about raw ability. It is about a specific set of habits that anyone can learn and practise.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/scoring-7" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="technique">
+        <div class="post-card-top">
+          <span class="post-category cat-technique">Exam Technique</span>
+          <span class="post-meta">
+            <span class="post-meta-date">23 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">6 min read</span>
+          </span>
+        </div>
+        <a href="/blog/section-b" class="post-title">How to Approach Section B Questions in IB Math</a>
+        <p class="post-excerpt">Section B questions are longer, higher-stakes, and connected across parts. Most students who lose marks there do so not because the maths is harder, but because they don't adjust their approach.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/section-b" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="technique">
+        <div class="post-card-top">
+          <span class="post-category cat-technique">Exam Technique</span>
+          <span class="post-meta">
+            <span class="post-meta-date">23 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">6 min read</span>
+          </span>
+        </div>
+        <a href="/blog/stuck-in-exam" class="post-title">What to Do When You're Stuck in an IB Math Exam</a>
+        <p class="post-excerpt">Getting stuck in an exam is normal. What separates students who recover and score marks from those who don't is having a clear strategy for exactly that moment — here it is.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/stuck-in-exam" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="ia">
+        <div class="post-card-top">
+          <span class="post-category cat-ia">IA Guidance</span>
+          <span class="post-meta">
+            <span class="post-meta-date">24 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">9 min read</span>
+          </span>
+        </div>
+        <a href="/blog/ia-guide" class="post-title">Your IB Math IA: What the Examiner Is Actually Looking For</a>
+        <p class="post-excerpt">The Internal Assessment is 20% of your final grade. Most students lose marks not because the mathematics is wrong, but because they misunderstand what the five criteria are actually measuring.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/ia-guide" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="ia">
+        <div class="post-card-top">
+          <span class="post-category cat-ia">IA Guidance</span>
+          <span class="post-meta">
+            <span class="post-meta-date">24 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">8 min read</span>
+          </span>
+        </div>
+        <a href="/blog/ia-topic" class="post-title">How to Choose an IB Math IA Topic That Won't Fail You</a>
+        <p class="post-excerpt">Choosing the wrong topic is the most common reason IB Math IA explorations score poorly. Here is how to choose a topic that gives you room to score full marks across all five criteria.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/ia-topic" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+      <div class="post-card" data-category="technique">
+        <div class="post-card-top">
+          <span class="post-category cat-technique">Exam Technique</span>
+          <span class="post-meta">
+            <span class="post-meta-date">24 Mar 2026</span>
+            <span class="post-meta-dot"></span>
+            <span class="post-meta-read">7 min read</span>
+          </span>
+        </div>
+        <a href="/blog/gdc-skills" class="post-title">GDC Skills Every IB Math Student Needs to Master</a>
+        <p class="post-excerpt">Your GDC is permitted in Papers 2 and 3, but most students use only a fraction of its capability. Here are the skills that consistently earn marks — and the ones students most often get wrong.</p>
+        <div class="post-footer">
+          <div class="post-author">
+            <div class="author-av"><img src="/hanyong.jpg" alt="Hanyong Lim"></div>
+            <div>
+              <div class="author-name">Hanyong Lim</div>
+              <div class="author-role">IB Examiner</div>
+            </div>
+          </div>
+          <a href="/blog/gdc-skills" class="post-read-link">Read Article →</a>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="blog-sidebar">
+
+    <!-- About the author -->
+    <div class="sidebar-block">
+      <div class="sidebar-title">About the Author</div>
+      <div class="sidebar-author">
+        <div class="sidebar-author-photo">
+          <img src="/hanyong.jpg" alt="Hanyong Lim">
+        </div>
+        <div>
+          <div class="sidebar-author-name">Hanyong Lim</div>
+          <div class="sidebar-author-role">IB Math Teacher · IB Examiner · Former DP Coordinator</div>
+        </div>
+      </div>
+      <div class="sidebar-cred-list" style="margin-top: 14px;">
+        <div class="sidebar-cred">Applied Mathematics · NUS</div>
+        <div class="sidebar-cred">O, A-Levels &amp; IB</div>
+        <div class="sidebar-cred">20+ Years in Education</div>
+        <div class="sidebar-cred">IB Examiner</div>
+        <div class="sidebar-cred">Former DP Coordinator</div>
+        <div class="sidebar-cred">HL &amp; SL Specialist</div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="sidebar-block">
+      <div class="sidebar-title">Categories</div>
+      <div class="category-list">
+        <a class="category-row" href="#" onclick="filterPosts('marking', null); return false;">
+          <span class="category-row-name">Marking &amp; Mark Schemes</span>
+          <span class="category-row-count">1</span>
+        </a>
+        <a class="category-row" href="#" onclick="filterPosts('examiner', null); return false;">
+          <span class="category-row-name">Examiner Insights</span>
+          <span class="category-row-count">2</span>
+        </a>
+        <a class="category-row" href="#" onclick="filterPosts('ia', null); return false;">
+          <span class="category-row-name">IA Guidance</span>
+          <span class="category-row-count">2</span>
+        </a>
+        <a class="category-row" href="#" onclick="filterPosts('mistakes', null); return false;">
+          <span class="category-row-name">Common Mistakes</span>
+          <span class="category-row-count">1</span>
+        </a>
+        <a class="category-row" href="#" onclick="filterPosts('strategy', null); return false;">
+          <span class="category-row-name">Exam Strategy</span>
+          <span class="category-row-count">2</span>
+        </a>
+        <a class="category-row" href="#" onclick="filterPosts('coordinator', null); return false;">
+          <span class="category-row-name">From the Coordinator</span>
+          <span class="category-row-count">1</span>
+        </a>
+        <a class="category-row" href="#" onclick="filterPosts('technique', null); return false;">
+          <span class="category-row-name">Exam Technique</span>
+          <span class="category-row-count">6</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- App CTA -->
+    <div class="sidebar-cta">
+      <h4>Put it into practice.</h4>
+      <p>Reading about IB Math is one thing. Getting your own questions answered by an examiner-trained AI is another.</p>
+      <a class="sidebar-cta-btn" href="/app">Ask HAN Free ✦</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span class="footer-brand">© 2025 askHanyong · HAN = Help · Achieve · Nurture</span>
+  <div class="footer-links">
+    <a href="mailto:hanyong@askhanyong.com">Contact</a>
+    <a href="/app">Launch App</a>
+    <a href="/blog">Blog</a>
+  </div>
+</footer>
+
+<script>
+function filterPosts(cat, btn) {
+  if (btn) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  document.querySelectorAll('.post-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
+  });
+}
+
+</script>
+</body>
+</html>

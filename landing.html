@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>askHanyong — IB Math AI Tutor</title>
+<meta name="description" content="HAN gives you examiner-level IB Math guidance for every question — step-by-step, mark-scheme aware. Built by a 20-year IB teacher and current IB Examiner. Free to start.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://askhanyong.com/">
+<meta property="og:title" content="askHanyong — IB Math AI Tutor">
+<meta property="og:description" content="Examiner-level IB Math guidance, always available. Built by Hanyong — 20+ years teaching Mathematics, IB Examiner. Free to start.">
+<meta property="og:image" content="https://askhanyong.com/og-preview.jpg">
+<meta property="og:image:secure_url" content="https://askhanyong.com/og-preview.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="askHanyong">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="askHanyong — IB Math AI Tutor">
+<meta name="twitter:description" content="Examiner-level IB Math guidance, always available. Built by Hanyong — 20+ years teaching Mathematics, IB Examiner. Free to start.">
+<meta name="twitter:image" content="https://askhanyong.com/og-preview.jpg">
+<link rel="canonical" href="https://askhanyong.com/">
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "askHanyong",
+    "url": "https://askhanyong.com",
+    "logo": "https://askhanyong.com/og-preview.jpg",
+    "description": "AI-powered IB Math tutor built by a IB Examiner with 20+ years of teaching experience. Get examiner-level step-by-step guidance for every IB Math question — free to start.",
+    "founder": {
+      "@type": "Person",
+      "name": "Hanyong Lim"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Free Tier",
+        "price": "0",
+        "priceCurrency": "SGD",
+        "description": "10 questions per day, 5 photo uploads, full explanations, past paper library, mock exam generator, progress tracking"
+      },
+      {
+        "@type": "Offer",
+        "name": "Contributor",
+        "price": "45",
+        "priceCurrency": "SGD",
+        "description": "Unlimited questions and uploads forever, one-time payment"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Hanyong Lim",
+    "jobTitle": "IB Mathematics Teacher, IB Examiner and DP Coordinator",
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "National University of Singapore"
+    },
+    "knowsAbout": ["IB Mathematics", "IB Math AA", "IB Math AI", "IB Math HL", "IB Math SL", "Mathematical Analysis", "Calculus", "Statistics"],
+    "url": "https://askhanyong.com",
+    "image": "https://askhanyong.com/hanyong.jpg",
+    "description": "Applied Mathematics graduate from NUS with 20+ years teaching IB Mathematics in Singapore. IB Examiner who marked real student scripts and wrote mark schemes."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between IB Math AA and AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "IB Math Analysis and Approaches (AA) focuses on mathematical theory, algebra, and calculus — ideal for students pursuing pure mathematics, physics, or engineering. IB Math Applications and Interpretation (AI) emphasises statistics, modelling, and real-world applications — suited for social sciences, business, or design. AA HL is generally the most rigorous IB Math course."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How hard is IB Math HL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "IB Math HL (IB Math AA HL) is one of the most demanding courses in the IB Diploma Programme, covering advanced calculus, complex numbers, vectors, statistics, and proof. The average worldwide grade is around 4.5 out of 7. With examiner-level guidance and consistent practice, a score of 6 or 7 is achievable."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What calculator is allowed in IB Math Paper 2?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paper 2 of IB Math is a calculator-allowed paper. The IB approves graphical display calculators (GDC) from Texas Instruments (TI-84 Plus, TI-Nspire) and Casio (fx-9750GII, fx-CG50). Paper 1 is non-calculator. Always check the current IB calculator policy for the full approved list."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does askHanyong help with IB Math?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "askHanyong (HAN) is an AI tutor built by a IB Examiner with 20+ years of teaching experience. HAN explains questions step-by-step using examiner methods, marks your working like an IB examiner showing exactly where you gain or lose marks, generates mock papers by topic, and tracks your progress. It supports IB Math AA and AI at both HL and SL levels."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is askHanyong free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — askHanyong is free to start with no sign-up required. The free tier includes 10 questions per day, 5 photo uploads, full step-by-step explanations, past paper library access, mock exam generation, and progress tracking. A one-time S$45 Contributor tier unlocks unlimited questions and uploads forever."
+        }
+      }
+    ]
+  }
+]
+</script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0e1c33;
+  --navy-dark: #0a1628;
+  --navy-mid: #1a3068;
+  --gold: #C9A84C;
+  --gold-light: #e4c97a;
+  --gold-pale: rgba(201,168,76,0.12);
+  --white: #ffffff;
+  --bg: #f5f4f1;
+  --text: #111827;
+  --text-mid: #4b5563;
+  --text-soft: #9ca3af;
+  --border: #e4e2dc;
+  --blue: #1e3a8a;
+  --green: #059669;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--text); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10, 22, 40, 0.96); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-badge {
+  width: 34px; height: 34px; background: var(--gold-pale);
+  border: 1.5px solid rgba(201,168,76,0.45); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px; color: var(--gold); letter-spacing: 1px;
+}
+.nav-brand { font-size: 16px; font-weight: 700; color: white; font-family: 'Playfair Display', serif; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-link { color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+.nav-link:hover { color: white; }
+.btn-nav-cta {
+  padding: 8px 18px; background: var(--gold); color: var(--navy-dark);
+  border: none; border-radius: 20px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-block;
+}
+.btn-nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0a1628 0%, #0e1c33 50%, #1a3068 100%);
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 20px; padding: 5px 14px; margin-bottom: 28px;
+  font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: 0.3px;
+}
+.hero-eyebrow::before { content: '✦'; font-size: 10px; }
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 6vw, 68px);
+  font-weight: 800; color: white; line-height: 1.1;
+  margin-bottom: 22px; max-width: 720px;
+}
+.hero h1 em { color: var(--gold); font-style: normal; }
+.hero-sub {
+  font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,0.68);
+  line-height: 1.7; max-width: 520px; margin: 0 auto 40px;
+}
+.hero-cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  padding: 15px 32px; background: var(--gold); color: var(--navy-dark);
+  border: none; border-radius: 50px; font-size: 15px; font-weight: 800;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 24px rgba(201,168,76,0.35);
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,168,76,0.45); }
+.btn-secondary {
+  padding: 15px 28px; background: rgba(255,255,255,0.1); color: white;
+  border: 1.5px solid rgba(255,255,255,0.25); border-radius: 50px;
+  font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+  text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.4); }
+.hero-note { margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* ── HERO SOCIAL PROOF ── */
+.hero-proof {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.hero-proof-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 24px; padding: 7px 16px;
+  font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88);
+}
+.hero-proof-badge .badge-icon { font-size: 15px; }
+.hero-proof-badge.gold-badge {
+  background: rgba(201,168,76,0.14); border-color: rgba(201,168,76,0.4);
+  color: var(--gold);
+}
+
+/* ── DEMO MOCKUP ── */
+.demo-wrap {
+  width: 100%; max-width: 480px; margin: 56px auto 0;
+  position: relative;
+}
+.demo-phone {
+  background: var(--bg); border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+}
+.demo-phone-bar {
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+}
+.demo-han-av {
+  width: 28px; height: 28px; background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.4); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 0.5px;
+}
+.demo-phone-title { font-size: 12px; font-weight: 600; color: white; }
+.demo-phone-sub { font-size: 10px; color: rgba(255,255,255,0.5); margin-left: auto; }
+.demo-chat { padding: 14px; display: flex; flex-direction: column; gap: 12px; background: #f5f4f1; }
+.demo-msg { display: flex; gap: 8px; align-items: flex-start; }
+.demo-msg.user { flex-direction: row-reverse; }
+.demo-av {
+  width: 26px; height: 26px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; flex-shrink: 0;
+}
+.demo-av.han { background: linear-gradient(135deg, #0e1c33, #1a3068); color: white; }
+.demo-av.user { background: #dbeafe; color: #1e3a8a; font-size: 11px; }
+.demo-bubble {
+  max-width: calc(100% - 40px); padding: 9px 12px; border-radius: 12px;
+  font-size: 12px; line-height: 1.6; color: var(--text);
+}
+.demo-msg.han .demo-bubble {
+  background: white; border: 1px solid #e4e2dc;
+  border-top-left-radius: 3px; border-left: 2.5px solid rgba(201,168,76,0.5);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+.demo-msg.user .demo-bubble {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid rgba(30,58,138,0.12); border-top-right-radius: 3px;
+}
+.demo-tag {
+  display: inline-block; background: #f0fdf4; border: 1px solid #86efac;
+  color: #166534; border-radius: 4px; font-size: 10px; font-weight: 600;
+  padding: 2px 6px; margin-bottom: 4px;
+}
+.demo-math { font-family: Georgia, serif; font-style: italic; color: #1e3a8a; font-weight: 600; }
+.demo-input-row {
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+  background: white; border-top: 1px solid #e4e2dc;
+}
+.demo-input {
+  flex: 1; padding: 8px 12px; border: 1.5px solid #e4e2dc; border-radius: 20px;
+  font-size: 12px; color: var(--text-soft); background: #f5f4f1;
+  font-family: 'Inter', sans-serif;
+}
+.demo-send {
+  width: 32px; height: 32px; background: linear-gradient(135deg, #0e1c33, #1e3a8a);
+  border: none; border-radius: 50%; cursor: pointer; color: white; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 16px 24px; display: flex; align-items: center; justify-content: center;
+  gap: 32px; flex-wrap: wrap;
+}
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-mid); font-weight: 500; }
+.trust-item strong { color: var(--text); }
+.trust-sep { width: 1px; height: 20px; background: var(--border); }
+
+/* ── SECTION COMMONS ── */
+.section { padding: 72px 24px; max-width: 1080px; margin: 0 auto; }
+.section-eyebrow {
+  font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 10px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800; color: var(--navy-dark); line-height: 1.15; margin-bottom: 16px;
+}
+.section-sub { font-size: 16px; color: var(--text-mid); line-height: 1.7; max-width: 560px; }
+
+/* ── FEATURES ── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px; margin-top: 48px;
+}
+.feature-card {
+  background: white; border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 28px 24px; transition: all 0.2s;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+.feature-card:hover { border-color: rgba(201,168,76,0.4); box-shadow: 0 8px 32px rgba(14,28,51,0.1); transform: translateY(-3px); }
+.feature-icon { font-size: 32px; margin-bottom: 14px; }
+.feature-title { font-size: 16px; font-weight: 700; color: var(--navy-dark); margin-bottom: 8px; }
+.feature-desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+
+/* ── CREATOR ── */
+.creator-section {
+  background: linear-gradient(135deg, #0a1628 0%, #0e1c33 55%, #1a3068 100%);
+  padding: 72px 24px;
+}
+.creator-inner {
+  max-width: 900px; margin: 0 auto;
+  display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center;
+}
+.creator-photo-wrap { flex-shrink: 0; }
+.creator-photo {
+  width: 180px; height: 180px; border-radius: 24px;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(201,168,76,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 72px; overflow: hidden;
+  /* Replace with: <img src="/hanyong.jpg" alt="Hanyong" style="width:100%;height:100%;object-fit:cover"> */
+}
+.creator-eyebrow { font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.creator-name { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 800; color: white; margin-bottom: 6px; }
+.creator-role { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 20px; }
+.creator-bio { font-size: 15px; color: rgba(255,255,255,0.78); line-height: 1.8; }
+.creator-bio p + p { margin-top: 12px; }
+.creator-creds { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.cred-chip {
+  padding: 6px 14px; background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.3); border-radius: 20px;
+  font-size: 12px; font-weight: 600; color: var(--gold);
+}
+
+/* ── HOW IT WORKS ── */
+.how-section { background: var(--bg); }
+.how-steps {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px; margin-top: 48px;
+}
+.how-step { text-align: center; padding: 0 16px; }
+.step-num {
+  width: 48px; height: 48px; background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 800; color: var(--gold);
+  margin: 0 auto 16px; font-family: 'Playfair Display', serif;
+}
+.step-title { font-size: 16px; font-weight: 700; color: var(--navy-dark); margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+.how-connector { display: none; }
+
+/* ── PRICING ── */
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; max-width: 680px; }
+.pricing-card {
+  border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 32px 28px; background: white;
+}
+.pricing-card.featured {
+  border-color: var(--gold); background: linear-gradient(145deg, #0a1628, #0e1c33);
+  position: relative; overflow: hidden;
+}
+.pricing-card.featured::before {
+  content: 'MOST POPULAR';
+  position: absolute; top: 16px; right: -24px;
+  background: var(--gold); color: var(--navy-dark);
+  font-size: 9px; font-weight: 800; letter-spacing: 1px;
+  padding: 4px 32px; transform: rotate(45deg); transform-origin: center;
+}
+.pricing-tier { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-soft); margin-bottom: 10px; }
+.pricing-card.featured .pricing-tier { color: rgba(255,255,255,0.5); }
+.pricing-price { font-size: 40px; font-weight: 800; color: var(--navy-dark); line-height: 1; margin-bottom: 4px; font-family: 'Playfair Display', serif; }
+.pricing-card.featured .pricing-price { color: var(--gold); }
+.pricing-period { font-size: 13px; color: var(--text-soft); margin-bottom: 20px; }
+.pricing-card.featured .pricing-period { color: rgba(255,255,255,0.5); }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.pricing-features li { display: flex; gap: 10px; font-size: 13px; color: var(--text-mid); }
+.pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.75); }
+.pricing-features li::before { content: '✓'; font-weight: 700; color: var(--green); flex-shrink: 0; }
+.pricing-card.featured .pricing-features li::before { color: var(--gold); }
+.btn-pricing {
+  width: 100%; padding: 13px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  font-family: 'Inter', sans-serif; text-decoration: none;
+  display: block; text-align: center; transition: all 0.2s;
+}
+.btn-pricing-free {
+  background: var(--bg); color: var(--navy-dark);
+  border: 2px solid var(--border);
+}
+.btn-pricing-free:hover { border-color: var(--navy-dark); }
+.btn-pricing-paid {
+  background: var(--gold); color: var(--navy-dark);
+  border: 2px solid var(--gold);
+  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+}
+.btn-pricing-paid:hover { background: var(--gold-light); transform: translateY(-1px); }
+.pricing-why { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 12px; line-height: 1.6; }
+
+/* ── AI MARKING DEMO ── */
+.marking-section {
+  background: var(--bg); padding: 80px 24px;
+}
+.marking-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+}
+.marking-text { max-width: 480px; }
+.marking-checks {
+  list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 12px;
+}
+.marking-checks li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--text-mid); line-height: 1.5;
+}
+.marking-checks li::before {
+  content: '✓'; font-weight: 700; color: var(--green); flex-shrink: 0; margin-top: 1px;
+}
+.marking-mockup {
+  background: white; border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  box-shadow: 0 8px 40px rgba(14,28,51,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden; font-size: 13px;
+}
+.marking-mockup-bar {
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+}
+.marking-mockup-title { font-size: 12px; font-weight: 600; color: white; }
+.marking-mockup-badge {
+  margin-left: auto; background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.4); border-radius: 10px;
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  padding: 2px 8px; letter-spacing: 0.3px;
+}
+.marking-attempt {
+  background: #fffdf7; border-bottom: 1.5px solid #e4e2dc;
+  padding: 14px 16px;
+}
+.marking-attempt-label {
+  font-size: 10px; font-weight: 700; color: var(--text-soft);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;
+}
+.marking-attempt-q {
+  font-size: 12px; color: var(--text-mid); margin-bottom: 10px; line-height: 1.5;
+}
+.marking-attempt-work {
+  background: white; border: 1.5px solid #e4e2dc; border-radius: 8px;
+  padding: 10px 12px; font-size: 12px; line-height: 1.8; color: var(--text);
+  font-family: Georgia, serif;
+}
+.marking-response { padding: 14px 16px; }
+.marking-response-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 6px; padding: 3px 10px;
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+}
+.mark-line {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--border);
+  font-size: 12px; line-height: 1.5;
+}
+.mark-line:last-of-type { border-bottom: none; }
+.mark-tick { font-weight: 700; flex-shrink: 0; width: 16px; }
+.mark-tick.pass { color: var(--green); }
+.mark-tick.fail { color: #dc2626; }
+.mark-code {
+  background: #f0f9f4; border: 1px solid #86efac;
+  color: #166534; border-radius: 4px; font-size: 10px; font-weight: 700;
+  padding: 1px 5px; flex-shrink: 0;
+}
+.mark-code.lost { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+.mark-text { color: var(--text-mid); flex: 1; }
+.marking-score {
+  margin-top: 12px; padding: 10px 12px;
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  border-radius: 8px; display: flex; align-items: center; justify-content: space-between;
+}
+.marking-score-num {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  font-weight: 800; color: var(--gold);
+}
+.marking-score-label { font-size: 11px; color: rgba(255,255,255,0.55); }
+.marking-score-note { font-size: 11px; color: rgba(255,255,255,0.65); max-width: 180px; text-align: right; line-height: 1.4; }
+.marking-cta-strip {
+  max-width: 1080px; margin: 48px auto 0;
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  border-radius: var(--radius); padding: 36px 40px;
+  display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+  box-shadow: 0 8px 40px rgba(14,28,51,0.2);
+}
+.marking-cta-text h3 {
+  font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800;
+  color: white; margin-bottom: 6px;
+}
+.marking-cta-text p { font-size: 14px; color: rgba(255,255,255,0.6); }
+.marking-cta-btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.btn-marking-primary {
+  padding: 13px 26px; background: var(--gold); color: var(--navy-dark);
+  border: none; border-radius: 50px; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+}
+.btn-marking-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+.btn-marking-secondary {
+  padding: 13px 22px; background: transparent; color: rgba(255,255,255,0.8);
+  border: 1.5px solid rgba(255,255,255,0.25); border-radius: 50px;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-marking-secondary:hover { border-color: rgba(255,255,255,0.5); color: white; }
+@media (max-width: 768px) {
+  .marking-inner { grid-template-columns: 1fr; gap: 40px; }
+  .marking-text { max-width: 100%; }
+  .marking-cta-strip { flex-direction: column; align-items: flex-start; padding: 28px 24px; }
+}
+
+/* ── CTA BAND ── */
+.cta-band {
+  background: linear-gradient(135deg, #0a1628 0%, #0e1c33 50%, #1a3068 100%);
+  padding: 80px 24px; text-align: center;
+}
+.cta-band h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 44px); font-weight: 800; color: white; margin-bottom: 16px; }
+.cta-band p { font-size: 16px; color: rgba(255,255,255,0.65); margin-bottom: 36px; }
+.cta-fine { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 16px; }
+
+/* ── FOOTER ── */
+footer {
+  background: #060e1c; padding: 32px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-brand { font-size: 14px; color: rgba(255,255,255,0.4); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  nav { padding: 0 16px; }
+  .nav-link { display: none; }
+  .creator-inner { grid-template-columns: 1fr; text-align: center; gap: 28px; }
+  .creator-photo { margin: 0 auto; width: 140px; height: 140px; font-size: 56px; }
+  .creator-creds { justify-content: center; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 100%; }
+  .trust-sep { display: none; }
+}
+@media (max-width: 480px) {
+  .hero-cta-group { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { width: 100%; max-width: 320px; justify-content: center; }
+}
+
+/* ── WHATSAPP FLOAT ── */
+.wa-float {
+  position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.2);
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+}
+.wa-float:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.55), 0 4px 12px rgba(0,0,0,0.25); }
+.wa-float svg { width: 30px; height: 30px; fill: white; }
+
+/* ── WORKSHOPS ── */
+.workshops-label {
+  font-size: 10px; font-weight: 700; color: rgba(201,168,76,0.6);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-top: 20px; margin-bottom: 8px;
+}
+.cred-chip-sm {
+  padding: 4px 11px; background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+  font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.7);
+}
+.cred-chip-sm .cat {
+  font-size: 10px; color: rgba(201,168,76,0.8); font-weight: 700; margin-left: 4px;
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-badge">HAN</div>
+    <span class="nav-brand">askHanyong</span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="#how-it-works">How it works</a>
+    <a class="nav-link" href="#pricing">Pricing</a>
+    <a class="nav-link" href="#about">About</a>
+    <a class="nav-link" href="/blog">Blog</a>
+    <a class="btn-nav-cta" href="/app">Ask Free</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-eyebrow">IB Math · AI Tutor · Examiner-Level Guidance</div>
+  <h1>Your IB Math examiner,<br><em>always available</em></h1>
+  <p class="hero-sub">
+    HAN explains every question the way an examiner would — step-by-step, mark-scheme aware, and honest about where students lose marks.
+    Built by Hanyong: 20+ years in education — teaching in schools and tutoring across O-Levels, A-Levels, and IB. IB Examiner.
+  </p>
+  <div class="hero-proof">
+    <div class="hero-proof-badge">
+      <span class="badge-icon">🎓</span> Applied Mathematics · NUS
+    </div>
+    <div class="hero-proof-badge">
+      <span class="badge-icon">📚</span> O, A-Levels &amp; IB
+    </div>
+    <div class="hero-proof-badge">
+      <span class="badge-icon">📅</span> 20+ Years in Education
+    </div>
+    <div class="hero-proof-badge gold-badge">
+      <span class="badge-icon">📋</span> IB Examiner
+    </div>
+    <div class="hero-proof-badge">
+      <span class="badge-icon">🏫</span> Former DP Coordinator
+    </div>
+    <div class="hero-proof-badge">
+      <span class="badge-icon">✅</span> HL &amp; SL Specialist
+    </div>
+  </div>
+
+  <div class="hero-cta-group">
+    <a class="btn-primary" href="/app">
+      Ask a Question Free ✦
+    </a>
+    <a class="btn-secondary" href="/app#signin">
+      Sign In →
+    </a>
+  </div>
+  <p class="hero-note">Free to use · No credit card · Works on any device</p>
+
+  <!-- Demo Mockup -->
+  <div class="demo-wrap">
+    <div class="demo-phone">
+      <div class="demo-phone-bar">
+        <div class="demo-han-av">HAN</div>
+        <span class="demo-phone-title">Ask HAN</span>
+        <span class="demo-phone-sub">HL · Calculus</span>
+      </div>
+      <div class="demo-chat">
+        <div class="demo-msg user">
+          <div class="demo-av user">You</div>
+          <div class="demo-bubble">Find the equation of the tangent to <span class="demo-math">y = x³ − 3x</span> at <span class="demo-math">x = 2</span>.</div>
+        </div>
+        <div class="demo-msg han">
+          <div class="demo-av han">HAN</div>
+          <div class="demo-bubble">
+            <div class="demo-tag">✓ Examiner method</div><br>
+            <strong>Step 1 — Find the gradient</strong><br>
+            Differentiate: <span class="demo-math">y′ = 3x² − 3</span><br>
+            At <span class="demo-math">x = 2</span>: <span class="demo-math">m = 3(4) − 3 = 9</span><br><br>
+            <strong>Step 2 — Find the y-value</strong><br>
+            <span class="demo-math">y = 8 − 6 = 2</span>, so point is <span class="demo-math">(2, 2)</span><br><br>
+            <strong>Step 3 — Tangent equation</strong><br>
+            <span class="demo-math">y − 2 = 9(x − 2)</span><br>
+            ⇒ <span class="demo-math">y = 9x − 16</span>
+          </div>
+        </div>
+        <div class="demo-msg user">
+          <div class="demo-av user">You</div>
+          <div class="demo-bubble">Where do most students lose marks on this?</div>
+        </div>
+      </div>
+      <div class="demo-input-row">
+        <div class="demo-input">Ask any IB Math question…</div>
+        <button class="demo-send">➤</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRUST BAR ── -->
+<div class="trust-bar">
+  <div class="trust-item">🎓 <strong>20+</strong> Years in Education</div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">📋 <strong>IB Examiner</strong></div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">🏫 <strong>Former DP Coordinator</strong></div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">✅ HL &amp; SL Specialist</div>
+  <div class="trust-sep"></div>
+  <a class="trust-item accuracy-badge" href="/accuracy" style="text-decoration:none;color:inherit;cursor:pointer" id="accuracyBadge">
+    <span id="accuracyBadgeInner">📊 <strong id="accuracyPct">—</strong>% accuracy on IB papers</span>
+  </a>
+</div>
+
+<script>
+// Load accuracy badge
+fetch('/api/accuracy').then(r => r.json()).then(d => {
+  if (d.overall) {
+    document.getElementById('accuracyPct').textContent = d.overall;
+    document.getElementById('accuracyBadge').title = d.questionCount + ' questions evaluated against official IB mark schemes';
+  }
+}).catch(() => {});
+</script>
+
+<!-- ── FEATURES ── -->
+<section class="section">
+  <div class="section-eyebrow">What HAN does</div>
+  <h2 class="section-title">Examiner-level guidance<br>for every question</h2>
+  <p class="section-sub">HAN doesn't just solve problems — it teaches you how to present your working the way that earns full marks.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <div class="feature-title">Step-by-step explanations</div>
+      <div class="feature-desc">Every answer is structured like an examiner's model solution — numbered steps, logical arrows, critical lines flagged.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📷</div>
+      <div class="feature-title">Upload a photo of your question</div>
+      <div class="feature-desc">Snap a photo of your textbook or past paper — HAN reads it and explains it instantly.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✍️</div>
+      <div class="feature-title">Mark my working</div>
+      <div class="feature-desc">Paste your attempt and HAN marks it like an examiner: what earned marks, what didn't, and why.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📝</div>
+      <div class="feature-title">Mock paper generator</div>
+      <div class="feature-desc">Generate custom mock papers by topic, difficulty, and marks — then attempt them with full worked solutions.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Progress tracking</div>
+      <div class="feature-desc">See your accuracy by topic, your daily streak, and which areas need the most work — all in one dashboard.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📚</div>
+      <div class="feature-title">Past paper library</div>
+      <div class="feature-desc">Browse and search real IB past paper questions filtered by year, session, paper, and difficulty.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AI MARKING DEMO ── -->
+<section class="marking-section" id="marking-demo">
+  <div class="marking-inner">
+
+    <!-- Left: text -->
+    <div class="marking-text">
+      <div class="section-eyebrow">AI Marking</div>
+      <h2 class="section-title">See what Hanyong's<br>AI marking looks like</h2>
+      <p class="section-sub">Paste your working and HAN marks it exactly like an examiner — telling you which steps earned marks, which didn't, and why.</p>
+      <ul class="marking-checks">
+        <li>Method marks vs accuracy marks, explained line by line</li>
+        <li>Exactly where marks were lost and how to recover them</li>
+        <li>How an examiner would read and score your solution</li>
+        <li>What to correct before the real exam</li>
+      </ul>
+    </div>
+
+    <!-- Right: mockup -->
+    <div class="marking-mockup">
+      <div class="marking-mockup-bar">
+        <div class="demo-han-av">HAN</div>
+        <span class="marking-mockup-title">Mark My Working</span>
+        <span class="marking-mockup-badge">✦ Examiner Mode</span>
+      </div>
+
+      <!-- Student's attempt -->
+      <div class="marking-attempt">
+        <div class="marking-attempt-label">Your working</div>
+        <div class="marking-attempt-q">
+          Differentiate <span class="demo-math">y = x²ln(x)</span> with respect to <span class="demo-math">x</span>. &nbsp;[4 marks]
+        </div>
+        <div class="marking-attempt-work">
+          Let <span class="demo-math">u = x²</span>, &nbsp;<span class="demo-math">u′ = 2x</span><br>
+          Let <span class="demo-math">v = ln x</span>, &nbsp;<span class="demo-math">v′ = 1/x</span><br>
+          <span class="demo-math">dy/dx = u′v = 2x · ln x</span>
+        </div>
+      </div>
+
+      <!-- HAN's marking -->
+      <div class="marking-response">
+        <div class="marking-response-label">✦ Examiner Marking</div>
+
+        <div class="mark-line">
+          <span class="mark-tick pass">✓</span>
+          <span class="mark-code">M1</span>
+          <span class="mark-text">Product rule correctly identified — <em>u</em> and <em>v</em> set up properly</span>
+        </div>
+        <div class="mark-line">
+          <span class="mark-tick pass">✓</span>
+          <span class="mark-code">A1</span>
+          <span class="mark-text"><span class="demo-math">u′ = 2x</span> correct</span>
+        </div>
+        <div class="mark-line">
+          <span class="mark-tick pass">✓</span>
+          <span class="mark-code">A1</span>
+          <span class="mark-text"><span class="demo-math">v′ = 1/x</span> correct</span>
+        </div>
+        <div class="mark-line">
+          <span class="mark-tick fail">✗</span>
+          <span class="mark-code lost">A1</span>
+          <span class="mark-text">Missing second term — product rule requires <span class="demo-math">u′v + uv′</span>, not just <span class="demo-math">u′v</span>. Answer should be <span class="demo-math">2x·ln x + x</span></span>
+        </div>
+
+        <div class="marking-score">
+          <div>
+            <div class="marking-score-num">3 / 4</div>
+            <div class="marking-score-label">marks awarded</div>
+          </div>
+          <div class="marking-score-note">You set the product rule up correctly. You just forgot to add the <em>uv′</em> term at the end.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CTA strip -->
+  <div class="marking-cta-strip">
+    <div class="marking-cta-text">
+      <h3>Stop guessing what earns marks.</h3>
+      <p>Get your working marked by HAN — free to try, examiner-accurate.</p>
+    </div>
+    <div class="marking-cta-btns">
+      <a class="btn-marking-primary" href="/app">Ask a Question Free ✦</a>
+      <a class="btn-marking-secondary" href="#pricing">See plans →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-section">
+  <div class="section" id="how-it-works">
+    <div class="section-eyebrow">How it works</div>
+    <h2 class="section-title">Start in 30 seconds</h2>
+    <p class="section-sub">No setup. No downloads. Works immediately in your browser.</p>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Ask any question</div>
+        <div class="step-desc">Type a question, paste it from a past paper PDF, or photograph it with your phone.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div class="step-title">HAN explains it</div>
+        <div class="step-desc">Get a full examiner-style solution — step-by-step, with mark scheme awareness and common mistakes flagged.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div class="step-title">Learn, not just copy</div>
+        <div class="step-desc">Ask follow-ups, challenge your own working, or generate practice questions on the same concept.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CREATOR ── -->
+<section class="creator-section" id="about">
+  <div class="creator-inner">
+    <div class="creator-photo-wrap">
+      <div class="creator-photo">
+        <img src="/hanyong.jpg" alt="Hanyong Lim" style="width:100%;height:100%;object-fit:cover;border-radius:22px">
+      </div>
+    </div>
+    <div>
+      <div class="creator-eyebrow">Built by</div>
+      <div class="creator-name">Hanyong Lim</div>
+      <div class="creator-role">IB Math Teacher · IB Examiner · DP Coordinator · Applied Mathematician</div>
+      <div class="creator-bio">
+        <p>I grew up passionate about mathematics and went on to study <strong>Applied Mathematics at the National University of Singapore</strong>, then spent the next 20+ years teaching Mathematics across O-Levels, A-Levels, and IB in Singapore schools.</p>
+        <p>For several of those years, I worked as an <strong>IB Examiner</strong> — marking real student scripts from schools around the world and writing mark schemes. Every year I mark over 100 scripts. What this means in practice: I know in depth exactly what costs students marks. Not guessing, not theory — the real pattern from thousands of scripts reviewed over many years.</p>
+        <p>I also served as a <strong>DP Coordinator</strong> — the person responsible for running the entire IB Diploma Programme at the school. This role gave me a view no single subject teacher has: overseeing every student's full Diploma journey, training teachers on IB requirements, managing the examination process end-to-end, and supporting students through the Extended Essay, Theory of Knowledge, and CAS. I understand how IB schools evaluate students from every angle.</p>
+        <p>The difference between a 5, a 6, and a 7 is rarely about ability. It's about structure, clarity, and knowing what an examiner is looking for. Every student deserves that knowledge. I built HAN so it's always there when they need it — patient, free, and trained on everything I've learned over 20 years.</p>
+      </div>
+      <div class="creator-creds">
+        <span class="cred-chip">Applied Mathematics · NUS</span>
+        <span class="cred-chip">O, A-Levels &amp; IB</span>
+        <span class="cred-chip">20+ Years in Education</span>
+        <span class="cred-chip">IB Examiner</span>
+        <span class="cred-chip">Former DP Coordinator</span>
+        <span class="cred-chip">HL &amp; SL Specialist</span>
+      </div>
+      <div class="workshops-label">IB Professional Development &amp; Training</div>
+      <div class="creator-creds">
+        <span class="cred-chip-sm">Extended Essay <span class="cat">Cat 3</span></span>
+        <span class="cred-chip-sm">Theory of Knowledge <span class="cat">Cat 1</span></span>
+        <span class="cred-chip-sm">Mathematics HL <span class="cat">Cat 1</span></span>
+        <span class="cred-chip-sm">Mathematics HL <span class="cat">Cat 2</span></span>
+        <span class="cred-chip-sm">Mathematics HL — IA Focus <span class="cat">Cat 3</span></span>
+        <span class="cred-chip-sm">Approaches to Teaching &amp; Learning <span class="cat">Cat 3</span></span>
+        <span class="cred-chip-sm">IBDP Coordinator <span class="cat">Cat 2</span></span>
+        <span class="cred-chip-sm">MAA HL — Current Syllabus <span class="cat">Cat 3</span></span>
+        <span class="cred-chip-sm">DP Leading the Learning <span class="cat">Cat 2</span></span>
+        <span class="cred-chip-sm">IB Conferences <span class="cat">multiple</span></span>
+      </div>
+      <details style="margin-top:18px;">
+        <summary style="font-size:12px;color:rgba(255,255,255,0.45);cursor:pointer;user-select:none;list-style:none;display:inline-flex;align-items:center;gap:6px;">
+          <span style="color:rgba(201,168,76,0.6);font-size:11px;">▸</span> What does a DP Coordinator actually do?
+        </summary>
+        <div style="margin-top:12px;padding:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.75;">
+          <p>The DP Coordinator runs the IB Diploma Programme at the school. Every IB World School offering the Diploma is required to have one — this is the person who ensures the programme meets IB standards from the first day of Year 1 through to the final exams.</p>
+          <p style="margin-top:10px;">In practice, this means: registering every student for their IB exams, overseeing the Extended Essay, Theory of Knowledge, and CAS, keeping the school compliant with IB regulations, supporting teachers on marking requirements and syllabus changes, and advocating for students in special circumstances — illness, learning needs, family emergencies.</p>
+          <p style="margin-top:10px;">Think of the DP Coordinator as the bridge between the school, the students, the teachers, and the IB organisation itself. A good coordinator understands the full picture of what a student needs to complete the Diploma — not just one subject, but everything.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section class="section" id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <h2 class="section-title">Free for every student.</h2>
+  <p class="section-sub">If HAN helps you, a one-time contribution keeps the servers running. Either way, keep using it — that's exactly why it was built.</p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-tier">Free</div>
+      <div class="pricing-price">S$0</div>
+      <div class="pricing-period">Always free</div>
+      <ul class="pricing-features">
+        <li>10 questions per day</li>
+        <li>5 photo uploads per day</li>
+        <li>Full step-by-step explanations</li>
+        <li>Past paper library access</li>
+        <li>Mock exam generator</li>
+        <li>Progress tracking</li>
+      </ul>
+      <a class="btn-pricing btn-pricing-free" href="/app">Ask a Question Free →</a>
+    </div>
+    <div class="pricing-card featured">
+      <div class="pricing-tier">Contributor</div>
+      <div class="pricing-price">S$45</div>
+      <div class="pricing-period">One-time · Unlimited forever</div>
+      <ul class="pricing-features">
+        <li>Unlimited questions &amp; uploads</li>
+        <li>Everything in Free</li>
+        <li>Priority support from Hanyong</li>
+        <li>Keeps HAN free for others</li>
+      </ul>
+      <a class="btn-pricing btn-pricing-paid" href="/app">Contribute S$45 →</a>
+      <p class="pricing-why">Why S$45? In IB, 45 is the perfect score. This tool exists to help you reach for that. The amount is intentional.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA BAND ── -->
+<section class="cta-band">
+  <h2>Your next exam session starts now.</h2>
+  <p>Ask your first question — no account needed.</p>
+  <a class="btn-primary" href="/app" style="display:inline-flex">
+    Ask Your First Question Free ✦
+  </a>
+  <p class="cta-fine">Free · No credit card · Works on any device</p>
+</section>
+
+<!-- ── WHATSAPP FLOAT ── -->
+<a class="wa-float" href="https://wa.me/6580448247" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span class="footer-brand">© 2025 askHanyong · HAN = Help · Achieve · Nurture</span>
+  <div class="footer-links">
+    <a href="mailto:hanyong@askhanyong.com">Contact</a>
+    <a href="/app">Launch App</a>
+    <a href="/blog">Blog</a>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════════════════════════
+     FEEDBACK WIDGET — floating button + modal
+     ════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Floating feedback button ── */
+.fb-trigger {
+  position: fixed; bottom: 24px; left: 24px; z-index: 9000;
+  display: flex; align-items: center; gap: 8px;
+  background: #0e1c33; color: #C9A84C;
+  border: 1.5px solid rgba(201,168,76,0.45);
+  border-radius: 24px; padding: 10px 18px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  transition: background 0.2s, transform 0.15s;
+}
+.fb-trigger:hover { background: #1a3068; transform: translateY(-2px); }
+.fb-trigger svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── Backdrop ── */
+.fb-backdrop {
+  display: none; position: fixed; inset: 0; z-index: 9100;
+  background: rgba(10,22,40,0.7); backdrop-filter: blur(4px);
+}
+.fb-backdrop.open { display: flex; align-items: center; justify-content: center; }
+
+/* ── Modal ── */
+.fb-modal {
+  background: #fff; border-radius: 20px;
+  width: 100%; max-width: 480px; margin: 16px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+  overflow: hidden; font-family: 'Inter', sans-serif;
+  animation: fb-slide-up 0.25s ease;
+  display: flex; flex-direction: column;
+  max-height: calc(100vh - 32px);
+}
+@keyframes fb-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fb-header {
+  background: linear-gradient(135deg, #0a1628, #0e1c33);
+  padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;
+}
+.fb-header-title { color: #fff; font-size: 16px; font-weight: 700; }
+.fb-header-sub { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 2px; }
+.fb-close {
+  background: rgba(255,255,255,0.1); border: none; border-radius: 50%;
+  width: 32px; height: 32px; cursor: pointer; color: rgba(255,255,255,0.7);
+  font-size: 18px; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.fb-close:hover { background: rgba(255,255,255,0.2); color: #fff; }
+.fb-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+
+/* ── Type selector ── */
+.fb-type-row { display: flex; gap: 8px; }
+.fb-type-btn {
+  flex: 1; padding: 8px 4px; border-radius: 10px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid #e4e2dc; background: #f5f4f1; color: #4b5563;
+  cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.fb-type-btn span.fb-type-icon { font-size: 18px; }
+.fb-type-btn.active { border-color: #C9A84C; background: rgba(201,168,76,0.10); color: #0e1c33; }
+
+/* ── Form fields ── */
+.fb-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; display: block; }
+.fb-input, .fb-textarea {
+  width: 100%; padding: 10px 13px; border: 1.5px solid #e4e2dc;
+  border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif;
+  color: #111827; background: #fafaf9; outline: none;
+  transition: border-color 0.15s;
+}
+.fb-input:focus, .fb-textarea:focus { border-color: #C9A84C; background: #fff; }
+.fb-textarea { resize: vertical; min-height: 100px; }
+
+/* ── Photo upload ── */
+.fb-photo-area {
+  border: 1.5px dashed #e4e2dc; border-radius: 10px;
+  padding: 14px; text-align: center; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.fb-photo-area:hover { border-color: #C9A84C; background: rgba(201,168,76,0.04); }
+.fb-photo-area input { display: none; }
+.fb-photo-hint { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+.fb-photo-label { font-size: 13px; font-weight: 500; color: #4b5563; }
+.fb-photo-icon { font-size: 22px; margin-bottom: 4px; }
+.fb-previews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.fb-preview-item {
+  position: relative; width: 72px; height: 72px;
+  border-radius: 8px; overflow: hidden; border: 1.5px solid #e4e2dc;
+}
+.fb-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+.fb-preview-remove {
+  position: absolute; top: 2px; right: 2px;
+  background: rgba(0,0,0,0.6); color: #fff; border: none;
+  border-radius: 50%; width: 18px; height: 18px; font-size: 11px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;
+}
+
+/* ── Submit ── */
+.fb-submit {
+  width: 100%; padding: 13px; border: none; border-radius: 12px;
+  background: #C9A84C; color: #0a1628; font-size: 14px; font-weight: 700;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.fb-submit:hover:not(:disabled) { background: #e4c97a; transform: translateY(-1px); }
+.fb-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.fb-error { font-size: 12px; color: #dc2626; text-align: center; }
+
+/* ── Success state ── */
+.fb-success {
+  padding: 40px 24px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.fb-success-icon { font-size: 48px; }
+.fb-success h3 { font-size: 18px; font-weight: 700; color: #0e1c33; }
+.fb-success p { font-size: 14px; color: #4b5563; line-height: 1.6; }
+.fb-success-close {
+  margin-top: 8px; padding: 10px 28px; background: #0e1c33; color: #C9A84C;
+  border: none; border-radius: 20px; font-size: 13px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+}
+</style>
+
+<!-- Floating trigger button -->
+<button class="fb-trigger" onclick="fbOpen()" aria-label="Share feedback">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+  Feedback
+</button>
+
+<!-- Backdrop + Modal -->
+<div class="fb-backdrop" id="fbBackdrop" onclick="fbClose(event)">
+  <div class="fb-modal" id="fbModal">
+    <!-- Header -->
+    <div class="fb-header">
+      <div>
+        <div class="fb-header-title">Share your feedback</div>
+        <div class="fb-header-sub">Help us make HAN better for every student</div>
+      </div>
+      <button class="fb-close" onclick="fbClose(null)" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Form -->
+    <div class="fb-body" id="fbForm">
+      <!-- Type -->
+      <div>
+        <span class="fb-label">What kind of feedback?</span>
+        <div class="fb-type-row">
+          <button class="fb-type-btn active" data-type="issue" onclick="fbSetType(this)">
+            <span class="fb-type-icon">🐛</span>Issue
+          </button>
+          <button class="fb-type-btn" data-type="suggestion" onclick="fbSetType(this)">
+            <span class="fb-type-icon">💡</span>Suggestion
+          </button>
+          <button class="fb-type-btn" data-type="compliment" onclick="fbSetType(this)">
+            <span class="fb-type-icon">⭐</span>Love it
+          </button>
+        </div>
+      </div>
+
+      <!-- Subject -->
+      <div>
+        <label class="fb-label" for="fbSubject">Subject</label>
+        <input class="fb-input" id="fbSubject" type="text" placeholder="Brief summary of your feedback" maxlength="120">
+      </div>
+
+      <!-- Message -->
+      <div>
+        <label class="fb-label" for="fbMessage">Details</label>
+        <textarea class="fb-textarea" id="fbMessage" placeholder="Tell us more — what happened, what you'd like improved, or what you love about HAN..."></textarea>
+      </div>
+
+      <!-- Photos -->
+      <div>
+        <span class="fb-label">Photos <span style="font-weight:400;color:#9ca3af">(optional, up to 3)</span></span>
+        <label class="fb-photo-area" id="fbPhotoArea">
+          <input type="file" id="fbPhotoInput" accept="image/*" multiple onchange="fbAddPhotos(this)">
+          <div class="fb-photo-icon">📷</div>
+          <div class="fb-photo-label">Click to attach photos</div>
+          <div class="fb-photo-hint">Screenshots or photos help us understand the issue · JPG, PNG, GIF · 2 MB each</div>
+        </label>
+        <div class="fb-previews" id="fbPreviews"></div>
+      </div>
+
+      <!-- Error -->
+      <div class="fb-error" id="fbError" style="display:none"></div>
+
+      <!-- Submit -->
+      <button class="fb-submit" id="fbSubmitBtn" onclick="fbSubmit()">Send Feedback</button>
+    </div>
+
+    <!-- Success -->
+    <div class="fb-success" id="fbSuccess" style="display:none">
+      <div class="fb-success-icon">🎉</div>
+      <h3>Thank you!</h3>
+      <p>Your feedback has been received. Hanyong reviews every submission and uses them to keep improving HAN.</p>
+      <button class="fb-success-close" onclick="fbClose(null)">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var fbPhotos = []; // array of { dataUrl, mimeType }
+  var fbType   = 'issue';
+
+  window.fbOpen = function() {
+    document.getElementById('fbBackdrop').classList.add('open');
+    document.getElementById('fbSubject').focus();
+  };
+
+  window.fbClose = function(e) {
+    if (e && e.target !== document.getElementById('fbBackdrop')) return;
+    document.getElementById('fbBackdrop').classList.remove('open');
+  };
+
+  window.fbSetType = function(btn) {
+    document.querySelectorAll('.fb-type-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    fbType = btn.dataset.type;
+  };
+
+  window.fbAddPhotos = function(input) {
+    var files = Array.from(input.files);
+    var remaining = 3 - fbPhotos.length;
+    if (remaining <= 0) { fbShowError('Maximum 3 photos allowed.'); return; }
+    files = files.slice(0, remaining);
+    files.forEach(function(file) {
+      if (file.size > 2 * 1024 * 1024) { fbShowError('Each photo must be under 2 MB.'); return; }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        fbPhotos.push({ dataUrl: ev.target.result, name: file.name });
+        fbRenderPreviews();
+      };
+      reader.readAsDataURL(file);
+    });
+    input.value = '';
+  };
+
+  window.fbRemovePhoto = function(idx) {
+    fbPhotos.splice(idx, 1);
+    fbRenderPreviews();
+  };
+
+  function fbRenderPreviews() {
+    var el = document.getElementById('fbPreviews');
+    el.innerHTML = '';
+    fbPhotos.forEach(function(p, i) {
+      el.innerHTML += '<div class="fb-preview-item">'
+        + '<img src="' + p.dataUrl + '" alt="photo ' + (i+1) + '">'
+        + '<button class="fb-preview-remove" onclick="fbRemovePhoto(' + i + ')">✕</button>'
+        + '</div>';
+    });
+    // Hide/show upload area
+    document.getElementById('fbPhotoArea').style.display = fbPhotos.length >= 3 ? 'none' : '';
+  }
+
+  function fbShowError(msg) {
+    var el = document.getElementById('fbError');
+    el.textContent = msg;
+    el.style.display = msg ? 'block' : 'none';
+  }
+
+  window.fbSubmit = async function() {
+    fbShowError('');
+    var subject = document.getElementById('fbSubject').value.trim();
+    var message = document.getElementById('fbMessage').value.trim();
+
+    if (!subject) { fbShowError('Please add a subject.'); return; }
+    if (message.length < 10) { fbShowError('Please add more detail (at least 10 characters).'); return; }
+
+    var btn = document.getElementById('fbSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    // Pre-fill name/email from logged-in user if available
+    var userEmail = (typeof currentUser !== 'undefined' && currentUser) ? (currentUser.email || '') : '';
+    var userName  = (typeof currentUser !== 'undefined' && currentUser) ? (currentUser.name || currentUser.given_name || '') : '';
+
+    try {
+      var res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type:    fbType,
+          subject: subject,
+          message: message,
+          name:    userName,
+          email:   userEmail,
+          photos:  fbPhotos.map(function(p) { return p.dataUrl; }),
+          page:    window.location.pathname,
+        }),
+      });
+      var data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'Submission failed.');
+      document.getElementById('fbForm').style.display    = 'none';
+      document.getElementById('fbSuccess').style.display = 'flex';
+    } catch (err) {
+      fbShowError(err.message || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Send Feedback';
+    }
+  };
+
+  // Reset form when modal closes
+  document.getElementById('fbBackdrop').addEventListener('transitionend', function() {
+    if (!this.classList.contains('open')) {
+      document.getElementById('fbForm').style.display    = '';
+      document.getElementById('fbSuccess').style.display = 'none';
+      document.getElementById('fbSubject').value = '';
+      document.getElementById('fbMessage').value = '';
+      document.getElementById('fbError').style.display = 'none';
+      document.getElementById('fbSubmitBtn').disabled = false;
+      document.getElementById('fbSubmitBtn').textContent = 'Send Feedback';
+      document.getElementById('fbPhotoArea').style.display = '';
+      document.getElementById('fbPreviews').innerHTML = '';
+      fbPhotos = [];
+      fbType = 'issue';
+      document.querySelectorAll('.fb-type-btn').forEach(function(b, i) {
+        b.classList.toggle('active', i === 0);
+      });
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') fbClose(null);
+  });
+})();
+</script>
+
+</body>
+</html>

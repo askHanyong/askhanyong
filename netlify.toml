@@ -10,13 +10,85 @@
   [headers.values]
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
+    Cross-Origin-Opener-Policy = "unsafe-none"
 
 [[headers]]
   for = "/*.html"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
 
+[[headers]]
+  for = "/blog/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/app"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/accuracy"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "application/xml; charset=utf-8"
+
+[[edge_functions]]
+  path = "/api/claude"
+  function = "claude"
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# Serve landing.html at the root URL (force overrides index.html static file)
+[[redirects]]
+  from = "/"
+  to = "/landing.html"
+  status = 200
+  force = true
+
+# /app serves the AI tutor (force ensures it's never caught by the root rewrite)
+[[redirects]]
+  from = "/app"
+  to = "/index.html"
+  status = 200
+  force = true
+
+# /accuracy serves the accuracy dashboard
+[[redirects]]
+  from = "/accuracy"
+  to = "/accuracy.html"
+  status = 200
+  force = true
+
+# /admin serves the admin dashboard
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+  force = true
+
+# /tune serves the style-capture prompt tuning tool (admin only)
+[[redirects]]
+  from = "/tune"
+  to = "/tune.html"
+  status = 200
+  force = true
