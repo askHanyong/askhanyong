@@ -28,6 +28,13 @@ const SHEETS_URL        = process.env.SHEETS_URL;
 const GAS_ADMIN_SECRET  = process.env.GAS_ADMIN_SECRET;
 const MODEL             = 'claude-sonnet-4-6';
 
+// Comma-separated list of emails that bypass the monthly quota entirely.
+// Also accepts an env var UNLIMITED_EMAILS for runtime configuration.
+const UNLIMITED_EMAILS = new Set([
+  'mathstutorlimhy@gmail.com',
+  ...(process.env.UNLIMITED_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
+]);
+
 // Papers with AI confidence below this threshold are flagged for human review
 const HITL_THRESHOLD = 0.72;
 
@@ -322,19 +329,27 @@ exports.handler = async (event) => {
 
   // ── Quota check via GAS ────────────────────────────────────────
   const monthKey = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+
+  // Unlimited admin emails skip quota entirely.
+  const isUnlimited = UNLIMITED_EMAILS.has(email.toLowerCase());
+
   let quota = { remaining: 0, isPremium: false };
-  try {
-    const q = await callGAS({
-      action:  'checkScriptQuota',
-      email,
-      month:   monthKey,
-      secret:  GAS_ADMIN_SECRET,
-    });
-    quota = { remaining: q.remaining ?? 0, isPremium: !!q.isPremium };
-  } catch (e) {
-    console.error('mark-script: quota check failed:', e.message);
-    // Fail-open for now rather than blocking all users on GAS errors
-    quota = { remaining: 1, isPremium: false };
+  if (isUnlimited) {
+    quota = { remaining: 999, isPremium: true };
+  } else {
+    try {
+      const q = await callGAS({
+        action:  'checkScriptQuota',
+        email,
+        month:   monthKey,
+        secret:  GAS_ADMIN_SECRET,
+      });
+      quota = { remaining: q.remaining ?? 0, isPremium: !!q.isPremium };
+    } catch (e) {
+      console.error('mark-script: quota check failed:', e.message);
+      // Fail-open for now rather than blocking all users on GAS errors
+      quota = { remaining: 1, isPremium: false };
+    }
   }
 
   if (quota.remaining <= 0) {
