@@ -316,7 +316,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Invalid JSON body' }) };
   }
 
-  const { pages, paperInfo, studentName, action, scriptId: incomingScriptId } = body;
+  const { pages, paperInfo, studentName, action, scriptId: incomingScriptId, multiPart } = body;
 
   // ── Lightweight "downloaded" action — record download event ────
   if (action === 'downloaded' && incomingScriptId) {
@@ -324,6 +324,65 @@ exports.handler = async (event) => {
       await postGAS({ action: 'markScriptDownloaded', secret: GAS_ADMIN_SECRET, scriptId: incomingScriptId });
     } catch(e) { /* non-fatal */ }
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
+  }
+
+  // ── batchMark: auth-only batch call — no quota check, no GAS recording ──
+  // Used by the client when submitting large scripts in chunks (pages 5+).
+  if (action === 'batchMark') {
+    if (!Array.isArray(pages) || pages.length === 0 || pages.length > BATCH_SIZE) {
+      return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: `batchMark requires 1–${BATCH_SIZE} pages.` }) };
+    }
+    try {
+      const batchResult = await markPaper(pages, paperInfo || {}, studentName || 'Student');
+      return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, result: batchResult }) };
+    } catch (e) {
+      console.error('mark-script: batchMark error:', e.message);
+      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Batch marking failed: ' + e.message }) };
+    }
+  }
+
+  // ── finalizeScript: record merged result in GAS after all batches complete ──
+  if (action === 'finalizeScript') {
+    const { scriptId: fScriptId, result: fResult, paperInfo: fPaperInfo } = body;
+    if (!fScriptId || !fResult) {
+      return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'scriptId and result are required.' }) };
+    }
+    const fConf       = typeof fResult.confidence === 'number' ? fResult.confidence : 1.0;
+    const fNeeds      = fConf < HITL_THRESHOLD;
+    const fMonthKey   = new Date().toISOString().slice(0, 7);
+    try {
+      await postGAS({
+        action:      'recordScriptSubmission',
+        secret:      GAS_ADMIN_SECRET,
+        email,
+        scriptId:    fScriptId,
+        month:       fMonthKey,
+        paperInfo:   JSON.stringify(fPaperInfo || {}),
+        result:      JSON.stringify(fResult),
+        confidence:  fConf,
+        needsReview: fNeeds,
+        expiresAt:   Date.now() + 7 * 24 * 60 * 60 * 1000,
+      });
+    } catch (e) {
+      console.error('mark-script: finalizeScript GAS failed:', e.message);
+    }
+    if (fNeeds) {
+      try {
+        await postGAS({
+          action:     'sendScriptReviewAlert',
+          secret:     GAS_ADMIN_SECRET,
+          scriptId:   fScriptId,
+          email,
+          paperInfo:  JSON.stringify(fPaperInfo || {}),
+          confidence: fConf,
+          total:      fResult.total,
+          maxTotal:   fResult.maxTotal,
+        });
+      } catch (e) {
+        console.error('mark-script: finalizeScript HITL alert failed:', e.message);
+      }
+    }
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, scriptId: fScriptId }) };
   }
 
   // ── Quota-check-only action — returns remaining quota without marking ──
@@ -401,24 +460,23 @@ exports.handler = async (event) => {
     };
   }
 
-  // ── Mark the paper (batched for large scripts) ─────────────────
+  // ── Mark the paper ──────────────────────────────────────────────
+  // Server handles only one batch (≤BATCH_SIZE pages) per call.
+  // For larger scripts the client splits pages into batches, using
+  // multiPart:true for the first call and action:'batchMark' for the rest.
+  if (pages.length > BATCH_SIZE) {
+    return {
+      statusCode: 400,
+      headers:    CORS,
+      body: JSON.stringify({
+        error: `Send at most ${BATCH_SIZE} pages per call. Split large scripts into batches and use multiPart:true + action:'batchMark'.`,
+      }),
+    };
+  }
+
   let result;
   try {
-    if (pages.length <= BATCH_SIZE) {
-      result = await markPaper(pages, paperInfo || {}, studentName || 'Student');
-    } else {
-      const batches = [];
-      for (let i = 0; i < pages.length; i += BATCH_SIZE) {
-        batches.push(pages.slice(i, i + BATCH_SIZE));
-      }
-      // Run batches SEQUENTIALLY to avoid Anthropic output-token rate limits
-      // (parallel batches can exceed 8,000 output tokens/min for large scripts)
-      const batchResults = [];
-      for (const batch of batches) {
-        batchResults.push(await markPaper(batch, paperInfo || {}, studentName || 'Student'));
-      }
-      result = mergeMarkingResults(batchResults);
-    }
+    result = await markPaper(pages, paperInfo || {}, studentName || 'Student');
   } catch (e) {
     console.error('mark-script: marking error:', e.message);
     return {
@@ -428,44 +486,47 @@ exports.handler = async (event) => {
     };
   }
 
-  const scriptId  = newScriptId();
+  const scriptId   = newScriptId();
   const confidence = typeof result.confidence === 'number' ? result.confidence : 1.0;
   const needsReview = confidence < HITL_THRESHOLD;
 
-  // ── Record submission in GAS (quota + result storage) ──────────
-  try {
-    await postGAS({
-      action:      'recordScriptSubmission',
-      secret:      GAS_ADMIN_SECRET,
-      email,
-      scriptId,
-      month:       monthKey,
-      paperInfo:   JSON.stringify(paperInfo || {}),
-      result:      JSON.stringify(result),
-      confidence,
-      needsReview,
-      expiresAt:   Date.now() + 7 * 24 * 60 * 60 * 1000, // 7-day TTL
-    });
-  } catch (e) {
-    console.error('mark-script: GAS record failed:', e.message);
-    // Non-fatal — still return the result to the student
-  }
-
-  // ── Trigger HITL alert if confidence is low ────────────────────
-  if (needsReview) {
+  // ── When multiPart:true the client will send remaining batches and call
+  //    finalizeScript to record the merged result — skip GAS recording here.
+  if (!multiPart) {
+    // ── Record submission in GAS (quota + result storage) ──────────
     try {
       await postGAS({
-        action:     'sendScriptReviewAlert',
-        secret:     GAS_ADMIN_SECRET,
-        scriptId,
+        action:      'recordScriptSubmission',
+        secret:      GAS_ADMIN_SECRET,
         email,
-        paperInfo:  JSON.stringify(paperInfo || {}),
+        scriptId,
+        month:       monthKey,
+        paperInfo:   JSON.stringify(paperInfo || {}),
+        result:      JSON.stringify(result),
         confidence,
-        total:      result.total,
-        maxTotal:   result.maxTotal,
+        needsReview,
+        expiresAt:   Date.now() + 7 * 24 * 60 * 60 * 1000,
       });
     } catch (e) {
-      console.error('mark-script: HITL alert failed:', e.message);
+      console.error('mark-script: GAS record failed:', e.message);
+    }
+
+    // ── Trigger HITL alert if confidence is low ───────────────────
+    if (needsReview) {
+      try {
+        await postGAS({
+          action:     'sendScriptReviewAlert',
+          secret:     GAS_ADMIN_SECRET,
+          scriptId,
+          email,
+          paperInfo:  JSON.stringify(paperInfo || {}),
+          confidence,
+          total:      result.total,
+          maxTotal:   result.maxTotal,
+        });
+      } catch (e) {
+        console.error('mark-script: HITL alert failed:', e.message);
+      }
     }
   }
 

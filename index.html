@@ -6613,6 +6613,46 @@ function toggleDarkMode() {
     });
   }
 
+  // ── Client-side merge of batch marking results ────────────────
+  function mergeMarkingResults(batchResults) {
+    const qMap = new Map();
+    for (const r of batchResults) {
+      for (const q of (r.questions || [])) {
+        const key = String(q.number);
+        if (!qMap.has(key)) qMap.set(key, { number: q.number, parts: [], questionTotal: 0, questionMax: 0 });
+        const entry = qMap.get(key);
+        for (const part of (q.parts || [])) {
+          if (!entry.parts.find(p => p.part === part.part)) entry.parts.push(part);
+        }
+        entry.questionTotal = entry.parts.reduce((s, p) => s + (p.awarded  || 0), 0);
+        entry.questionMax   = entry.parts.reduce((s, p) => s + (p.maxMarks || 0), 0);
+      }
+    }
+    const questions = [...qMap.values()].sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
+    const total    = questions.reduce((s, q) => s + (q.questionTotal || 0), 0);
+    const maxTotal = questions.reduce((s, q) => s + (q.questionMax   || 0), 0);
+    const topicMap = {};
+    for (const r of batchResults) {
+      for (const t of (r.topicPerformance || [])) {
+        if (!topicMap[t.topic]) topicMap[t.topic] = { topic: t.topic, awarded: 0, max: 0 };
+        topicMap[t.topic].awarded += t.awarded || 0;
+        topicMap[t.topic].max     += t.max     || 0;
+      }
+    }
+    const topicPerformance = Object.values(topicMap).map(t => ({
+      ...t, percentage: t.max > 0 ? Math.round(t.awarded / t.max * 100) : 0,
+    }));
+    const strengths    = [...new Set(batchResults.flatMap(r => r.strengths    || []))].slice(0, 4);
+    const improvements = [...new Set(batchResults.flatMap(r => r.improvements || []))].slice(0, 4);
+    const overallFeedback = batchResults.map(r => r.overallFeedback || '').filter(Boolean).join(' ');
+    const confidence = Math.min(...batchResults.map(r => typeof r.confidence === 'number' ? r.confidence : 1.0));
+    return {
+      questions, total, maxTotal,
+      percentage: maxTotal > 0 ? Math.round(total / maxTotal * 100) : 0,
+      overallFeedback, topicPerformance, strengths, improvements, confidence,
+    };
+  }
+
   // ── Submit paper for marking ───────────────────────────────────
   window.markSubmitPaper = async function() {
     if (!markPdfPages.length) { showToast('Please upload your PDF first.'); return; }
@@ -6627,47 +6667,110 @@ function toggleDarkMode() {
       year:    document.getElementById('markYear').value,
       session: sessionVal && tzVal ? sessionVal + ' ' + tzVal : (sessionVal || tzVal),
     };
+    const studentName = currentUser?.name || currentUser?.email?.split('@')[0] || 'Student';
 
     // Show processing
     document.getElementById('markUploadForm').style.display = 'none';
     document.getElementById('markProcessing').style.display = 'flex';
     markSetStep('mstep-read');
 
-    // Simulate step progression (actual work happens server-side)
-    const stepTimer1 = setTimeout(() => markSetStep('mstep-mark'),     4000);
-    const stepTimer2 = setTimeout(() => markSetStep('mstep-feedback'), 14000);
-    const stepTimer3 = setTimeout(() => markSetStep('mstep-topics'),   22000);
-
+    const FRONT_BATCH = 4;
     let data;
+
     try {
-      const resp = await fetch('/api/mark-script', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({
-          pages:       markPdfPages,
-          paperInfo,
-          studentName: currentUser?.name || currentUser?.email?.split('@')[0] || 'Student',
-        }),
-      });
+      if (markPdfPages.length <= FRONT_BATCH) {
+        // ── Single-batch path (≤4 pages): one call does everything ──
+        const stepTimer1 = setTimeout(() => markSetStep('mstep-mark'),     4000);
+        const stepTimer2 = setTimeout(() => markSetStep('mstep-feedback'), 14000);
+        const stepTimer3 = setTimeout(() => markSetStep('mstep-topics'),   22000);
 
-      clearTimeout(stepTimer1); clearTimeout(stepTimer2); clearTimeout(stepTimer3);
+        const resp = await fetch('/api/mark-script', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ pages: markPdfPages, paperInfo, studentName }),
+        });
+        clearTimeout(stepTimer1); clearTimeout(stepTimer2); clearTimeout(stepTimer3);
 
-      if (resp.status === 402) {
-        const err = await resp.json();
-        document.getElementById('markProcessing').style.display = 'none';
-        document.getElementById('markPaywall').style.display = 'block';
-        document.getElementById('markPaywallTitle').textContent = err.quotaExceeded ? 'Monthly Limit Reached' : 'Script Marking — Subscribers Only';
-        document.getElementById('markPaywallSub').textContent = err.error;
-        return;
+        if (resp.status === 402) {
+          const err = await resp.json();
+          document.getElementById('markProcessing').style.display = 'none';
+          document.getElementById('markPaywall').style.display = 'block';
+          document.getElementById('markPaywallTitle').textContent = err.quotaExceeded ? 'Monthly Limit Reached' : 'Script Marking — Subscribers Only';
+          document.getElementById('markPaywallSub').textContent = err.error;
+          return;
+        }
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error || 'Marking failed. Please try again.');
+        }
+        data = await resp.json();
+
+      } else {
+        // ── Multi-batch path (>4 pages): client splits, server marks each chunk ──
+        const batches = [];
+        for (let i = 0; i < markPdfPages.length; i += FRONT_BATCH) {
+          batches.push(markPdfPages.slice(i, i + FRONT_BATCH));
+        }
+
+        // First batch: includes quota check; multiPart:true skips GAS recording
+        const firstResp = await fetch('/api/mark-script', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ pages: batches[0], paperInfo, studentName, multiPart: true }),
+        });
+
+        if (firstResp.status === 402) {
+          const err = await firstResp.json();
+          document.getElementById('markProcessing').style.display = 'none';
+          document.getElementById('markPaywall').style.display = 'block';
+          document.getElementById('markPaywallTitle').textContent = err.quotaExceeded ? 'Monthly Limit Reached' : 'Script Marking — Subscribers Only';
+          document.getElementById('markPaywallSub').textContent = err.error;
+          return;
+        }
+        if (!firstResp.ok) {
+          const err = await firstResp.json().catch(() => ({}));
+          throw new Error(err.error || 'Marking failed. Please try again.');
+        }
+        const firstData  = await firstResp.json();
+        const scriptId   = firstData.scriptId;
+        const batchResults = [firstData.result];
+
+        markSetStep('mstep-mark');
+
+        // Remaining batches: auth-only calls (quota already checked)
+        for (let i = 1; i < batches.length; i++) {
+          const batchResp = await fetch('/api/mark-script', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ action: 'batchMark', pages: batches[i], paperInfo, studentName }),
+          });
+          if (!batchResp.ok) {
+            const err = await batchResp.json().catch(() => ({}));
+            throw new Error(err.error || 'Marking failed on batch ' + (i + 1) + '. Please try again.');
+          }
+          const batchData = await batchResp.json();
+          batchResults.push(batchData.result);
+          // Advance step indicator at midpoint
+          if (i === Math.floor(batches.length / 2)) markSetStep('mstep-feedback');
+        }
+
+        markSetStep('mstep-topics');
+
+        // Merge results client-side
+        const mergedResult = mergeMarkingResults(batchResults);
+        const confidence   = mergedResult.confidence;
+        const needsReview  = confidence < 0.72;
+
+        // Record merged result in GAS (non-fatal)
+        fetch('/api/mark-script', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ action: 'finalizeScript', scriptId, result: mergedResult, paperInfo }),
+        }).catch(() => {});
+
+        data = { ok: true, scriptId, result: mergedResult, needsReview, confidence };
       }
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.error || 'Marking failed. Please try again.');
-      }
-
-      data = await resp.json();
     } catch(e) {
-      clearTimeout(stepTimer1); clearTimeout(stepTimer2); clearTimeout(stepTimer3);
       document.getElementById('markProcessing').style.display = 'none';
       document.getElementById('markUploadForm').style.display = 'flex';
       showToast(e.message);
