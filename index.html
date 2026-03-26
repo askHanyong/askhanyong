@@ -1532,7 +1532,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
             <label class="mark-select-label">Year</label>
             <select id="markYear" class="mark-select">
               <option value="">— Select —</option>
-              <option>2024</option><option>2023</option><option>2022</option>
+              <option>2025</option><option>2024</option><option>2023</option><option>2022</option>
               <option>2021</option><option>2020</option><option>2019</option>
               <option>2018</option><option>2017</option><option>2016</option>
             </select>
@@ -1541,9 +1541,18 @@ input[type=range] { flex:1; accent-color:var(--blue); }
             <label class="mark-select-label">Session</label>
             <select id="markSession" class="mark-select">
               <option value="">— Select —</option>
-              <option value="May TZ1">May TZ1</option>
-              <option value="May TZ2">May TZ2</option>
+              <option value="May">May</option>
               <option value="November">November</option>
+            </select>
+          </div>
+          <div class="mark-select-group">
+            <label class="mark-select-label">Time Zone</label>
+            <select id="markTimezone" class="mark-select">
+              <option value="">— Select —</option>
+              <option value="TZ0">TZ0</option>
+              <option value="TZ1">TZ1</option>
+              <option value="TZ2">TZ2</option>
+              <option value="TZ3">TZ3</option>
             </select>
           </div>
         </div>
@@ -6598,11 +6607,13 @@ function toggleDarkMode() {
     const token = localStorage.getItem('han_token');
     if (!token) { showLogin(); return; }
 
+    const sessionVal = document.getElementById('markSession').value;
+    const tzVal      = document.getElementById('markTimezone').value;
     const paperInfo = {
       level:   document.getElementById('markLevel').value,
       paper:   document.getElementById('markPaper').value,
       year:    document.getElementById('markYear').value,
-      session: document.getElementById('markSession').value,
+      session: sessionVal && tzVal ? sessionVal + ' ' + tzVal : (sessionVal || tzVal),
     };
 
     // Show processing

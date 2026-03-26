@@ -303,12 +303,12 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Invalid JSON body' }) };
   }
 
-  const { pages, paperInfo, studentName, action, scriptId } = body;
+  const { pages, paperInfo, studentName, action, scriptId: incomingScriptId } = body;
 
   // ── Lightweight "downloaded" action — record download event ────
-  if (action === 'downloaded' && scriptId) {
+  if (action === 'downloaded' && incomingScriptId) {
     try {
-      await postGAS({ action: 'markScriptDownloaded', secret: GAS_ADMIN_SECRET, scriptId });
+      await postGAS({ action: 'markScriptDownloaded', secret: GAS_ADMIN_SECRET, scriptId: incomingScriptId });
     } catch(e) { /* non-fatal */ }
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
   }
