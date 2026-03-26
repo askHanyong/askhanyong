@@ -411,10 +411,12 @@ exports.handler = async (event) => {
       for (let i = 0; i < pages.length; i += BATCH_SIZE) {
         batches.push(pages.slice(i, i + BATCH_SIZE));
       }
-      // Run all batches in PARALLEL — total time = slowest batch, not sum of all
-      const batchResults = await Promise.all(
-        batches.map(batch => markPaper(batch, paperInfo || {}, studentName || 'Student'))
-      );
+      // Run batches SEQUENTIALLY to avoid Anthropic output-token rate limits
+      // (parallel batches can exceed 8,000 output tokens/min for large scripts)
+      const batchResults = [];
+      for (const batch of batches) {
+        batchResults.push(await markPaper(batch, paperInfo || {}, studentName || 'Student'));
+      }
       result = mergeMarkingResults(batchResults);
     }
   } catch (e) {
