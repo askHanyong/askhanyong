@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mark Papers — askHanyong IB Math</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0e1c33; --navy-dark:#0a1628; --navy-mid:#1a3068;
+  --gold:#C9A84C; --gold-pale:rgba(201,168,76,0.1); --gold-border:rgba(201,168,76,0.35);
+  --white:#ffffff; --bg:#f5f4f1; --bg-mid:#ece9e3;
+  --text:#111827; --text-mid:#4b5563; --text-soft:#9ca3af;
+  --border:#e4e2dc; --border-mid:#d0cec7;
+  --green:#059669; --red:#dc2626; --blue:#1e3a8a;
+  --radius:14px; --radius-sm:8px;
+  --shadow:0 1px 8px rgba(0,0,0,0.07); --shadow-md:0 6px 28px rgba(0,0,0,0.11);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(10,22,40,0.97); backdrop-filter:blur(12px);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px; height:58px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-badge {
+  width:33px; height:33px;
+  background:var(--gold-pale); border:1.5px solid var(--gold-border);
+  border-radius:8px; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:15px; color:var(--gold);
+}
+.nav-brand { font-size:15px; font-weight:700; color:white; font-family:'Playfair Display',serif; }
+.nav-right { display:flex; align-items:center; gap:16px; }
+.nav-link { color:rgba(255,255,255,0.55); font-size:13px; font-weight:500; text-decoration:none; transition:color 0.15s; }
+.nav-link:hover { color:white; }
+.nav-link.active { color:var(--gold); }
+
+/* ── AUTH GATE ── */
+#authGate {
+  max-width:360px; margin:100px auto 0;
+  background:white; border-radius:var(--radius); padding:36px 32px;
+  box-shadow:var(--shadow-md); text-align:center; border:1.5px solid var(--border);
+}
+#authGate h2 {
+  font-size:20px; font-weight:700; margin-bottom:6px;
+  font-family:'Playfair Display',serif; color:var(--text);
+}
+#authGate p { font-size:13px; color:var(--text-soft); margin-bottom:22px; line-height:1.6; }
+.auth-input {
+  width:100%; padding:11px 14px; border:1.5px solid var(--border);
+  border-radius:var(--radius-sm); font-size:14px; font-family:'Inter',sans-serif;
+  outline:none; transition:border-color 0.2s; background:white; color:var(--text);
+}
+.auth-input:focus { border-color:var(--navy); }
+.auth-error { font-size:12px; color:var(--red); margin-top:8px; display:none; }
+.btn-primary {
+  width:100%; margin-top:12px; padding:12px;
+  background:linear-gradient(135deg,var(--navy-dark),var(--navy-mid));
+  color:white; border:none; border-radius:var(--radius-sm);
+  font-size:14px; font-weight:600; cursor:pointer;
+  font-family:'Inter',sans-serif; transition:opacity 0.15s;
+}
+.btn-primary:hover { opacity:0.88; }
+
+/* ── TOOL ── */
+#tool { display:none; max-width:860px; margin:0 auto; padding:82px 24px 80px; }
+
+.page-header { margin-bottom:28px; }
+.page-eyebrow {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--gold-pale); border:1px solid var(--gold-border);
+  border-radius:16px; padding:4px 12px; margin-bottom:12px;
+  font-size:11px; font-weight:600; color:var(--gold); letter-spacing:0.3px;
+}
+.page-header h1 {
+  font-size:26px; font-weight:700; color:var(--text);
+  font-family:'Playfair Display',serif; margin-bottom:6px;
+}
+.page-header p { font-size:13px; color:var(--text-mid); line-height:1.6; }
+
+/* ── SECTION CARDS ── */
+.section {
+  background:white; border:1.5px solid var(--border);
+  border-radius:var(--radius); padding:22px 24px;
+  margin-bottom:18px; box-shadow:var(--shadow);
+}
+.section-label {
+  font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.6px; color:var(--text-soft); margin-bottom:3px;
+}
+.section-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.section-sub { font-size:12px; color:var(--text-soft); margin-bottom:16px; }
+
+/* ── DROP ZONES ── */
+.drop-zone {
+  border:2px dashed var(--border); border-radius:10px;
+  padding:24px 20px; text-align:center; cursor:pointer;
+  transition:all 0.18s; background:var(--bg);
+}
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color:var(--gold); background:rgba(201,168,76,0.04);
+}
+.drop-zone-icon { font-size:26px; margin-bottom:7px; }
+.drop-zone-text { font-size:13px; color:var(--text-mid); font-weight:500; }
+.drop-zone-sub { font-size:11px; color:var(--text-soft); margin-top:3px; }
+input[type=file] { display:none; }
+
+/* ── THUMBS ── */
+.thumbs { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.thumb-wrap {
+  position:relative; width:68px; height:68px;
+  border-radius:8px; overflow:hidden; border:1.5px solid var(--border); background:var(--bg-mid);
+  flex-shrink:0;
+}
+.thumb-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+.thumb-del {
+  position:absolute; top:2px; right:2px; width:17px; height:17px;
+  background:rgba(0,0,0,0.72); color:white; border:none;
+  border-radius:50%; font-size:10px; cursor:pointer; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ── STUDENTS ── */
+.student-row {
+  display:flex; gap:10px; align-items:flex-start;
+  padding:14px 0; border-bottom:1px solid var(--border);
+}
+.student-row:last-of-type { border-bottom:none; padding-bottom:0; }
+.student-name-input {
+  flex:0 0 118px; padding:9px 11px; border:1.5px solid var(--border);
+  border-radius:var(--radius-sm); font-size:13px; font-family:'Inter',sans-serif;
+  outline:none; transition:border-color 0.2s; color:var(--text); background:white;
+}
+.student-name-input:focus { border-color:var(--navy); }
+.student-upload-area { flex:1; min-width:0; }
+.student-drop {
+  border:1.5px dashed var(--border); border-radius:8px;
+  padding:9px 14px; cursor:pointer; transition:all 0.15s;
+  font-size:12px; color:var(--text-soft); text-align:center; background:var(--bg);
+}
+.student-drop:hover, .student-drop.drag-over { border-color:var(--gold); color:var(--text-mid); }
+.student-thumbs { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.student-thumb-wrap {
+  position:relative; width:52px; height:52px;
+  border-radius:6px; overflow:hidden; border:1px solid var(--border); flex-shrink:0;
+}
+.student-thumb-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+.student-thumb-del {
+  position:absolute; top:1px; right:1px; width:15px; height:15px;
+  background:rgba(0,0,0,0.7); color:white; border:none;
+  border-radius:50%; font-size:9px; cursor:pointer; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+}
+.btn-add-student {
+  display:flex; align-items:center; gap:6px; margin-top:14px;
+  padding:8px 14px; border:1.5px dashed var(--border); border-radius:var(--radius-sm);
+  background:none; color:var(--text-mid); font-size:13px; font-weight:500;
+  font-family:'Inter',sans-serif; cursor:pointer; transition:all 0.15s;
+}
+.btn-add-student:hover { border-color:var(--navy); color:var(--navy); }
+.btn-remove-student {
+  flex:0 0 auto; width:28px; height:28px; background:none; border:none;
+  color:var(--text-soft); cursor:pointer; font-size:17px; border-radius:6px;
+  transition:color 0.15s; display:flex; align-items:center; justify-content:center;
+  margin-top:2px;
+}
+.btn-remove-student:hover { color:var(--red); }
+
+/* ── MARK BUTTON ── */
+.mark-btn-wrap { text-align:center; margin:24px 0 8px; }
+.btn-mark {
+  display:inline-flex; align-items:center; gap:10px; padding:13px 34px;
+  background:linear-gradient(135deg,var(--navy-dark),var(--navy-mid));
+  color:white; border:none; border-radius:24px;
+  font-size:15px; font-weight:700; cursor:pointer;
+  font-family:'Inter',sans-serif; letter-spacing:0.2px;
+  box-shadow:0 4px 20px rgba(14,28,51,0.28);
+  transition:transform 0.15s, box-shadow 0.15s;
+}
+.btn-mark:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(14,28,51,0.38); }
+.btn-mark:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
+.mark-status {
+  display:none; align-items:center; justify-content:center; gap:8px;
+  margin-top:14px; font-size:13px; color:var(--text-mid);
+}
+.mark-spinner {
+  width:16px; height:16px; border:2px solid var(--border);
+  border-top-color:var(--navy); border-radius:50%;
+  animation:spin 0.75s linear infinite; flex-shrink:0;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.error-msg {
+  padding:11px 14px; background:#fef2f2; border:1px solid #fca5a5;
+  border-radius:8px; font-size:13px; color:#991b1b;
+  margin-bottom:14px; display:none; text-align:left;
+}
+
+/* ── RESULTS ── */
+#results { margin-top:12px; }
+.result-card {
+  background:white; border:1.5px solid var(--border);
+  border-radius:var(--radius); overflow:hidden;
+  margin-bottom:16px; box-shadow:var(--shadow);
+}
+.result-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px;
+  background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy-mid) 100%);
+}
+.result-name {
+  font-size:16px; font-weight:700; color:white;
+  font-family:'Playfair Display',serif;
+}
+.result-score-wrap { text-align:right; }
+.result-total {
+  font-size:24px; font-weight:700;
+  font-family:'DM Mono','Courier New',monospace;
+  line-height:1;
+}
+.result-total-label { font-size:10px; color:rgba(255,255,255,0.45); margin-top:2px; }
+.result-parts { padding:16px 20px; }
+.part-block { margin-bottom:14px; }
+.part-block:last-child { margin-bottom:0; }
+.part-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.part-name { font-size:13px; font-weight:700; color:var(--text); }
+.part-score {
+  font-size:11.5px; font-weight:700; font-family:'DM Mono',monospace;
+  padding:2px 9px; border-radius:10px;
+}
+.part-score.full  { background:#dcfce7; color:#166534; }
+.part-score.part  { background:#fef3c7; color:#92400e; }
+.part-score.zero  { background:#fee2e2; color:#991b1b; }
+.mark-line {
+  display:flex; align-items:flex-start; gap:8px;
+  padding:5px 8px; border-radius:6px; margin-bottom:3px; font-size:12.5px; line-height:1.5;
+}
+.mark-line.awarded { background:#f0fdf4; }
+.mark-line.lost    { background:#fef2f2; }
+.mark-tick { flex-shrink:0; width:14px; font-size:12px; line-height:1.5; }
+.mark-chip {
+  flex-shrink:0; display:inline-block; padding:1px 6px; border-radius:4px;
+  font-size:10.5px; font-weight:700; font-family:'DM Mono','Courier New',monospace; line-height:1.6;
+}
+.mark-chip.M        { background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd; }
+.mark-chip.A        { background:#dcfce7; color:#166534; border:1px solid #86efac; }
+.mark-chip.R        { background:#fef3c7; color:#92400e; border:1px solid #fcd34d; }
+.mark-chip.other    { background:#f3f4f6; color:#374151; border:1px solid #d1d5db; }
+.mark-chip.lost     { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+.mark-reason { color:var(--text-mid); flex:1; }
+.result-summary {
+  margin:0 20px 16px; padding:10px 14px;
+  background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.22);
+  border-radius:8px; font-size:12.5px; color:var(--text-mid); line-height:1.65;
+}
+.summary-label {
+  font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.5px; color:var(--gold); margin-bottom:4px;
+}
+.result-error {
+  padding:14px 20px; font-size:13px; color:var(--red);
+}
+
+/* ── EMPTY STATE ── */
+.empty-state { text-align:center; padding:48px 24px; color:var(--text-soft); font-size:13px; }
+.empty-icon { font-size:36px; margin-bottom:12px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/app" class="nav-logo">
+    <div class="nav-badge">Σ</div>
+    <span class="nav-brand">askHanyong</span>
+  </a>
+  <div class="nav-right">
+    <a href="/app" class="nav-link">Tutor App</a>
+    <a href="/mark" class="nav-link active">Mark Papers</a>
+  </div>
+</nav>
+
+<!-- Auth gate -->
+<div id="authGate">
+  <h2>Mark Papers</h2>
+  <p>Enter your admin password to access the IB marking tool.</p>
+  <input type="password" id="authInput" class="auth-input" placeholder="Admin password" autocomplete="current-password">
+  <div class="auth-error" id="authError">Incorrect password — please try again.</div>
+  <button class="btn-primary" onclick="doAuth()">Unlock →</button>
+</div>
+
+<!-- Main tool -->
+<div id="tool">
+  <div class="page-header">
+    <div class="page-eyebrow">✦ IB Examiner Marking</div>
+    <h1>Mark Papers</h1>
+    <p>Upload the mark scheme and each student's work. HAN marks against the official IB criteria.</p>
+  </div>
+
+  <!-- Step 1: Mark scheme -->
+  <div class="section">
+    <div class="section-label">Step 1</div>
+    <div class="section-title">Mark Scheme &amp; Question</div>
+    <div class="section-sub">Upload images of the question and the official IB mark scheme (up to 5 images)</div>
+    <div class="drop-zone" id="msZone">
+      <div class="drop-zone-icon">📋</div>
+      <div class="drop-zone-text">Click to upload or drag &amp; drop</div>
+      <div class="drop-zone-sub">PNG · JPG · HEIC — up to 5 images</div>
+    </div>
+    <input type="file" id="msInput" accept="image/*" multiple>
+    <div class="thumbs" id="msThumbs"></div>
+  </div>
+
+  <!-- Step 2: Students -->
+  <div class="section">
+    <div class="section-label">Step 2</div>
+    <div class="section-title">Student Work</div>
+    <div class="section-sub">Add each student and upload photos of their handwritten work (up to 5 images per student)</div>
+    <div id="studentsContainer"></div>
+    <button class="btn-add-student" id="addStudentBtn" onclick="addStudent()">
+      ＋ Add another student
+    </button>
+  </div>
+
+  <!-- Mark button -->
+  <div class="mark-btn-wrap">
+    <div class="error-msg" id="markError"></div>
+    <button class="btn-mark" id="markBtn" onclick="markAll()">
+      <span>✦</span> Mark All Papers
+    </button>
+    <div class="mark-status" id="markStatus">
+      <div class="mark-spinner"></div>
+      <span id="markStatusText">Marking in progress…</span>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results"></div>
+</div>
+
+<!-- Hidden canvas for image compression -->
+<canvas id="compressCanvas" style="display:none"></canvas>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────
+let adminPwd = '';
+let msImages = [];           // [{data:base64, mediaType}]
+let students = [];           // [{id, name, images:[{data,mediaType}]}]
+let studentSeq = 0;
+
+// ── Auth ───────────────────────────────────────────────────────────
+function doAuth() {
+  const val = document.getElementById('authInput').value.trim();
+  if (!val) return;
+  adminPwd = val;
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('tool').style.display = 'block';
+  addStudent(); // Start with one student row
+}
+document.getElementById('authInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doAuth();
+});
+
+// ── Image compression (max 1000px, JPEG 0.72) ─────────────────────
+function compressImage(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1000;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+          else        { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const canvas = document.getElementById('compressCanvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+        resolve({ data: dataUrl.split(',')[1], mediaType: 'image/jpeg' });
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── Mark-scheme upload ─────────────────────────────────────────────
+const msZone  = document.getElementById('msZone');
+const msInput = document.getElementById('msInput');
+
+msZone.addEventListener('click', () => msInput.click());
+msInput.addEventListener('change', e => { processMsFiles(e.target.files); msInput.value = ''; });
+msZone.addEventListener('dragover',  e => { e.preventDefault(); msZone.classList.add('drag-over'); });
+msZone.addEventListener('dragleave', () => msZone.classList.remove('drag-over'));
+msZone.addEventListener('drop', e => {
+  e.preventDefault(); msZone.classList.remove('drag-over');
+  processMsFiles(e.dataTransfer.files);
+});
+
+async function processMsFiles(files) {
+  const slots = 5 - msImages.length;
+  if (slots <= 0) return;
+  for (const f of Array.from(files).slice(0, slots)) {
+    if (!f.type.startsWith('image/')) continue;
+    msImages.push(await compressImage(f));
+  }
+  renderMsThumbs();
+}
+
+function renderMsThumbs() {
+  const container = document.getElementById('msThumbs');
+  container.innerHTML = '';
+  msImages.forEach((img, i) => {
+    container.appendChild(makeThumb(img.data, 'thumb-wrap', 'thumb-del', () => {
+      msImages.splice(i, 1); renderMsThumbs();
+    }));
+  });
+}
+
+function makeThumb(base64, wrapClass, delClass, onDel) {
+  const wrap = document.createElement('div');
+  wrap.className = wrapClass;
+  const im = document.createElement('img');
+  im.src = 'data:image/jpeg;base64,' + base64;
+  const del = document.createElement('button');
+  del.className = delClass; del.textContent = '×';
+  del.onclick = e => { e.stopPropagation(); onDel(); };
+  wrap.appendChild(im); wrap.appendChild(del);
+  return wrap;
+}
+
+// ── Students ───────────────────────────────────────────────────────
+function addStudent() {
+  if (students.length >= 5) return;
+  studentSeq++;
+  students.push({
+    id: studentSeq,
+    name: 'Student ' + String.fromCharCode(64 + studentSeq),
+    images: [],
+  });
+  renderStudents();
+  document.getElementById('addStudentBtn').style.display =
+    students.length >= 5 ? 'none' : '';
+}
+
+function removeStudent(id) {
+  students = students.filter(s => s.id !== id);
+  renderStudents();
+  document.getElementById('addStudentBtn').style.display = '';
+}
+
+function renderStudents() {
+  const container = document.getElementById('studentsContainer');
+  container.innerHTML = '';
+  students.forEach(student => container.appendChild(buildStudentRow(student)));
+}
+
+function buildStudentRow(student) {
+  const row = document.createElement('div');
+  row.className = 'student-row';
+
+  // Name input
+  const nameIn = document.createElement('input');
+  nameIn.type = 'text'; nameIn.className = 'student-name-input';
+  nameIn.value = student.name; nameIn.placeholder = 'Name';
+  nameIn.oninput = () => { student.name = nameIn.value; };
+
+  // Upload area
+  const area = document.createElement('div');
+  area.className = 'student-upload-area';
+
+  if (student.images.length < 5) {
+    const drop = document.createElement('div');
+    drop.className = 'student-drop';
+    drop.textContent = student.images.length === 0
+      ? '📎 Click to upload work images (up to 5)'
+      : '＋ Add more images';
+    drop.onclick = () => {
+      const fi = document.createElement('input');
+      fi.type = 'file'; fi.accept = 'image/*'; fi.multiple = true;
+      fi.onchange = async e => {
+        const slots = 5 - student.images.length;
+        for (const f of Array.from(fi.files).slice(0, slots)) {
+          if (!f.type.startsWith('image/')) continue;
+          student.images.push(await compressImage(f));
+        }
+        renderStudents();
+      };
+      fi.click();
+    };
+    drop.addEventListener('dragover',  e => { e.preventDefault(); drop.classList.add('drag-over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+    drop.addEventListener('drop', async e => {
+      e.preventDefault(); drop.classList.remove('drag-over');
+      const slots = 5 - student.images.length;
+      for (const f of Array.from(e.dataTransfer.files).slice(0, slots)) {
+        if (!f.type.startsWith('image/')) continue;
+        student.images.push(await compressImage(f));
+      }
+      renderStudents();
+    });
+    area.appendChild(drop);
+  }
+
+  if (student.images.length > 0) {
+    const thumbRow = document.createElement('div');
+    thumbRow.className = 'student-thumbs';
+    student.images.forEach((img, i) => {
+      thumbRow.appendChild(makeThumb(img.data, 'student-thumb-wrap', 'student-thumb-del', () => {
+        student.images.splice(i, 1); renderStudents();
+      }));
+    });
+    area.appendChild(thumbRow);
+  }
+
+  // Remove button
+  const rmBtn = document.createElement('button');
+  rmBtn.className = 'btn-remove-student'; rmBtn.title = 'Remove student';
+  rmBtn.textContent = '×'; rmBtn.onclick = () => removeStudent(student.id);
+
+  row.appendChild(nameIn); row.appendChild(area); row.appendChild(rmBtn);
+  return row;
+}
+
+// ── Mark all ───────────────────────────────────────────────────────
+async function markAll() {
+  const errEl   = document.getElementById('markError');
+  const btn     = document.getElementById('markBtn');
+  const status  = document.getElementById('markStatus');
+  const stTxt   = document.getElementById('markStatusText');
+
+  errEl.style.display = 'none';
+
+  if (msImages.length === 0) {
+    showErr(errEl, 'Please upload at least one mark scheme image (Step 1).'); return;
+  }
+  const active = students.filter(s => s.images.length > 0);
+  if (active.length === 0) {
+    showErr(errEl, 'Please upload work images for at least one student (Step 2).'); return;
+  }
+
+  btn.disabled = true;
+  status.style.display = 'flex';
+  stTxt.textContent = `Marking ${active.length} student${active.length > 1 ? 's' : ''}…`;
+
+  try {
+    const resp = await fetch('/api/mark', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + adminPwd,
+      },
+      body: JSON.stringify({
+        markSchemeImages: msImages,
+        students: active.map(s => ({ name: s.name, images: s.images })),
+      }),
+    });
+
+    if (resp.status === 401) {
+      document.getElementById('tool').style.display = 'none';
+      document.getElementById('authGate').style.display = 'block';
+      document.getElementById('authError').style.display = 'block';
+      return;
+    }
+
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) {
+      showErr(errEl, data.error || 'Marking failed — please try again.'); return;
+    }
+    renderResults(data.results);
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (e) {
+    showErr(errEl, 'Network error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    status.style.display = 'none';
+  }
+}
+
+function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+
+// ── Render results ─────────────────────────────────────────────────
+function renderResults(results) {
+  const container = document.getElementById('results');
+  container.innerHTML = '';
+  if (!results || !results.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div>No results returned.</div>';
+    return;
+  }
+  results.forEach(r => container.appendChild(buildResultCard(r)));
+}
+
+function buildResultCard(r) {
+  const card = document.createElement('div');
+  card.className = 'result-card';
+
+  // Score colour: gold ≥ 90%, amber ≥ 60%, red < 60%
+  const pct = r.maxTotal > 0 ? r.total / r.maxTotal : 0;
+  const colour = pct >= 0.9 ? '#C9A84C' : pct >= 0.6 ? '#f59e0b' : '#ef4444';
+
+  const partsHtml = (r.parts || []).map(buildPartBlock).join('');
+
+  card.innerHTML = `
+    <div class="result-header">
+      <div class="result-name">${esc(r.name)}</div>
+      <div class="result-score-wrap">
+        <div class="result-total" style="color:${colour}">${r.total ?? '?'}/${r.maxTotal ?? '?'}</div>
+        <div class="result-total-label">total marks</div>
+      </div>
+    </div>
+    ${r.error ? `<div class="result-error">⚠ ${esc(r.error)}</div>` : ''}
+    ${partsHtml ? `<div class="result-parts">${partsHtml}</div>` : ''}
+    ${r.summary ? `
+      <div class="result-summary">
+        <div class="summary-label">Examiner comment</div>
+        ${esc(r.summary)}
+      </div>` : ''}
+  `;
+  return card;
+}
+
+function buildPartBlock(part) {
+  const pct = part.maxMarks > 0 ? part.awarded / part.maxMarks : 0;
+  const scoreClass = pct === 1 ? 'full' : pct > 0 ? 'part' : 'zero';
+  const marksHtml = (part.marks || []).map(m => {
+    const chipType = m.awarded ? (m.type || m.code.charAt(0)) : 'lost';
+    return `
+      <div class="mark-line ${m.awarded ? 'awarded' : 'lost'}">
+        <span class="mark-tick">${m.awarded ? '✓' : '✗'}</span>
+        <span class="mark-chip ${chipType}">${esc(m.code)}</span>
+        <span class="mark-reason">${esc(m.reason || '')}</span>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="part-block">
+      <div class="part-header">
+        <span class="part-name">Part (${esc(String(part.part))})</span>
+        <span class="part-score ${scoreClass}">${part.awarded}/${part.maxMarks}</span>
+      </div>
+      ${marksHtml}
+    </div>`;
+}
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

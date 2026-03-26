@@ -38,6 +38,11 @@
     Cache-Control = "no-cache, no-store, must-revalidate"
 
 [[headers]]
+  for = "/mark"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
   for = "/robots.txt"
   [headers.values]
     Cache-Control = "public, max-age=86400"
@@ -83,6 +88,13 @@
 [[redirects]]
   from = "/admin"
   to = "/admin.html"
+  status = 200
+  force = true
+
+# /mark serves the paper marking tool (admin only)
+[[redirects]]
+  from = "/mark"
+  to = "/mark.html"
   status = 200
   force = true
 
