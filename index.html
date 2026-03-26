@@ -2540,6 +2540,10 @@ function checkPremiumStatus() {
   // Accept 'true' (legacy), 'active', or 'cancel_at_period_end' (still within paid period)
   return val === 'true' || val === 'active' || val === 'cancel_at_period_end';
 }
+function getUserTier() {
+  const key = currentUser ? 'han_tier_' + currentUser.sub : null;
+  return key ? (sessionStorage.getItem(key) || null) : null;
+}
 function canAskQuestion(type) {
   if (isAdmin) return true;
   if (checkPremiumStatus()) return true;
@@ -2635,6 +2639,8 @@ async function checkAndSetPremium(user) {
       // Store status (active or cancel_at_period_end) for UI rendering
       const status = data.status || 'active';
       sessionStorage.setItem('han_premium_' + user.sub, status);
+      // Store tier ('legacy' or 'subscriber') for quota/feature gating
+      if (data.tier) sessionStorage.setItem('han_tier_' + user.sub, data.tier);
       // Cache graduation date for account modal display
       if (data.graduationMonth) sessionStorage.setItem('han_grad_month_' + user.sub, data.graduationMonth);
       if (data.graduationYear)  sessionStorage.setItem('han_grad_year_'  + user.sub, data.graduationYear);
@@ -5108,6 +5114,7 @@ if (window.location.hash === '#signin') {
               if (d.premium) {
                 const status = d.status || 'active';
                 sessionStorage.setItem(key, status);
+                if (d.tier) sessionStorage.setItem('han_tier_' + currentUser.sub, d.tier);
                 if (d.graduationMonth) sessionStorage.setItem('han_grad_month_' + currentUser.sub, d.graduationMonth);
                 if (d.graduationYear)  sessionStorage.setItem('han_grad_year_'  + currentUser.sub, d.graduationYear);
                 updateLimitBar();
@@ -6444,9 +6451,14 @@ function toggleDarkMode() {
     const txt  = document.getElementById('markQuotaText');
     if (!pill || !quota) return;
     pill.style.display = 'inline-flex';
-    const rem = quota.remaining;
-    txt.textContent = rem + ' script marking' + (rem !== 1 ? 's' : '') + ' remaining this month';
-    dot.className = 'mark-quota-dot' + (rem === 0 ? ' empty' : rem === 1 ? ' warn' : '');
+    if (quota.isUnlimited) {
+      txt.textContent = 'Unlimited script markings · Early Believer';
+      dot.className = 'mark-quota-dot';
+    } else {
+      const rem = quota.remaining;
+      txt.textContent = rem + ' script marking' + (rem !== 1 ? 's' : '') + ' remaining this month';
+      dot.className = 'mark-quota-dot' + (rem === 0 ? ' empty' : rem === 1 ? ' warn' : '');
+    }
   }
 
   // ── Fetch quota from server ────────────────────────────────────
@@ -6464,24 +6476,28 @@ function toggleDarkMode() {
       // Instead parse the 402 response which includes quota info
       if (resp.status === 402) {
         const d = await resp.json();
-        markQuotaCache = { remaining: d.remaining ?? 0, isPremium: d.isPremium ?? false };
+        markQuotaCache = { remaining: d.remaining ?? 0, isPremium: d.isPremium ?? false, isUnlimited: d.isUnlimited ?? false };
       } else {
         // 401 = not logged in, 400 = missing pages but auth ok → assume quota ok
         const premStatus = checkPremiumStatus();
+        const isUnlimited = getUserTier() === 'legacy';
         const monthKey = new Date().toISOString().slice(0, 7);
         const used = parseInt(localStorage.getItem('han_mark_used_' + monthKey) || '0', 10);
         markQuotaCache = {
-          remaining: premStatus ? Math.max(0, MARK_MONTH_LIMIT - used) : 0,
-          isPremium:  !!premStatus,
+          remaining:   premStatus ? (isUnlimited ? 999 : Math.max(0, MARK_MONTH_LIMIT - used)) : 0,
+          isPremium:   !!premStatus,
+          isUnlimited,
         };
       }
     } catch(e) {
       const premStatus = checkPremiumStatus();
+      const isUnlimited = getUserTier() === 'legacy';
       const monthKey = new Date().toISOString().slice(0, 7);
       const used = parseInt(localStorage.getItem('han_mark_used_' + monthKey) || '0', 10);
       markQuotaCache = {
-        remaining: premStatus ? Math.max(0, MARK_MONTH_LIMIT - used) : 0,
-        isPremium:  !!premStatus,
+        remaining:   premStatus ? (isUnlimited ? 999 : Math.max(0, MARK_MONTH_LIMIT - used)) : 0,
+        isPremium:   !!premStatus,
+        isUnlimited,
       };
     }
   }

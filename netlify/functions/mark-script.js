@@ -344,7 +344,12 @@ exports.handler = async (event) => {
         month:   monthKey,
         secret:  GAS_ADMIN_SECRET,
       });
-      quota = { remaining: q.remaining ?? 0, isPremium: !!q.isPremium };
+      const isLegacy = q.tier === 'legacy' || q.isUnlimited === true;
+    quota = {
+      remaining:   isLegacy ? 999 : (q.remaining ?? 0),
+      isPremium:   !!q.isPremium || isLegacy,
+      isUnlimited: isLegacy,
+    };
     } catch (e) {
       console.error('mark-script: quota check failed:', e.message);
       // Fail-open for now rather than blocking all users on GAS errors
@@ -361,6 +366,7 @@ exports.handler = async (event) => {
         quotaExceeded: true,
         remaining:    0,
         isPremium:    quota.isPremium,
+        isUnlimited:  quota.isUnlimited ?? false,
       }),
     };
   }
