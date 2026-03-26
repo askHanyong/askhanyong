@@ -49,6 +49,9 @@ function doGet(e) {
   if (action === 'saveEvalResult')          return saveEvalResult(e.parameter);
   if (action === 'getAccuracyMetrics')      return getAccuracyMetrics(e.parameter);
   if (action === 'getTrendData')            return getTrendData(e.parameter);
+  if (action === 'checkScriptQuota')        return checkScriptQuota(e.parameter);
+  if (action === 'getScriptReviewQueue')    return getScriptReviewQueue(e.parameter);
+  if (action === 'getScriptMarkingAccuracy') return getScriptMarkingAccuracy(e.parameter);
 
   return ContentService
     .createTextOutput('HAN Admin GAS — OK')
@@ -62,6 +65,10 @@ function doPost(e) {
     if (body.action === 'saveProgress')           return saveProgress(body);
     if (body.action === 'saveFeedback')           return saveFeedback(body);
     if (body.action === 'sendLowConfidenceAlert') return sendLowConfidenceAlert(body);
+    if (body.action === 'recordScriptSubmission') return recordScriptSubmission(body);
+    if (body.action === 'markScriptDownloaded')   return markScriptDownloaded(body);
+    if (body.action === 'sendScriptReviewAlert')  return sendScriptReviewAlert(body);
+    if (body.action === 'saveReviewCorrection')   return saveReviewCorrection(body);
     return ContentService
       .createTextOutput(JSON.stringify({ error: 'Unknown action: ' + (body.action || 'none') }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -1266,5 +1273,338 @@ function getTrendData(params) {
 
   return ContentService
     .createTextOutput(JSON.stringify({ byTopic, byYear, totalMarks, totalQuestions }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ════════════════════════════════════════════════════════════════
+// SCRIPT MARKING — Student Paper Submissions
+// Sheet: "ScriptSubmissions"
+// Cols:  script_id | email | paper_info | result_json | confidence |
+//        needs_review | review_corrections | reviewed_by | reviewed_at |
+//        downloaded_at | expires_at | created_at
+// ════════════════════════════════════════════════════════════════
+
+var SCRIPT_COL = {
+  scriptId:           1,
+  email:              2,
+  paperInfo:          3,
+  resultJson:         4,
+  confidence:         5,
+  needsReview:        6,
+  reviewCorrections:  7,
+  reviewedBy:         8,
+  reviewedAt:         9,
+  downloadedAt:       10,
+  expiresAt:          11,
+  createdAt:          12,
+};
+
+function getScriptSheet_() {
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('ScriptSubmissions');
+  if (!sheet) {
+    sheet = ss.insertSheet('ScriptSubmissions');
+    sheet.appendRow([
+      'script_id', 'email', 'paper_info', 'result_json', 'confidence',
+      'needs_review', 'review_corrections', 'reviewed_by', 'reviewed_at',
+      'downloaded_at', 'expires_at', 'created_at',
+    ]);
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(4, 600);
+    sheet.setColumnWidth(7, 400);
+  }
+  return sheet;
+}
+
+// ── Check quota: returns remaining count and isPremium flag ───────
+function checkScriptQuota(p) {
+  if (p.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var email  = (p.email  || '').toLowerCase().trim();
+  var month  = (p.month  || '').trim();        // "YYYY-MM"
+  var LIMIT  = 3;
+
+  if (!email || !month) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'email and month required' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // Check premium status
+  var premRes = checkPremium({ email: email, secret: p.secret });
+  var premData;
+  try { premData = JSON.parse(premRes.getContent()); } catch(e) { premData = {}; }
+  var isPremium = (premData.status === 'active' || premData.status === 'cancel_at_period_end');
+
+  if (!isPremium) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ remaining: 0, isPremium: false, used: 0, limit: 0 }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // Count submissions for this email + month
+  var sheet = getScriptSheet_();
+  var data  = sheet.getDataRange().getValues();
+  var used  = 0;
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var rowEmail   = String(row[SCRIPT_COL.email - 1]      || '').toLowerCase().trim();
+    var rowCreated = String(row[SCRIPT_COL.createdAt - 1]  || '');
+    if (rowEmail === email && rowCreated.startsWith(month)) {
+      used++;
+    }
+  }
+
+  var remaining = Math.max(0, LIMIT - used);
+  return ContentService
+    .createTextOutput(JSON.stringify({ remaining: remaining, isPremium: true, used: used, limit: LIMIT }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Record a new script submission ────────────────────────────────
+function recordScriptSubmission(body) {
+  if (body.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var sheet = getScriptSheet_();
+  var now   = new Date().toISOString();
+  var exp   = body.expiresAt ? new Date(body.expiresAt).toISOString() : '';
+
+  sheet.appendRow([
+    body.scriptId        || '',
+    (body.email          || '').toLowerCase().trim(),
+    body.paperInfo       || '{}',
+    body.result          || '{}',
+    body.confidence      != null ? body.confidence : 1,
+    body.needsReview     ? 'yes' : 'no',
+    '',   // reviewCorrections — empty until reviewed
+    '',   // reviewedBy
+    '',   // reviewedAt
+    '',   // downloadedAt
+    exp,
+    now,
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Mark script as downloaded (called from client after PDF save) ─
+function markScriptDownloaded(body) {
+  if (body.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var sheet    = getScriptSheet_();
+  var data     = sheet.getDataRange().getValues();
+  var scriptId = (body.scriptId || '').trim();
+
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][SCRIPT_COL.scriptId - 1]).trim() === scriptId) {
+      sheet.getRange(i + 1, SCRIPT_COL.downloadedAt).setValue(new Date().toISOString());
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: false, error: 'Script not found' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Send HITL review alert email ──────────────────────────────────
+function sendScriptReviewAlert(body) {
+  if (body.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var ownerEmail = Session.getEffectiveUser().getEmail();
+  var paperInfo  = '';
+  try { var pi = JSON.parse(body.paperInfo || '{}'); paperInfo = [pi.level, pi.paper, pi.year, pi.session].filter(Boolean).join(' · '); } catch(e) {}
+
+  var subject = 'HAN Script Review Needed — ' + body.scriptId;
+  var text = [
+    'A student script has been marked with low confidence and needs your review.',
+    '',
+    'Script ID:   ' + body.scriptId,
+    'Student:     ' + body.email,
+    'Paper:       ' + (paperInfo || 'Unknown'),
+    'AI Score:    ' + body.total + '/' + body.maxTotal,
+    'Confidence:  ' + Math.round((body.confidence || 0) * 100) + '%',
+    '',
+    'Please review this script in the ScriptSubmissions sheet and record any corrections.',
+    'Use the saveReviewCorrection action to submit your revised marks.',
+    '',
+    '— HAN Admin · askhanyong.com',
+  ].join('\n');
+
+  GmailApp.sendEmail(ownerEmail, subject, text, { name: 'HAN Script Reviewer' });
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Retrieve scripts pending review (for admin UI) ────────────────
+function getScriptReviewQueue(p) {
+  if (p.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var sheet = getScriptSheet_();
+  var data  = sheet.getDataRange().getValues();
+  var queue = [];
+
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (String(row[SCRIPT_COL.needsReview - 1]).toLowerCase() === 'yes' &&
+        !String(row[SCRIPT_COL.reviewedAt - 1]).trim()) {
+      queue.push({
+        scriptId:   row[SCRIPT_COL.scriptId - 1],
+        email:      row[SCRIPT_COL.email - 1],
+        paperInfo:  row[SCRIPT_COL.paperInfo - 1],
+        confidence: row[SCRIPT_COL.confidence - 1],
+        createdAt:  row[SCRIPT_COL.createdAt - 1],
+      });
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ queue: queue }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Admin saves review corrections for a script ───────────────────
+// corrections: { questions: [{ number, parts: [{ part, awarded }] }] }
+// Also used to build the accuracy score.
+function saveReviewCorrection(body) {
+  if (body.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var sheet    = getScriptSheet_();
+  var data     = sheet.getDataRange().getValues();
+  var scriptId = (body.scriptId || '').trim();
+
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][SCRIPT_COL.scriptId - 1]).trim() !== scriptId) continue;
+
+    var aiResult = {};
+    try { aiResult = JSON.parse(String(data[i][SCRIPT_COL.resultJson - 1]) || '{}'); } catch(e) {}
+
+    // Compute accuracy: compare AI-awarded marks vs human corrections
+    var aiCorrect = 0, total = 0;
+    var corrections = body.corrections || {};
+    if (Array.isArray(corrections.questions) && Array.isArray(aiResult.questions)) {
+      corrections.questions.forEach(function(corQ) {
+        var aiQ = aiResult.questions.find(function(q) { return q.number === corQ.number; });
+        if (!aiQ) return;
+        (corQ.parts || []).forEach(function(corP) {
+          var aiP = (aiQ.parts || []).find(function(p) { return p.part === corP.part; });
+          if (!aiP) return;
+          total++;
+          if (aiP.awarded === corP.awarded) aiCorrect++;
+        });
+      });
+    }
+
+    var accuracy = total > 0 ? Math.round((aiCorrect / total) * 100) : null;
+
+    sheet.getRange(i + 1, SCRIPT_COL.reviewCorrections).setValue(JSON.stringify(corrections));
+    sheet.getRange(i + 1, SCRIPT_COL.reviewedBy).setValue(body.reviewedBy || 'admin');
+    sheet.getRange(i + 1, SCRIPT_COL.reviewedAt).setValue(new Date().toISOString());
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true, accuracy: accuracy, aiCorrect: aiCorrect, total: total }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: false, error: 'Script not found' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Overall script-marking accuracy metrics (for accuracy dashboard) ─
+// Returns { totalReviewed, aiCorrect, accuracy, byTopic, recentTrend }
+function getScriptMarkingAccuracy(p) {
+  if (p.secret !== getAdminSecret()) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var sheet = getScriptSheet_();
+  var data  = sheet.getDataRange().getValues();
+
+  var totalParts = 0, correctParts = 0;
+  var byTopic    = {};
+
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var reviewedAt    = String(row[SCRIPT_COL.reviewedAt - 1] || '').trim();
+    var correctionsRaw = String(row[SCRIPT_COL.reviewCorrections - 1] || '').trim();
+    var resultRaw      = String(row[SCRIPT_COL.resultJson - 1] || '').trim();
+    if (!reviewedAt || !correctionsRaw || !resultRaw) continue;
+
+    var corrections, aiResult;
+    try { corrections = JSON.parse(correctionsRaw); aiResult = JSON.parse(resultRaw); } catch(e) { continue; }
+
+    if (!Array.isArray(corrections.questions) || !Array.isArray(aiResult.questions)) continue;
+
+    corrections.questions.forEach(function(corQ) {
+      var aiQ = aiResult.questions.find(function(q) { return q.number === corQ.number; });
+      if (!aiQ) return;
+      (corQ.parts || []).forEach(function(corP) {
+        var aiP = (aiQ.parts || []).find(function(p) { return p.part === corP.part; });
+        if (!aiP) return;
+        totalParts++;
+        var isCorrect = (aiP.awarded === corP.awarded);
+        if (isCorrect) correctParts++;
+
+        // Track by topic
+        var topic = aiP.topic || 'Other';
+        if (!byTopic[topic]) byTopic[topic] = { total: 0, correct: 0 };
+        byTopic[topic].total++;
+        if (isCorrect) byTopic[topic].correct++;
+      });
+    });
+  }
+
+  var accuracy = totalParts > 0 ? Math.round((correctParts / totalParts) * 100) : null;
+
+  // Convert byTopic to array for easier consumption
+  var topicArray = Object.keys(byTopic).map(function(t) {
+    return {
+      topic:    t,
+      total:    byTopic[t].total,
+      correct:  byTopic[t].correct,
+      accuracy: byTopic[t].total > 0 ? Math.round((byTopic[t].correct / byTopic[t].total) * 100) : null,
+    };
+  });
+
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      totalReviewed: totalParts,
+      aiCorrect:     correctParts,
+      accuracy:      accuracy,
+      byTopic:       topicArray,
+    }))
     .setMimeType(ContentService.MimeType.JSON);
 }
