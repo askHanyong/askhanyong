@@ -76,24 +76,37 @@ function verifySessionToken(token) {
 }
 
 // ── GAS call helper ───────────────────────────────────────────────
-async function callGAS(params) {
+async function callGAS(params, timeoutMs = 5000) {
   const url = SHEETS_URL + '?' + new URLSearchParams(params).toString();
-  const resp = await fetch(url, { redirect: 'follow' });
-  if (!resp.ok) throw new Error('GAS ' + resp.status);
-  const text = await resp.text();
-  try { return JSON.parse(text); } catch { return { raw: text }; }
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const resp = await fetch(url, { redirect: 'follow', signal: controller.signal });
+    if (!resp.ok) throw new Error('GAS ' + resp.status);
+    const text = await resp.text();
+    try { return JSON.parse(text); } catch { return { raw: text }; }
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
-async function postGAS(body) {
-  const resp = await fetch(SHEETS_URL, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(body),
-    redirect: 'follow',
-  });
-  if (!resp.ok) throw new Error('GAS POST ' + resp.status);
-  const text = await resp.text();
-  try { return JSON.parse(text); } catch { return { raw: text }; }
+async function postGAS(body, timeoutMs = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const resp = await fetch(SHEETS_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+      redirect: 'follow',
+      signal:  controller.signal,
+    });
+    if (!resp.ok) throw new Error('GAS POST ' + resp.status);
+    const text = await resp.text();
+    try { return JSON.parse(text); } catch { return { raw: text }; }
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // ── Generate a short unique script ID ────────────────────────────
@@ -185,20 +198,33 @@ async function markPaper(pages, paperInfo, studentName) {
     })),
   ];
 
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type':      'application/json',
-      'x-api-key':         ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model:      MODEL,
-      max_tokens: 3000,
-      system:     buildSystemPrompt(paperInfo),
-      messages:   [{ role: 'user', content }],
-    }),
-  });
+  const anthController = new AbortController();
+  const anthTimer = setTimeout(() => anthController.abort(), 20000); // leave buffer before Netlify's 26s limit
+  let resp;
+  try {
+    resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type':      'application/json',
+        'x-api-key':         ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model:      MODEL,
+        max_tokens: 3000,
+        system:     buildSystemPrompt(paperInfo),
+        messages:   [{ role: 'user', content }],
+      }),
+      signal: anthController.signal,
+    });
+  } catch (fetchErr) {
+    if (fetchErr.name === 'AbortError') {
+      throw new Error('Marking timed out. Please try uploading fewer pages or a smaller file.');
+    }
+    throw fetchErr;
+  } finally {
+    clearTimeout(anthTimer);
+  }
 
   if (!resp.ok) {
     const err = await resp.text();
