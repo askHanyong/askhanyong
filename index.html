@@ -6720,10 +6720,11 @@ function toggleDarkMode() {
         }
       } catch(_) {}
 
-      // ── Step 2: Split into 1-page batches, run 5 at a time via worker pool ──
-      // Sonnet needs ~15-18s per page. 5 concurrent workers, 26 pages ≈ 2 min.
+      // ── Step 2: Split into 1-page batches, run 2 at a time via worker pool ──
+      // Sonnet 4.6 has an 8,000 output-TPM rate limit. At ~1,000 tokens/page
+      // average, 2 workers ≈ 6,000 TPM — safely under. 429s are retried with backoff.
       const BATCH_SIZE   = 1;
-      const MAX_WORKERS  = 5;
+      const MAX_WORKERS  = 2;
       const batches = [];
       for (let i = 0; i < markPdfPages.length; i += BATCH_SIZE) {
         batches.push(markPdfPages.slice(i, i + BATCH_SIZE));
@@ -6738,11 +6739,22 @@ function toggleDarkMode() {
         while (nextBatch < batches.length) {
           const idx   = nextBatch++;
           const batch = batches[idx];
-          const resp = await fetch('/api/mark-script', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-            body: JSON.stringify({ action: 'batchMark', pages: batch, paperInfo, studentName, paperStructure }),
-          });
+
+          // Retry loop — handles transient 429 rate-limit responses
+          let resp;
+          for (let attempt = 0; attempt < 5; attempt++) {
+            resp = await fetch('/api/mark-script', {
+              method:  'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+              body: JSON.stringify({ action: 'batchMark', pages: batch, paperInfo, studentName, paperStructure }),
+            });
+            if (resp.status !== 429) break;
+            const retryAfter = parseInt(resp.headers.get('retry-after') || '15', 10);
+            console.warn('[mark-script] rate limited, retrying in ' + retryAfter + 's (attempt ' + (attempt + 1) + ')');
+            if (markPageEl) markPageEl.textContent = `Rate limited — waiting ${retryAfter}s before retry…`;
+            await new Promise(r => setTimeout(r, retryAfter * 1000));
+          }
+
           if (!resp.ok) {
             const err = await resp.json().catch(() => ({}));
             console.error('[mark-script] batch error HTTP ' + resp.status + ':', JSON.stringify(err));
