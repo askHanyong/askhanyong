@@ -211,7 +211,7 @@ async function markPaper(pages, paperInfo, studentName) {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 1200,
+        max_tokens: 2500,
         system:     buildSystemPrompt(paperInfo),
         messages:   [{ role: 'user', content }],
       }),
