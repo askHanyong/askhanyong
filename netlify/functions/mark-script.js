@@ -223,7 +223,11 @@ Self-assess your confidence in this marking (0.0–1.0):
 - <0.5 = very hard to read, unconventional approach, or very recent paper unlikely in training data
 
 Return ONLY valid JSON — no markdown fences, no text outside the JSON.
-Use exactly this structure:
+
+GRAPH SKETCHING — JSON FORMAT EXAMPLE (never write prose about a graph — always use this format):
+{"questions":[{"number":"9","parts":[{"part":"a","maxMarks":6,"awarded":4,"marks":[{"code":"M1","type":"M","awarded":true,"reason":"Correct general sinusoidal shape drawn"},{"code":"A1","type":"A","awarded":true,"reason":"y-intercept correctly labelled"},{"code":"A1","type":"A","awarded":false,"reason":"Asymptote not drawn or labelled"},{"code":"A1","type":"A","awarded":true,"reason":"Correct period shown"},{"code":"A1","type":"A","awarded":false,"reason":"Maximum point not labelled with coordinates"},{"code":"A1","type":"A","awarded":true,"reason":"Minimum point labelled correctly"}],"feedback":"Good shape and some labels; asymptote and maximum coordinates missing.","topic":"Functions"}],"questionTotal":4,"questionMax":6}],"total":4,"maxTotal":6,"percentage":67,"overallFeedback":"Adequate sketch with missing key features.","topicPerformance":[{"topic":"Functions","awarded":4,"max":6,"percentage":67}],"strengths":["Correct general shape"],"improvements":["Label all asymptotes","Label maximum and minimum with exact coordinates"],"confidence":0.8}
+
+Use exactly this structure for ALL questions including graphs:
 {
   "questions": [
     {
@@ -273,7 +277,7 @@ async function markPaper(pages, paperInfo, studentName, paperStructure) {
 
   const textPostamble = {
     type: 'text',
-    text: `REMINDER: Output ONLY valid JSON — no prose, no description of what you see. Even for graph sketching questions, do NOT narrate the graph. Evaluate each graph feature (shape, intercepts, asymptotes, labelled coordinates) as separate mark objects inside the JSON. Begin your response with { immediately.`,
+    text: `Your response must begin with the character { and contain nothing else but valid JSON. For graph sketching: do NOT describe the graph — directly assess each feature as a mark object (awarded: true/false, reason: one sentence). The JSON example in the system prompt shows exactly how. Output { now.`,
   };
 
   const content = [
