@@ -53,9 +53,6 @@
   path = "/api/claude"
   function = "claude"
 
-[[edge_functions]]
-  path = "/api/mark-script"
-  function = "mark-script"
 
 [[redirects]]
   from = "/api/*"

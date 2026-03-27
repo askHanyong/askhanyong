@@ -6216,46 +6216,41 @@ document.addEventListener('DOMContentLoaded', function () {
 // ════════════════════════════════════════
 // MARK MY PAPER
 // ════════════════════════════════════════
-let _markPdfPages = [];  // array of { dataUrl, base64, type }
+let _markPdfBase64 = null;   // raw PDF as base64 (sent directly to Claude)
 let _markPdfName = '';
+let _markPageCount = 0;
 let _markInProgress = false;
 
 function markLoadPdf(event) {
   const file = event.target.files[0];
   if (!file) return;
   if (file.type !== 'application/pdf') { showToast('Please upload a PDF file'); return; }
-  if (file.size > 50 * 1024 * 1024) { showToast('PDF too large. Maximum 50 MB.'); event.target.value = ''; return; }
+  if (file.size > 32 * 1024 * 1024) { showToast('PDF too large. Maximum 32 MB.'); event.target.value = ''; return; }
   _markPdfName = file.name;
-  _markPdfPages = [];
+  _markPdfBase64 = null;
+  _markPageCount = 0;
+  // Read PDF to get page count (for UI display) and base64 (for API)
   const reader = new FileReader();
   reader.onload = async function(e) {
     try {
-      const typedArray = new Uint8Array(e.target.result);
-      const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
-      const numPages = pdf.numPages;
+      // Get base64 for API
+      const arrayBuf = e.target.result;
+      const bytes = new Uint8Array(arrayBuf);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      _markPdfBase64 = btoa(binary);
+
+      // Get page count via PDF.js (if available)
+      if (window.pdfjsLib) {
+        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+        _markPageCount = pdf.numPages;
+      }
       document.getElementById('markFileName').textContent = file.name;
-      document.getElementById('markPageCount').textContent = numPages + ' pages loaded';
+      document.getElementById('markPageCount').textContent = (_markPageCount || '?') + ' pages loaded';
       document.getElementById('markUploadPrompt').style.display = 'none';
       document.getElementById('markFileInfo').style.display = 'flex';
       document.getElementById('markRemoveBtn').style.display = '';
       document.getElementById('markUploadZone').classList.add('has-file');
-      // Render each page to image at 1.5x scale for readability
-      for (let i = 1; i <= numPages; i++) {
-        const page = await pdf.getPage(i);
-        const scale = 1.5;
-        const viewport = page.getViewport({ scale });
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext('2d');
-        await page.render({ canvasContext: ctx, viewport }).promise;
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-        _markPdfPages.push({
-          dataUrl: dataUrl,
-          base64: dataUrl.split(',')[1],
-          type: 'image/jpeg'
-        });
-      }
     } catch (err) {
       showToast('Could not read PDF: ' + err.message);
       markRemovePdf();
@@ -6266,22 +6261,22 @@ function markLoadPdf(event) {
 
 function markRemovePdf(e) {
   if (e) { e.stopPropagation(); e.preventDefault(); }
-  _markPdfPages = [];
+  _markPdfBase64 = null;
   _markPdfName = '';
+  _markPageCount = 0;
   document.getElementById('markUploadPrompt').style.display = '';
   document.getElementById('markFileInfo').style.display = 'none';
   document.getElementById('markRemoveBtn').style.display = 'none';
   document.getElementById('markUploadZone').classList.remove('has-file');
   document.getElementById('markResult').style.display = 'none';
-  // Reset file input
-  const zone = document.getElementById('markUploadZone');
-  const inp = zone.querySelector('input[type=file]');
+  var zone = document.getElementById('markUploadZone');
+  var inp = zone.querySelector('input[type=file]');
   if (inp) { inp.value = ''; inp.style.display = ''; }
 }
 
 async function markMyPaper() {
   if (_markInProgress) return;
-  if (_markPdfPages.length === 0) { showToast('Please upload a PDF first'); return; }
+  if (!_markPdfBase64) { showToast('Please upload a PDF first'); return; }
   if (!currentUser && !isAdmin) { showLogin(); return; }
 
   _markInProgress = true;
@@ -6294,138 +6289,88 @@ async function markMyPaper() {
   const label = document.getElementById('markProgressLabel');
   const result = document.getElementById('markResult');
   result.style.display = 'none';
+  fill.style.width = '10%';
+  label.textContent = 'Sending PDF to HAN for marking…';
 
   const course = document.getElementById('markCourse').value;
   const paper = document.getElementById('markPaper').value;
   const year = document.getElementById('markYear').value;
   const session = document.getElementById('markSession').value;
   const tz = document.getElementById('markTz').value;
-  const meta = [course, paper, year, session, tz].filter(Boolean).join(' · ');
-
-  const pages = _markPdfPages;
-  const total = pages.length;
-  const pageResults = [];
-  let totalMarksEarned = 0;
-  let totalMarksAvailable = 0;
-
-  // Process pages in small batches (3 pages each) to stay within limits
-  const BATCH_SIZE = 3;
-  const batches = [];
-  for (let i = 0; i < total; i += BATCH_SIZE) {
-    batches.push(pages.slice(i, i + BATCH_SIZE));
-  }
 
   try {
     const hanToken = localStorage.getItem('han_token') || '';
-    for (let b = 0; b < batches.length; b++) {
-      const batch = batches[b];
-      const startPage = b * BATCH_SIZE + 1;
-      const endPage = startPage + batch.length - 1;
-      const pct = Math.round(((b + 1) / batches.length) * 100);
-      fill.style.width = Math.max(5, pct - 10) + '%';
-      label.textContent = 'Marking pages ' + startPage + '–' + endPage + ' of ' + total + '…';
+    const response = await fetch('/api/mark-script', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-HAN-Token': hanToken },
+      body: JSON.stringify({
+        pdf: _markPdfBase64,
+        course: course,
+        paper: paper,
+        year: year,
+        session: session,
+        tz: tz
+      })
+    });
 
-      const content = [];
-      batch.forEach((pg, idx) => {
-        content.push({
-          type: 'image',
-          source: { type: 'base64', media_type: pg.type, data: pg.base64 }
-        });
-      });
-      content.push({
-        type: 'text',
-        text: 'You are marking pages ' + startPage + ' to ' + endPage + ' of a student exam paper' +
-              (meta ? ' (' + meta + ')' : '') + '.\n\n' +
-              'For each page with student working visible:\n' +
-              '1. Identify which question/part the student is answering\n' +
-              '2. Transcribe their working briefly\n' +
-              '3. Mark it using IB mark scheme conventions (M1, A1, R1, etc.)\n' +
-              '4. State marks earned vs available\n' +
-              '5. Note any errors or lost marks\n\n' +
-              'If a page is blank, a printed question with no student working, or a cover page, just say "No student working on this page." and move on.\n\n' +
-              'At the end output a line: BATCH_SCORE: X/Y (total marks earned / total available for these pages)'
-      });
-
-      const response = await fetch('/api/claude', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-HAN-Token': hanToken },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: content }]
-        })
-      });
-
-      if (!response.ok) {
-        const errText = await response.text();
-        let errMsg;
-        try { errMsg = JSON.parse(errText)?.error?.message; } catch (e) {}
-        throw new Error(errMsg || 'HTTP ' + response.status);
-      }
-
-      // Read the streamed SSE response
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let batchReply = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const data = line.slice(6).trim();
-          if (data === '[DONE]') continue;
-          try {
-            const evt = JSON.parse(data);
-            if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
-              batchReply += evt.delta.text;
-            }
-          } catch (e) {}
-        }
-      }
-
-      // Extract batch score if present
-      const scoreMatch = batchReply.match(/BATCH_SCORE:\s*(\d+)\s*\/\s*(\d+)/i);
-      if (scoreMatch) {
-        totalMarksEarned += parseInt(scoreMatch[1]);
-        totalMarksAvailable += parseInt(scoreMatch[2]);
-      }
-
-      pageResults.push({
-        pages: startPage + '–' + endPage,
-        text: batchReply
-      });
-
-      fill.style.width = pct + '%';
+    if (!response.ok) {
+      const errText = await response.text();
+      let errMsg;
+      try { errMsg = JSON.parse(errText)?.error?.message; } catch (e) {}
+      throw new Error(errMsg || 'HTTP ' + response.status);
     }
 
-    // Show results
+    fill.style.width = '30%';
+    label.textContent = 'HAN is reading and marking your paper…';
+
+    // Stream the SSE response and show results in real-time
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullReply = '';
+
+    // Show result container immediately for streaming display
+    result.innerHTML = '<div class="mark-result-body"><div id="markStreamContent" style="font-size:13px;line-height:1.8;color:var(--text);padding:14px;white-space:pre-wrap"></div></div>';
+    result.style.display = '';
+    const streamEl = document.getElementById('markStreamContent');
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') continue;
+        try {
+          const evt = JSON.parse(data);
+          if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
+            fullReply += evt.delta.text;
+            streamEl.textContent = fullReply;
+            // Auto-scroll to bottom of result
+            const scroll = result.closest('.mark-scroll');
+            if (scroll) scroll.scrollTop = scroll.scrollHeight;
+          }
+        } catch (e) {}
+      }
+      // Update progress bar based on streaming
+      const progress = Math.min(90, 30 + (fullReply.length / 80));
+      fill.style.width = progress + '%';
+      label.textContent = 'Marking in progress…';
+    }
+
     fill.style.width = '100%';
     label.textContent = 'Marking complete!';
     document.getElementById('markProgressTitle').textContent = 'Marking complete';
 
-    let scoreHtml = '';
-    if (totalMarksAvailable > 0) {
-      scoreHtml = '<div class="mark-result-header"><div><div class="mark-result-score">' +
-        totalMarksEarned + ' / ' + totalMarksAvailable +
-        '</div><div class="mark-result-label">marks awarded</div></div></div>';
-    }
+    // Final render with proper formatting
+    const rendered = fullReply
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>');
+    result.innerHTML = '<div class="mark-result-body" style="padding:14px;font-size:13px;line-height:1.8;color:var(--text)">' + rendered + '</div>';
 
-    let pagesHtml = '';
-    for (const pr of pageResults) {
-      const rendered = pr.text
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-        .replace(/\n/g, '<br>')
-        .replace(/BATCH_SCORE:.*$/gim, '');
-      pagesHtml += '<div class="mark-page-result"><div class="mark-page-num">Pages ' + pr.pages + '</div>' +
-        '<div style="font-size:13px;line-height:1.8;color:var(--text)">' + rendered + '</div></div>';
-    }
-
-    result.innerHTML = scoreHtml + '<div class="mark-result-body">' + pagesHtml + '</div>';
-    result.style.display = '';
-
-    // MathJax typeset the results
     if (window.MathJax && MathJax.typesetPromise) {
       MathJax.typesetPromise([result]).catch(() => {});
     }
