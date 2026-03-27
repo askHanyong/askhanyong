@@ -279,12 +279,18 @@ async function markPaper(pages, paperInfo, studentName, paperStructure) {
     text: `The following ${pages.length} image(s) show page(s) of the answer script of student "${studentName || 'Student'}". Mark ONLY what is visible on this page.\n\nYou MUST respond with ONLY a valid JSON object. Do not write any prose, explanation, or analysis before or after the JSON. Your entire response must be a single JSON object starting with { and ending with }.`,
   };
 
+  const textPostamble = {
+    type: 'text',
+    text: `REMINDER: Output ONLY valid JSON — no prose, no description of what you see. Even for graph sketching questions, do NOT narrate the graph. Evaluate each graph feature (shape, intercepts, asymptotes, labelled coordinates) as separate mark objects inside the JSON. Begin your response with { immediately.`,
+  };
+
   const content = [
     textPreamble,
     ...pages.map(p => ({
       type: 'image',
       source: { type: 'base64', media_type: p.mediaType || 'image/jpeg', data: p.data },
     })),
+    textPostamble,
   ];
 
   const anthController = new AbortController();
