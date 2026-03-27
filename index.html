@@ -6320,45 +6320,18 @@ async function markMyPaper() {
       throw new Error(errMsg || 'HTTP ' + response.status);
     }
 
-    fill.style.width = '30%';
+    fill.style.width = '50%';
     label.textContent = 'HAN is reading and marking your paper…';
 
-    // Stream the SSE response and show results in real-time
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
+    // Parse the JSON response (non-streaming v1 function)
+    const data = await response.json();
     let fullReply = '';
-
-    // Show result container immediately for streaming display
-    result.innerHTML = '<div class="mark-result-body"><div id="markStreamContent" style="font-size:13px;line-height:1.8;color:var(--text);padding:14px;white-space:pre-wrap"></div></div>';
-    result.style.display = '';
-    const streamEl = document.getElementById('markStreamContent');
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6).trim();
-        if (data === '[DONE]') continue;
-        try {
-          const evt = JSON.parse(data);
-          if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
-            fullReply += evt.delta.text;
-            streamEl.textContent = fullReply;
-            // Auto-scroll to bottom of result
-            const scroll = result.closest('.mark-scroll');
-            if (scroll) scroll.scrollTop = scroll.scrollHeight;
-          }
-        } catch (e) {}
-      }
-      // Update progress bar based on streaming
-      const progress = Math.min(90, 30 + (fullReply.length / 80));
-      fill.style.width = progress + '%';
-      label.textContent = 'Marking in progress…';
+    if (data.content && Array.isArray(data.content)) {
+      fullReply = data.content.map(function(b) { return b.text || ''; }).join('');
+    } else if (data.error) {
+      throw new Error(data.error.message || 'Claude API error');
+    } else {
+      fullReply = JSON.stringify(data);
     }
 
     fill.style.width = '100%';
