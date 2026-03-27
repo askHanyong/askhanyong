@@ -42,9 +42,8 @@ const HITL_THRESHOLD = 0.72;
 const SCRIPT_MONTHLY_LIMIT = 3;
 
 // Max pages sent to Claude in a single API call.
-// Batches are run in PARALLEL so total time ≈ slowest batch, not sum of all.
-// 4 pages per batch: ~800–1200 output tokens → typically completes in <12s.
-const BATCH_SIZE = 4;
+// 3 pages per batch keeps Claude API response well within the 25s abort window.
+const BATCH_SIZE = 3;
 
 const CORS = {
   'Content-Type':                'application/json',
@@ -199,7 +198,7 @@ async function markPaper(pages, paperInfo, studentName) {
   ];
 
   const anthController = new AbortController();
-  const anthTimer = setTimeout(() => anthController.abort(), 20000); // leave buffer before Netlify's 26s limit
+  const anthTimer = setTimeout(() => anthController.abort(), 25000); // leave 1s buffer before Netlify's 26s limit
   let resp;
   try {
     resp = await fetch('https://api.anthropic.com/v1/messages', {
