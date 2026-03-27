@@ -31,6 +31,8 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <style>
 :root {
   --navy:#0e1c33; --blue:#1e3a8a; --blue-mid:#1d4ed8; --blue-light:#3b82f6;
@@ -752,6 +754,39 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   .welcome-actions { margin-top:8px; }
 }
 
+/* ── Mark My Paper ── */
+.mark-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.mark-body { padding:16px; display:flex; flex-direction:column; gap:16px; max-width:680px; margin:0 auto; width:100%; }
+.mark-upload-zone { border:2.5px dashed var(--border); border-radius:var(--radius); padding:32px 20px; text-align:center; cursor:pointer; transition:all 0.2s; position:relative; background:var(--bg); }
+.mark-upload-zone:hover { border-color:var(--blue); background:var(--ice-light); }
+.mark-upload-zone.has-file { border-style:solid; border-color:var(--green); background:#f0fdf4; cursor:default; }
+.mark-upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+.mark-upload-zone.has-file input { display:none; }
+.mark-file-info { display:flex; align-items:center; gap:14px; justify-content:center; }
+.mark-file-icon { font-size:28px; flex-shrink:0; }
+.mark-file-text h4 { font-size:14px; font-weight:700; color:var(--text); }
+.mark-file-text span { font-size:12px; color:var(--text-soft); }
+.mark-remove { position:absolute; top:12px; right:12px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-soft); }
+.mark-privacy { background:#fefce8; border:1px solid #fde68a; border-radius:var(--radius-sm); padding:10px 14px; font-size:11.5px; color:#92400e; line-height:1.6; }
+.mark-form { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.mark-field label { display:block; font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+.mark-field select { width:100%; padding:10px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; font-family:'Inter',sans-serif; color:var(--text); background:white; cursor:pointer; outline:none; }
+.mark-field.full { grid-column:1/-1; }
+.mark-submit-btn { width:100%; padding:15px; background:linear-gradient(135deg,#0e1c33,#1a3068); color:white; border:none; border-radius:var(--radius); font-size:15px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
+.mark-submit-btn:disabled { opacity:0.55; cursor:not-allowed; }
+.mark-progress { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; }
+.mark-progress-bar { height:6px; background:var(--border); border-radius:3px; overflow:hidden; margin:10px 0 6px; }
+.mark-progress-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--green)); border-radius:3px; transition:width 0.3s; }
+.mark-progress-label { font-size:12px; color:var(--text-mid); }
+.mark-result { background:white; border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.mark-result-header { background:linear-gradient(135deg,#0a1628,#1a3068); padding:16px; color:white; display:flex; align-items:center; justify-content:space-between; }
+.mark-result-score { font-family:'Playfair Display',serif; font-size:28px; font-weight:800; color:#C9A84C; }
+.mark-result-label { font-size:11px; color:rgba(255,255,255,0.6); }
+.mark-result-body { padding:14px; font-size:13px; color:var(--text); line-height:1.8; }
+.mark-page-result { border-top:1px solid var(--border); padding:12px 14px; }
+.mark-page-result:first-child { border-top:none; }
+.mark-page-num { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+
 /* ── Nav SVG Icons ── */
 .tab-icon { display:flex; align-items:center; justify-content:center; width:22px; height:22px; }
 .tab-icon svg { width:20px; height:20px; stroke:var(--text-soft); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.18s; }
@@ -1224,6 +1259,89 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   </div>
 </div>
 
+<!-- ══════════════ MARK MY PAPER ══════════════ -->
+<div class="view-panel" id="view-mark">
+  <div class="mark-scroll">
+    <div class="mark-body">
+
+      <div class="mark-upload-zone" id="markUploadZone">
+        <input type="file" accept="application/pdf" onchange="markLoadPdf(event)">
+        <div id="markUploadPrompt">
+          <div style="font-size:36px;margin-bottom:8px">📄</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text)">Upload your exam paper (PDF)</div>
+          <div style="font-size:12px;color:var(--text-soft);margin-top:4px">We convert each page to an image and mark it with HAN</div>
+        </div>
+        <div id="markFileInfo" class="mark-file-info" style="display:none">
+          <div class="mark-file-icon">📄</div>
+          <div class="mark-file-text">
+            <h4 id="markFileName"></h4>
+            <span id="markPageCount"></span>
+          </div>
+        </div>
+        <button class="mark-remove" id="markRemoveBtn" onclick="markRemovePdf(event)" style="display:none">✕</button>
+      </div>
+
+      <div class="mark-privacy">🔒 <strong>Privacy:</strong> Your PDF is converted to images for marking and <strong>never stored</strong>. Only the marking result is saved for 7 days so you can download it. IB past paper questions are © International Baccalaureate Organization — we process only <em>your</em> written answers.</div>
+
+      <div style="font-size:13px;font-weight:700;color:var(--text)">Paper details (optional — helps HAN mark more accurately)</div>
+      <div class="mark-form">
+        <div class="mark-field"><label>Course</label>
+          <select id="markCourse">
+            <option value="">Any</option>
+            <option value="AA HL" selected>Analysis &amp; Approaches HL</option>
+            <option value="AA SL">Analysis &amp; Approaches SL</option>
+            <option value="AI HL">Applications &amp; Interpretation HL</option>
+            <option value="AI SL">Applications &amp; Interpretation SL</option>
+          </select>
+        </div>
+        <div class="mark-field"><label>Paper</label>
+          <select id="markPaper">
+            <option value="">Any</option>
+            <option value="Paper 1" selected>Paper 1 (No GDC)</option>
+            <option value="Paper 2">Paper 2 (GDC allowed)</option>
+            <option value="Paper 3">Paper 3 (HL only)</option>
+          </select>
+        </div>
+        <div class="mark-field"><label>Year</label>
+          <select id="markYear">
+            <option value="">Any</option>
+            <option value="2025">2025</option>
+            <option value="2024" selected>2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+          </select>
+        </div>
+        <div class="mark-field"><label>Session</label>
+          <select id="markSession">
+            <option value="">Any</option>
+            <option value="May" selected>May</option>
+            <option value="November">November</option>
+          </select>
+        </div>
+        <div class="mark-field"><label>Time Zone</label>
+          <select id="markTz">
+            <option value="">Any</option>
+            <option value="TZ1" selected>TZ1</option>
+            <option value="TZ2">TZ2</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mark-progress" id="markProgress" style="display:none">
+        <div style="font-size:13px;font-weight:700;color:var(--text)" id="markProgressTitle">Marking in progress…</div>
+        <div class="mark-progress-bar"><div class="mark-progress-fill" id="markProgressFill" style="width:0%"></div></div>
+        <div class="mark-progress-label" id="markProgressLabel">Preparing pages…</div>
+      </div>
+
+      <div class="mark-result" id="markResult" style="display:none"></div>
+
+      <button class="mark-submit-btn" id="markSubmitBtn" onclick="markMyPaper()">✦ Mark My Paper</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ IA HELPER ══════════════ -->
 <div class="view-panel" id="view-ia">
   <div class="ia-scroll">
@@ -1337,6 +1455,10 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   <button class="tab-btn" id="tab-about" onclick="switchTab('about')">
     <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
     About
+  </button>
+  <button class="tab-btn" id="tab-mark" onclick="switchTab('mark')" style="position:relative">
+    <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+    Mark<span style="position:absolute;top:4px;right:6px;background:var(--accent);color:var(--navy);font-size:7px;font-weight:800;border-radius:4px;padding:1px 4px;line-height:1.4;letter-spacing:0.3px">NEW</span>
   </button>
   <button class="tab-btn" id="tab-ia" onclick="switchTab('ia')" style="position:relative">
     <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
@@ -1952,7 +2074,7 @@ let mockSelectedTopics = new Set(['All']), mockPaperData = [], practiceFiltered 
 // TAB SWITCHING
 // ════════════════════════════════════════
 function switchTab(tab) {
-  ['chat','practice','mock','progress','about','ia'].forEach(t => {
+  ['chat','practice','mock','progress','about','mark','ia'].forEach(t => {
     const v = document.getElementById('view-' + t), b = document.getElementById('tab-' + t);
     if (v) v.classList.toggle('active', t === tab);
     if (b) b.classList.toggle('active', t === tab);
@@ -6090,6 +6212,232 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   refreshMockNote();
 });
+
+// ════════════════════════════════════════
+// MARK MY PAPER
+// ════════════════════════════════════════
+let _markPdfPages = [];  // array of { dataUrl, base64, type }
+let _markPdfName = '';
+let _markInProgress = false;
+
+function markLoadPdf(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.type !== 'application/pdf') { showToast('Please upload a PDF file'); return; }
+  if (file.size > 50 * 1024 * 1024) { showToast('PDF too large. Maximum 50 MB.'); event.target.value = ''; return; }
+  _markPdfName = file.name;
+  _markPdfPages = [];
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const typedArray = new Uint8Array(e.target.result);
+      const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
+      const numPages = pdf.numPages;
+      document.getElementById('markFileName').textContent = file.name;
+      document.getElementById('markPageCount').textContent = numPages + ' pages loaded';
+      document.getElementById('markUploadPrompt').style.display = 'none';
+      document.getElementById('markFileInfo').style.display = 'flex';
+      document.getElementById('markRemoveBtn').style.display = '';
+      document.getElementById('markUploadZone').classList.add('has-file');
+      // Render each page to image at 1.5x scale for readability
+      for (let i = 1; i <= numPages; i++) {
+        const page = await pdf.getPage(i);
+        const scale = 1.5;
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        _markPdfPages.push({
+          dataUrl: dataUrl,
+          base64: dataUrl.split(',')[1],
+          type: 'image/jpeg'
+        });
+      }
+    } catch (err) {
+      showToast('Could not read PDF: ' + err.message);
+      markRemovePdf();
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function markRemovePdf(e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  _markPdfPages = [];
+  _markPdfName = '';
+  document.getElementById('markUploadPrompt').style.display = '';
+  document.getElementById('markFileInfo').style.display = 'none';
+  document.getElementById('markRemoveBtn').style.display = 'none';
+  document.getElementById('markUploadZone').classList.remove('has-file');
+  document.getElementById('markResult').style.display = 'none';
+  // Reset file input
+  const zone = document.getElementById('markUploadZone');
+  const inp = zone.querySelector('input[type=file]');
+  if (inp) { inp.value = ''; inp.style.display = ''; }
+}
+
+async function markMyPaper() {
+  if (_markInProgress) return;
+  if (_markPdfPages.length === 0) { showToast('Please upload a PDF first'); return; }
+  if (!currentUser && !isAdmin) { showLogin(); return; }
+
+  _markInProgress = true;
+  const btn = document.getElementById('markSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Marking…';
+  const prog = document.getElementById('markProgress');
+  prog.style.display = '';
+  const fill = document.getElementById('markProgressFill');
+  const label = document.getElementById('markProgressLabel');
+  const result = document.getElementById('markResult');
+  result.style.display = 'none';
+
+  const course = document.getElementById('markCourse').value;
+  const paper = document.getElementById('markPaper').value;
+  const year = document.getElementById('markYear').value;
+  const session = document.getElementById('markSession').value;
+  const tz = document.getElementById('markTz').value;
+  const meta = [course, paper, year, session, tz].filter(Boolean).join(' · ');
+
+  const pages = _markPdfPages;
+  const total = pages.length;
+  const pageResults = [];
+  let totalMarksEarned = 0;
+  let totalMarksAvailable = 0;
+
+  // Process pages in small batches (3 pages each) to stay within limits
+  const BATCH_SIZE = 3;
+  const batches = [];
+  for (let i = 0; i < total; i += BATCH_SIZE) {
+    batches.push(pages.slice(i, i + BATCH_SIZE));
+  }
+
+  try {
+    const hanToken = localStorage.getItem('han_token') || '';
+    for (let b = 0; b < batches.length; b++) {
+      const batch = batches[b];
+      const startPage = b * BATCH_SIZE + 1;
+      const endPage = startPage + batch.length - 1;
+      const pct = Math.round(((b + 1) / batches.length) * 100);
+      fill.style.width = Math.max(5, pct - 10) + '%';
+      label.textContent = 'Marking pages ' + startPage + '–' + endPage + ' of ' + total + '…';
+
+      const content = [];
+      batch.forEach((pg, idx) => {
+        content.push({
+          type: 'image',
+          source: { type: 'base64', media_type: pg.type, data: pg.base64 }
+        });
+      });
+      content.push({
+        type: 'text',
+        text: 'You are marking pages ' + startPage + ' to ' + endPage + ' of a student exam paper' +
+              (meta ? ' (' + meta + ')' : '') + '.\n\n' +
+              'For each page with student working visible:\n' +
+              '1. Identify which question/part the student is answering\n' +
+              '2. Transcribe their working briefly\n' +
+              '3. Mark it using IB mark scheme conventions (M1, A1, R1, etc.)\n' +
+              '4. State marks earned vs available\n' +
+              '5. Note any errors or lost marks\n\n' +
+              'If a page is blank, a printed question with no student working, or a cover page, just say "No student working on this page." and move on.\n\n' +
+              'At the end output a line: BATCH_SCORE: X/Y (total marks earned / total available for these pages)'
+      });
+
+      const response = await fetch('/api/claude', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-HAN-Token': hanToken },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: content }]
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        let errMsg;
+        try { errMsg = JSON.parse(errText)?.error?.message; } catch (e) {}
+        throw new Error(errMsg || 'HTTP ' + response.status);
+      }
+
+      // Read the streamed SSE response
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let batchReply = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') continue;
+          try {
+            const evt = JSON.parse(data);
+            if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
+              batchReply += evt.delta.text;
+            }
+          } catch (e) {}
+        }
+      }
+
+      // Extract batch score if present
+      const scoreMatch = batchReply.match(/BATCH_SCORE:\s*(\d+)\s*\/\s*(\d+)/i);
+      if (scoreMatch) {
+        totalMarksEarned += parseInt(scoreMatch[1]);
+        totalMarksAvailable += parseInt(scoreMatch[2]);
+      }
+
+      pageResults.push({
+        pages: startPage + '–' + endPage,
+        text: batchReply
+      });
+
+      fill.style.width = pct + '%';
+    }
+
+    // Show results
+    fill.style.width = '100%';
+    label.textContent = 'Marking complete!';
+    document.getElementById('markProgressTitle').textContent = 'Marking complete';
+
+    let scoreHtml = '';
+    if (totalMarksAvailable > 0) {
+      scoreHtml = '<div class="mark-result-header"><div><div class="mark-result-score">' +
+        totalMarksEarned + ' / ' + totalMarksAvailable +
+        '</div><div class="mark-result-label">marks awarded</div></div></div>';
+    }
+
+    let pagesHtml = '';
+    for (const pr of pageResults) {
+      const rendered = pr.text
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>')
+        .replace(/BATCH_SCORE:.*$/gim, '');
+      pagesHtml += '<div class="mark-page-result"><div class="mark-page-num">Pages ' + pr.pages + '</div>' +
+        '<div style="font-size:13px;line-height:1.8;color:var(--text)">' + rendered + '</div></div>';
+    }
+
+    result.innerHTML = scoreHtml + '<div class="mark-result-body">' + pagesHtml + '</div>';
+    result.style.display = '';
+
+    // MathJax typeset the results
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise([result]).catch(() => {});
+    }
+
+  } catch (err) {
+    showToast('Marking failed: ' + err.message);
+  } finally {
+    _markInProgress = false;
+    btn.disabled = false;
+    btn.textContent = '✦ Mark My Paper';
+  }
+}
 </script>
 
 </body>
