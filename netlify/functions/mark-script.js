@@ -75,7 +75,7 @@ function verifySessionToken(token) {
 }
 
 // ── GAS call helper ───────────────────────────────────────────────
-async function callGAS(params, timeoutMs = 5000) {
+async function callGAS(params, timeoutMs = 3000) {
   const url = SHEETS_URL + '?' + new URLSearchParams(params).toString();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -89,7 +89,7 @@ async function callGAS(params, timeoutMs = 5000) {
   }
 }
 
-async function postGAS(body, timeoutMs = 8000) {
+async function postGAS(body, timeoutMs = 5000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -210,7 +210,7 @@ async function markPaper(pages, paperInfo, studentName) {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 3000,
+        max_tokens: 1500,
         system:     buildSystemPrompt(paperInfo),
         messages:   [{ role: 'user', content }],
       }),
