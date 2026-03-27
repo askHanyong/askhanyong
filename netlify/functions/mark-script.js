@@ -298,9 +298,12 @@ async function markPaper(pages, paperInfo, studentName, paperStructure) {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 1400,
+        max_tokens: 1800,
         system:     buildSystemPrompt(paperInfo, paperStructure),
-        messages:   [{ role: 'user', content }],
+        messages:   [
+          { role: 'user',      content },
+          { role: 'assistant', content: '{' },  // prefill — forces JSON output, prevents prose
+        ],
       }),
       signal: anthController.signal,
     });
@@ -324,7 +327,8 @@ async function markPaper(pages, paperInfo, studentName, paperStructure) {
     throw new Error('Marking response was truncated (max_tokens reached). Try uploading fewer pages at a time.');
   }
 
-  const raw  = (json.content?.[0]?.text || '').trim()
+  // Prepend the assistant prefill character we used to force JSON output
+  const raw  = ('{' + (json.content?.[0]?.text || '')).trim()
     .replace(/^```[^\n]*\n?/m, '')
     .replace(/```\s*$/m, '')
     .trim();
