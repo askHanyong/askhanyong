@@ -26,7 +26,7 @@ const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY || '').trim();
 const SESSION_SECRET    = process.env.SESSION_SECRET;
 const SHEETS_URL        = process.env.SHEETS_URL;
 const GAS_ADMIN_SECRET  = process.env.GAS_ADMIN_SECRET;
-const MODEL             = 'claude-sonnet-4-6';
+const MODEL             = 'claude-haiku-4-5-20251001';
 
 // Comma-separated list of emails that bypass the monthly quota entirely.
 // Also accepts an env var UNLIMITED_EMAILS for runtime configuration.
@@ -362,8 +362,9 @@ exports.handler = async (event) => {
       const batchResult = await markPaper(pages, paperInfo || {}, studentName || 'Student');
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, result: batchResult }) };
     } catch (e) {
-      console.error('mark-script: batchMark error:', e.message);
-      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Batch marking failed: ' + e.message }) };
+      const msg = e.message || String(e);
+      console.error('mark-script: batchMark error:', msg);
+      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: msg }) };
     }
   }
 

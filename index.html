@@ -6731,7 +6731,8 @@ function toggleDarkMode() {
           });
           if (!resp.ok) {
             const err = await resp.json().catch(() => ({}));
-            throw new Error(err.error || 'Batch marking failed. Please try again.');
+            console.error('[mark-script] batch error HTTP ' + resp.status + ':', JSON.stringify(err));
+            throw new Error(err.error || 'Batch marking failed (HTTP ' + resp.status + ').');
           }
           const data = await resp.json();
           batchResults[idx] = data.result;
