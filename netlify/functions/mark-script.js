@@ -194,7 +194,9 @@ function buildSystemPrompt(paperInfo, paperStructure) {
     if (lines.length) structureBlock = '\n\n' + lines.join('\n');
   }
 
-  return `You are an experienced IB Mathematics examiner with 20+ years of marking experience.
+  return `CRITICAL INSTRUCTION: You must respond with ONLY a valid JSON object. No prose, no explanation, no analysis. Your entire response = one JSON object, nothing else.
+
+You are an experienced IB Mathematics examiner with 20+ years of marking experience.
 The student has uploaded their completed ${paperLabel}.${structureBlock}
 
 Your task is to mark this student's paper. The image shows the student's handwritten work — which may include the printed question text plus their written answers, or just their answers.
@@ -274,7 +276,7 @@ Use exactly this structure:
 async function markPaper(pages, paperInfo, studentName, paperStructure) {
   const textPreamble = {
     type: 'text',
-    text: `The following ${pages.length} image(s) show page(s) of the answer script of student "${studentName || 'Student'}". Mark ONLY what is visible on this page and return the JSON result:`,
+    text: `The following ${pages.length} image(s) show page(s) of the answer script of student "${studentName || 'Student'}". Mark ONLY what is visible on this page.\n\nYou MUST respond with ONLY a valid JSON object. Do not write any prose, explanation, or analysis before or after the JSON. Your entire response must be a single JSON object starting with { and ending with }.`,
   };
 
   const content = [
@@ -300,10 +302,7 @@ async function markPaper(pages, paperInfo, studentName, paperStructure) {
         model:      MODEL,
         max_tokens: 1800,
         system:     buildSystemPrompt(paperInfo, paperStructure),
-        messages:   [
-          { role: 'user',      content },
-          { role: 'assistant', content: '{' },  // prefill — forces JSON output, prevents prose
-        ],
+        messages:   [{ role: 'user', content }],
       }),
       signal: anthController.signal,
     });
@@ -327,8 +326,7 @@ async function markPaper(pages, paperInfo, studentName, paperStructure) {
     throw new Error('Marking response was truncated (max_tokens reached). Try uploading fewer pages at a time.');
   }
 
-  // Prepend the assistant prefill character we used to force JSON output
-  const raw  = ('{' + (json.content?.[0]?.text || '')).trim()
+  const raw  = (json.content?.[0]?.text || '').trim()
     .replace(/^```[^\n]*\n?/m, '')
     .replace(/```\s*$/m, '')
     .trim();
