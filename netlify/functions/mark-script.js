@@ -187,6 +187,7 @@ function buildSystemPrompt(paperInfo, paperStructure) {
           line += ' — ' + q.parts.map(p => `(${p.part}) ${p.marks}mk`).join(', ');
         }
         lines.push(line);
+        if (q.questionText) lines.push(`    Question: "${q.questionText}"`);
       }
       lines.push('If a question is not listed above, it is not part of this paper — do not invent it.');
     }
@@ -217,6 +218,7 @@ MARKING RULES:
 9. If a part is entirely missing, all marks for that part = 0
 10. Read handwriting charitably — interpret ambiguous symbols in the student's favour when intent is clear
 11. For each question part, give a one-sentence feedback comment
+12. If the student has written ONLY their working/answers without copying the question, use the "Question:" text from the MARK ALLOCATION section above to understand what was asked — do not penalise for the missing question text
 
 After marking all visible questions on this page, calculate per-topic performance using IB topic categories:
 - Number & Algebra, Functions, Geometry & Trigonometry, Statistics & Probability, Calculus

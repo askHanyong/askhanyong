@@ -182,7 +182,7 @@ header a:hover { color:white; }
       <div class="card-title">📋 Step 1 — Paper Information</div>
       <div class="card-sub">Tell HAN which exam paper these solutions belong to</div>
 
-      <div class="form-row cols-2">
+      <div class="form-row cols-3">
         <div class="form-group">
           <label class="form-label">Question Source</label>
           <select class="form-select" id="p-source" onchange="handleSourceChange()">
@@ -194,6 +194,14 @@ header a:hover { color:white; }
             <option value="ALEV">A-Level</option>
             <option value="AMC">AMC / Competition</option>
             <option value="OTH">Others</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Document Type</label>
+          <select class="form-select" id="p-doctype">
+            <option value="questionpaper">Question Paper</option>
+            <option value="markscheme">Markscheme</option>
+            <option value="solutions">Solutions (Hanyong's worked solutions)</option>
           </select>
         </div>
         <div class="form-group">
@@ -649,6 +657,10 @@ async function runExtraction() {
   const session = document.getElementById('p-session').value;
   const year    = document.getElementById('p-year').value;
   const tz      = document.getElementById('p-tz').value;
+  const docType = document.getElementById('p-doctype')?.value || 'solutions';
+  const docLabel = docType === 'questionpaper' ? 'question paper'
+                 : docType === 'markscheme'    ? 'markscheme'
+                 : "Hanyong's handwritten worked solutions";
 
   try {
     for (let b = 0; b < totalBatches; b++) {
@@ -666,7 +678,7 @@ async function runExtraction() {
       const content = [];
       content.push({
         type: 'text',
-        text: `You are analysing pages ${batchStart}–${batchEnd} (document total: ${pdfPages.length} pages) from an IB Diploma Programme Mathematics exam solutions PDF. These are Hanyong's handwritten worked solutions for ${level} ${paper}, ${session} ${year}, TZ${tz}.
+        text: `You are analysing pages ${batchStart}–${batchEnd} (document total: ${pdfPages.length} pages) from an IB Diploma Programme Mathematics ${docLabel} for ${level} ${paper}, ${session} ${year}, TZ${tz}.
 
 Your task: identify EVERY question visible in these pages, which page numbers each question spans, and generate teaching content for each question.
 
@@ -674,7 +686,8 @@ Return ONLY a valid JSON array — no markdown fencing, no explanation. Each ele
 {
   "questionNum": "Q1" | "Q2a" | "Q2b" etc.,
   "pages": [${batchStart}] (use the ORIGINAL document page numbers, ${batchStart}–${batchEnd}),
-  "marksHint": "6" or null (read the mark allocation from the paper if visible, otherwise infer from solution length),
+  "questionText": ${docType === 'solutions' ? 'null (solutions only — no question text to extract)' : '"Full text of the question exactly as printed. Include sub-part labels like (a), (b). For markschemes, extract the question if printed, else null."'},
+  "marksHint": "6" or null (read the mark allocation from the paper if visible${docType === 'solutions' ? ', otherwise infer from solution length' : ''}),
   "topicHint": one of ["Calculus","Functions","Geometry & Trigonometry","Statistics & Probability","Number & Algebra","Complex Numbers"] or null (use exact string),
   "subtopicHint": "Integration by parts" or null,
   "hanExplanation": "1–2 sentence key insight a student needs to solve this question (e.g. the core technique, substitution, or conceptual link to recognise)",
@@ -689,6 +702,7 @@ Rules:
 - A question may span multiple pages — list all of them
 - Do not skip any question
 - Always provide hanExplanation, commonMistakes, and examinerNote — never leave them null
+${docType !== 'solutions' ? '- questionText: copy the FULL question text word-for-word — students who only write working (no question) need this for accurate AI marking' : ''}
 
 Pages ${batchStart}–${batchEnd}:`
       });
@@ -851,6 +865,13 @@ function renderQCards() {
 
         <div class="form-row" style="grid-template-columns:1fr">
           <div class="form-group">
+            <label class="form-label">Question Text — full question as printed in paper <span style="font-weight:400;color:var(--text-soft)">(enables marking of working-only scripts)</span></label>
+            <textarea class="form-textarea" id="qtext-${i}" placeholder="e.g. Let f(x) = x² − 3x + 2. (a) Find f′(x). [2 marks] (b) Hence find the coordinates of the turning point. [3 marks]" style="min-height:70px">${escHtml(q.questionText || '')}</textarea>
+          </div>
+        </div>
+
+        <div class="form-row" style="grid-template-columns:1fr">
+          <div class="form-group">
             <label class="form-label">HAN Explanation — key insight for students</label>
             <textarea class="form-textarea" id="qhan-${i}" placeholder="e.g. Recognise this as a composite function — chain rule with substitution u = sin x…">${escHtml(q.hanExplanation)}</textarea>
           </div>
@@ -946,6 +967,7 @@ function collectQuestionData() {
     'Marks':            (document.getElementById(`qmarks-${i}`)?.value || '').trim(),
     'Difficulty':       (document.getElementById(`qdiff-${i}`)?.value || '2').trim(),
     'Status':           (document.getElementById(`qstatus-${i}`)?.value || 'final').trim(),
+    'Question Text':    (document.getElementById(`qtext-${i}`)?.value || '').trim(),
     'HAN Explanation':  (document.getElementById(`qhan-${i}`)?.value || '').trim(),
     'Common Mistakes':  (document.getElementById(`qmistakes-${i}`)?.value || '').trim(),
     'Examiner Note':    (document.getElementById(`qexnote-${i}`)?.value || '').trim(),
@@ -1016,6 +1038,7 @@ async function saveToSheets() {
           marks:          q['Marks'],
           difficulty:     q['Difficulty'],
           status:         q['Status'],
+          questionText:   q['Question Text'],
           hanExplanation: q['HAN Explanation'],
           commonMistakes: q['Common Mistakes'],
           examinerNote:   q['Examiner Note'],

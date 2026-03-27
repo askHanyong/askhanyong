@@ -20,6 +20,7 @@ const PARAM_TO_HEADER = {
   commonMistakes: 'Common Mistakes',
   examinerNote:   'Examiner Note',
   solutionUrl:    'Solution URL',
+  questionText:   'Question Text',
 };
 
 // Admin secret — stored in Script Properties (File → Project Properties → Script Properties)
@@ -52,6 +53,7 @@ function doGet(e) {
   if (action === 'checkScriptQuota')        return checkScriptQuota(e.parameter);
   if (action === 'getScriptReviewQueue')    return getScriptReviewQueue(e.parameter);
   if (action === 'getScriptMarkingAccuracy') return getScriptMarkingAccuracy(e.parameter);
+  if (action === 'getPaperStructure')       return getPaperStructure(e.parameter.prefix || '');
 
   return ContentService
     .createTextOutput('HAN Admin GAS — OK')
@@ -274,6 +276,66 @@ function addQuestion(params) {
 
   return ContentService
     .createTextOutput(JSON.stringify({ success: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── Return per-question structure for a paper prefix ─────────────
+// Used by mark-script to inject question text + mark allocation into Claude's prompt.
+// prefix: e.g. 'IBMAAHM24P1TZ1'
+// Returns: { prefix, totalMarks, questions: [{id, num, marks, topic, questionText}] }
+function getPaperStructure(prefix) {
+  var empty = ContentService
+    .createTextOutput(JSON.stringify({ questions: [], totalMarks: 0 }))
+    .setMimeType(ContentService.MimeType.JSON);
+
+  if (!prefix) return empty;
+
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Questions');
+  if (!sheet) return empty;
+
+  var rows    = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var col     = function(name) { return headers.indexOf(name); };
+
+  var iId           = col('Question ID');
+  var iMarks        = col('Marks');
+  var iTopic        = col('Topic');
+  var iStatus       = col('Status');
+  var iQuestionText = col('Question Text');
+
+  if (iId < 0) return empty;
+
+  var questions  = [];
+  var totalMarks = 0;
+
+  for (var r = 1; r < rows.length; r++) {
+    var row = rows[r];
+    var qId = String(row[iId] || '');
+    if (!qId.startsWith(prefix)) continue;
+    if (iStatus >= 0 && row[iStatus] && row[iStatus] !== 'final') continue;
+
+    var marks = parseInt(row[iMarks] || '0', 10) || 0;
+    totalMarks += marks;
+    var num = qId.replace(prefix, '').replace(/^Q/i, '');
+
+    questions.push({
+      id:           qId,
+      num:          num,
+      marks:        marks,
+      topic:        iTopic        >= 0 ? String(row[iTopic]        || '') : '',
+      questionText: iQuestionText >= 0 ? String(row[iQuestionText] || '') : '',
+    });
+  }
+
+  questions.sort(function(a, b) {
+    var nA = parseFloat(a.num) || 0;
+    var nB = parseFloat(b.num) || 0;
+    return nA !== nB ? nA - nB : a.num.localeCompare(b.num);
+  });
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ prefix: prefix, totalMarks: totalMarks, questions: questions }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
