@@ -6704,9 +6704,9 @@ function toggleDarkMode() {
 
       markSetStep('mstep-mark');
 
-      // ── Step 2: Split pages into 2-page batches, fire ALL in parallel ──
-      // Parallel dispatch means total time ≈ one single batch (~20s) regardless of paper length.
-      const BATCH_SIZE = 2;
+      // ── Step 2: Split pages into 1-page batches, fire ALL in parallel ──
+      // Parallel dispatch means total time ≈ one single batch (~8s) regardless of paper length.
+      const BATCH_SIZE = 1;
       const batches = [];
       for (let i = 0; i < markPdfPages.length; i += BATCH_SIZE) {
         batches.push(markPdfPages.slice(i, i + BATCH_SIZE));
