@@ -2621,19 +2621,59 @@ function showToast(msg) {
 // ════════════════════════════════════════
 // IMAGE UPLOAD
 // ════════════════════════════════════════
-function handleImageUpload(event) {
+
+// Netlify Edge Functions cap request bodies at ~1 MB.
+// Base64 inflates binary by ~33%, so target ≤ 720 KB binary → ≤ 960 KB base64.
+const EDGE_IMAGE_TARGET_BYTES = 720 * 1024;
+
+async function compressImageToTarget(file) {
+  if (file.size <= EDGE_IMAGE_TARGET_BYTES) return file;
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      // Scale dimensions proportionally so pixel count matches target/original ratio
+      const scale = Math.sqrt(EDGE_IMAGE_TARGET_BYTES / file.size);
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      // Try quality 0.82 first, fall back to 0.65 if still too large
+      canvas.toBlob((blob) => {
+        if (blob && blob.size <= EDGE_IMAGE_TARGET_BYTES) {
+          resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+        } else {
+          canvas.toBlob((blob2) => {
+            resolve(new File([blob2 || blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+          }, 'image/jpeg', 0.65);
+        }
+      }, 'image/jpeg', 0.82);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+
+async function handleImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
   const isPdf = file.type === 'application/pdf';
   if (!file.type.startsWith('image/') && !isPdf) { showToast('Please upload an image or PDF file'); return; }
-  const maxBytes = isPdf ? 32 * 1024 * 1024 : 20 * 1024 * 1024;
-  const maxLabel = isPdf ? '32 MB' : '20 MB';
-  if (file.size > maxBytes) { showToast(`File too large. Maximum size is ${maxLabel}.`); event.target.value = ''; return; }
+  if (isPdf && file.size > 700 * 1024) {
+    showToast('PDF too large. Please compress it below 700 KB, or take a photo of your working instead.'); event.target.value = ''; return;
+  }
+  if (!isPdf && file.size > 20 * 1024 * 1024) {
+    showToast('Image too large. Maximum size is 20 MB.'); event.target.value = ''; return;
+  }
+  // Compress images that would exceed the edge-function body limit
+  const readableFile = isPdf ? file : await compressImageToTarget(file);
   const reader = new FileReader();
   reader.onload = function (e) {
     const dataUrl = e.target.result;
     uploadedImageBase64 = dataUrl.split(',')[1];
-    uploadedImageType = file.type;
+    uploadedImageType = readableFile.type;
     uploadedFileName = file.name;
     const thumb = document.getElementById('previewThumb');
     const pdfIcon = document.getElementById('previewPdfIcon');
@@ -2650,7 +2690,7 @@ function handleImageUpload(event) {
     }
     document.getElementById('previewStrip').classList.add('show');
   };
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(readableFile);
 }
 function removeImage() {
   uploadedImageBase64 = null; uploadedImageType = null; uploadedFileName = null;
@@ -2678,18 +2718,20 @@ document.addEventListener('paste', function(e) {
       e.preventDefault();
       const file = items[i].getAsFile();
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        uploadedImageBase64 = ev.target.result.split(',')[1];
-        uploadedImageType = file.type;
-        document.getElementById('previewThumb').src = ev.target.result;
-        document.getElementById('previewStrip').classList.add('show');
-        // Switch to chat tab if not already there
-        if (!document.getElementById('view-chat').classList.contains('active')) switchTab('chat');
-        document.getElementById('userInput').focus();
-        showToast('📸 Screenshot pasted! Add your question and send.');
-      };
-      reader.readAsDataURL(file);
+      compressImageToTarget(file).then((readableFile) => {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          uploadedImageBase64 = ev.target.result.split(',')[1];
+          uploadedImageType = readableFile.type;
+          document.getElementById('previewThumb').src = ev.target.result;
+          document.getElementById('previewStrip').classList.add('show');
+          // Switch to chat tab if not already there
+          if (!document.getElementById('view-chat').classList.contains('active')) switchTab('chat');
+          document.getElementById('userInput').focus();
+          showToast('📸 Screenshot pasted! Add your question and send.');
+        };
+        reader.readAsDataURL(readableFile);
+      });
       return; // only handle first image
     }
   }
@@ -3314,6 +3356,12 @@ async function sendMessage() {
     // Guest is within the free quota — allow the question, count it
     incrementGuestCount();
     // Fall through to send
+  }
+  // Guard: Netlify Edge Functions cap request bodies at ~1 MB.
+  // uploadedImageBase64 is a base64 string — its char count ≈ HTTP bytes for that field.
+  if (uploadedImageBase64 && uploadedImageBase64.length > 950 * 1024) {
+    showToast('File too large to send. For PDFs, please compress below 700 KB or take a photo instead.');
+    return;
   }
   const questionType = uploadedImageBase64 ? 'upload' : 'typed';
   if (!isAdmin && currentUser && !canAskQuestion(questionType)) { showUpgrade(); return; }
