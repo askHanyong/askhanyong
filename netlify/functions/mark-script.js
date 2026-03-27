@@ -222,75 +222,96 @@ Self-assess your confidence in this marking (0.0–1.0):
 - 0.5 = some unclear writing, unusual methods, or edge cases
 - <0.5 = very hard to read, unconventional approach, or very recent paper unlikely in training data
 
-Return ONLY valid JSON — no markdown fences, no text outside the JSON.
-
-GRAPH SKETCHING — JSON FORMAT EXAMPLE (never write prose about a graph — always use this format):
-{"questions":[{"number":"9","parts":[{"part":"a","maxMarks":6,"awarded":4,"marks":[{"code":"M1","type":"M","awarded":true,"reason":"Correct general sinusoidal shape drawn"},{"code":"A1","type":"A","awarded":true,"reason":"y-intercept correctly labelled"},{"code":"A1","type":"A","awarded":false,"reason":"Asymptote not drawn or labelled"},{"code":"A1","type":"A","awarded":true,"reason":"Correct period shown"},{"code":"A1","type":"A","awarded":false,"reason":"Maximum point not labelled with coordinates"},{"code":"A1","type":"A","awarded":true,"reason":"Minimum point labelled correctly"}],"feedback":"Good shape and some labels; asymptote and maximum coordinates missing.","topic":"Functions"}],"questionTotal":4,"questionMax":6}],"total":4,"maxTotal":6,"percentage":67,"overallFeedback":"Adequate sketch with missing key features.","topicPerformance":[{"topic":"Functions","awarded":4,"max":6,"percentage":67}],"strengths":["Correct general shape"],"improvements":["Label all asymptotes","Label maximum and minimum with exact coordinates"],"confidence":0.8}
-
-Use exactly this structure for ALL questions including graphs:
-{
-  "questions": [
-    {
-      "number": "1",
-      "parts": [
-        {
-          "part": "a",
-          "maxMarks": 4,
-          "awarded": 3,
-          "marks": [
-            { "code": "M1", "type": "M", "awarded": true,  "reason": "Correct substitution shown" },
-            { "code": "A1", "type": "A", "awarded": true,  "reason": "Correct value of k" },
-            { "code": "M1", "type": "M", "awarded": true,  "reason": "Method for integration present" },
-            { "code": "A1", "type": "A", "awarded": false, "reason": "Forgot constant of integration" }
-          ],
-          "feedback": "Good method; lost final mark for missing +C.",
-          "topic": "Calculus"
-        }
-      ],
-      "questionTotal": 3,
-      "questionMax": 4
-    }
-  ],
-  "total": 32,
-  "maxTotal": 60,
-  "percentage": 53,
-  "overallFeedback": "One sentence summary of performance on this page.",
-  "topicPerformance": [
-    { "topic": "Calculus",            "awarded": 8,  "max": 12, "percentage": 67 },
-    { "topic": "Functions",           "awarded": 6,  "max": 8,  "percentage": 75 },
-    { "topic": "Number & Algebra",    "awarded": 10, "max": 14, "percentage": 71 },
-    { "topic": "Geometry & Trig",     "awarded": 5,  "max": 10, "percentage": 50 },
-    { "topic": "Statistics & Prob",   "awarded": 3,  "max": 16, "percentage": 19 }
-  ],
-  "strengths":    ["Good algebraic manipulation", "Clear method steps on calculus"],
-  "improvements": ["Review integration constants", "Practice probability distributions"],
-  "confidence": 0.82
-}`;
+Call the record_marking_result tool with all findings.`;
 }
+
+// ── Forced-tool-use schema — guarantees structured output, eliminates prose ──
+const MARKING_TOOL = {
+  name: 'record_marking_result',
+  description: 'Record the complete structured marking result for this page of the student answer script.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      questions: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            number:        { type: 'string' },
+            parts: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  part:     { type: 'string' },
+                  maxMarks: { type: 'integer' },
+                  awarded:  { type: 'integer' },
+                  marks: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        code:    { type: 'string' },
+                        type:    { type: 'string' },
+                        awarded: { type: 'boolean' },
+                        reason:  { type: 'string' },
+                      },
+                      required: ['code', 'type', 'awarded', 'reason'],
+                    },
+                  },
+                  feedback: { type: 'string' },
+                  topic:    { type: 'string' },
+                },
+                required: ['part', 'maxMarks', 'awarded', 'marks', 'feedback', 'topic'],
+              },
+            },
+            questionTotal: { type: 'integer' },
+            questionMax:   { type: 'integer' },
+          },
+          required: ['number', 'parts', 'questionTotal', 'questionMax'],
+        },
+      },
+      total:           { type: 'integer' },
+      maxTotal:        { type: 'integer' },
+      percentage:      { type: 'integer' },
+      overallFeedback: { type: 'string' },
+      topicPerformance: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            topic:      { type: 'string' },
+            awarded:    { type: 'integer' },
+            max:        { type: 'integer' },
+            percentage: { type: 'integer' },
+          },
+          required: ['topic', 'awarded', 'max', 'percentage'],
+        },
+      },
+      strengths:    { type: 'array', items: { type: 'string' } },
+      improvements: { type: 'array', items: { type: 'string' } },
+      confidence:   { type: 'number' },
+    },
+    required: ['questions', 'total', 'maxTotal', 'percentage', 'overallFeedback',
+               'topicPerformance', 'strengths', 'improvements', 'confidence'],
+  },
+};
 
 // ── Call Claude with a batch of paper images ──────────────────────
 async function markPaper(pages, paperInfo, studentName, paperStructure) {
-  const textPreamble = {
-    type: 'text',
-    text: `The following ${pages.length} image(s) show page(s) of the answer script of student "${studentName || 'Student'}". Mark ONLY what is visible on this page.\n\nYou MUST respond with ONLY a valid JSON object. Do not write any prose, explanation, or analysis before or after the JSON. Your entire response must be a single JSON object starting with { and ending with }.`,
-  };
-
-  const textPostamble = {
-    type: 'text',
-    text: `Your response must begin with the character { and contain nothing else but valid JSON. For graph sketching: do NOT describe the graph — directly assess each feature as a mark object (awarded: true/false, reason: one sentence). The JSON example in the system prompt shows exactly how. Output { now.`,
-  };
-
   const content = [
-    textPreamble,
+    {
+      type: 'text',
+      text: `Mark the answer script of student "${studentName || 'Student'}" shown in the following image(s). Mark ONLY what is visible on this page. Call the record_marking_result tool with the complete structured result.`,
+    },
     ...pages.map(p => ({
       type: 'image',
       source: { type: 'base64', media_type: p.mediaType || 'image/jpeg', data: p.data },
     })),
-    textPostamble,
   ];
 
   const anthController = new AbortController();
-  const anthTimer = setTimeout(() => anthController.abort(), 25000); // leave 1s buffer before Netlify's 26s limit
+  const anthTimer = setTimeout(() => anthController.abort(), 25000);
   let resp;
   try {
     resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -301,10 +322,12 @@ async function markPaper(pages, paperInfo, studentName, paperStructure) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model:      MODEL,
-        max_tokens: 1800,
-        system:     buildSystemPrompt(paperInfo, paperStructure),
-        messages:   [{ role: 'user', content }],
+        model:       MODEL,
+        max_tokens:  1800,
+        system:      buildSystemPrompt(paperInfo, paperStructure),
+        tools:       [MARKING_TOOL],
+        tool_choice: { type: 'tool', name: 'record_marking_result' },
+        messages:    [{ role: 'user', content }],
       }),
       signal: anthController.signal,
     });
@@ -328,16 +351,12 @@ async function markPaper(pages, paperInfo, studentName, paperStructure) {
     throw new Error('Marking response was truncated (max_tokens reached). Try uploading fewer pages at a time.');
   }
 
-  const raw  = (json.content?.[0]?.text || '').trim()
-    .replace(/^```[^\n]*\n?/m, '')
-    .replace(/```\s*$/m, '')
-    .trim();
-
-  try {
-    return JSON.parse(raw);
-  } catch (e) {
-    throw new Error('Could not parse marking response as JSON: ' + raw.slice(0, 200));
+  // With forced tool use, Claude MUST call the tool — extract its input directly
+  const toolBlock = json.content?.find(c => c.type === 'tool_use' && c.name === 'record_marking_result');
+  if (!toolBlock?.input) {
+    throw new Error('Marking tool was not called: ' + JSON.stringify(json.content?.slice(0, 2)));
   }
+  return toolBlock.input;
 }
 
 // ── Merge questions from multiple batch results, deduplicating parts ──
