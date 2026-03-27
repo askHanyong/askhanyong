@@ -42,8 +42,8 @@ const HITL_THRESHOLD = 0.72;
 const SCRIPT_MONTHLY_LIMIT = 3;
 
 // Max pages sent to Claude in a single API call.
-// 3 pages per batch keeps Claude API response well within the 25s abort window.
-const BATCH_SIZE = 3;
+// 2 pages per batch: client fires all batches in parallel so total time ≈ one batch (~20s).
+const BATCH_SIZE = 2;
 
 const CORS = {
   'Content-Type':                'application/json',
@@ -210,7 +210,7 @@ async function markPaper(pages, paperInfo, studentName) {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 1500,
+        max_tokens: 2000,
         system:     buildSystemPrompt(paperInfo),
         messages:   [{ role: 'user', content }],
       }),
