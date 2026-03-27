@@ -179,17 +179,13 @@ function buildSystemPrompt(paperInfo, paperStructure) {
       lines.push(`FIXED PAPER TOTAL: ${paperStructure.totalMarks} marks. Do NOT award more than this across all questions.`);
     }
     if (paperStructure.questions && paperStructure.questions.length > 0) {
-      lines.push('MARK ALLOCATION PER QUESTION (strictly fixed by IB markscheme — do not deviate):');
+      lines.push('QUESTIONS AND MARKING CRITERIA (do not deviate from these):');
       for (const q of paperStructure.questions) {
-        let line = `  Q${q.num}: ${q.marks} marks`;
-        if (q.topic) line += ` [${q.topic}]`;
-        if (q.parts && q.parts.length > 0) {
-          line += ' — ' + q.parts.map(p => `(${p.part}) ${p.marks}mk`).join(', ');
-        }
-        lines.push(line);
-        if (q.questionText) lines.push(`    Question: "${q.questionText}"`);
+        lines.push(`\nQ${q.num}: ${q.marks} mark${q.marks !== 1 ? 's' : ''}${q.topic ? ` [${q.topic}]` : ''}`);
+        if (q.questionText) lines.push(`  Question: "${q.questionText}"`);
+        if (q.markscheme)   lines.push(`  Markscheme: ${q.markscheme}`);
       }
-      lines.push('If a question is not listed above, it is not part of this paper — do not invent it.');
+      lines.push('\nIf a question is not listed above, it is not on this paper — do not invent it.');
     }
     if (lines.length) structureBlock = '\n\n' + lines.join('\n');
   }
@@ -203,24 +199,20 @@ Your task is to mark this student's paper. The image shows the student's handwri
 
 MARKING RULES:
 1. Identify ONLY question numbers visible in the student's work on this page
-2. For each question (and each part a, b, c…), award marks according to IB Mathematics marking standards
-3. M (method) marks: award if correct method is clearly shown, even with an arithmetic slip
-4. A (accuracy) marks: award only if the numerical or algebraic answer is correct
-5. A (follow-through) marks labelled "FT": award when the correct method is applied to an earlier incorrect value
-6. R (reasoning) marks: award only if a clear mathematical reason/justification is given
-7. AG (answer given) questions: full working must be shown — do not award if answer is copied without working
-8. GRAPH SKETCHING — for any sketch graph question, the following features each earn marks independently:
-   - Correct general shape / behaviour (M1)
-   - Correct domain shown (A1)
-   - Correct y-intercept, clearly labelled (A1)
-   - Correct x-intercept(s), clearly labelled (A1)
-   - Asymptotes correctly drawn and labelled with equation (A1 each)
-   - Key coordinates/points labelled (A1 each)
-   Only award each feature mark if that feature is explicitly shown and labelled.
-9. If a part is entirely missing, all marks for that part = 0
-10. Read handwriting charitably — interpret ambiguous symbols in the student's favour when intent is clear
-11. For each question part, give a one-sentence feedback comment
-12. If the student has written ONLY their working/answers without copying the question, use the "Question:" text from the MARK ALLOCATION section above to understand what was asked — do not penalise for the missing question text
+2. WHERE MARKSCHEME IS PROVIDED: mark strictly and ONLY against the criteria listed. Each mark (M1/A1/B1/R1) must match the exact criterion stated. Do not award marks not in the markscheme. Do not invent additional marks.
+3. WHERE NO MARKSCHEME IS PROVIDED: apply standard IB Mathematics marking principles
+4. M (method) marks: award if correct method is clearly shown, even with an arithmetic slip
+5. A (accuracy) marks: award only if the numerical or algebraic answer is correct
+6. FT (follow-through) marks: award when correct method is applied to an earlier incorrect value
+7. R (reasoning) marks: award only if a clear mathematical reason/justification is given
+8. AG (answer given): full working must be shown — do not award if answer is copied without working
+9. GRAPH SKETCHING — mark each required feature independently per the markscheme criteria:
+   - Shape, intercepts, asymptotes, key coordinates: only award if explicitly drawn AND labelled
+10. If a part is entirely missing, all marks = 0
+11. maxMarks per question MUST match the value in the QUESTIONS AND MARKING CRITERIA above — never exceed it
+12. Read handwriting charitably — interpret ambiguous symbols in the student's favour when intent is clear
+13. For each part, give a one-sentence feedback comment referencing the specific criterion missed or met
+14. If the student only wrote working without the question text, use the "Question:" text above to understand what was asked
 
 After marking all visible questions on this page, calculate per-topic performance using IB topic categories:
 - Number & Algebra, Functions, Geometry & Trigonometry, Statistics & Probability, Calculus

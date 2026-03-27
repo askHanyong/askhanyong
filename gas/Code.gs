@@ -21,6 +21,7 @@ const PARAM_TO_HEADER = {
   examinerNote:   'Examiner Note',
   solutionUrl:    'Solution URL',
   questionText:   'Question Text',
+  markscheme:     'Markscheme',
 };
 
 // Admin secret — stored in Script Properties (File → Project Properties → Script Properties)
@@ -303,6 +304,7 @@ function getPaperStructure(prefix) {
   var iTopic        = col('Topic');
   var iStatus       = col('Status');
   var iQuestionText = col('Question Text');
+  var iMarkscheme   = col('Markscheme');
 
   if (iId < 0) return empty;
 
@@ -325,6 +327,7 @@ function getPaperStructure(prefix) {
       marks:        marks,
       topic:        iTopic        >= 0 ? String(row[iTopic]        || '') : '',
       questionText: iQuestionText >= 0 ? String(row[iQuestionText] || '') : '',
+      markscheme:   iMarkscheme   >= 0 ? String(row[iMarkscheme]   || '') : '',
     });
   }
 

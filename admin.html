@@ -686,23 +686,25 @@ Return ONLY a valid JSON array — no markdown fencing, no explanation. Each ele
 {
   "questionNum": "Q1" | "Q2a" | "Q2b" etc.,
   "pages": [${batchStart}] (use the ORIGINAL document page numbers, ${batchStart}–${batchEnd}),
-  "questionText": ${docType === 'solutions' ? 'null (solutions only — no question text to extract)' : '"Full text of the question exactly as printed. Include sub-part labels like (a), (b). For markschemes, extract the question if printed, else null."'},
+  "questionText": ${docType === 'solutions' ? 'null' : '"Full text of the question exactly as printed, including all sub-parts (a), (b), (c) with their exact wording. null if not visible."'},
+  "markschemeText": ${docType === 'markscheme' ? '"ALL marking criteria for this question. List every mark: e.g. (a) M1: sets up equation 2r+rθ=10. A1: rearranges to θ=(10-2r)/r. (b) M1: area formula A=½r²θ. A1: substitutes θ. A1: correct simplified form. AG: answer given — working must be shown. Include every M1, A1, B1, R1, FT mark with its specific criterion. null if this is not a markscheme."' : 'null'},
   "marksHint": "6" or null (read the mark allocation from the paper if visible${docType === 'solutions' ? ', otherwise infer from solution length' : ''}),
   "topicHint": one of ["Calculus","Functions","Geometry & Trigonometry","Statistics & Probability","Number & Algebra","Complex Numbers"] or null (use exact string),
   "subtopicHint": "Integration by parts" or null,
-  "hanExplanation": "1–2 sentence key insight a student needs to solve this question (e.g. the core technique, substitution, or conceptual link to recognise)",
-  "commonMistakes": "1–2 sentence description of the most likely mark-losing errors students make on this type of question",
-  "examinerNote": "1 sentence on what the IB examiner specifically looks for or requires to award full marks",
+  "hanExplanation": "1–2 sentence key insight a student needs to solve this question",
+  "commonMistakes": "1–2 sentence description of the most likely mark-losing errors",
+  "examinerNote": "1 sentence on what the IB examiner specifically requires for full marks",
   "notes": null
 }
 
 Rules:
 - Use original document page numbers (${batchStart}–${batchEnd})
-- Use Q2a, Q2b for lettered sub-parts; group unclear sub-parts under parent
+- Use Q2a, Q2b for lettered sub-parts; each sub-part is its own entry
 - A question may span multiple pages — list all of them
 - Do not skip any question
-- Always provide hanExplanation, commonMistakes, and examinerNote — never leave them null
-${docType !== 'solutions' ? '- questionText: copy the FULL question text word-for-word — students who only write working (no question) need this for accurate AI marking' : ''}
+- Always provide hanExplanation, commonMistakes, and examinerNote
+${docType === 'markscheme' ? '- markschemeText: extract ALL mark criteria — every M1/A1/B1/R1/FT with its specific criterion. This is critical for accurate AI marking.' : ''}
+${docType !== 'solutions' ? '- questionText: copy question text EXACTLY word-for-word' : ''}
 
 Pages ${batchStart}–${batchEnd}:`
       });
@@ -878,6 +880,13 @@ function renderQCards() {
 
         <div class="form-row" style="grid-template-columns:1fr">
           <div class="form-group">
+            <label class="form-label" style="color:var(--blue)">Markscheme — full marking criteria <span style="font-weight:400;color:var(--text-soft)">(enables accurate AI marking — extract every M1/A1/B1/R1 criterion)</span></label>
+            <textarea class="form-textarea" id="qscheme-${i}" placeholder="e.g. (a) M1: sets up equation 2r+rθ=10. A1: rearranges to θ=(10-2r)/r. (b) M1: uses area formula A=½r²θ. A1: substitutes θ. A1: correct simplified form A=5r-r²." style="min-height:90px;border-color:var(--blue)">${escHtml(q.markschemeText || '')}</textarea>
+          </div>
+        </div>
+
+        <div class="form-row" style="grid-template-columns:1fr">
+          <div class="form-group">
             <label class="form-label">HAN Explanation — key insight for students</label>
             <textarea class="form-textarea" id="qhan-${i}" placeholder="e.g. Recognise this as a composite function — chain rule with substitution u = sin x…">${escHtml(q.hanExplanation)}</textarea>
           </div>
@@ -974,6 +983,7 @@ function collectQuestionData() {
     'Difficulty':       (document.getElementById(`qdiff-${i}`)?.value || '2').trim(),
     'Status':           (document.getElementById(`qstatus-${i}`)?.value || 'final').trim(),
     'Question Text':    (document.getElementById(`qtext-${i}`)?.value || '').trim(),
+    'Markscheme':       (document.getElementById(`qscheme-${i}`)?.value || '').trim(),
     'HAN Explanation':  (document.getElementById(`qhan-${i}`)?.value || '').trim(),
     'Common Mistakes':  (document.getElementById(`qmistakes-${i}`)?.value || '').trim(),
     'Examiner Note':    (document.getElementById(`qexnote-${i}`)?.value || '').trim(),
@@ -1045,6 +1055,7 @@ async function saveToSheets() {
           difficulty:     q['Difficulty'],
           status:         q['Status'],
           questionText:   q['Question Text'],
+          markscheme:     q['Markscheme'],
           hanExplanation: q['HAN Explanation'],
           commonMistakes: q['Common Mistakes'],
           examinerNote:   q['Examiner Note'],
