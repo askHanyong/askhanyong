@@ -717,7 +717,7 @@ Pages ${batchStart}–${batchEnd}:`
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
-          max_tokens: 2048,
+          max_tokens: 4096,
           system: 'You are a precise IB Diploma Programme Mathematics expert and document analyser. Always return only valid JSON arrays. No markdown, no explanation.',
           messages: [{ role: 'user', content }]
         })
@@ -742,8 +742,14 @@ Pages ${batchStart}–${batchEnd}:`
 
       const rawText = data.content[0].text.trim();
       let jsonStr = rawText;
-      const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]+?)```/);
-      if (jsonMatch) jsonStr = jsonMatch[1].trim();
+      const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]+?)```/s);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[1].trim();
+      } else if (!rawText.startsWith('[') && !rawText.startsWith('{')) {
+        // Fallback: find first [ or { in case of unexpected preamble
+        const start = rawText.indexOf('[');
+        if (start >= 0) jsonStr = rawText.slice(start);
+      }
 
       const batchResults = JSON.parse(jsonStr);
       if (!Array.isArray(batchResults)) throw new Error(`Expected a JSON array (batch ${b + 1})`);
