@@ -6705,10 +6705,24 @@ function toggleDarkMode() {
 
       markSetStep('mstep-mark');
 
-      // ── Step 2: Split into 2-page batches, run 5 at a time via worker pool ──
-      // 5 concurrent workers avoids hitting Netlify/Anthropic burst limits.
-      // For a 26-page paper: 13 batches ÷ 5 workers ≈ 3 waves × ~20s = ~60s.
-      const BATCH_SIZE   = 2;
+      // ── Step 1b: Fetch paper structure (total marks + per-question allocation) ──
+      // Non-fatal — falls back to static totals if GAS has no data for this paper.
+      let paperStructure = null;
+      try {
+        const structResp = await fetch('/api/mark-script', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ action: 'getPaperStructure', paperInfo }),
+        });
+        if (structResp.ok) {
+          const sd = await structResp.json();
+          paperStructure = sd.structure || null;
+        }
+      } catch(_) {}
+
+      // ── Step 2: Split into 1-page batches, run 5 at a time via worker pool ──
+      // Sonnet needs ~15-18s per page. 5 concurrent workers, 26 pages ≈ 2 min.
+      const BATCH_SIZE   = 1;
       const MAX_WORKERS  = 5;
       const batches = [];
       for (let i = 0; i < markPdfPages.length; i += BATCH_SIZE) {
@@ -6727,7 +6741,7 @@ function toggleDarkMode() {
           const resp = await fetch('/api/mark-script', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-            body: JSON.stringify({ action: 'batchMark', pages: batch, paperInfo, studentName }),
+            body: JSON.stringify({ action: 'batchMark', pages: batch, paperInfo, studentName, paperStructure }),
           });
           if (!resp.ok) {
             const err = await resp.json().catch(() => ({}));

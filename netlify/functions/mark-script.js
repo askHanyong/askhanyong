@@ -26,7 +26,59 @@ const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY || '').trim();
 const SESSION_SECRET    = process.env.SESSION_SECRET;
 const SHEETS_URL        = process.env.SHEETS_URL;
 const GAS_ADMIN_SECRET  = process.env.GAS_ADMIN_SECRET;
-const MODEL             = 'claude-haiku-4-5-20251001';
+const MODEL             = 'claude-sonnet-4-6';
+
+// ── IB paper total marks (fixed by IB specification) ─────────────
+// Used as a fallback when no markscheme has been uploaded for this paper.
+const PAPER_TOTALS = {
+  'AA HL': { 'Paper 1': 110, 'Paper 2': 110, 'Paper 3': 55 },
+  'AA SL': { 'Paper 1': 80,  'Paper 2': 80 },
+  'AI HL': { 'Paper 1': 110, 'Paper 2': 110, 'Paper 3': 55 },
+  'AI SL': { 'Paper 1': 80,  'Paper 2': 80 },
+};
+
+// ── Build the question-ID prefix used in Google Sheets ────────────
+// Matches admin.html getIdPrefix() logic.
+// e.g. { level:'AA HL', paper:'Paper 1', year:'2024', session:'May TZ1' }
+//   → 'IBMAAHM24P1TZ1'
+function buildPaperKey(paperInfo) {
+  if (!paperInfo) return null;
+  const levelMap = { 'AA HL': 'HL', 'AA SL': 'SL', 'AI HL': 'AIHL', 'AI SL': 'AISL' };
+  const level = levelMap[paperInfo.level];
+  if (!level) return null;
+  const sessionParts = (paperInfo.session || '').trim().split(/\s+/);
+  const sessionChar  = sessionParts[0] ? sessionParts[0].charAt(0).toUpperCase() : '';
+  const tzNum        = sessionParts[1] ? sessionParts[1].replace('TZ', '') : '';
+  const year         = (paperInfo.year || '').slice(-2);
+  const paperMap     = { 'Paper 1': 'P1', 'Paper 2': 'P2', 'Paper 3': 'P3' };
+  const paper        = paperMap[paperInfo.paper];
+  if (!sessionChar || !year || !paper) return null;
+  return `IBMAA${level}${sessionChar}${year}${paper}TZ${tzNum}`;
+}
+
+// ── Fetch per-question mark allocation from GAS ───────────────────
+// Calls GAS action 'getPaperStructure' which returns questions uploaded
+// via the admin markscheme upload flow.
+// Falls back to static total-marks-only if GAS has no data.
+async function fetchPaperStructure(paperInfo) {
+  const key  = buildPaperKey(paperInfo);
+  const total = PAPER_TOTALS[paperInfo?.level]?.[paperInfo?.paper] ?? null;
+
+  if (key && SHEETS_URL && GAS_ADMIN_SECRET) {
+    try {
+      const data = await callGAS({
+        action: 'getPaperStructure',
+        prefix: key,
+        secret: GAS_ADMIN_SECRET,
+      }, 4000);
+      if (data && Array.isArray(data.questions) && data.questions.length > 0) {
+        return { totalMarks: data.totalMarks ?? total, questions: data.questions };
+      }
+    } catch (_) { /* non-fatal — fall through to static */ }
+  }
+
+  return total ? { totalMarks: total, questions: [] } : null;
+}
 
 // Comma-separated list of emails that bypass the monthly quota entirely.
 // Also accepts an env var UNLIMITED_EMAILS for runtime configuration.
@@ -41,10 +93,9 @@ const HITL_THRESHOLD = 0.72;
 // Free-tier users cannot use this feature (subscription required)
 const SCRIPT_MONTHLY_LIMIT = 3;
 
-// Max pages sent to Claude in a single API call.
-// 2 pages per batch, 5 concurrent workers on client → ~60s for 26-page paper.
-// 2 pages at ~80 tok/s ≈ 15s generation → well within 26s Netlify hard limit.
-const BATCH_SIZE = 2;
+// 1 page per batch keeps each Sonnet call to ~15-20s → well within 26s limit.
+// 5 concurrent workers on client: 26 pages → ceil(26/5) = 6 waves × ~18s ≈ 2 min.
+const BATCH_SIZE = 1;
 
 const CORS = {
   'Content-Type':                'application/json',
@@ -115,25 +166,59 @@ function newScriptId() {
 }
 
 // ── System prompt for student-paper marking ───────────────────────
-function buildSystemPrompt(paperInfo) {
+// paperStructure: { totalMarks: number, questions: [{num, marks, topic, parts}] }
+function buildSystemPrompt(paperInfo, paperStructure) {
   const { level = '', paper = '', year = '', session = '' } = paperInfo || {};
-  return `You are an experienced IB Mathematics examiner with 20+ years of marking experience.
-The student has uploaded their completed ${level} ${paper}${year ? ' (' + year + (session ? ' ' + session : '') + ')' : ''}.
+  const paperLabel = `${level} ${paper}${year ? ' (' + year + (session ? ' ' + session : '') + ')' : ''}`.trim();
 
-Your task is to mark this student's paper. The images show the student's handwritten work — which may include the printed question text plus their written answers, or just their answers.
+  // ── Paper structure block ────────────────────────────────────────
+  let structureBlock = '';
+  if (paperStructure) {
+    const lines = [];
+    if (paperStructure.totalMarks) {
+      lines.push(`FIXED PAPER TOTAL: ${paperStructure.totalMarks} marks. Do NOT award more than this across all questions.`);
+    }
+    if (paperStructure.questions && paperStructure.questions.length > 0) {
+      lines.push('MARK ALLOCATION PER QUESTION (strictly fixed by IB markscheme — do not deviate):');
+      for (const q of paperStructure.questions) {
+        let line = `  Q${q.num}: ${q.marks} marks`;
+        if (q.topic) line += ` [${q.topic}]`;
+        if (q.parts && q.parts.length > 0) {
+          line += ' — ' + q.parts.map(p => `(${p.part}) ${p.marks}mk`).join(', ');
+        }
+        lines.push(line);
+      }
+      lines.push('If a question is not listed above, it is not part of this paper — do not invent it.');
+    }
+    if (lines.length) structureBlock = '\n\n' + lines.join('\n');
+  }
+
+  return `You are an experienced IB Mathematics examiner with 20+ years of marking experience.
+The student has uploaded their completed ${paperLabel}.${structureBlock}
+
+Your task is to mark this student's paper. The image shows the student's handwritten work — which may include the printed question text plus their written answers, or just their answers.
 
 MARKING RULES:
-1. Identify each question number visible in the student's work
+1. Identify ONLY question numbers visible in the student's work on this page
 2. For each question (and each part a, b, c…), award marks according to IB Mathematics marking standards
 3. M (method) marks: award if correct method is clearly shown, even with an arithmetic slip
 4. A (accuracy) marks: award only if the numerical or algebraic answer is correct
-5. FT (follow-through) marks: award when correct method is applied to an earlier incorrect value
-6. AG (answer given) questions: student must show sufficient working — do not award if answer is copied without working
-7. If a part is entirely missing, all marks for that part = 0
-8. Read handwriting charitably — interpret ambiguous symbols in the student's favour when intent is clear
-9. For each question part, give a brief feedback comment explaining what was done well or what mark was lost
+5. A (follow-through) marks labelled "FT": award when the correct method is applied to an earlier incorrect value
+6. R (reasoning) marks: award only if a clear mathematical reason/justification is given
+7. AG (answer given) questions: full working must be shown — do not award if answer is copied without working
+8. GRAPH SKETCHING — for any sketch graph question, the following features each earn marks independently:
+   - Correct general shape / behaviour (M1)
+   - Correct domain shown (A1)
+   - Correct y-intercept, clearly labelled (A1)
+   - Correct x-intercept(s), clearly labelled (A1)
+   - Asymptotes correctly drawn and labelled with equation (A1 each)
+   - Key coordinates/points labelled (A1 each)
+   Only award each feature mark if that feature is explicitly shown and labelled.
+9. If a part is entirely missing, all marks for that part = 0
+10. Read handwriting charitably — interpret ambiguous symbols in the student's favour when intent is clear
+11. For each question part, give a one-sentence feedback comment
 
-After marking all visible questions, calculate per-topic performance using standard IB topic categories:
+After marking all visible questions on this page, calculate per-topic performance using IB topic categories:
 - Number & Algebra, Functions, Geometry & Trigonometry, Statistics & Probability, Calculus
 
 Self-assess your confidence in this marking (0.0–1.0):
@@ -158,7 +243,7 @@ Use exactly this structure:
             { "code": "M1", "type": "M", "awarded": true,  "reason": "Method for integration present" },
             { "code": "A1", "type": "A", "awarded": false, "reason": "Forgot constant of integration" }
           ],
-          "feedback": "Good method throughout; lost the final mark by omitting +C.",
+          "feedback": "Good method; lost final mark for missing +C.",
           "topic": "Calculus"
         }
       ],
@@ -169,7 +254,7 @@ Use exactly this structure:
   "total": 32,
   "maxTotal": 60,
   "percentage": 53,
-  "overallFeedback": "2–3 sentences summarising performance, key strengths, and the most impactful area to improve.",
+  "overallFeedback": "One sentence summary of performance on this page.",
   "topicPerformance": [
     { "topic": "Calculus",            "awarded": 8,  "max": 12, "percentage": 67 },
     { "topic": "Functions",           "awarded": 6,  "max": 8,  "percentage": 75 },
@@ -184,10 +269,10 @@ Use exactly this structure:
 }
 
 // ── Call Claude with a batch of paper images ──────────────────────
-async function markPaper(pages, paperInfo, studentName) {
+async function markPaper(pages, paperInfo, studentName, paperStructure) {
   const textPreamble = {
     type: 'text',
-    text: `The following ${pages.length} image(s) show the completed answer script of student "${studentName || 'Student'}". Please mark the work and return the JSON result:`,
+    text: `The following ${pages.length} image(s) show page(s) of the answer script of student "${studentName || 'Student'}". Mark ONLY what is visible on this page and return the JSON result:`,
   };
 
   const content = [
@@ -211,8 +296,8 @@ async function markPaper(pages, paperInfo, studentName) {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 2500,
-        system:     buildSystemPrompt(paperInfo),
+        max_tokens: 1400,
+        system:     buildSystemPrompt(paperInfo, paperStructure),
         messages:   [{ role: 'user', content }],
       }),
       signal: anthController.signal,
@@ -352,14 +437,22 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
   }
 
+  // ── getPaperStructure: returns mark allocation for this paper ────
+  // Queries GAS for per-question data uploaded via admin markscheme flow.
+  // Falls back to static total-marks-only if GAS has no data for this paper.
+  if (action === 'getPaperStructure') {
+    const structure = await fetchPaperStructure(body.paperInfo || {});
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, structure }) };
+  }
+
   // ── batchMark: auth-only batch call — no quota check, no GAS recording ──
-  // Used by the client when submitting large scripts in chunks (pages 5+).
   if (action === 'batchMark') {
     if (!Array.isArray(pages) || pages.length === 0 || pages.length > BATCH_SIZE) {
       return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: `batchMark requires 1–${BATCH_SIZE} pages.` }) };
     }
     try {
-      const batchResult = await markPaper(pages, paperInfo || {}, studentName || 'Student');
+      const ps = body.paperStructure || null;
+      const batchResult = await markPaper(pages, paperInfo || {}, studentName || 'Student', ps);
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, result: batchResult }) };
     } catch (e) {
       const msg = e.message || String(e);
