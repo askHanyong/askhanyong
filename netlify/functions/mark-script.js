@@ -42,9 +42,9 @@ const HITL_THRESHOLD = 0.72;
 const SCRIPT_MONTHLY_LIMIT = 3;
 
 // Max pages sent to Claude in a single API call.
-// 1 page per batch: client fires all batches in parallel so total time ≈ one batch (~8s).
-// Keeps each Claude call well under 25s abort and Netlify's 26s hard limit.
-const BATCH_SIZE = 1;
+// 2 pages per batch, 5 concurrent workers on client → ~60s for 26-page paper.
+// 2 pages at ~80 tok/s ≈ 15s generation → well within 26s Netlify hard limit.
+const BATCH_SIZE = 2;
 
 const CORS = {
   'Content-Type':                'application/json',
@@ -211,7 +211,7 @@ async function markPaper(pages, paperInfo, studentName) {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 1000,
+        max_tokens: 1200,
         system:     buildSystemPrompt(paperInfo),
         messages:   [{ role: 'user', content }],
       }),
