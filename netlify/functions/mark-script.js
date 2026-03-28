@@ -482,6 +482,10 @@ exports.handler = async (event) => {
     } catch (e) {
       const msg = e.message || String(e);
       console.error('mark-script: batchMark error:', msg);
+      // Pass 429 back to the client so its retry loop (with Retry-After back-off) can handle it.
+      if (msg.startsWith('Anthropic 429')) {
+        return { statusCode: 429, headers: { ...CORS, 'Retry-After': '15' }, body: JSON.stringify({ error: msg }) };
+      }
       return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: msg }) };
     }
   }

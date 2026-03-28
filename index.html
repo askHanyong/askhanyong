@@ -6724,7 +6724,7 @@ function toggleDarkMode() {
       // Sonnet 4.6 has an 8,000 output-TPM rate limit. At ~1,000 tokens/page
       // average, 2 workers ≈ 6,000 TPM — safely under. 429s are retried with backoff.
       const BATCH_SIZE   = 1;
-      const MAX_WORKERS  = 2;
+      const MAX_WORKERS  = 1; // System prompt now includes full markscheme text per question; keep to 1 worker to stay under 30k input-TPM limit
       const batches = [];
       for (let i = 0; i < markPdfPages.length; i += BATCH_SIZE) {
         batches.push(markPdfPages.slice(i, i + BATCH_SIZE));
