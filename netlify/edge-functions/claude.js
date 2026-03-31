@@ -261,7 +261,9 @@ function executeGDC(input) {
 }
 
 // ── Stream interceptor — handles tool_use inline, transparent to client ──
-// The client just sees continuous SSE text_delta events from both calls.
+// Supports multiple tool-call rounds (up to MAX_TOOL_ROUNDS) and multiple
+// parallel tool calls per round. The client sees only continuous text_delta
+// SSE events — all tool mechanics are invisible to it.
 function buildStream(apiKey, body, safeMessages, tools = []) {
   const enc = new TextEncoder();
 
@@ -269,8 +271,8 @@ function buildStream(apiKey, body, safeMessages, tools = []) {
     async start(controller) {
       const push = (s) => controller.enqueue(enc.encode(s));
 
-      // Make one streaming Anthropic call; forward text events to client.
-      // Returns { stopReason, assistantContent, toolUseId, toolName } after stream ends.
+      // Read one streaming Anthropic response. Forwards text events to the client,
+      // silently collects tool_use blocks. Returns null on HTTP error.
       async function doStream(reqBody) {
         const resp = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
@@ -289,17 +291,17 @@ function buildStream(apiKey, body, safeMessages, tools = []) {
           return null;
         }
 
-        const reader = resp.body.getReader();
+        const reader  = resp.body.getReader();
         const decoder = new TextDecoder();
         let buf = '';
 
-        // Per-call state
-        let toolActive = false;
-        let toolId = '', toolName = '', toolInputStr = '';
-        let toolBlockIdx = -1;
-        let stopReason = null;
-        const assistantContent = []; // reconstruct for multi-turn message
+        // blockTypes: index → 'text' | 'tool'
+        // pendingTools: index → { id, name, inputStr }
+        const blockTypes   = new Map();
+        const pendingTools = new Map();
+        const assistantContent = [];
         let currentText = null;
+        let stopReason  = null;
 
         outer: while (true) {
           const { done, value } = await reader.read();
@@ -311,26 +313,27 @@ function buildStream(apiKey, body, safeMessages, tools = []) {
 
           for (const line of lines) {
             if (!line.startsWith('data: ')) {
-              // Keep-alive ping lines — pass through unchanged
-              if (line.trim()) push(line + '\n');
+              if (line.trim()) push(line + '\n'); // keep-alive pings
               continue;
             }
 
             const data = line.slice(6).trim();
-            if (data === '[DONE]') { push('data: [DONE]\n\n'); break outer; }
+            // Don't forward [DONE] mid-stream — the outer loop controls stream end
+            if (data === '[DONE]') { break outer; }
 
             let evt;
             try { evt = JSON.parse(data); } catch { push(line + '\n'); continue; }
 
             if (evt.type === 'content_block_start') {
+              const idx = evt.index;
               if (evt.content_block?.type === 'tool_use') {
-                toolActive   = true;
-                toolId       = evt.content_block.id;
-                toolName     = evt.content_block.name;
-                toolInputStr = '';
-                toolBlockIdx = evt.index;
+                blockTypes.set(idx, 'tool');
+                pendingTools.set(idx, {
+                  id: evt.content_block.id, name: evt.content_block.name, inputStr: '',
+                });
                 // Don't forward — client doesn't know about tools
               } else if (evt.content_block?.type === 'text') {
+                blockTypes.set(idx, 'text');
                 currentText = { type: 'text', text: '' };
                 assistantContent.push(currentText);
                 push(line + '\n');
@@ -339,75 +342,82 @@ function buildStream(apiKey, body, safeMessages, tools = []) {
               }
 
             } else if (evt.type === 'content_block_delta') {
-              if (evt.delta?.type === 'input_json_delta') {
-                toolInputStr += evt.delta.partial_json ?? '';
-                // Don't forward tool input chunks to client
-              } else if (evt.delta?.type === 'text_delta') {
+              const idx  = evt.index;
+              const kind = blockTypes.get(idx);
+              if (kind === 'tool' && evt.delta?.type === 'input_json_delta') {
+                const t = pendingTools.get(idx);
+                if (t) t.inputStr += evt.delta.partial_json ?? '';
+                // Don't forward
+              } else if (kind === 'text' && evt.delta?.type === 'text_delta') {
                 if (currentText) currentText.text += evt.delta.text;
-                push(line + '\n'); // forward text to client
-              } else {
+                push(line + '\n');
+              } else if (kind !== 'tool') {
                 push(line + '\n');
               }
 
             } else if (evt.type === 'content_block_stop') {
-              if (toolActive && evt.index === toolBlockIdx) {
-                // Tool input JSON complete — parse and store
-                try {
-                  const parsed = JSON.parse(toolInputStr);
-                  assistantContent.push({ type: 'tool_use', id: toolId, name: toolName, input: parsed });
-                } catch {
-                  assistantContent.push({ type: 'tool_use', id: toolId, name: toolName, input: {} });
+              const idx  = evt.index;
+              const kind = blockTypes.get(idx);
+              if (kind === 'tool') {
+                const t = pendingTools.get(idx);
+                if (t) {
+                  let parsed;
+                  try { parsed = JSON.parse(t.inputStr); } catch { parsed = {}; }
+                  assistantContent.push({ type: 'tool_use', id: t.id, name: t.name, input: parsed });
                 }
-              } else if (!toolActive) {
+                // Don't forward
+              } else {
                 push(line + '\n');
               }
 
             } else if (evt.type === 'message_delta') {
               stopReason = evt.delta?.stop_reason ?? stopReason;
-              if (!toolActive) push(line + '\n');
+              if (stopReason !== 'tool_use') push(line + '\n');
 
             } else if (evt.type === 'message_stop') {
-              if (!toolActive) push(line + '\n');
-              // Don't close here — caller decides whether to continue
+              if (stopReason !== 'tool_use') push(line + '\n');
 
             } else {
-              // message_start, ping, etc. — forward to client
+              // message_start, ping, etc.
               push(line + '\n');
             }
           }
         }
 
-        return { stopReason, assistantContent, toolId, toolName };
+        return { stopReason, assistantContent };
       }
 
-      // ── First call ─────────────────────────────────────────────
-      const first = await doStream(body);
-      if (!first) { controller.close(); return; }
+      // ── Agentic tool-use loop (up to 5 rounds) ─────────────────
+      const MAX_TOOL_ROUNDS = 5;
+      let messages = safeMessages;
 
-      // ── If Claude used the GDC tool, execute it and continue ───
-      if (first.stopReason === 'tool_use') {
-        const toolBlock = first.assistantContent.find(b => b.type === 'tool_use' && b.name === 'gdc_compute');
-        if (toolBlock) {
-          const gdcResult = executeGDC(toolBlock.input);
+      for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+        const result = await doStream({ ...body, messages });
+        if (!result) break; // HTTP error — already surfaced to client
 
-          const secondMessages = [
-            ...safeMessages,
-            { role: 'assistant', content: first.assistantContent },
-            { role: 'user',      content: [{ type: 'tool_result', tool_use_id: toolBlock.id, content: gdcResult }] },
-          ];
+        if (result.stopReason !== 'tool_use') break; // normal end or error
 
-          const secondBody = {
-            model:      body.model,
-            max_tokens: body.max_tokens,
-            system:     body.system,
-            ...(tools.length > 0 && { tools }),
-            messages:   secondMessages,
-          };
+        // Collect all tool_use blocks from this round
+        const toolBlocks = result.assistantContent.filter(b => b.type === 'tool_use');
+        if (toolBlocks.length === 0) break;
 
-          await doStream(secondBody);
-        }
+        // Execute every tool call and build the tool_result message
+        const toolResults = toolBlocks.map(tb => ({
+          type:        'tool_result',
+          tool_use_id: tb.id,
+          content:     executeGDC(tb.input),
+        }));
+
+        // Append assistant turn + tool results, then loop for next round
+        messages = [
+          ...messages,
+          { role: 'assistant', content: result.assistantContent },
+          { role: 'user',      content: toolResults },
+        ];
       }
 
+      // Signal end of stream to the client
+      push('data: [DONE]\n\n');
       controller.close();
     },
   });
