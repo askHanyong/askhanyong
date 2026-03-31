@@ -90,6 +90,7 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 .welcome-avatar { width:68px; height:68px; background:linear-gradient(135deg,#0a1628,#1a3068); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#C9A84C; letter-spacing:1px; margin-bottom:14px; box-shadow:0 8px 32px rgba(14,28,51,0.3), 0 0 0 1px rgba(201,168,76,0.2); font-family:'Playfair Display',serif; }
 .welcome-screen h2 { font-size:21px; font-weight:700; color:var(--text); margin-bottom:6px; font-family:'Playfair Display',serif; }
 .welcome-screen p { font-size:13px; color:var(--text-mid); line-height:1.6; max-width:480px; margin-bottom:20px; }
+.paper-select-hint { font-size:12px; color:#1e3a5f; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:8px 14px; margin-bottom:16px; max-width:480px; line-height:1.5; }
 .welcome-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; max-width:560px; }
 .welcome-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:14px 12px; cursor:pointer; transition:all 0.2s; text-align:left; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
 .welcome-card:hover { border-color:rgba(201,168,76,0.5); box-shadow:0 4px 16px rgba(14,28,51,0.1); transform:translateY(-2px); }
@@ -1049,6 +1050,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div class="welcome-avatar">HAN</div>
       <h2>Annyeong! 👋</h2>
       <p>I'm HAN — your IB Math tutor built on Hanyong's 20+ years of teaching Mathematics and experience as an IB examiner. Ask me anything.</p>
+      <div class="paper-select-hint">📌 Select <strong>P1</strong>, <strong>P2</strong>, or <strong>P3</strong> above before asking — HAN uses exact working for Paper 1 and GDC computations for Papers 2 &amp; 3.</div>
       <div id="examCountdownBadge"></div>
       <div class="welcome-cards">
         <div class="welcome-card" onclick="usePrompt('Explain integration by parts with an IB HL example')"><div class="wc-icon">📐</div><div class="wc-title">Explain a concept</div><div class="wc-desc">Clear IB-style breakdown</div></div>
@@ -3541,6 +3543,7 @@ function startNewChat() {
     <div class="welcome-avatar">HAN</div>
     <h2>New chat</h2>
     <p>Ask me anything — IB Math, worked solutions, exam tips.</p>
+    <div class="paper-select-hint">📌 Select <strong>P1</strong>, <strong>P2</strong>, or <strong>P3</strong> above before asking — HAN uses exact working for Paper 1 and GDC computations for Papers 2 &amp; 3.</div>
     <div class="recent-chats-row" id="recentChatsRow" style="display:none"></div>
   </div>`;
   document.getElementById('newChatBtn').style.display = 'none';
