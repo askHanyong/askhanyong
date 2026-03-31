@@ -3706,7 +3706,7 @@ async function sendMessage() {
     const response = await fetch('/api/claude', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-HAN-Token': hanToken },
-      body: JSON.stringify({ messages: conversationHistory })
+      body: JSON.stringify({ messages: conversationHistory, paper: selectedPaper, level: selectedLevel })
     });
     if (!response.ok) {
       const errText = await response.text();

@@ -248,7 +248,7 @@ function executeGDC(input) {
 
 // ── Stream interceptor — handles tool_use inline, transparent to client ──
 // The client just sees continuous SSE text_delta events from both calls.
-function buildStream(apiKey, body, safeMessages) {
+function buildStream(apiKey, body, safeMessages, tools = []) {
   const enc = new TextEncoder();
 
   return new ReadableStream({
@@ -386,7 +386,7 @@ function buildStream(apiKey, body, safeMessages) {
             model:      body.model,
             max_tokens: body.max_tokens,
             system:     body.system,
-            tools:      body.tools,
+            ...(tools.length > 0 && { tools }),
             messages:   secondMessages,
           };
 
@@ -509,15 +509,34 @@ export default async (request) => {
     : messages;
   const safeMessages = cappedMessages.map(m => ({ role: m.role, content: m.content }));
 
+  // Paper context — sent by the frontend from the user's selector
+  const paper = typeof requestBody.paper === 'string' ? requestBody.paper.trim() : '';
+  const level = typeof requestBody.level === 'string' ? requestBody.level.trim() : '';
+  const gdcAllowed = paper === 'Paper 2' || paper === 'Paper 3';
+
+  // Prepend a definitive paper-context line so HAN knows the rules with certainty
+  const paperContextLine = paper
+    ? (gdcAllowed
+        ? `CURRENT PAPER: ${level ? level + ' ' : ''}${paper} — GDC IS ALLOWED. Use the gdc_compute tool for all numerical results that cannot be found analytically. Never estimate by hand.`
+        : `CURRENT PAPER: ${level ? level + ' ' : ''}${paper} — NO CALCULATOR. Do NOT use the gdc_compute tool. All working must be done by hand with exact values only.`)
+    : '';
+
+  const systemPrompt = paperContextLine
+    ? paperContextLine + '\n\n' + HAN_SYSTEM_PROMPT
+    : HAN_SYSTEM_PROMPT;
+
+  // Only expose the GDC tool when the paper actually permits it
+  const tools = gdcAllowed ? [GDC_TOOL] : [];
+
   const finalBody = {
     model:      PINNED_MODEL,
     max_tokens: MAX_TOKENS,
-    system:     HAN_SYSTEM_PROMPT,
-    tools:      [GDC_TOOL],
+    system:     systemPrompt,
+    ...(tools.length > 0 && { tools }),
     messages:   safeMessages,
   };
 
-  const outputStream = buildStream(apiKey, finalBody, safeMessages);
+  const outputStream = buildStream(apiKey, finalBody, safeMessages, tools);
 
   return new Response(outputStream, {
     headers: {
