@@ -73,16 +73,24 @@ Always choose bounds that show the full relevant domain of the function.
 
 GDC COMPUTE TOOL — MANDATORY FOR NUMERICAL RESULTS:
 You have a gdc_compute tool. Call it whenever exact numerical values are required and cannot be found analytically. NEVER approximate by hand — always use the tool for:
-- Solving transcendental/complex equations (e.g. e^(sin t) + 4 sin t = 0): operation "solve" with [from, to] interval
+- Solving transcendental/complex equations: operation "solve"
 - Definite integrals that cannot be found in closed form: operation "integrate"
-- Derivative at a specific numerical point: operation "nderiv"
+- Derivative value at a specific point: operation "nderiv"
 - Evaluating an expression at a value: operation "evaluate"
 
-Expression syntax for the tool (JavaScript-compatible):
-- Use exp(), sin(), cos(), tan(), ln(), abs(), sqrt()
-- Use pi for π, e for Euler's number (standalone only)
-- Use * for multiplication (required), ** for power, ^ also accepted
-- Example: "exp(sin(t)) + 4*sin(t)"
+EXACT parameter names you MUST use (wrong names cause errors):
+- For solve/integrate: "from" and "to" (NOT "interval", NOT "lower"/"upper")
+- For nderiv/evaluate: "at" (NOT "point", NOT "x")
+- Variable name: "variable" (e.g. "t" for time, "x" for position)
+
+Example calls for v(t) = exp(sin(t)) + 4*sin(t) on [0,6]:
+  solve:     { "operation":"solve",    "expression":"exp(sin(t))+4*sin(t)",        "variable":"t", "from":0, "to":6 }
+  nderiv:    { "operation":"nderiv",   "expression":"exp(sin(t))*cos(t)+4*cos(t)", "variable":"t", "at":3.347 }
+  integrate: { "operation":"integrate","expression":"abs(exp(sin(t))+4*sin(t))",   "variable":"t", "from":0, "to":6 }
+
+Expression syntax: exp(), sin(), cos(), tan(), ln(), abs(), sqrt(), pi, e, *, **, ^
+
+NOTATION RULE: Always use the variable names from the problem throughout ALL working and explanations. If the problem uses t, use t everywhere — never substitute x in the written solution (only use x inside Desmos graph expressions, which require y=f(x) format, and note the substitution explicitly).
 
 After the tool returns, present the result as an exact GDC value and continue your solution.`;
 
@@ -106,9 +114,11 @@ const GDC_TOOL = {
         type: 'string',
         description: 'Variable name, e.g. "t" or "x". Default: "x"',
       },
-      from: { type: 'number', description: 'Lower bound (solve / integrate)' },
-      to:   { type: 'number', description: 'Upper bound (solve / integrate)' },
-      at:   { type: 'number', description: 'Point at which to differentiate or evaluate (nderiv / evaluate)' },
+      from: { type: 'number', description: 'Lower bound (solve / integrate). Alternative: pass interval:[lo,hi] array instead.' },
+      to:   { type: 'number', description: 'Upper bound (solve / integrate). Alternative: pass interval:[lo,hi] array instead.' },
+      at:   { type: 'number', description: 'Point at which to differentiate or evaluate (nderiv / evaluate). Alternative: pass point:value instead.' },
+      interval: { type: 'array', items: { type: 'number' }, description: 'Alternative to from+to: [lowerBound, upperBound] for solve / integrate.' },
+      point:    { type: 'number', description: 'Alternative to at for nderiv / evaluate.' },
     },
     required: ['operation', 'expression'],
   },
@@ -211,7 +221,11 @@ function roundTo(x, d) {
 
 function executeGDC(input) {
   try {
-    const { operation, expression, variable = 'x', from, to, at } = input;
+    const { operation, expression, variable = 'x' } = input;
+    // Accept the naming conventions Claude naturally produces as alternatives
+    const from = input.from   ?? input.lower ?? (Array.isArray(input.interval) ? input.interval[0] : undefined);
+    const to   = input.to     ?? input.upper ?? (Array.isArray(input.interval) ? input.interval[1] : undefined);
+    const at   = input.at     ?? input.point ?? input.x_val ?? input.value;
     const f = makeEvaluator(expression, variable);
 
     if (operation === 'solve') {
