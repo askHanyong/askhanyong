@@ -5,6 +5,13 @@
 [functions]
   node_bundler = "esbuild"
 
+[functions."mark-script"]
+  timeout = 26
+
+[functions."teacher-mark"]
+  timeout = 26
+  included_files = ["calibration/*.pdf"]
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -34,6 +41,11 @@
 
 [[headers]]
   for = "/admin"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/mark"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
 
@@ -87,9 +99,23 @@
   status = 200
   force = true
 
+# /mark serves the paper marking tool (admin only)
+[[redirects]]
+  from = "/mark"
+  to = "/mark.html"
+  status = 200
+  force = true
+
 # /tune serves the style-capture prompt tuning tool (admin only)
 [[redirects]]
   from = "/tune"
   to = "/tune.html"
+  status = 200
+  force = true
+
+# /teacher serves the teacher marking platform (invite-only)
+[[redirects]]
+  from = "/teacher"
+  to = "/teacher.html"
   status = 200
   force = true

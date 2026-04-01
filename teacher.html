@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Marking — askHanyong IB Math</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0e1c33;--navy-dark:#0a1628;--navy-mid:#1a3068;--gold:#C9A84C;--gold-pale:rgba(201,168,76,0.1);--gold-border:rgba(201,168,76,0.35);--white:#fff;--bg:#f5f4f1;--bg-mid:#ece9e3;--text:#111827;--text-mid:#4b5563;--text-soft:#9ca3af;--border:#e4e2dc;--green:#059669;--red:#dc2626;--radius:14px;--radius-sm:8px;--shadow:0 1px 8px rgba(0,0,0,.07);--shadow-md:0 6px 28px rgba(0,0,0,.11)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,.97);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-badge{width:33px;height:33px;background:var(--gold-pale);border:1.5px solid var(--gold-border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--gold)}
+.nav-brand{font-size:15px;font-weight:700;color:#fff;font-family:'Playfair Display',serif}
+.nav-tag{font-size:11px;font-weight:600;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:2px 8px;margin-left:6px}
+.nav-right{display:flex;align-items:center;gap:12px}
+#navUser{font-size:13px;color:rgba(255,255,255,.6)}
+#btnLogout{font-size:13px;color:rgba(255,255,255,.45);background:none;border:none;cursor:pointer;padding:4px 0}
+#btnLogout:hover{color:#fff}
+.screen{display:none;padding:80px 24px 60px;max-width:820px;margin:0 auto}
+.screen.active{display:block}
+/* Auth */
+.auth-card{max-width:380px;margin:40px auto 0;background:#fff;border-radius:var(--radius);padding:36px 32px;box-shadow:var(--shadow-md);border:1.5px solid var(--border)}
+.auth-card h2{font-size:20px;font-weight:700;margin-bottom:6px;font-family:'Playfair Display',serif}
+.auth-card p{font-size:13px;color:var(--text-soft);margin-bottom:24px;line-height:1.6}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-mid);margin-bottom:5px;letter-spacing:.3px}
+.field input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;background:#fff;color:var(--text)}
+.field input:focus{border-color:var(--navy)}
+.btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,var(--navy-dark),var(--navy-mid));color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s;margin-top:4px}
+.btn-primary:hover{opacity:.88}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.auth-switch{font-size:12px;color:var(--text-soft);text-align:center;margin-top:16px}
+.auth-switch a{color:var(--navy);font-weight:600;cursor:pointer;text-decoration:none}
+.auth-switch a:hover{text-decoration:underline}
+.msg{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:6px;display:none}
+.msg.err{background:#fef2f2;color:var(--red);display:block;border:1px solid #fecaca}
+.msg.ok{background:#f0fdf4;color:var(--green);display:block;border:1px solid #bbf7d0}
+/* Upload screen */
+.page-eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:16px;padding:4px 12px;margin-bottom:12px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.3px}
+.page-title{font-size:26px;font-weight:700;font-family:'Playfair Display',serif;margin-bottom:6px}
+.page-sub{font-size:14px;color:var(--text-mid);margin-bottom:28px;line-height:1.5}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:40px 24px;text-align:center;background:#fff;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:20px}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--gold);background:var(--gold-pale)}
+.upload-icon{font-size:32px;margin-bottom:10px}
+.upload-zone h3{font-size:15px;font-weight:600;margin-bottom:4px}
+.upload-zone p{font-size:13px;color:var(--text-soft)}
+.upload-zone input[type=file]{display:none}
+#uploadedFile{font-size:13px;color:var(--green);margin-top:8px;font-weight:500}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:#fff;border-radius:var(--radius);border:1.5px solid var(--border);padding:20px 24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.card-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.badge{display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px}
+.badge-gold{background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border)}
+.badge-green{background:#f0fdf4;color:var(--green);border:1px solid #bbf7d0}
+.badge-red{background:#fef2f2;color:var(--red);border:1px solid #fecaca}
+/* Progress */
+#progressArea{display:none;margin:20px 0}
+.progress-bar-wrap{height:6px;background:var(--bg-mid);border-radius:3px;overflow:hidden;margin:8px 0}
+.progress-bar{height:100%;background:var(--gold);border-radius:3px;transition:width .4s}
+#statusText{font-size:13px;color:var(--text-mid);margin-top:6px}
+/* Results */
+#resultsArea{display:none}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:gap}
+.score-badge{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--navy)}
+.score-sub{font-size:12px;color:var(--text-soft)}
+.btn-export{padding:9px 18px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s}
+.btn-export:hover{background:var(--bg-mid)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--navy-dark);color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:12px;letter-spacing:.3px}
+thead th:first-child{border-radius:8px 0 0 0}
+thead th:last-child{border-radius:0 8px 0 0}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:hover{background:#faf9f7}
+td{padding:10px 12px;vertical-align:top}
+.q-label{font-weight:700;color:var(--navy);white-space:nowrap}
+.marks-cell{font-family:'DM Mono',monospace;font-size:13px;white-space:nowrap}
+.marks-cell .awarded{font-weight:700}
+.marks-cell .available{color:var(--text-soft)}
+.criteria-list{font-size:11px;color:var(--text-mid);line-height:1.6}
+.criteria-list .met::before{content:"✓ ";color:var(--green);font-weight:700}
+.criteria-list .missed::before{content:"✗ ";color:var(--red);font-weight:700}
+.notes-cell{font-size:11px;color:var(--text-soft);font-style:italic;max-width:160px}
+.override-input{width:52px;padding:4px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;font-family:'DM Mono',monospace;text-align:center;outline:none}
+.override-input:focus{border-color:var(--navy)}
+.override-input.changed{border-color:var(--gold);background:var(--gold-pale)}
+.summary-box{background:var(--navy-dark);color:#fff;border-radius:var(--radius);padding:20px 24px;margin-top:20px;font-size:13px;line-height:1.7}
+.summary-box .label{font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.5px;margin-bottom:6px}
+/* Spinner */
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.auth-card{padding:28px 20px}.screen{padding:72px 16px 40px}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/teacher">
+    <div class="nav-badge">Σ</div>
+    <span class="nav-brand">askHanyong</span>
+    <span class="nav-tag">Teacher</span>
+  </a>
+  <div class="nav-right">
+    <span id="navUser"></span>
+    <button id="btnLogout" onclick="logout()" style="display:none">Sign out</button>
+  </div>
+</nav>
+
+<!-- ── LOGIN SCREEN ─────────────────────────────────────────── -->
+<div id="screenLogin" class="screen active">
+  <div class="auth-card">
+    <h2>Teacher Login</h2>
+    <p>Sign in to your marking account.</p>
+    <div class="field"><label>EMAIL</label><input id="loginEmail" type="email" placeholder="you@school.com" autocomplete="email"></div>
+    <div class="field"><label>PASSWORD</label><input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+    <div id="loginMsg" class="msg"></div>
+    <button class="btn-primary" onclick="doLogin()">Sign in</button>
+    <p class="auth-switch">New teacher? <a onclick="showScreen('screenRegister')">Register with invite code</a></p>
+  </div>
+</div>
+
+<!-- ── REGISTER SCREEN ──────────────────────────────────────── -->
+<div id="screenRegister" class="screen">
+  <div class="auth-card">
+    <h2>Create Account</h2>
+    <p>Enter your details and the invite code provided by askHanyong.</p>
+    <div class="field"><label>FULL NAME</label><input id="regName" type="text" placeholder="Ms Jane Smith" autocomplete="name"></div>
+    <div class="field"><label>EMAIL</label><input id="regEmail" type="email" placeholder="you@school.com" autocomplete="email"></div>
+    <div class="field"><label>PASSWORD</label><input id="regPassword" type="password" placeholder="Min 8 characters" autocomplete="new-password"></div>
+    <div class="field"><label>INVITE CODE</label><input id="regCode" type="text" placeholder="Provided by askHanyong"></div>
+    <div id="regMsg" class="msg"></div>
+    <button class="btn-primary" onclick="doRegister()">Create account</button>
+    <p class="auth-switch">Already have an account? <a onclick="showScreen('screenLogin')">Sign in</a></p>
+  </div>
+</div>
+
+<!-- ── MAIN MARKING SCREEN ──────────────────────────────────── -->
+<div id="screenMark" class="screen">
+  <div class="page-eyebrow">📋 IB MAA HL · May 2024 P1 TZ1</div>
+  <h1 class="page-title">Mark Student Script</h1>
+  <p class="page-sub">Upload a student's handwritten PDF. The AI will mark it against the official IB markscheme with calibration from 3 reference scripts.</p>
+
+  <div class="card">
+    <div class="card-title">Upload Script</div>
+    <div class="upload-zone" id="dropZone" onclick="document.getElementById('pdfInput').click()">
+      <input type="file" id="pdfInput" accept=".pdf" onchange="handleFile(this.files[0])">
+      <div class="upload-icon">📄</div>
+      <h3 id="dropZoneLabel">Drop PDF here or click to browse</h3>
+      <p>Student's handwritten answer script · PDF only</p>
+      <div id="uploadedFile"></div>
+    </div>
+    <div class="form-row">
+      <div class="field" style="margin:0"><label>STUDENT NAME / ID</label><input id="studentName" type="text" placeholder="e.g. Student 01 or Jane Smith"></div>
+    </div>
+  </div>
+
+  <div id="markMsg" class="msg"></div>
+  <button class="btn-primary" id="btnMark" onclick="doMark()" style="max-width:260px">Mark this script</button>
+
+  <!-- Progress -->
+  <div id="progressArea">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    <div id="statusText">Preparing marking request…</div>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsArea">
+    <div class="results-header">
+      <div>
+        <div class="score-sub" style="margin-bottom:4px">Results for: <strong id="resultStudentName"></strong></div>
+        <div id="scoreDisplay" class="score-badge"></div>
+        <div class="score-sub">marks awarded / 110</div>
+      </div>
+      <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>Q</th>
+            <th>Breakdown</th>
+            <th>Criteria Met</th>
+            <th>Criteria Missed</th>
+            <th>Notes</th>
+            <th>Override</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="summary-box">
+      <div class="label">EXAMINER SUMMARY</div>
+      <div id="examinerSummary"></div>
+    </div>
+
+    <div style="margin-top:20px;text-align:center">
+      <button class="btn-export" onclick="resetForm()">← Mark another script</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────
+let teacherToken   = null;
+let studentPdfB64  = null;
+let lastResults    = null;
+
+// ── Screen navigation ─────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl    = document.getElementById('loginMsg');
+  errEl.textContent = '';
+  errEl.className = 'msg';
+  if (!email || !password) { errEl.textContent = 'Email and password required.'; errEl.className = 'msg err'; return; }
+
+  try {
+    const res  = await fetch('/api/teacher-auth', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'login', email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Login failed.'; errEl.className = 'msg err'; return; }
+    teacherToken = data.token;
+    localStorage.setItem('teacherToken', data.token);
+    localStorage.setItem('teacherName',  data.name);
+    document.getElementById('navUser').textContent = data.name;
+    document.getElementById('btnLogout').style.display = 'inline';
+    showScreen('screenMark');
+  } catch (e) {
+    errEl.textContent = 'Network error. Please try again.'; errEl.className = 'msg err';
+  }
+}
+
+async function doRegister() {
+  const name       = document.getElementById('regName').value.trim();
+  const email      = document.getElementById('regEmail').value.trim();
+  const password   = document.getElementById('regPassword').value;
+  const inviteCode = document.getElementById('regCode').value.trim();
+  const errEl      = document.getElementById('regMsg');
+  errEl.textContent = '';
+  errEl.className = 'msg';
+  if (!name || !email || !password || !inviteCode) {
+    errEl.textContent = 'All fields are required.'; errEl.className = 'msg err'; return;
+  }
+
+  try {
+    const res  = await fetch('/api/teacher-auth', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'register', name, email, password, inviteCode }),
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Registration failed.'; errEl.className = 'msg err'; return; }
+    teacherToken = data.token;
+    localStorage.setItem('teacherToken', data.token);
+    localStorage.setItem('teacherName',  data.name);
+    document.getElementById('navUser').textContent = data.name;
+    document.getElementById('btnLogout').style.display = 'inline';
+    showScreen('screenMark');
+  } catch (e) {
+    errEl.textContent = 'Network error. Please try again.'; errEl.className = 'msg err';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('teacherToken');
+  localStorage.removeItem('teacherName');
+  teacherToken  = null;
+  studentPdfB64 = null;
+  lastResults   = null;
+  document.getElementById('loginEmail').value    = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginMsg').textContent = '';
+  document.getElementById('navUser').textContent  = '';
+  document.getElementById('btnLogout').style.display = 'none';
+  showScreen('screenLogin');
+}
+
+// ── File handling ─────────────────────────────────────────────────────────
+function handleFile(file) {
+  if (!file || file.type !== 'application/pdf') {
+    alert('Please upload a PDF file.'); return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const dataUrl = e.target.result;
+    studentPdfB64 = dataUrl.split(',')[1];
+    document.getElementById('dropZoneLabel').textContent = '✓ ' + file.name;
+    document.getElementById('dropZone').style.borderColor = 'var(--green)';
+  };
+  reader.readAsDataURL(file);
+}
+
+// Drag-and-drop events
+(function () {
+  const zone  = document.getElementById('dropZone');
+  const input = document.getElementById('pdfInput');
+
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', ()  => zone.classList.remove('drag'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag');
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  zone.addEventListener('click', () => input.click());
+  input.addEventListener('change', () => { if (input.files[0]) handleFile(input.files[0]); });
+})();
+
+// ── Mark ──────────────────────────────────────────────────────────────────
+async function doMark() {
+  if (!studentPdfB64) { alert('Please upload a student script first.'); return; }
+  const studentName = document.getElementById('studentName').value.trim() || 'Student';
+
+  const progressArea = document.getElementById('progressArea');
+  const progressBar  = document.getElementById('progressBar');
+  const progressMsg  = document.getElementById('statusText');
+  const resultsArea  = document.getElementById('resultsArea');
+
+  progressArea.style.display = 'block';
+  resultsArea.style.display  = 'none';
+  progressBar.style.width    = '0%';
+  progressMsg.textContent    = 'Sending to AI examiner…';
+
+  // Animate bar while waiting
+  let pct = 0;
+  const ticker = setInterval(() => {
+    pct = Math.min(pct + (pct < 60 ? 3 : pct < 85 ? 1 : 0.3), 92);
+    progressBar.style.width = pct + '%';
+  }, 600);
+
+  try {
+    const res  = await fetch('/api/teacher-mark', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName }),
+    });
+    clearInterval(ticker);
+    progressBar.style.width = '100%';
+
+    const data = await res.json();
+    if (!res.ok) {
+      progressMsg.textContent = 'Error: ' + (data.error || res.statusText);
+      return;
+    }
+    progressMsg.textContent = 'Done! Rendering results…';
+    const result = data.result || data;   // unwrap { studentName, markedBy, timestamp, result: {...} }
+    lastResults = result;
+    renderResults(result, studentName);
+    setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; }, 500);
+  } catch (e) {
+    clearInterval(ticker);
+    progressMsg.textContent = 'Network error: ' + e.message;
+  }
+}
+
+// ── Render results ────────────────────────────────────────────────────────
+function renderResults(data, studentName) {
+  document.getElementById('resultStudentName').textContent = studentName;
+  const tbody = document.getElementById('resultsBody');
+  tbody.innerHTML = '';
+
+  const questions = (data.questions || []);
+  questions.forEach((q, qi) => {
+    const parts = (q.parts || []);
+    parts.forEach((p, pi) => {
+      const tr = document.createElement('tr');
+      tr.dataset.awarded  = p.marks_awarded;
+      tr.dataset.qi = qi;
+      tr.dataset.pi = pi;
+
+      // Criteria string
+      const metStr    = (p.criteria_met    || []).join(', ') || '—';
+      const missedStr = (p.criteria_missed || []).join(', ') || '—';
+      const ftStr     = p.ft_applied ? '<span style="color:var(--accent)">FT applied</span>' : '';
+
+      tr.innerHTML = `
+        <td>${q.number}${p.part ? ' (' + p.part + ')' : ''}</td>
+        <td>${p.mark_breakdown || '—'}</td>
+        <td>${metStr}</td>
+        <td>${missedStr} ${ftStr}</td>
+        <td>${p.notes || ''}</td>
+        <td class="override-cell">
+          <input type="number" class="override-input" min="0"
+                 value="${p.marks_awarded}" data-original="${p.marks_awarded}"
+                 oninput="onOverride(this)">
+          / ${p.marks_available !== undefined ? p.marks_available : '?'}
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  });
+
+  updateTotal();
+
+  const summaryEl = document.getElementById('examinerSummary');
+  summaryEl.textContent = data.examiner_summary || '';
+}
+
+function onOverride(input) {
+  const original = parseInt(input.dataset.original, 10);
+  const current  = parseInt(input.value, 10);
+  if (!isNaN(current) && current !== original) {
+    input.classList.add('changed');
+  } else {
+    input.classList.remove('changed');
+  }
+  updateTotal();
+}
+
+function updateTotal() {
+  let total = 0;
+  document.querySelectorAll('.override-input').forEach(inp => {
+    const v = parseInt(inp.value, 10);
+    if (!isNaN(v)) total += v;
+  });
+  document.getElementById('scoreDisplay').textContent = total;
+}
+
+// ── Export CSV ────────────────────────────────────────────────────────────
+function exportCSV() {
+  if (!lastResults) return;
+  const studentName = document.getElementById('resultStudentName').textContent;
+  const rows = [['Student', 'Question', 'Part', 'AI Mark', 'Final Mark',
+                 'Criteria Met', 'Criteria Missed', 'FT Applied', 'Notes']];
+
+  const inputs = Array.from(document.querySelectorAll('.override-input'));
+  const questions = lastResults.questions || [];
+  let idx = 0;
+  questions.forEach(q => {
+    (q.parts || []).forEach(p => {
+      const finalMark = inputs[idx] ? (inputs[idx].value || p.marks_awarded) : p.marks_awarded;
+      rows.push([
+        studentName,
+        q.number,
+        p.part || '',
+        p.marks_awarded,
+        finalMark,
+        (p.criteria_met    || []).join('; '),
+        (p.criteria_missed || []).join('; '),
+        p.ft_applied ? 'Yes' : 'No',
+        (p.notes || '').replace(/"/g, '""'),
+      ]);
+      idx++;
+    });
+  });
+
+  // Add total row
+  let total = 0;
+  inputs.forEach(i => { const v = parseInt(i.value, 10); if (!isNaN(v)) total += v; });
+  rows.push(['', '', 'TOTAL', lastResults.total_awarded || '', total, '', '', '', '']);
+
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `${studentName.replace(/\s+/g, '_')}_marks.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Reset ─────────────────────────────────────────────────────────────────
+function resetForm() {
+  studentPdfB64 = null;
+  lastResults   = null;
+  document.getElementById('studentName').value        = '';
+  document.getElementById('dropZoneLabel').textContent = 'Drop PDF here or click to upload';
+  document.getElementById('dropZone').style.borderColor = '';
+  document.getElementById('pdfInput').value           = '';
+  document.getElementById('progressArea').style.display = 'none';
+  document.getElementById('resultsArea').style.display  = 'none';
+  document.getElementById('resultsBody').innerHTML      = '';
+  document.getElementById('examinerSummary').textContent = '';
+  document.getElementById('scoreDisplay').textContent    = '0';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+async function init() {
+  const savedToken = localStorage.getItem('teacherToken');
+  const savedName  = localStorage.getItem('teacherName');
+
+  if (!savedToken) { showScreen('screenLogin'); return; }
+
+  try {
+    const res  = await fetch('/api/teacher-auth', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verify', token: savedToken }),
+    });
+    const data = await res.json();
+    if (res.ok && data.valid) {
+      teacherToken = savedToken;
+      document.getElementById('navUser').textContent = savedName || data.email;
+      document.getElementById('btnLogout').style.display = 'inline';
+      showScreen('screenMark');
+    } else {
+      localStorage.removeItem('teacherToken');
+      localStorage.removeItem('teacherName');
+      showScreen('screenLogin');
+    }
+  } catch {
+    // Network error — optimistically show mark screen if token exists
+    teacherToken = savedToken;
+    document.getElementById('navUser').textContent = savedName || '';
+    document.getElementById('btnLogout').style.display = 'inline';
+    showScreen('screenMark');
+  }
+}
+
+// Keyboard shortcuts for login/register
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+document.getElementById('regCode').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doRegister();
+});
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
