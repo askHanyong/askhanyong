@@ -17,7 +17,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-const MODEL = 'claude-sonnet-4-6';
+const MODEL = 'claude-haiku-4-5-20251001'; // Haiku: ~15s response vs Sonnet ~45s — fits 26s limit
 
 // ── Teacher token verification (mirrors teacher-auth.js) ──────────
 function verifyTeacherToken(token) {
@@ -236,23 +236,13 @@ exports.handler = async (event) => {
 
   if (!ANTHROPIC_API_KEY) return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: 'API key not configured' }) };
 
-  // Load markscheme and question paper PDFs
-  const markschemeB64    = readCalibrationPdf('M24 MAAHL P1 TZ1_markscheme.pdf');
-  const questionPaperB64 = readCalibrationPdf('M24 MAAHL P1 TZ1.pdf');
+  // Load markscheme only (contains question text — no need to send question paper separately)
+  const markschemeB64 = readCalibrationPdf('M24 MAAHL P1 TZ1_markscheme.pdf');
 
   // Build content array for the user message
   const content = [
-    { type: 'text', text: 'You are marking the IB MAA HL May 2024 Paper 1 TZ1. Below are the question paper and official markscheme, followed by the student script to mark.' },
+    { type: 'text', text: 'You are marking the IB MAA HL May 2024 Paper 1 TZ1. The official markscheme below contains the questions and accepted answers.' },
   ];
-
-  if (questionPaperB64) {
-    content.push({
-      type: 'document',
-      source: { type: 'base64', media_type: 'application/pdf', data: questionPaperB64 },
-      title: 'Question Paper: IB MAA HL May 2024 Paper 1 TZ1',
-      cache_control: { type: 'ephemeral' },
-    });
-  }
 
   if (markschemeB64) {
     content.push({
