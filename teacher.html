@@ -328,57 +328,40 @@ async function doMark() {
 
   progressArea.style.display = 'block';
   resultsArea.style.display  = 'none';
-  progressBar.style.width    = '5%';
+  progressBar.style.width    = '0%';
   statusText.textContent     = 'Sending to AI examiner…';
   btnMark.disabled = true;
 
-  // Generate a unique job ID
-  const jobId = (typeof crypto !== 'undefined' && crypto.randomUUID)
-    ? crypto.randomUUID()
-    : Date.now().toString(36) + Math.random().toString(36).slice(2);
+  // Animate bar while waiting
+  let pct = 0;
+  const ticker = setInterval(() => {
+    pct = Math.min(pct + (pct < 60 ? 4 : pct < 85 ? 1 : 0.3), 92);
+    progressBar.style.width = pct + '%';
+  }, 600);
 
   try {
-    // Fire background job (returns 202 immediately)
-    const submitRes = await fetch('/api/teacher-mark-background', {
+    const res  = await fetch('/api/teacher-mark', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName, jobId }),
+      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName }),
     });
-    if (!submitRes.ok && submitRes.status !== 202) {
-      const err = await submitRes.json().catch(() => ({}));
-      statusText.textContent = 'Error: ' + (err.error || submitRes.statusText);
+    clearInterval(ticker);
+    progressBar.style.width = '100%';
+
+    const data = await res.json();
+    if (!res.ok) {
+      statusText.textContent = 'Error: ' + (data.error || res.statusText);
       btnMark.disabled = false;
       return;
     }
+    statusText.textContent = 'Done! Rendering results…';
+    const result = data.result || data;
+    lastResults  = result;
+    renderResults(result, studentName);
+    setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btnMark.disabled = false; }, 500);
 
-    statusText.textContent = 'AI is reading and marking the script… (30–90 seconds)';
-
-    // Poll every 3 seconds, up to 2 minutes
-    let pct = 10;
-    for (let i = 0; i < 40; i++) {
-      await new Promise(r => setTimeout(r, 3000));
-      pct = Math.min(pct + 2, 90);
-      progressBar.style.width = pct + '%';
-
-      const poll = await fetch(
-        '/api/teacher-mark-status?jobId=' + encodeURIComponent(jobId) +
-        '&token=' + encodeURIComponent(teacherToken)
-      );
-      const data = await poll.json();
-
-      if (data.error) { statusText.textContent = 'Error: ' + data.error; btnMark.disabled = false; return; }
-
-      if (data.ready) {
-        progressBar.style.width = '100%';
-        statusText.textContent  = 'Done! Rendering results…';
-        const result = data.result || data;
-        lastResults  = result;
-        renderResults(result, studentName);
-        setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btnMark.disabled = false; }, 500);
-        return;
-      }
-    }
-
-    statusText.textContent = 'Timed out waiting for result. Please try again.';
+  } catch (e) {
+    clearInterval(ticker);
+    statusText.textContent = 'Network error: ' + e.message;
     btnMark.disabled = false;
 
   } catch (e) {
