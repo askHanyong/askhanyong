@@ -363,10 +363,6 @@ async function doMark() {
     clearInterval(ticker);
     statusText.textContent = 'Network error: ' + e.message;
     btnMark.disabled = false;
-
-  } catch (e) {
-    statusText.textContent = 'Network error: ' + e.message;
-    btnMark.disabled = false;
   }
 }
 
