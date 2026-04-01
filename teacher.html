@@ -332,10 +332,10 @@ async function doMark() {
   statusText.textContent     = 'Sending to AI examiner…';
   btnMark.disabled = true;
 
-  // Slow-moving background ticker; real progress nudges come from streaming chunks
+  // Animate bar while the edge function collects the Anthropic response
   let pct = 2;
   const ticker = setInterval(() => {
-    pct = Math.min(pct + (pct < 30 ? 2 : pct < 60 ? 0.8 : pct < 85 ? 0.3 : 0.1), 92);
+    pct = Math.min(pct + (pct < 40 ? 2 : pct < 70 ? 0.8 : pct < 88 ? 0.3 : 0.1), 92);
     progressBar.style.width = pct + '%';
   }, 1000);
 
@@ -344,82 +344,21 @@ async function doMark() {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName }),
     });
-
-    if (!res.ok) {
-      clearInterval(ticker);
-      let errMsg = res.statusText;
-      try { const d = await res.json(); errMsg = d.error || errMsg; } catch {}
-      statusText.textContent = 'Error: ' + errMsg;
-      btnMark.disabled = false;
-      return;
-    }
-
-    // Read SSE stream — edge function pipes Anthropic response with no timeout.
-    // Accumulate input_json_delta chunks to build the full tool_use JSON.
-    const reader  = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buf     = '';
-    let jsonStr = '';
-
-    statusText.textContent = 'AI examiner is reading the script…';
-
-    outer: while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop() ?? '';
-
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const raw = line.slice(6).trim();
-        if (raw === '[DONE]') break outer;
-        let evt;
-        try { evt = JSON.parse(raw); } catch { continue; }
-
-        if (evt.type === 'error') {
-          clearInterval(ticker);
-          statusText.textContent = 'Error: ' + (evt.error?.message || JSON.stringify(evt.error));
-          btnMark.disabled = false;
-          return;
-        }
-        if (evt.type === 'message_start') {
-          statusText.textContent = 'AI examiner is marking…';
-        }
-        if (evt.type === 'content_block_delta' && evt.delta?.type === 'input_json_delta') {
-          jsonStr += evt.delta.partial_json ?? '';
-          pct = Math.min(pct + 0.4, 92);
-          progressBar.style.width = pct + '%';
-        }
-        if (evt.type === 'message_delta' && evt.delta?.stop_reason === 'tool_use') {
-          statusText.textContent = 'Marking complete. Rendering results…';
-        }
-      }
-    }
-
     clearInterval(ticker);
     progressBar.style.width = '100%';
 
-    if (!jsonStr) {
-      statusText.textContent = 'Error: No marking data received.';
+    const data = await res.json();
+    if (!res.ok) {
+      statusText.textContent = 'Error: ' + (data.error || res.statusText);
       btnMark.disabled = false;
       return;
     }
 
-    let result;
-    try { result = JSON.parse(jsonStr); } catch (e) {
-      statusText.textContent = 'Error: Could not parse marking result — ' + e.message;
-      btnMark.disabled = false;
-      return;
-    }
-
-    lastResults = result;
+    statusText.textContent = 'Done! Rendering results…';
+    const result = data.result || data;
+    lastResults  = result;
     renderResults(result, studentName);
-    setTimeout(() => {
-      progressArea.style.display = 'none';
-      resultsArea.style.display  = 'block';
-      btnMark.disabled = false;
-    }, 500);
+    setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btnMark.disabled = false; }, 500);
 
   } catch (e) {
     clearInterval(ticker);
