@@ -1,13 +1,12 @@
 // ════════════════════════════════════════════════════════════════
-// Teacher Mark Status — checks Netlify Blobs for a marking job result
-// Called by the frontend every 3 seconds after submitting a job.
+// Teacher Mark Status — reads job result from GAS
 // ════════════════════════════════════════════════════════════════
 
 const crypto = require('crypto');
-const { getStore } = require('@netlify/blobs');
 
-const SESSION_SECRET = process.env.SESSION_SECRET;
-const BLOB_STORE     = 'marking-jobs';
+const SESSION_SECRET   = process.env.SESSION_SECRET;
+const SHEETS_URL       = process.env.SHEETS_URL;
+const GAS_ADMIN_SECRET = process.env.GAS_ADMIN_SECRET;
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  '*',
@@ -38,23 +37,28 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'GET')     return { statusCode: 405, headers: CORS_HEADERS, body: 'Method not allowed' };
 
   const { jobId, token } = event.queryStringParameters || {};
-
-  if (!jobId)  return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: 'jobId required' }) };
-  if (!token)  return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: 'token required' }) };
+  if (!jobId) return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: 'jobId required' }) };
+  if (!token) return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: 'token required' }) };
 
   const email = verifyTeacherToken(token);
-  if (!email)  return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Invalid or expired session' }) };
+  if (!email) return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Invalid or expired session' }) };
+
+  if (!SHEETS_URL || !GAS_ADMIN_SECRET) {
+    return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: 'GAS not configured' }) };
+  }
 
   try {
-    const store = getStore(BLOB_STORE);
-    const raw   = await store.get(jobId);
+    const url = `${SHEETS_URL}?action=getMarkJob&jobId=${encodeURIComponent(jobId)}&secret=${encodeURIComponent(GAS_ADMIN_SECRET)}`;
+    const res  = await fetch(url, { redirect: 'follow' });
+    const gas  = await res.json();
 
-    if (raw === null) {
-      // Job not found — either not started yet or expired
+    if (!gas.found) {
       return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify({ ready: false }) };
     }
 
-    return { statusCode: 200, headers: CORS_HEADERS, body: raw };
+    const data = JSON.parse(gas.data);
+    return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify(data) };
+
   } catch (err) {
     return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: err.message }) };
   }
