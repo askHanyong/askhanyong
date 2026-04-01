@@ -31,8 +31,6 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <style>
 :root {
   --navy:#0e1c33; --blue:#1e3a8a; --blue-mid:#1d4ed8; --blue-light:#3b82f6;
@@ -92,6 +90,7 @@ header { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 45%,#1a3068 100%);
 .welcome-avatar { width:68px; height:68px; background:linear-gradient(135deg,#0a1628,#1a3068); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#C9A84C; letter-spacing:1px; margin-bottom:14px; box-shadow:0 8px 32px rgba(14,28,51,0.3), 0 0 0 1px rgba(201,168,76,0.2); font-family:'Playfair Display',serif; }
 .welcome-screen h2 { font-size:21px; font-weight:700; color:var(--text); margin-bottom:6px; font-family:'Playfair Display',serif; }
 .welcome-screen p { font-size:13px; color:var(--text-mid); line-height:1.6; max-width:480px; margin-bottom:20px; }
+.paper-select-hint { font-size:12px; color:#1e3a5f; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:8px 14px; margin-bottom:16px; max-width:480px; line-height:1.5; }
 .welcome-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; max-width:560px; }
 .welcome-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:14px 12px; cursor:pointer; transition:all 0.2s; text-align:left; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
 .welcome-card:hover { border-color:rgba(201,168,76,0.5); box-shadow:0 4px 16px rgba(14,28,51,0.1); transform:translateY(-2px); }
@@ -434,6 +433,141 @@ input[type=range] { flex:1; accent-color:var(--blue); }
 .launch-han-cta-text strong { font-size:13px; font-weight:700; color:white; display:block; }
 .launch-han-cta-text span { font-size:11px; color:rgba(255,255,255,0.7); }
 
+/* ══════════════════════════════════════════════════
+   MARK TAB — Student Script Marking
+   ══════════════════════════════════════════════════ */
+.mark-scroll { flex:1; overflow-y:auto; padding:0 0 24px; }
+.mark-scroll::-webkit-scrollbar { width:4px; }
+.mark-scroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* Hero */
+.mark-hero { background:linear-gradient(135deg,#0a1628 0%,#0e1c33 55%,#1a3068 100%); padding:20px 16px 18px; color:white; }
+.mark-hero-title { font-size:20px; font-weight:700; font-family:'Playfair Display',serif; margin-bottom:4px; }
+.mark-hero-sub { font-size:12px; color:rgba(255,255,255,0.65); line-height:1.5; margin-bottom:14px; }
+.mark-quota-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); border-radius:20px; padding:5px 12px; font-size:11px; color:rgba(255,255,255,0.85); font-weight:600; }
+.mark-quota-dot { width:7px; height:7px; border-radius:50%; background:#4ade80; flex-shrink:0; }
+.mark-quota-dot.warn { background:#fbbf24; }
+.mark-quota-dot.empty { background:#f87171; }
+
+/* Upload zone */
+.mark-body { padding:16px; display:flex; flex-direction:column; gap:14px; }
+.mark-drop-zone { border:2px dashed var(--border); border-radius:var(--radius); padding:28px 16px; text-align:center; cursor:pointer; transition:all 0.2s; background:var(--bg); position:relative; }
+.mark-drop-zone:hover, .mark-drop-zone.drag-over { border-color:var(--blue-light); background:var(--ice-light); }
+.mark-drop-zone.has-file { border-color:var(--green); border-style:solid; background:#f0fdf4; }
+[data-theme="dark"] .mark-drop-zone.has-file { background:#052e16; border-color:#16a34a; }
+.mark-drop-icon { font-size:36px; margin-bottom:10px; }
+.mark-drop-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.mark-drop-sub { font-size:12px; color:var(--text-soft); line-height:1.5; }
+.mark-drop-hint { font-size:11px; color:var(--text-soft); margin-top:8px; }
+.mark-file-preview { display:flex; align-items:center; gap:10px; margin-top:10px; padding:10px 12px; background:white; border:1.5px solid var(--green); border-radius:10px; }
+[data-theme="dark"] .mark-file-preview { background:var(--bg-mid); }
+.mark-file-icon { font-size:24px; flex-shrink:0; }
+.mark-file-name { flex:1; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mark-file-pages { font-size:11px; color:var(--text-soft); }
+.mark-file-remove { background:none; border:none; cursor:pointer; font-size:16px; color:var(--text-soft); padding:2px; }
+
+/* Paper selector */
+.mark-selector-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.mark-select-group { display:flex; flex-direction:column; gap:4px; }
+.mark-select-label { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; }
+.mark-select { width:100%; padding:9px 12px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); appearance:none; -webkit-appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; padding-right:28px; }
+.mark-select:focus { outline:none; border-color:var(--blue-light); }
+
+/* Submit button */
+.mark-submit-btn { width:100%; padding:14px; background:linear-gradient(135deg,#1e3a8a,#1d4ed8); color:white; border:none; border-radius:var(--radius); font-size:14px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
+.mark-submit-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.mark-submit-btn:not(:disabled):hover { opacity:0.9; }
+
+/* Processing state */
+.mark-processing { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; text-align:center; gap:16px; }
+.mark-proc-spinner { width:52px; height:52px; border:3px solid var(--border); border-top-color:var(--blue-light); border-radius:50%; animation:markSpin 0.9s linear infinite; }
+@keyframes markSpin { to { transform:rotate(360deg); } }
+.mark-proc-title { font-size:16px; font-weight:700; color:var(--text); }
+.mark-proc-sub { font-size:12px; color:var(--text-soft); line-height:1.6; }
+.mark-proc-steps { display:flex; flex-direction:column; gap:6px; text-align:left; width:100%; max-width:280px; }
+.mark-proc-step { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-soft); }
+.mark-proc-step.done { color:var(--green); font-weight:600; }
+.mark-proc-step.active { color:var(--blue-light); font-weight:600; }
+.mark-step-dot { width:8px; height:8px; border-radius:50%; background:var(--border); flex-shrink:0; }
+.mark-proc-step.done .mark-step-dot { background:var(--green); }
+.mark-proc-step.active .mark-step-dot { background:var(--blue-light); }
+
+/* Results */
+.mark-results { padding:0 16px 16px; display:flex; flex-direction:column; gap:14px; }
+.mark-score-card { background:linear-gradient(135deg,#0e1c33,#1a3068); border-radius:var(--radius); padding:20px; color:white; text-align:center; position:relative; overflow:hidden; }
+.mark-score-card::before { content:''; position:absolute; top:-20px; right:-20px; width:100px; height:100px; background:rgba(201,168,76,0.08); border-radius:50%; }
+.mark-score-label { font-size:11px; color:rgba(255,255,255,0.6); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.mark-score-big { font-size:48px; font-weight:700; font-family:'Playfair Display',serif; color:#C9A84C; line-height:1; }
+.mark-score-denom { font-size:18px; font-weight:400; opacity:0.7; }
+.mark-score-pct { font-size:20px; font-weight:700; margin-top:4px; color:rgba(255,255,255,0.85); }
+.mark-score-paper { font-size:11px; color:rgba(255,255,255,0.5); margin-top:6px; }
+.mark-review-badge { display:inline-flex; align-items:center; gap:5px; margin-top:10px; background:rgba(251,191,36,0.15); border:1px solid rgba(251,191,36,0.4); border-radius:20px; padding:4px 12px; font-size:11px; color:#fbbf24; font-weight:600; }
+
+/* Per-question breakdown */
+.mark-q-section { background:white; border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+[data-theme="dark"] .mark-q-section { background:var(--white); }
+.mark-q-header { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; cursor:pointer; background:var(--ice-light); border-bottom:1px solid var(--border); }
+[data-theme="dark"] .mark-q-header { background:var(--bg-mid); }
+.mark-q-title { font-size:13px; font-weight:700; color:var(--text); }
+.mark-q-score { font-size:13px; font-weight:700; padding:3px 10px; border-radius:12px; }
+.mark-q-score.full { background:#dcfce7; color:#15803d; }
+.mark-q-score.partial { background:#fef9c3; color:#92400e; }
+.mark-q-score.zero { background:#fee2e2; color:#b91c1c; }
+.mark-q-body { padding:12px 14px; display:flex; flex-direction:column; gap:8px; }
+.mark-part-row { padding:10px 12px; background:var(--bg); border-radius:var(--radius-sm); }
+[data-theme="dark"] .mark-part-row { background:var(--bg-mid); }
+.mark-part-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.mark-part-label { font-size:12px; font-weight:700; color:var(--text-mid); }
+.mark-part-score { font-size:12px; font-weight:700; color:var(--text); }
+.mark-marks-row { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px; }
+.mark-code { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:700; font-family:'DM Mono',monospace; }
+.mark-code.awarded { background:#dcfce7; color:#15803d; }
+.mark-code.lost { background:#fee2e2; color:#b91c1c; text-decoration:line-through; }
+.mark-code.ft { background:#fef9c3; color:#92400e; }
+.mark-part-feedback { font-size:11px; color:var(--text-soft); line-height:1.6; font-style:italic; }
+
+/* Topic performance */
+.mark-topic-grid { display:flex; flex-direction:column; gap:8px; }
+.mark-topic-row { display:flex; align-items:center; gap:10px; }
+.mark-topic-name { font-size:12px; font-weight:600; color:var(--text-mid); width:130px; flex-shrink:0; }
+.mark-topic-bar-wrap { flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
+.mark-topic-bar { height:100%; border-radius:4px; transition:width 0.5s ease; }
+.mark-topic-pct { font-size:11px; font-weight:700; color:var(--text-mid); width:34px; text-align:right; flex-shrink:0; }
+
+/* Strengths / improvements */
+.mark-list { display:flex; flex-direction:column; gap:6px; }
+.mark-list-item { display:flex; align-items:flex-start; gap:8px; font-size:12px; color:var(--text-mid); line-height:1.5; }
+.mark-list-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+
+/* Action row */
+.mark-action-row { display:flex; gap:10px; }
+.mark-action-btn { flex:1; padding:12px 8px; border-radius:var(--radius); font-size:13px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; border:none; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.15s; }
+.mark-action-btn.primary { background:linear-gradient(135deg,#1e3a8a,#1d4ed8); color:white; }
+.mark-action-btn.secondary { background:var(--bg); border:1.5px solid var(--border); color:var(--text-mid); }
+.mark-action-btn:hover { opacity:0.88; }
+
+/* Share card */
+.mark-share-card { background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1.5px solid #86efac; border-radius:var(--radius); padding:14px; }
+.mark-share-title { font-size:13px; font-weight:700; color:#15803d; margin-bottom:6px; }
+.mark-share-sub { font-size:11px; color:#166534; line-height:1.6; margin-bottom:10px; }
+.mark-share-btns { display:flex; gap:8px; }
+.mark-share-btn { flex:1; padding:8px 6px; background:white; border:1.5px solid #86efac; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; color:#15803d; text-align:center; transition:border-color 0.15s; }
+.mark-share-btn:hover { border-color:#22c55e; }
+
+/* Sign-in gate */
+.mark-signin-gate { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 20px; text-align:center; gap:12px; }
+
+/* Paywall */
+.mark-paywall { background:linear-gradient(135deg,#fefce8,#fef9c3); border:1.5px solid #fbbf24; border-radius:var(--radius); padding:20px 16px; text-align:center; }
+.mark-paywall-icon { font-size:32px; margin-bottom:8px; }
+.mark-paywall-title { font-size:15px; font-weight:700; color:#92400e; margin-bottom:6px; }
+.mark-paywall-sub { font-size:12px; color:#78350f; line-height:1.6; margin-bottom:14px; }
+.mark-paywall-btn { display:inline-block; padding:10px 24px; background:#d97706; color:white; border:none; border-radius:12px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; }
+.mark-paywall-note { font-size:11px; color:#92400e; margin-top:8px; opacity:0.8; }
+
+/* Copyright notice */
+.mark-copyright-note { background:#fef9c3; border-left:3px solid var(--gold); border-radius:0 8px 8px 0; padding:10px 12px; font-size:11px; color:#78350f; line-height:1.6; }
+
 /* ── Safe area insets (iPhone notch / home indicator) ── */
 .tab-nav { padding-bottom: max(5px, env(safe-area-inset-bottom, 5px)); }
 .toast  { bottom: max(80px, calc(70px + env(safe-area-inset-bottom, 0px))); }
@@ -754,39 +888,6 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   .welcome-actions { margin-top:8px; }
 }
 
-/* ── Mark My Paper ── */
-.mark-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
-.mark-body { padding:16px; display:flex; flex-direction:column; gap:16px; max-width:680px; margin:0 auto; width:100%; }
-.mark-upload-zone { border:2.5px dashed var(--border); border-radius:var(--radius); padding:32px 20px; text-align:center; cursor:pointer; transition:all 0.2s; position:relative; background:var(--bg); }
-.mark-upload-zone:hover { border-color:var(--blue); background:var(--ice-light); }
-.mark-upload-zone.has-file { border-style:solid; border-color:var(--green); background:#f0fdf4; cursor:default; }
-.mark-upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-.mark-upload-zone.has-file input { display:none; }
-.mark-file-info { display:flex; align-items:center; gap:14px; justify-content:center; }
-.mark-file-icon { font-size:28px; flex-shrink:0; }
-.mark-file-text h4 { font-size:14px; font-weight:700; color:var(--text); }
-.mark-file-text span { font-size:12px; color:var(--text-soft); }
-.mark-remove { position:absolute; top:12px; right:12px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-soft); }
-.mark-privacy { background:#fefce8; border:1px solid #fde68a; border-radius:var(--radius-sm); padding:10px 14px; font-size:11.5px; color:#92400e; line-height:1.6; }
-.mark-form { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.mark-field label { display:block; font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
-.mark-field select { width:100%; padding:10px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; font-family:'Inter',sans-serif; color:var(--text); background:white; cursor:pointer; outline:none; }
-.mark-field.full { grid-column:1/-1; }
-.mark-submit-btn { width:100%; padding:15px; background:linear-gradient(135deg,#0e1c33,#1a3068); color:white; border:none; border-radius:var(--radius); font-size:15px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s; }
-.mark-submit-btn:disabled { opacity:0.55; cursor:not-allowed; }
-.mark-progress { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; }
-.mark-progress-bar { height:6px; background:var(--border); border-radius:3px; overflow:hidden; margin:10px 0 6px; }
-.mark-progress-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--green)); border-radius:3px; transition:width 0.3s; }
-.mark-progress-label { font-size:12px; color:var(--text-mid); }
-.mark-result { background:white; border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; }
-.mark-result-header { background:linear-gradient(135deg,#0a1628,#1a3068); padding:16px; color:white; display:flex; align-items:center; justify-content:space-between; }
-.mark-result-score { font-family:'Playfair Display',serif; font-size:28px; font-weight:800; color:#C9A84C; }
-.mark-result-label { font-size:11px; color:rgba(255,255,255,0.6); }
-.mark-result-body { padding:14px; font-size:13px; color:var(--text); line-height:1.8; }
-.mark-page-result { border-top:1px solid var(--border); padding:12px 14px; }
-.mark-page-result:first-child { border-top:none; }
-.mark-page-num { font-size:10px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
-
 /* ── Nav SVG Icons ── */
 .tab-icon { display:flex; align-items:center; justify-content:center; width:22px; height:22px; }
 .tab-icon svg { width:20px; height:20px; stroke:var(--text-soft); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.18s; }
@@ -949,6 +1050,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
       <div class="welcome-avatar">HAN</div>
       <h2>Annyeong! 👋</h2>
       <p>I'm HAN — your IB Math tutor built on Hanyong's 20+ years of teaching Mathematics and experience as an IB examiner. Ask me anything.</p>
+      <div class="paper-select-hint">📌 Select <strong>P1</strong>, <strong>P2</strong>, or <strong>P3</strong> above before asking — HAN uses exact working for Paper 1 and GDC computations for Papers 2 &amp; 3.</div>
       <div id="examCountdownBadge"></div>
       <div class="welcome-cards">
         <div class="welcome-card" onclick="usePrompt('Explain integration by parts with an IB HL example')"><div class="wc-icon">📐</div><div class="wc-title">Explain a concept</div><div class="wc-desc">Clear IB-style breakdown</div></div>
@@ -1259,89 +1361,6 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   </div>
 </div>
 
-<!-- ══════════════ MARK MY PAPER ══════════════ -->
-<div class="view-panel" id="view-mark">
-  <div class="mark-scroll">
-    <div class="mark-body">
-
-      <div class="mark-upload-zone" id="markUploadZone">
-        <input type="file" accept="application/pdf" onchange="markLoadPdf(event)">
-        <div id="markUploadPrompt">
-          <div style="font-size:36px;margin-bottom:8px">📄</div>
-          <div style="font-size:14px;font-weight:700;color:var(--text)">Upload your exam paper (PDF)</div>
-          <div style="font-size:12px;color:var(--text-soft);margin-top:4px">We convert each page to an image and mark it with HAN</div>
-        </div>
-        <div id="markFileInfo" class="mark-file-info" style="display:none">
-          <div class="mark-file-icon">📄</div>
-          <div class="mark-file-text">
-            <h4 id="markFileName"></h4>
-            <span id="markPageCount"></span>
-          </div>
-        </div>
-        <button class="mark-remove" id="markRemoveBtn" onclick="markRemovePdf(event)" style="display:none">✕</button>
-      </div>
-
-      <div class="mark-privacy">🔒 <strong>Privacy:</strong> Your PDF is converted to images for marking and <strong>never stored</strong>. Only the marking result is saved for 7 days so you can download it. IB past paper questions are © International Baccalaureate Organization — we process only <em>your</em> written answers.</div>
-
-      <div style="font-size:13px;font-weight:700;color:var(--text)">Paper details (optional — helps HAN mark more accurately)</div>
-      <div class="mark-form">
-        <div class="mark-field"><label>Course</label>
-          <select id="markCourse">
-            <option value="">Any</option>
-            <option value="AA HL" selected>Analysis &amp; Approaches HL</option>
-            <option value="AA SL">Analysis &amp; Approaches SL</option>
-            <option value="AI HL">Applications &amp; Interpretation HL</option>
-            <option value="AI SL">Applications &amp; Interpretation SL</option>
-          </select>
-        </div>
-        <div class="mark-field"><label>Paper</label>
-          <select id="markPaper">
-            <option value="">Any</option>
-            <option value="Paper 1" selected>Paper 1 (No GDC)</option>
-            <option value="Paper 2">Paper 2 (GDC allowed)</option>
-            <option value="Paper 3">Paper 3 (HL only)</option>
-          </select>
-        </div>
-        <div class="mark-field"><label>Year</label>
-          <select id="markYear">
-            <option value="">Any</option>
-            <option value="2025">2025</option>
-            <option value="2024" selected>2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-          </select>
-        </div>
-        <div class="mark-field"><label>Session</label>
-          <select id="markSession">
-            <option value="">Any</option>
-            <option value="May" selected>May</option>
-            <option value="November">November</option>
-          </select>
-        </div>
-        <div class="mark-field"><label>Time Zone</label>
-          <select id="markTz">
-            <option value="">Any</option>
-            <option value="TZ1" selected>TZ1</option>
-            <option value="TZ2">TZ2</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="mark-progress" id="markProgress" style="display:none">
-        <div style="font-size:13px;font-weight:700;color:var(--text)" id="markProgressTitle">Marking in progress…</div>
-        <div class="mark-progress-bar"><div class="mark-progress-fill" id="markProgressFill" style="width:0%"></div></div>
-        <div class="mark-progress-label" id="markProgressLabel">Preparing pages…</div>
-      </div>
-
-      <div class="mark-result" id="markResult" style="display:none"></div>
-
-      <button class="mark-submit-btn" id="markSubmitBtn" onclick="markMyPaper()">✦ Mark My Paper</button>
-    </div>
-  </div>
-</div>
-
 <!-- ══════════════ IA HELPER ══════════════ -->
 <div class="view-panel" id="view-ia">
   <div class="ia-scroll">
@@ -1430,6 +1449,211 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   </div>
 </div>
 
+<!-- ══════════════ MARK TAB ══════════════ -->
+<div class="view-panel" id="view-mark">
+  <div class="mark-scroll">
+    <!-- Hero -->
+    <div class="mark-hero">
+      <div class="mark-hero-title">📄 Mark My Script</div>
+      <div class="mark-hero-sub">Upload your completed IB paper — HAN marks each question, gives feedback, and tracks your topic strengths.</div>
+      <div id="markQuotaPill" class="mark-quota-pill" style="display:none">
+        <div id="markQuotaDot" class="mark-quota-dot"></div>
+        <span id="markQuotaText"></span>
+      </div>
+    </div>
+
+    <!-- Sign-in gate (shown when not logged in) -->
+    <div id="markSignInGate" class="mark-signin-gate" style="display:none">
+      <div style="font-size:48px">🔐</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text)">Sign in to mark your script</div>
+      <div style="font-size:13px;color:var(--text-soft);line-height:1.6;max-width:260px">Script marking is available for subscribers. Sign in to check your access.</div>
+      <button onclick="showLogin()" style="padding:11px 28px;background:var(--navy);color:white;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Sign In →</button>
+    </div>
+
+    <!-- Paywall (shown when not subscribed or quota exceeded) -->
+    <div id="markPaywall" class="mark-body" style="display:none">
+      <div class="mark-paywall">
+        <div class="mark-paywall-icon">📋</div>
+        <div class="mark-paywall-title" id="markPaywallTitle">Script Marking — Subscribers Only</div>
+        <div class="mark-paywall-sub" id="markPaywallSub">Upload your completed IB paper and get it marked by HAN. Available with a monthly subscription — includes 3 full script markings per month.</div>
+        <button class="mark-paywall-btn" onclick="showUpgrade()">Get Unlimited Access — S$19/mo</button>
+        <div class="mark-paywall-note" id="markPaywallNote">Need more than 3 scripts/month? Pay-per-script pricing coming soon.</div>
+      </div>
+    </div>
+
+    <!-- Main upload form -->
+    <div id="markUploadForm" class="mark-body" style="display:none">
+      <!-- Drop zone -->
+      <div id="markDropZone" class="mark-drop-zone" onclick="document.getElementById('markFileInput').click()" ondragover="markDragOver(event)" ondragleave="markDragLeave(event)" ondrop="markDrop(event)">
+        <input type="file" id="markFileInput" accept="application/pdf" style="display:none" onchange="markFileSelected(this.files[0])">
+        <div id="markDropDefault">
+          <div class="mark-drop-icon">📤</div>
+          <div class="mark-drop-title">Upload your completed IB paper</div>
+          <div class="mark-drop-sub">PDF format · Your answer script with questions and working</div>
+          <div class="mark-drop-hint">Tap to browse or drag-and-drop your PDF here</div>
+        </div>
+        <div id="markFilePreview" class="mark-file-preview" style="display:none">
+          <div class="mark-file-icon">📄</div>
+          <div style="flex:1;min-width:0">
+            <div class="mark-file-name" id="markFileName"></div>
+            <div class="mark-file-pages" id="markFilePages"></div>
+          </div>
+          <button class="mark-file-remove" onclick="markRemoveFile(event)" title="Remove file">✕</button>
+        </div>
+      </div>
+
+      <!-- Copyright notice -->
+      <div class="mark-copyright-note">
+        📋 <strong>Privacy:</strong> Your PDF is converted to images for marking and <strong>never stored</strong>. Only the marking result is saved for 7 days so you can download it. IB past paper questions are © International Baccalaureate Organization — we process only <em>your</em> written answers.
+      </div>
+
+      <!-- Paper selector -->
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">Paper details (optional — helps HAN mark more accurately)</div>
+        <div class="mark-selector-grid">
+          <div class="mark-select-group">
+            <label class="mark-select-label">Course</label>
+            <select id="markLevel" class="mark-select">
+              <option value="">— Select —</option>
+              <option value="AA HL">Analysis &amp; Approaches HL</option>
+              <option value="AA SL">Analysis &amp; Approaches SL</option>
+              <option value="AI HL">Applications &amp; Interpretation HL</option>
+              <option value="AI SL">Applications &amp; Interpretation SL</option>
+            </select>
+          </div>
+          <div class="mark-select-group">
+            <label class="mark-select-label">Paper</label>
+            <select id="markPaper" class="mark-select">
+              <option value="">— Select —</option>
+              <option value="Paper 1">Paper 1 (No GDC)</option>
+              <option value="Paper 2">Paper 2 (GDC)</option>
+              <option value="Paper 3">Paper 3 (HL Extended)</option>
+            </select>
+          </div>
+          <div class="mark-select-group">
+            <label class="mark-select-label">Year</label>
+            <select id="markYear" class="mark-select">
+              <option value="">— Select —</option>
+              <option>2025</option><option>2024</option><option>2023</option><option>2022</option>
+              <option>2021</option><option>2020</option><option>2019</option>
+              <option>2018</option><option>2017</option><option>2016</option>
+            </select>
+          </div>
+          <div class="mark-select-group">
+            <label class="mark-select-label">Session</label>
+            <select id="markSession" class="mark-select">
+              <option value="">— Select —</option>
+              <option value="May">May</option>
+              <option value="November">November</option>
+            </select>
+          </div>
+          <div class="mark-select-group">
+            <label class="mark-select-label">Time Zone</label>
+            <select id="markTimezone" class="mark-select">
+              <option value="">— Select —</option>
+              <option value="TZ0">TZ0</option>
+              <option value="TZ1">TZ1</option>
+              <option value="TZ2">TZ2</option>
+              <option value="TZ3">TZ3</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button id="markSubmitBtn" class="mark-submit-btn" onclick="markSubmitPaper()" disabled>
+        <span>✦</span> Mark My Paper
+      </button>
+    </div>
+
+    <!-- Processing state -->
+    <div id="markProcessing" class="mark-body" style="display:none">
+      <div class="mark-processing">
+        <div class="mark-proc-spinner"></div>
+        <div class="mark-proc-title">HAN is marking your paper…</div>
+        <div class="mark-proc-sub">This takes 30–60 seconds. Please keep this page open.</div>
+        <div class="mark-proc-steps">
+          <div class="mark-proc-step" id="mstep-read"><div class="mark-step-dot"></div>Reading your script</div>
+          <div class="mark-proc-step" id="mstep-mark"><div class="mark-step-dot"></div>Marking each question</div>
+          <div class="mark-proc-step" id="mstep-feedback"><div class="mark-step-dot"></div>Writing feedback</div>
+          <div class="mark-proc-step" id="mstep-topics"><div class="mark-step-dot"></div>Analysing topic performance</div>
+        </div>
+        <div id="markProcessingDetail" style="font-size:12px;color:var(--text-soft);margin-top:8px;min-height:16px;text-align:center"></div>
+      </div>
+    </div>
+
+    <!-- Results state -->
+    <div id="markResults" style="display:none">
+      <!-- Score card -->
+      <div class="mark-results">
+        <div class="mark-score-card">
+          <div class="mark-score-label">Total Score</div>
+          <div class="mark-score-big"><span id="mresTotal">—</span><span class="mark-score-denom"> / <span id="mresMax">—</span></span></div>
+          <div class="mark-score-pct" id="mresPct"></div>
+          <div class="mark-score-paper" id="mresPaper"></div>
+          <div id="mresReviewBadge" class="mark-review-badge" style="display:none">
+            🔍 Under review — Hanyong will verify this marking
+          </div>
+        </div>
+
+        <!-- Overall feedback -->
+        <div style="background:var(--ice-light);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Examiner's Overall Feedback</div>
+          <div id="mresOverall" style="font-size:13px;color:var(--text);line-height:1.7"></div>
+        </div>
+
+        <!-- Topic performance -->
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Topic Performance</div>
+          <div id="mresTopics" class="mark-topic-grid"></div>
+        </div>
+
+        <!-- Strengths & Improvements -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:var(--radius);padding:12px">
+            <div style="font-size:11px;font-weight:700;color:#15803d;margin-bottom:8px">✦ Strengths</div>
+            <div id="mresStrengths" class="mark-list"></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#fefce8,#fef9c3);border:1.5px solid #fde68a;border-radius:var(--radius);padding:12px">
+            <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:8px">⟳ Focus Areas</div>
+            <div id="mresImprovements" class="mark-list"></div>
+          </div>
+        </div>
+
+        <!-- Question-by-question breakdown -->
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">Question Breakdown</div>
+          <div id="mresQuestions" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
+        <!-- Share card -->
+        <div class="mark-share-card">
+          <div class="mark-share-title">Compare scores with classmates</div>
+          <div class="mark-share-sub">Share your result (score + topic chart) — without revealing your working. See how you stack up.</div>
+          <div class="mark-share-btns">
+            <button class="mark-share-btn" onclick="markShareResult('whatsapp')">💬 WhatsApp</button>
+            <button class="mark-share-btn" onclick="markShareResult('telegram')">✈ Telegram</button>
+            <button class="mark-share-btn" onclick="markShareResult('copy')">📋 Copy Link</button>
+          </div>
+        </div>
+
+        <!-- Action row -->
+        <div class="mark-action-row">
+          <button class="mark-action-btn primary" id="markDownloadBtn" onclick="markDownloadPDF()">
+            ⬇ Download Marked Script
+          </button>
+          <button class="mark-action-btn secondary" onclick="markStartNew()">
+            ＋ Mark Another
+          </button>
+        </div>
+        <div style="font-size:11px;color:var(--text-soft);text-align:center;line-height:1.6">
+          Your marked result is saved for <strong>7 days</strong>, then permanently deleted.<br>Download it to keep a copy.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Bottom Nav -->
 <nav class="tab-nav">
   <button class="tab-btn active" id="tab-chat" onclick="switchTab('chat')">
@@ -1458,11 +1682,11 @@ input[type=range] { flex:1; accent-color:var(--blue); }
   </button>
   <button class="tab-btn" id="tab-mark" onclick="switchTab('mark')" style="position:relative">
     <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
-    Mark<span style="position:absolute;top:4px;right:6px;background:var(--accent);color:var(--navy);font-size:7px;font-weight:800;border-radius:4px;padding:1px 4px;line-height:1.4;letter-spacing:0.3px">NEW</span>
+    Mark<span style="position:absolute;top:4px;right:2px;background:var(--accent);color:var(--navy);font-size:7px;font-weight:800;border-radius:4px;padding:1px 4px;line-height:1.4;letter-spacing:0.3px">NEW</span>
   </button>
   <button class="tab-btn" id="tab-ia" onclick="switchTab('ia')" style="position:relative">
     <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
-    IA<span style="position:absolute;top:4px;right:6px;background:var(--accent);color:var(--navy);font-size:7px;font-weight:800;border-radius:4px;padding:1px 4px;line-height:1.4;letter-spacing:0.3px">NEW</span>
+    IA
   </button>
 </nav>
 
@@ -2021,7 +2245,7 @@ const GOOGLE_CLIENT_ID = '328753347113-pm103e847sq15r21d1tj5rpu2vubg4dh.apps.goo
 // ★ STRIPE: Paste your Stripe Payment Link URL below after creating it in the Stripe dashboard
 // Example: 'https://buy.stripe.com/test_abc123xyz'
 // Steps: stripe.com/dashboard → Payment Links → + New → Recurring $19/month → Copy link URL
-const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/9B6dRbcsn3VA0uc8x887K00';
+const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/7sY4gBcsnajY6SA6p087K01';
 // ★ GIFT: Set a separate Stripe link for gifting, or leave as STRIPE_PAYMENT_LINK to reuse the same one
 const STRIPE_GIFT_LINK = STRIPE_PAYMENT_LINK;
 
@@ -2074,13 +2298,14 @@ let mockSelectedTopics = new Set(['All']), mockPaperData = [], practiceFiltered 
 // TAB SWITCHING
 // ════════════════════════════════════════
 function switchTab(tab) {
-  ['chat','practice','mock','progress','about','mark','ia'].forEach(t => {
+  ['chat','practice','mock','progress','about','ia','mark'].forEach(t => {
     const v = document.getElementById('view-' + t), b = document.getElementById('tab-' + t);
     if (v) v.classList.toggle('active', t === tab);
     if (b) b.classList.toggle('active', t === tab);
   });
   if (tab === 'practice') initPractice();
   if (tab === 'mock') initMock();
+  if (tab === 'mark') initMarkTab();
   // accuracy badge is now a static placeholder — no fetch needed
   if (tab === 'progress') {
     if (!currentUser && !isAdmin) {
@@ -2318,6 +2543,10 @@ function checkPremiumStatus() {
   // Accept 'true' (legacy), 'active', or 'cancel_at_period_end' (still within paid period)
   return val === 'true' || val === 'active' || val === 'cancel_at_period_end';
 }
+function getUserTier() {
+  const key = currentUser ? 'han_tier_' + currentUser.sub : null;
+  return key ? (sessionStorage.getItem(key) || null) : null;
+}
 function canAskQuestion(type) {
   if (isAdmin) return true;
   if (checkPremiumStatus()) return true;
@@ -2413,6 +2642,8 @@ async function checkAndSetPremium(user) {
       // Store status (active or cancel_at_period_end) for UI rendering
       const status = data.status || 'active';
       sessionStorage.setItem('han_premium_' + user.sub, status);
+      // Store tier ('legacy' or 'subscriber') for quota/feature gating
+      if (data.tier) sessionStorage.setItem('han_tier_' + user.sub, data.tier);
       // Cache graduation date for account modal display
       if (data.graduationMonth) sessionStorage.setItem('han_grad_month_' + user.sub, data.graduationMonth);
       if (data.graduationYear)  sessionStorage.setItem('han_grad_year_'  + user.sub, data.graduationYear);
@@ -2743,59 +2974,19 @@ function showToast(msg) {
 // ════════════════════════════════════════
 // IMAGE UPLOAD
 // ════════════════════════════════════════
-
-// Netlify Edge Functions cap request bodies at ~1 MB.
-// Base64 inflates binary by ~33%, so target ≤ 720 KB binary → ≤ 960 KB base64.
-const EDGE_IMAGE_TARGET_BYTES = 720 * 1024;
-
-async function compressImageToTarget(file) {
-  if (file.size <= EDGE_IMAGE_TARGET_BYTES) return file;
-  return new Promise((resolve) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      // Scale dimensions proportionally so pixel count matches target/original ratio
-      const scale = Math.sqrt(EDGE_IMAGE_TARGET_BYTES / file.size);
-      const w = Math.max(1, Math.round(img.width * scale));
-      const h = Math.max(1, Math.round(img.height * scale));
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      // Try quality 0.82 first, fall back to 0.65 if still too large
-      canvas.toBlob((blob) => {
-        if (blob && blob.size <= EDGE_IMAGE_TARGET_BYTES) {
-          resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
-        } else {
-          canvas.toBlob((blob2) => {
-            resolve(new File([blob2 || blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
-          }, 'image/jpeg', 0.65);
-        }
-      }, 'image/jpeg', 0.82);
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
-    img.src = url;
-  });
-}
-
-async function handleImageUpload(event) {
+function handleImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
   const isPdf = file.type === 'application/pdf';
   if (!file.type.startsWith('image/') && !isPdf) { showToast('Please upload an image or PDF file'); return; }
-  if (isPdf && file.size > 700 * 1024) {
-    showToast('PDF too large. Please compress it below 700 KB, or take a photo of your working instead.'); event.target.value = ''; return;
-  }
-  if (!isPdf && file.size > 20 * 1024 * 1024) {
-    showToast('Image too large. Maximum size is 20 MB.'); event.target.value = ''; return;
-  }
-  // Compress images that would exceed the edge-function body limit
-  const readableFile = isPdf ? file : await compressImageToTarget(file);
+  const maxBytes = isPdf ? 32 * 1024 * 1024 : 20 * 1024 * 1024;
+  const maxLabel = isPdf ? '32 MB' : '20 MB';
+  if (file.size > maxBytes) { showToast(`File too large. Maximum size is ${maxLabel}.`); event.target.value = ''; return; }
   const reader = new FileReader();
   reader.onload = function (e) {
     const dataUrl = e.target.result;
     uploadedImageBase64 = dataUrl.split(',')[1];
-    uploadedImageType = readableFile.type;
+    uploadedImageType = file.type;
     uploadedFileName = file.name;
     const thumb = document.getElementById('previewThumb');
     const pdfIcon = document.getElementById('previewPdfIcon');
@@ -2812,7 +3003,7 @@ async function handleImageUpload(event) {
     }
     document.getElementById('previewStrip').classList.add('show');
   };
-  reader.readAsDataURL(readableFile);
+  reader.readAsDataURL(file);
 }
 function removeImage() {
   uploadedImageBase64 = null; uploadedImageType = null; uploadedFileName = null;
@@ -2840,20 +3031,18 @@ document.addEventListener('paste', function(e) {
       e.preventDefault();
       const file = items[i].getAsFile();
       if (!file) return;
-      compressImageToTarget(file).then((readableFile) => {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          uploadedImageBase64 = ev.target.result.split(',')[1];
-          uploadedImageType = readableFile.type;
-          document.getElementById('previewThumb').src = ev.target.result;
-          document.getElementById('previewStrip').classList.add('show');
-          // Switch to chat tab if not already there
-          if (!document.getElementById('view-chat').classList.contains('active')) switchTab('chat');
-          document.getElementById('userInput').focus();
-          showToast('📸 Screenshot pasted! Add your question and send.');
-        };
-        reader.readAsDataURL(readableFile);
-      });
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        uploadedImageBase64 = ev.target.result.split(',')[1];
+        uploadedImageType = file.type;
+        document.getElementById('previewThumb').src = ev.target.result;
+        document.getElementById('previewStrip').classList.add('show');
+        // Switch to chat tab if not already there
+        if (!document.getElementById('view-chat').classList.contains('active')) switchTab('chat');
+        document.getElementById('userInput').focus();
+        showToast('📸 Screenshot pasted! Add your question and send.');
+      };
+      reader.readAsDataURL(file);
       return; // only handle first image
     }
   }
@@ -3354,6 +3543,7 @@ function startNewChat() {
     <div class="welcome-avatar">HAN</div>
     <h2>New chat</h2>
     <p>Ask me anything — IB Math, worked solutions, exam tips.</p>
+    <div class="paper-select-hint">📌 Select <strong>P1</strong>, <strong>P2</strong>, or <strong>P3</strong> above before asking — HAN uses exact working for Paper 1 and GDC computations for Papers 2 &amp; 3.</div>
     <div class="recent-chats-row" id="recentChatsRow" style="display:none"></div>
   </div>`;
   document.getElementById('newChatBtn').style.display = 'none';
@@ -3479,12 +3669,6 @@ async function sendMessage() {
     incrementGuestCount();
     // Fall through to send
   }
-  // Guard: Netlify Edge Functions cap request bodies at ~1 MB.
-  // uploadedImageBase64 is a base64 string — its char count ≈ HTTP bytes for that field.
-  if (uploadedImageBase64 && uploadedImageBase64.length > 950 * 1024) {
-    showToast('File too large to send. For PDFs, please compress below 700 KB or take a photo instead.');
-    return;
-  }
   const questionType = uploadedImageBase64 ? 'upload' : 'typed';
   if (!isAdmin && currentUser && !canAskQuestion(questionType)) { showUpgrade(); return; }
   if (!isAdmin && currentUser) incrementCount(questionType);
@@ -3525,7 +3709,7 @@ async function sendMessage() {
     const response = await fetch('/api/claude', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-HAN-Token': hanToken },
-      body: JSON.stringify({ messages: conversationHistory })
+      body: JSON.stringify({ messages: conversationHistory, paper: selectedPaper, level: selectedLevel })
     });
     if (!response.ok) {
       const errText = await response.text();
@@ -4934,6 +5118,7 @@ if (window.location.hash === '#signin') {
               if (d.premium) {
                 const status = d.status || 'active';
                 sessionStorage.setItem(key, status);
+                if (d.tier) sessionStorage.setItem('han_tier_' + currentUser.sub, d.tier);
                 if (d.graduationMonth) sessionStorage.setItem('han_grad_month_' + currentUser.sub, d.graduationMonth);
                 if (d.graduationYear)  sessionStorage.setItem('han_grad_year_'  + currentUser.sub, d.graduationYear);
                 updateLimitBar();
@@ -6195,6 +6380,686 @@ function toggleDarkMode() {
   if (btn) btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
 }
 
+// ════════════════════════════════════════════════════════════════
+// MARK TAB — Student Script Marking
+// ════════════════════════════════════════════════════════════════
+(function() {
+  // Monthly quota stored server-side; localStorage caches for UI speed
+  const MARK_MONTH_LIMIT = 3;
+  const GAS_URL_LOCAL    = typeof SHEETS_URL !== 'undefined' ? SHEETS_URL : '';
+
+  let markPdfFile    = null;   // File object
+  let markPdfPages   = [];     // [{data, mediaType}] — base64 JPEG per page
+  let markLastResult = null;   // last marking result JSON
+  let markLastId     = null;   // last scriptId
+  let markQuotaCache = null;   // { remaining, isPremium, month }
+
+  // ── Init: called each time the tab is opened ──────────────────
+  window.initMarkTab = async function() {
+    const user = currentUser;
+    const gate   = document.getElementById('markSignInGate');
+    const wall   = document.getElementById('markPaywall');
+    const form   = document.getElementById('markUploadForm');
+    const proc   = document.getElementById('markProcessing');
+    const res    = document.getElementById('markResults');
+
+    // Always hide processing/results unless mid-flight
+    if (proc) proc.style.display = 'none';
+
+    if (!user) {
+      if (gate) gate.style.display = 'flex';
+      if (wall) wall.style.display = 'none';
+      if (form) form.style.display = 'none';
+      if (res)  res.style.display  = 'none';
+      return;
+    }
+    if (gate) gate.style.display = 'none';
+
+    // Show results if we already have them
+    if (markLastResult) {
+      if (form) form.style.display = 'none';
+      if (res)  res.style.display  = 'block';
+      return;
+    }
+
+    // Check quota
+    await markRefreshQuota();
+    const quota = markQuotaCache;
+
+    if (!quota || !quota.isPremium) {
+      if (wall) { wall.style.display = 'block'; form.style.display = 'none'; }
+      document.getElementById('markPaywallTitle').textContent = 'Script Marking — Subscribers Only';
+      document.getElementById('markPaywallSub').textContent   = 'Upload your completed IB paper and get it marked by HAN. Available with a monthly subscription — includes 3 full script markings per month.';
+      document.getElementById('markPaywallNote').textContent  = 'Need more than 3 scripts/month? Pay-per-script pricing coming soon.';
+      return;
+    }
+
+    if (quota.remaining <= 0) {
+      if (wall) { wall.style.display = 'block'; form.style.display = 'none'; }
+      document.getElementById('markPaywallTitle').textContent = 'Monthly Limit Reached';
+      document.getElementById('markPaywallSub').textContent   = `You've used all ${MARK_MONTH_LIMIT} script markings for this month. Your allowance resets on the 1st of next month.`;
+      document.getElementById('markPaywallNote').textContent  = 'Need more now? Pay-per-script pricing coming soon.';
+      return;
+    }
+
+    // Show upload form
+    if (wall) wall.style.display = 'none';
+    if (form) form.style.display = 'flex';
+    markUpdateQuotaPill(quota);
+  };
+
+  // ── Quota pill ─────────────────────────────────────────────────
+  function markUpdateQuotaPill(quota) {
+    const pill = document.getElementById('markQuotaPill');
+    const dot  = document.getElementById('markQuotaDot');
+    const txt  = document.getElementById('markQuotaText');
+    if (!pill || !quota) return;
+    pill.style.display = 'inline-flex';
+    if (quota.isUnlimited) {
+      txt.textContent = 'Unlimited script markings · Early Believer';
+      dot.className = 'mark-quota-dot';
+    } else {
+      const rem = quota.remaining;
+      txt.textContent = rem + ' script marking' + (rem !== 1 ? 's' : '') + ' remaining this month';
+      dot.className = 'mark-quota-dot' + (rem === 0 ? ' empty' : rem === 1 ? ' warn' : '');
+    }
+  }
+
+  // ── Fetch quota from server ────────────────────────────────────
+  async function markRefreshQuota() {
+    const token = localStorage.getItem('han_token');
+    if (!token || !currentUser) { markQuotaCache = null; return; }
+    try {
+      const resp = await fetch('/api/mark-script', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ action: 'quotaCheckOnly' }),
+      });
+      if (resp.ok) {
+        const d = await resp.json();
+        if (d.quota) { markQuotaCache = d.quota; return; }
+      } else if (resp.status === 402) {
+        const d = await resp.json();
+        markQuotaCache = { remaining: d.remaining ?? 0, isPremium: d.isPremium ?? false, isUnlimited: d.isUnlimited ?? false };
+        return;
+      }
+    } catch(e) { /* fall through to local estimate */ }
+    // Fallback: estimate from local cache if server is unreachable
+    const premStatus = checkPremiumStatus();
+    const isUnlimited = getUserTier() === 'legacy';
+    const monthKey = new Date().toISOString().slice(0, 7);
+    const used = parseInt(localStorage.getItem('han_mark_used_' + monthKey) || '0', 10);
+    markQuotaCache = {
+      remaining:   premStatus ? (isUnlimited ? 999 : Math.max(0, MARK_MONTH_LIMIT - used)) : 0,
+      isPremium:   !!premStatus,
+      isUnlimited,
+    };
+  }
+
+  // ── Drag-and-drop handlers ─────────────────────────────────────
+  window.markDragOver = function(e) {
+    e.preventDefault();
+    document.getElementById('markDropZone').classList.add('drag-over');
+  };
+  window.markDragLeave = function(e) {
+    document.getElementById('markDropZone').classList.remove('drag-over');
+  };
+  window.markDrop = function(e) {
+    e.preventDefault();
+    document.getElementById('markDropZone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') markFileSelected(file);
+    else showToast('Please upload a PDF file.');
+  };
+
+  // ── File selected ──────────────────────────────────────────────
+  window.markFileSelected = async function(file) {
+    if (!file || file.type !== 'application/pdf') { showToast('Please upload a PDF file.'); return; }
+    markPdfFile  = file;
+    markPdfPages = [];
+
+    // Show loading state in drop zone
+    const zone = document.getElementById('markDropZone');
+    zone.classList.add('has-file');
+    document.getElementById('markDropDefault').style.display = 'none';
+    const preview = document.getElementById('markFilePreview');
+    preview.style.display = 'flex';
+    document.getElementById('markFileName').textContent = file.name;
+    document.getElementById('markFilePages').textContent = 'Loading…';
+
+    // Convert PDF pages to base64 images using pdf.js
+    try {
+      markPdfPages = await markConvertPdfToImages(file);
+      document.getElementById('markFilePages').textContent =
+        markPdfPages.length + ' page' + (markPdfPages.length !== 1 ? 's' : '') + ' loaded';
+      document.getElementById('markSubmitBtn').disabled = false;
+    } catch(e) {
+      showToast('Could not read PDF: ' + e.message);
+      markRemoveFile(null);
+    }
+  };
+
+  // ── Remove file ────────────────────────────────────────────────
+  window.markRemoveFile = function(e) {
+    if (e) e.stopPropagation();
+    markPdfFile  = null;
+    markPdfPages = [];
+    const zone = document.getElementById('markDropZone');
+    zone.classList.remove('has-file');
+    document.getElementById('markDropDefault').style.display = 'block';
+    document.getElementById('markFilePreview').style.display = 'none';
+    document.getElementById('markFileName').textContent  = '';
+    document.getElementById('markFilePages').textContent = '';
+    document.getElementById('markFileInput').value = '';
+    document.getElementById('markSubmitBtn').disabled = true;
+  };
+
+  // ── PDF → base64 JPEG images via pdf.js (CDN loaded lazily) ───
+  async function markConvertPdfToImages(file) {
+    // Load pdf.js if not already present
+    if (!window.pdfjsLib) {
+      await new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pages = [];
+    const MAX_PAGES = 30;
+    // Scale/quality tiers — smaller images = fewer Anthropic input tokens = faster responses.
+    // MAX_DIM caps the longest side to avoid huge images on large-format PDFs.
+    const n = pdf.numPages;
+    const SCALE   = n > 20 ? 0.65 : n > 15 ? 0.8 : n > 10 ? 1.0 : 1.6;
+    const QUALITY = n > 20 ? 0.42 : n > 15 ? 0.5 : n > 10 ? 0.62 : 0.80;
+    const MAX_DIM = n > 15 ? 640 : 900; // hard pixel cap on longest side
+
+    for (let i = 1; i <= Math.min(pdf.numPages, MAX_PAGES); i++) {
+      const page   = await pdf.getPage(i);
+      let vp       = page.getViewport({ scale: SCALE });
+      // Enforce MAX_DIM cap
+      const longest = Math.max(vp.width, vp.height);
+      if (longest > MAX_DIM) {
+        vp = page.getViewport({ scale: SCALE * (MAX_DIM / longest) });
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width  = vp.width;
+      canvas.height = vp.height;
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: vp }).promise;
+
+      const dataUrl = canvas.toDataURL('image/jpeg', QUALITY);
+      const base64  = dataUrl.split(',')[1];
+      pages.push({ data: base64, mediaType: 'image/jpeg' });
+    }
+    return pages;
+  }
+
+  // ── Step indicator helpers ─────────────────────────────────────
+  function markSetStep(stepId) {
+    ['mstep-read','mstep-mark','mstep-feedback','mstep-topics'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('active', 'done');
+    });
+    let found = false;
+    ['mstep-read','mstep-mark','mstep-feedback','mstep-topics'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (found) return;
+      if (id === stepId) { el.classList.add('active'); found = true; }
+      else el.classList.add('done');
+    });
+  }
+
+  // ── Client-side merge of batch marking results ────────────────
+  function mergeMarkingResults(batchResults) {
+    const qMap = new Map();
+    for (const r of batchResults) {
+      for (const q of (r.questions || [])) {
+        const key = String(q.number);
+        if (!qMap.has(key)) qMap.set(key, { number: q.number, parts: [], questionTotal: 0, questionMax: 0 });
+        const entry = qMap.get(key);
+        for (const part of (q.parts || [])) {
+          if (!entry.parts.find(p => p.part === part.part)) entry.parts.push(part);
+        }
+        entry.questionTotal = entry.parts.reduce((s, p) => s + (p.awarded  || 0), 0);
+        entry.questionMax   = entry.parts.reduce((s, p) => s + (p.maxMarks || 0), 0);
+      }
+    }
+    const questions = [...qMap.values()].sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
+    const total    = questions.reduce((s, q) => s + (q.questionTotal || 0), 0);
+    const maxTotal = questions.reduce((s, q) => s + (q.questionMax   || 0), 0);
+    const topicMap = {};
+    for (const r of batchResults) {
+      for (const t of (r.topicPerformance || [])) {
+        if (!topicMap[t.topic]) topicMap[t.topic] = { topic: t.topic, awarded: 0, max: 0 };
+        topicMap[t.topic].awarded += t.awarded || 0;
+        topicMap[t.topic].max     += t.max     || 0;
+      }
+    }
+    const topicPerformance = Object.values(topicMap).map(t => ({
+      ...t, percentage: t.max > 0 ? Math.round(t.awarded / t.max * 100) : 0,
+    }));
+    const strengths    = [...new Set(batchResults.flatMap(r => r.strengths    || []))].slice(0, 4);
+    const improvements = [...new Set(batchResults.flatMap(r => r.improvements || []))].slice(0, 4);
+    const overallFeedback = batchResults.map(r => r.overallFeedback || '').filter(Boolean).join(' ');
+    const confidence = Math.min(...batchResults.map(r => typeof r.confidence === 'number' ? r.confidence : 1.0));
+    return {
+      questions, total, maxTotal,
+      percentage: maxTotal > 0 ? Math.round(total / maxTotal * 100) : 0,
+      overallFeedback, topicPerformance, strengths, improvements, confidence,
+    };
+  }
+
+  // ── Submit paper for marking ───────────────────────────────────
+  window.markSubmitPaper = async function() {
+    if (!markPdfPages.length) { showToast('Please upload your PDF first.'); return; }
+    const token = localStorage.getItem('han_token');
+    if (!token) { showLogin(); return; }
+
+    const sessionVal = document.getElementById('markSession').value;
+    const tzVal      = document.getElementById('markTimezone').value;
+    const paperInfo = {
+      level:   document.getElementById('markLevel').value,
+      paper:   document.getElementById('markPaper').value,
+      year:    document.getElementById('markYear').value,
+      session: sessionVal && tzVal ? sessionVal + ' ' + tzVal : (sessionVal || tzVal),
+    };
+    const studentName = currentUser?.name || currentUser?.email?.split('@')[0] || 'Student';
+
+    // Show processing
+    document.getElementById('markUploadForm').style.display = 'none';
+    document.getElementById('markProcessing').style.display = 'flex';
+    markSetStep('mstep-read');
+
+    let data;
+
+    try {
+      // ── Step 1: Quota check (fast, separate from marking) ────────
+      const quotaResp = await fetch('/api/mark-script', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ action: 'quotaCheckOnly' }),
+      });
+      if (quotaResp.status === 402) {
+        const err = await quotaResp.json();
+        document.getElementById('markProcessing').style.display = 'none';
+        document.getElementById('markPaywall').style.display = 'block';
+        document.getElementById('markPaywallTitle').textContent = err.quotaExceeded ? 'Monthly Limit Reached' : 'Script Marking — Subscribers Only';
+        document.getElementById('markPaywallSub').textContent = err.error;
+        return;
+      }
+      if (quotaResp.ok) {
+        const qd = await quotaResp.json();
+        if (qd.quota && qd.quota.remaining <= 0) {
+          document.getElementById('markProcessing').style.display = 'none';
+          document.getElementById('markPaywall').style.display = 'block';
+          document.getElementById('markPaywallTitle').textContent = 'Monthly Limit Reached';
+          document.getElementById('markPaywallSub').textContent = 'You have used all your script markings for this month.';
+          return;
+        }
+      }
+
+      markSetStep('mstep-mark');
+
+      // ── Step 1b: Fetch paper structure (total marks + per-question allocation) ──
+      // Non-fatal — falls back to static totals if GAS has no data for this paper.
+      let paperStructure = null;
+      try {
+        const structResp = await fetch('/api/mark-script', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ action: 'getPaperStructure', paperInfo }),
+        });
+        if (structResp.ok) {
+          const sd = await structResp.json();
+          paperStructure = sd.structure || null;
+        }
+      } catch(_) {}
+
+      // ── Step 2: Split into 1-page batches, run 2 at a time via worker pool ──
+      // Sonnet 4.6 has an 8,000 output-TPM rate limit. At ~1,000 tokens/page
+      // average, 2 workers ≈ 6,000 TPM — safely under. 429s are retried with backoff.
+      const BATCH_SIZE   = 1;
+      const MAX_WORKERS  = 1; // System prompt now includes full markscheme text per question; keep to 1 worker to stay under 30k input-TPM limit
+      const batches = [];
+      for (let i = 0; i < markPdfPages.length; i += BATCH_SIZE) {
+        batches.push(markPdfPages.slice(i, i + BATCH_SIZE));
+      }
+
+      const batchResults = new Array(batches.length);
+      let nextBatch = 0;
+      let doneCount = 0;
+      const markPageEl = document.getElementById('markProcessingDetail');
+
+      async function batchWorker() {
+        while (nextBatch < batches.length) {
+          const idx   = nextBatch++;
+          const batch = batches[idx];
+
+          // Retry loop — handles transient 429 rate-limit responses
+          let resp;
+          for (let attempt = 0; attempt < 5; attempt++) {
+            resp = await fetch('/api/mark-script', {
+              method:  'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+              body: JSON.stringify({ action: 'batchMark', pages: batch, paperInfo, studentName, paperStructure }),
+            });
+            if (resp.status !== 429) break;
+            const retryAfter = parseInt(resp.headers.get('retry-after') || '15', 10);
+            console.warn('[mark-script] rate limited, retrying in ' + retryAfter + 's (attempt ' + (attempt + 1) + ')');
+            if (markPageEl) markPageEl.textContent = `Rate limited — waiting ${retryAfter}s before retry…`;
+            await new Promise(r => setTimeout(r, retryAfter * 1000));
+          }
+
+          if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            console.error('[mark-script] batch error HTTP ' + resp.status + ':', JSON.stringify(err));
+            throw new Error(err.error || 'Batch marking failed (HTTP ' + resp.status + ').');
+          }
+          const data = await resp.json();
+          batchResults[idx] = data.result;
+          doneCount += batch.length;
+          if (markPageEl) markPageEl.textContent = `Marking page ${Math.min(doneCount, markPdfPages.length)} of ${markPdfPages.length}…`;
+          if (doneCount >= Math.floor(markPdfPages.length / 2)) markSetStep('mstep-feedback');
+        }
+      }
+
+      markSetStep('mstep-mark');
+      const workers = Array.from({ length: Math.min(MAX_WORKERS, batches.length) }, batchWorker);
+      await Promise.all(workers);
+
+      markSetStep('mstep-topics');
+
+      // ── Step 3: Merge results and record in GAS (non-fatal) ──────
+      const mergedResult = mergeMarkingResults(batchResults);
+      const confidence   = mergedResult.confidence;
+      const needsReview  = confidence < 0.72;
+      const scriptId     = 'scr_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6);
+
+      fetch('/api/mark-script', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ action: 'finalizeScript', scriptId, result: mergedResult, paperInfo }),
+      }).catch(() => {});
+
+      data = { ok: true, scriptId, result: mergedResult, needsReview, confidence };
+
+    } catch(e) {
+      document.getElementById('markProcessing').style.display = 'none';
+      document.getElementById('markUploadForm').style.display = 'flex';
+      showToast(e.message);
+      return;
+    }
+
+    // Increment local quota counter
+    const monthKey = new Date().toISOString().slice(0, 7);
+    const used = parseInt(localStorage.getItem('han_mark_used_' + monthKey) || '0', 10);
+    localStorage.setItem('han_mark_used_' + monthKey, String(used + 1));
+
+    markLastResult = data.result;
+    markLastId     = data.scriptId;
+
+    // Also update progress chart with topic performance
+    markApplyTopicPerformance(data.result);
+
+    // Render results
+    document.getElementById('markProcessing').style.display = 'none';
+    markRenderResults(data.result, data.scriptId, data.needsReview, paperInfo);
+    document.getElementById('markResults').style.display = 'block';
+  };
+
+  // ── Push topic performance into student progress data ──────────
+  function markApplyTopicPerformance(result) {
+    if (!result || !Array.isArray(result.topicPerformance)) return;
+    try {
+      const prog = JSON.parse(localStorage.getItem('han_progress_' + (currentUser?.sub || currentUser?.email || '')) || '{}');
+      if (!prog.topicScores) prog.topicScores = {};
+      result.topicPerformance.forEach(tp => {
+        if (!tp.topic || tp.max === 0) return;
+        const key = tp.topic.toLowerCase().replace(/\s+/g, '_');
+        if (!prog.topicScores[key]) prog.topicScores[key] = { awarded: 0, max: 0, count: 0 };
+        prog.topicScores[key].awarded += tp.awarded;
+        prog.topicScores[key].max     += tp.max;
+        prog.topicScores[key].count   += 1;
+      });
+      localStorage.setItem('han_progress_' + (currentUser?.sub || currentUser?.email || ''), JSON.stringify(prog));
+    } catch(e) { /* non-fatal */ }
+  }
+
+  // ── Render results ─────────────────────────────────────────────
+  function markRenderResults(r, scriptId, needsReview, paperInfo) {
+    document.getElementById('mresTotal').textContent = r.total ?? '—';
+    document.getElementById('mresMax').textContent   = r.maxTotal ?? '—';
+    document.getElementById('mresPct').textContent   = r.percentage != null ? r.percentage + '%' : '';
+    const paperLabel = [paperInfo?.level, paperInfo?.paper, paperInfo?.year, paperInfo?.session].filter(Boolean).join(' · ');
+    document.getElementById('mresPaper').textContent = paperLabel;
+
+    const badge = document.getElementById('mresReviewBadge');
+    if (badge) badge.style.display = needsReview ? 'inline-flex' : 'none';
+
+    // Score card colour
+    const card = document.querySelector('.mark-score-card');
+    if (card && r.percentage != null) {
+      const p = r.percentage;
+      card.style.background = p >= 75 ? 'linear-gradient(135deg,#064e3b,#065f46)'
+                            : p >= 50 ? 'linear-gradient(135deg,#0e1c33,#1a3068)'
+                            :           'linear-gradient(135deg,#1c1917,#44403c)';
+    }
+
+    // Overall feedback
+    const overall = document.getElementById('mresOverall');
+    if (overall) overall.textContent = r.overallFeedback || '';
+
+    // Topic bars
+    const topicsEl = document.getElementById('mresTopics');
+    if (topicsEl && Array.isArray(r.topicPerformance)) {
+      topicsEl.innerHTML = r.topicPerformance.map(tp => {
+        const pct   = tp.percentage ?? 0;
+        const color = pct >= 75 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#ef4444';
+        return `<div class="mark-topic-row">
+          <div class="mark-topic-name">${escHtml(tp.topic)}</div>
+          <div class="mark-topic-bar-wrap"><div class="mark-topic-bar" style="width:${pct}%;background:${color}"></div></div>
+          <div class="mark-topic-pct">${pct}%</div>
+        </div>`;
+      }).join('');
+    }
+
+    // Strengths
+    const strEl = document.getElementById('mresStrengths');
+    if (strEl && Array.isArray(r.strengths)) {
+      strEl.innerHTML = r.strengths.map(s => `<div class="mark-list-item"><div class="mark-list-dot" style="background:#22c55e"></div>${escHtml(s)}</div>`).join('');
+    }
+
+    // Improvements
+    const impEl = document.getElementById('mresImprovements');
+    if (impEl && Array.isArray(r.improvements)) {
+      impEl.innerHTML = r.improvements.map(s => `<div class="mark-list-item"><div class="mark-list-dot" style="background:#f59e0b"></div>${escHtml(s)}</div>`).join('');
+    }
+
+    // Questions
+    const qEl = document.getElementById('mresQuestions');
+    if (qEl && Array.isArray(r.questions)) {
+      qEl.innerHTML = r.questions.map(q => {
+        const scoreClass = q.questionTotal === q.questionMax ? 'full' : q.questionTotal === 0 ? 'zero' : 'partial';
+        const partsHtml = (q.parts || []).map(p => {
+          const marksHtml = (p.marks || []).map(m => {
+            const cls = m.awarded ? (m.type === 'M' || m.type === 'A' ? 'awarded' : 'ft') : 'lost';
+            return `<span class="mark-code ${cls}" title="${escHtml(m.reason || '')}">${escHtml(m.code)}</span>`;
+          }).join('');
+          return `<div class="mark-part-row">
+            <div class="mark-part-header">
+              <div class="mark-part-label">Part ${escHtml(p.part || '').toUpperCase()}</div>
+              <div class="mark-part-score">${p.awarded}/${p.maxMarks}</div>
+            </div>
+            <div class="mark-marks-row">${marksHtml}</div>
+            <div class="mark-part-feedback">${escHtml(p.feedback || '')}</div>
+          </div>`;
+        }).join('');
+        return `<div class="mark-q-section">
+          <div class="mark-q-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'flex':'none'">
+            <div class="mark-q-title">Question ${escHtml(String(q.number || ''))}</div>
+            <div class="mark-q-score ${scoreClass}">${q.questionTotal}/${q.questionMax}</div>
+          </div>
+          <div class="mark-q-body" style="display:flex">${partsHtml}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Download marked script as PDF ─────────────────────────────
+  window.markDownloadPDF = async function() {
+    if (!markLastResult) return;
+    const btn = document.getElementById('markDownloadBtn');
+    if (btn) { btn.textContent = '⏳ Generating…'; btn.disabled = true; }
+
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const r   = markLastResult;
+      const margin = 15, lineH = 6, pageW = 210, maxW = pageW - margin * 2;
+
+      let y = 20;
+      const addText = (text, size, bold, color) => {
+        doc.setFontSize(size || 11);
+        doc.setFont('helvetica', bold ? 'bold' : 'normal');
+        if (color) doc.setTextColor(...color); else doc.setTextColor(17, 24, 39);
+        const lines = doc.splitTextToSize(String(text), maxW);
+        lines.forEach(line => {
+          if (y > 275) { doc.addPage(); y = 20; }
+          doc.text(line, margin, y);
+          y += lineH;
+        });
+      };
+
+      // Header
+      doc.setFillColor(14, 28, 51);
+      doc.rect(0, 0, 210, 28, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.setTextColor(201, 168, 76);
+      doc.text('askHanyong — Marked Script', margin, 12);
+      doc.setFontSize(9);
+      doc.setTextColor(200, 210, 230);
+      const now = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+      doc.text('Marked by HAN · ' + now, margin, 20);
+      y = 36;
+
+      // Score summary
+      addText('TOTAL SCORE', 9, true, [100, 116, 139]);
+      y -= 2;
+      addText(`${r.total} / ${r.maxTotal}  (${r.percentage}%)`, 18, true, [14, 28, 51]);
+      y += 2;
+      if (r.overallFeedback) {
+        addText('Examiner Feedback', 9, true, [100, 116, 139]); y -= 2;
+        addText(r.overallFeedback, 11, false);
+        y += 2;
+      }
+
+      // Topic performance
+      if (Array.isArray(r.topicPerformance) && r.topicPerformance.length) {
+        y += 3;
+        addText('TOPIC PERFORMANCE', 9, true, [100, 116, 139]);
+        r.topicPerformance.forEach(tp => {
+          if (y > 270) { doc.addPage(); y = 20; }
+          const barW = 60, barH = 4, barX = margin + 70;
+          doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(75, 85, 99);
+          doc.text(tp.topic, margin, y);
+          doc.setFillColor(228, 226, 220);
+          doc.rect(barX, y - 3.5, barW, barH, 'F');
+          const pct = tp.percentage / 100;
+          const col = tp.percentage >= 75 ? [34, 197, 94] : tp.percentage >= 50 ? [245, 158, 11] : [239, 68, 68];
+          doc.setFillColor(...col);
+          doc.rect(barX, y - 3.5, barW * pct, barH, 'F');
+          doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(...col);
+          doc.text(tp.percentage + '%', barX + barW + 3, y);
+          y += lineH + 1;
+        });
+      }
+
+      // Per-question
+      if (Array.isArray(r.questions)) {
+        r.questions.forEach(q => {
+          y += 4;
+          if (y > 270) { doc.addPage(); y = 20; }
+          addText(`Q${q.number}  ${q.questionTotal}/${q.questionMax}`, 12, true, [14, 28, 51]);
+          (q.parts || []).forEach(p => {
+            if (y > 270) { doc.addPage(); y = 20; }
+            const marks = (p.marks || []).map(m => (m.awarded ? '✓' : '✗') + m.code).join('  ');
+            addText(`  (${p.part.toUpperCase()})  ${p.awarded}/${p.maxMarks}  ${marks}`, 9, false, [75, 85, 99]);
+            if (p.feedback) addText('     ' + p.feedback, 9, false, [100, 116, 139]);
+          });
+        });
+      }
+
+      // Footer note
+      y += 6;
+      if (y > 270) { doc.addPage(); y = 20; }
+      doc.setFontSize(8); doc.setFont('helvetica', 'italic'); doc.setTextColor(156, 163, 175);
+      doc.text('Marked by HAN — askHanyong.com — This result is auto-generated; verify with your teacher for official marks.', margin, y, { maxWidth: maxW });
+
+      doc.save('HAN_Marked_Script_' + now.replace(/ /g, '_') + '.pdf');
+
+      // Notify server that script was downloaded (triggers data retention countdown)
+      const token = localStorage.getItem('han_token');
+      if (markLastId && token) {
+        fetch('/api/mark-script', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ action: 'downloaded', scriptId: markLastId }),
+        }).catch(() => {});
+      }
+    } catch(e) {
+      showToast('Could not generate PDF: ' + e.message);
+    } finally {
+      if (btn) { btn.textContent = '⬇ Download Marked Script'; btn.disabled = false; }
+    }
+  };
+
+  // ── Share result ───────────────────────────────────────────────
+  window.markShareResult = function(platform) {
+    if (!markLastResult) return;
+    const r     = markLastResult;
+    const score = `${r.total}/${r.maxTotal} (${r.percentage}%)`;
+    const text  = `I scored ${score} on my IB Maths paper — marked by HAN (AI examiner)! Check yours at askhanyong.com`;
+    const url   = 'https://askhanyong.com/app';
+    if (platform === 'whatsapp') {
+      window.open('https://wa.me/?text=' + encodeURIComponent(text + '\n' + url));
+    } else if (platform === 'telegram') {
+      window.open('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text));
+    } else {
+      navigator.clipboard.writeText(text + '\n' + url)
+        .then(() => showToast('Score copied to clipboard!'))
+        .catch(() => showToast('Copy this: ' + text));
+    }
+  };
+
+  // ── Start fresh ────────────────────────────────────────────────
+  window.markStartNew = function() {
+    markLastResult = null;
+    markLastId     = null;
+    markPdfFile    = null;
+    markPdfPages   = [];
+    document.getElementById('markResults').style.display   = 'none';
+    document.getElementById('markUploadForm').style.display = 'flex';
+    markRemoveFile(null);
+    markRefreshQuota().then(() => {
+      if (markQuotaCache) markUpdateQuotaPill(markQuotaCache);
+    });
+  };
+
+})(); // end MARK TAB IIFE
+
 // ════════════════════════════════════════
 // MOCK USAGE BADGE
 // ════════════════════════════════════════
@@ -6212,150 +7077,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   refreshMockNote();
 });
-
-// ════════════════════════════════════════
-// MARK MY PAPER
-// ════════════════════════════════════════
-let _markPdfBase64 = null;   // raw PDF as base64 (sent directly to Claude)
-let _markPdfName = '';
-let _markPageCount = 0;
-let _markInProgress = false;
-
-function markLoadPdf(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.type !== 'application/pdf') { showToast('Please upload a PDF file'); return; }
-  if (file.size > 32 * 1024 * 1024) { showToast('PDF too large. Maximum 32 MB.'); event.target.value = ''; return; }
-  _markPdfName = file.name;
-  _markPdfBase64 = null;
-  _markPageCount = 0;
-  // Read PDF to get page count (for UI display) and base64 (for API)
-  const reader = new FileReader();
-  reader.onload = async function(e) {
-    try {
-      // Get base64 for API
-      const arrayBuf = e.target.result;
-      const bytes = new Uint8Array(arrayBuf);
-      let binary = '';
-      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-      _markPdfBase64 = btoa(binary);
-
-      // Get page count via PDF.js (if available)
-      if (window.pdfjsLib) {
-        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-        _markPageCount = pdf.numPages;
-      }
-      document.getElementById('markFileName').textContent = file.name;
-      document.getElementById('markPageCount').textContent = (_markPageCount || '?') + ' pages loaded';
-      document.getElementById('markUploadPrompt').style.display = 'none';
-      document.getElementById('markFileInfo').style.display = 'flex';
-      document.getElementById('markRemoveBtn').style.display = '';
-      document.getElementById('markUploadZone').classList.add('has-file');
-    } catch (err) {
-      showToast('Could not read PDF: ' + err.message);
-      markRemovePdf();
-    }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function markRemovePdf(e) {
-  if (e) { e.stopPropagation(); e.preventDefault(); }
-  _markPdfBase64 = null;
-  _markPdfName = '';
-  _markPageCount = 0;
-  document.getElementById('markUploadPrompt').style.display = '';
-  document.getElementById('markFileInfo').style.display = 'none';
-  document.getElementById('markRemoveBtn').style.display = 'none';
-  document.getElementById('markUploadZone').classList.remove('has-file');
-  document.getElementById('markResult').style.display = 'none';
-  var zone = document.getElementById('markUploadZone');
-  var inp = zone.querySelector('input[type=file]');
-  if (inp) { inp.value = ''; inp.style.display = ''; }
-}
-
-async function markMyPaper() {
-  if (_markInProgress) return;
-  if (!_markPdfBase64) { showToast('Please upload a PDF first'); return; }
-  if (!currentUser && !isAdmin) { showLogin(); return; }
-
-  _markInProgress = true;
-  const btn = document.getElementById('markSubmitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Marking…';
-  const prog = document.getElementById('markProgress');
-  prog.style.display = '';
-  const fill = document.getElementById('markProgressFill');
-  const label = document.getElementById('markProgressLabel');
-  const result = document.getElementById('markResult');
-  result.style.display = 'none';
-  fill.style.width = '10%';
-  label.textContent = 'Sending PDF to HAN for marking…';
-
-  const course = document.getElementById('markCourse').value;
-  const paper = document.getElementById('markPaper').value;
-  const year = document.getElementById('markYear').value;
-  const session = document.getElementById('markSession').value;
-  const tz = document.getElementById('markTz').value;
-
-  try {
-    const hanToken = localStorage.getItem('han_token') || '';
-    const response = await fetch('/api/mark-script', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-HAN-Token': hanToken },
-      body: JSON.stringify({
-        pdf: _markPdfBase64,
-        course: course,
-        paper: paper,
-        year: year,
-        session: session,
-        tz: tz
-      })
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      let errMsg;
-      try { errMsg = JSON.parse(errText)?.error?.message; } catch (e) {}
-      throw new Error(errMsg || 'HTTP ' + response.status);
-    }
-
-    fill.style.width = '50%';
-    label.textContent = 'HAN is reading and marking your paper…';
-
-    // Parse the JSON response (non-streaming v1 function)
-    const data = await response.json();
-    let fullReply = '';
-    if (data.content && Array.isArray(data.content)) {
-      fullReply = data.content.map(function(b) { return b.text || ''; }).join('');
-    } else if (data.error) {
-      throw new Error(data.error.message || 'Claude API error');
-    } else {
-      fullReply = JSON.stringify(data);
-    }
-
-    fill.style.width = '100%';
-    label.textContent = 'Marking complete!';
-    document.getElementById('markProgressTitle').textContent = 'Marking complete';
-
-    // Final render with proper formatting
-    const rendered = fullReply
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/\n/g, '<br>');
-    result.innerHTML = '<div class="mark-result-body" style="padding:14px;font-size:13px;line-height:1.8;color:var(--text)">' + rendered + '</div>';
-
-    if (window.MathJax && MathJax.typesetPromise) {
-      MathJax.typesetPromise([result]).catch(() => {});
-    }
-
-  } catch (err) {
-    showToast('Marking failed: ' + err.message);
-  } finally {
-    _markInProgress = false;
-    btn.disabled = false;
-    btn.textContent = '✦ Mark My Paper';
-  }
-}
 </script>
 
 </body>

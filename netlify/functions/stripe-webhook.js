@@ -75,6 +75,7 @@ exports.handler = async (event) => {
           graduationMonth,
           graduationYear,
           status:          'active',
+          tier:            'subscriber',
           secret:          GAS_ADMIN_SECRET,
         });
         await fetch(`${SHEETS_URL}?${params.toString()}`);
