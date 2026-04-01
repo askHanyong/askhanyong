@@ -236,33 +236,19 @@ exports.handler = async (event) => {
 
   if (!ANTHROPIC_API_KEY) return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: 'API key not configured' }) };
 
-  // Load markscheme only (contains question text — no need to send question paper separately)
-  const markschemeB64 = readCalibrationPdf('M24 MAAHL P1 TZ1_markscheme.pdf');
-
-  // Build content array for the user message
+  // Send only the student script — marking criteria and calibration are in the system prompt.
+  // Sending both markscheme + student PDFs exceeded the 26s function timeout.
   const content = [
-    { type: 'text', text: 'You are marking the IB MAA HL May 2024 Paper 1 TZ1. The official markscheme below contains the questions and accepted answers.' },
-  ];
-
-  if (markschemeB64) {
-    content.push({
+    {
+      type: 'text',
+      text: `Mark the following student script for "${studentName}" against the IB MAA HL May 2024 Paper 1 TZ1. Apply all IB marking rules and calibration from your system prompt. Use the submit_marks tool to return your structured result.`,
+    },
+    {
       type: 'document',
-      source: { type: 'base64', media_type: 'application/pdf', data: markschemeB64 },
-      title: 'Official Markscheme: IB MAA HL May 2024 Paper 1 TZ1',
-      cache_control: { type: 'ephemeral' },
-    });
-  }
-
-  content.push({
-    type: 'text',
-    text: `Now mark the following student script for "${studentName}". Go question by question, part by part. Apply all IB marking rules and the calibration guidance from your training. Use the submit_marks tool to return your structured result.`,
-  });
-
-  content.push({
-    type: 'document',
-    source: { type: 'base64', media_type: 'application/pdf', data: studentPdf },
-    title: `Student Script: ${studentName}`,
-  });
+      source: { type: 'base64', media_type: 'application/pdf', data: studentPdf },
+      title: `Student Script: ${studentName}`,
+    },
+  ];
 
   // Call Anthropic
   let apiResponse;
