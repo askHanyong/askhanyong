@@ -8,6 +8,10 @@
 [functions."mark-script"]
   timeout = 26
 
+[functions."teacher-mark"]
+  timeout = 26
+  included_files = ["calibration/*.pdf"]
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -106,5 +110,12 @@
 [[redirects]]
   from = "/tune"
   to = "/tune.html"
+  status = 200
+  force = true
+
+# /teacher serves the teacher marking platform (invite-only)
+[[redirects]]
+  from = "/teacher"
+  to = "/teacher.html"
   status = 200
   force = true
