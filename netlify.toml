@@ -1,5 +1,4 @@
 [build]
-  command   = "npm install"
   functions = "netlify/functions"
   publish   = "."
 
@@ -15,10 +14,6 @@
 
 [functions."teacher-mark-background"]
   included_files = ["calibration/*.pdf"]
-  external_node_modules = ["@netlify/blobs"]
-
-[functions."teacher-mark-status"]
-  external_node_modules = ["@netlify/blobs"]
 
 [[headers]]
   for = "/*"
