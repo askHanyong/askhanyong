@@ -230,8 +230,10 @@ export default async (request) => {
     },
   ];
 
-  // Call Anthropic with stream:true — response body is piped directly to browser.
-  // Edge function CPU time (I/O wait excluded) stays well under 50ms.
+  // Call Anthropic — collect streaming response in the edge function.
+  // Streaming internally avoids holding a large JSON body in one shot,
+  // while returning a plain JSON response to the browser (simpler, no
+  // SSE parsing needed on the client).
   const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -256,14 +258,57 @@ export default async (request) => {
     return jsonErr(502, `Anthropic ${anthropicRes.status}: ${errText}`);
   }
 
-  // Pipe SSE stream straight to the browser — no buffering, no timeout
-  return new Response(anthropicRes.body, {
+  // Collect input_json_delta chunks from the streaming response
+  const reader  = anthropicRes.body.getReader();
+  const decoder = new TextDecoder();
+  let buf        = '';
+  let jsonStr    = '';
+  let stopReason = null;
+  let streamErr  = null;
+
+  outer: while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const lines = buf.split('\n');
+    buf = lines.pop() ?? '';
+
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      const raw = line.slice(6).trim();
+      let evt;
+      try { evt = JSON.parse(raw); } catch { continue; }
+
+      if (evt.type === 'error') {
+        streamErr = evt.error?.message || JSON.stringify(evt.error);
+        break outer;
+      }
+      if (evt.type === 'content_block_delta' && evt.delta?.type === 'input_json_delta') {
+        jsonStr += evt.delta.partial_json ?? '';
+      }
+      if (evt.type === 'message_delta') {
+        stopReason = evt.delta?.stop_reason ?? stopReason;
+      }
+    }
+  }
+
+  if (streamErr) return jsonErr(502, `Anthropic error: ${streamErr}`);
+
+  if (!jsonStr) {
+    return jsonErr(502, `No tool call received from model (stop_reason: ${stopReason ?? 'unknown'})`);
+  }
+
+  let markResult;
+  try { markResult = JSON.parse(jsonStr); }
+  catch (e) { return jsonErr(502, `Could not parse marking result: ${e.message}`); }
+
+  return new Response(JSON.stringify({
+    studentName,
+    markedBy:  email,
+    timestamp: new Date().toISOString(),
+    result:    markResult,
+  }), {
     status: 200,
-    headers: {
-      ...CORS,
-      'Content-Type':      'text/event-stream',
-      'Cache-Control':     'no-cache',
-      'X-Accel-Buffering': 'no',
-    },
+    headers: { ...CORS, 'Content-Type': 'application/json' },
   });
 };
