@@ -3,15 +3,15 @@
 This folder contains the reference materials used to calibrate the AI marking engine.
 These files are private and must never be made publicly accessible.
 
-## Required files
+## Files
 
 | File | Description |
 |---|---|
-| `question_paper.pdf` | The IB question paper for the calibration exam |
-| `markscheme.pdf` | The official IB markscheme for the same paper |
-| `student_A.pdf` | High-scoring student script (109/110) |
-| `student_B.pdf` | Mid-range student script (77/110) |
-| `student_C.pdf` | Lower-scoring student script (43/110) |
+| `M24 MAAHL P1 TZ1.pdf` | IB AA HL May 2024 Paper 1 TZ1 question paper |
+| `M24 MAAHL P1 TZ1_markscheme.pdf` | Official IB markscheme for the same paper |
+| `MAA HL May 24 P1 TZ1 student a-compressed.pdf` | High-scoring student script (109/110) |
+| `MAA HL May 24 P1 TZ1 student b_compressed.pdf` | Mid-range student script (77/110) |
+| `MAA HL May 24 P1 TZ1 student c_compressed.pdf` | Lower-scoring student script (43/110) |
 
 ## Correct marks
 
