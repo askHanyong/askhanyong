@@ -146,7 +146,7 @@ td{padding:10px 12px;vertical-align:top}
     <div class="upload-zone" id="dropZone" onclick="document.getElementById('pdfInput').click()">
       <input type="file" id="pdfInput" accept=".pdf" onchange="handleFile(this.files[0])">
       <div class="upload-icon">📄</div>
-      <h3>Drop PDF here or click to browse</h3>
+      <h3 id="dropZoneLabel">Drop PDF here or click to browse</h3>
       <p>Student's handwritten answer script · PDF only</p>
       <div id="uploadedFile"></div>
     </div>
@@ -168,8 +168,9 @@ td{padding:10px 12px;vertical-align:top}
   <div id="resultsArea">
     <div class="results-header">
       <div>
+        <div class="score-sub" style="margin-bottom:4px">Results for: <strong id="resultStudentName"></strong></div>
         <div id="scoreDisplay" class="score-badge"></div>
-        <div class="score-sub">Total marks awarded / available</div>
+        <div class="score-sub">marks awarded / 110</div>
       </div>
       <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
     </div>
@@ -179,11 +180,11 @@ td{padding:10px 12px;vertical-align:top}
         <thead>
           <tr>
             <th>Q</th>
-            <th>Part</th>
-            <th>Marks</th>
-            <th>Override</th>
-            <th>Criteria</th>
+            <th>Breakdown</th>
+            <th>Criteria Met</th>
+            <th>Criteria Missed</th>
             <th>Notes</th>
+            <th>Override</th>
           </tr>
         </thead>
         <tbody id="resultsBody"></tbody>
@@ -217,9 +218,10 @@ function showScreen(id) {
 async function doLogin() {
   const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
-  const errEl    = document.getElementById('loginError');
+  const errEl    = document.getElementById('loginMsg');
   errEl.textContent = '';
-  if (!email || !password) { errEl.textContent = 'Email and password required.'; return; }
+  errEl.className = 'msg';
+  if (!email || !password) { errEl.textContent = 'Email and password required.'; errEl.className = 'msg err'; return; }
 
   try {
     const res  = await fetch('/api/teacher-auth', {
@@ -227,14 +229,15 @@ async function doLogin() {
       body: JSON.stringify({ action: 'login', email, password }),
     });
     const data = await res.json();
-    if (!res.ok) { errEl.textContent = data.error || 'Login failed.'; return; }
+    if (!res.ok) { errEl.textContent = data.error || 'Login failed.'; errEl.className = 'msg err'; return; }
     teacherToken = data.token;
     localStorage.setItem('teacherToken', data.token);
     localStorage.setItem('teacherName',  data.name);
-    document.getElementById('teacherNameDisplay').textContent = data.name;
+    document.getElementById('navUser').textContent = data.name;
+    document.getElementById('btnLogout').style.display = 'inline';
     showScreen('screenMark');
   } catch (e) {
-    errEl.textContent = 'Network error. Please try again.';
+    errEl.textContent = 'Network error. Please try again.'; errEl.className = 'msg err';
   }
 }
 
@@ -242,11 +245,12 @@ async function doRegister() {
   const name       = document.getElementById('regName').value.trim();
   const email      = document.getElementById('regEmail').value.trim();
   const password   = document.getElementById('regPassword').value;
-  const inviteCode = document.getElementById('regInvite').value.trim();
-  const errEl      = document.getElementById('regError');
+  const inviteCode = document.getElementById('regCode').value.trim();
+  const errEl      = document.getElementById('regMsg');
   errEl.textContent = '';
+  errEl.className = 'msg';
   if (!name || !email || !password || !inviteCode) {
-    errEl.textContent = 'All fields are required.'; return;
+    errEl.textContent = 'All fields are required.'; errEl.className = 'msg err'; return;
   }
 
   try {
@@ -255,14 +259,15 @@ async function doRegister() {
       body: JSON.stringify({ action: 'register', name, email, password, inviteCode }),
     });
     const data = await res.json();
-    if (!res.ok) { errEl.textContent = data.error || 'Registration failed.'; return; }
+    if (!res.ok) { errEl.textContent = data.error || 'Registration failed.'; errEl.className = 'msg err'; return; }
     teacherToken = data.token;
     localStorage.setItem('teacherToken', data.token);
     localStorage.setItem('teacherName',  data.name);
-    document.getElementById('teacherNameDisplay').textContent = data.name;
+    document.getElementById('navUser').textContent = data.name;
+    document.getElementById('btnLogout').style.display = 'inline';
     showScreen('screenMark');
   } catch (e) {
-    errEl.textContent = 'Network error. Please try again.';
+    errEl.textContent = 'Network error. Please try again.'; errEl.className = 'msg err';
   }
 }
 
@@ -274,7 +279,9 @@ function logout() {
   lastResults   = null;
   document.getElementById('loginEmail').value    = '';
   document.getElementById('loginPassword').value = '';
-  document.getElementById('loginError').textContent = '';
+  document.getElementById('loginMsg').textContent = '';
+  document.getElementById('navUser').textContent  = '';
+  document.getElementById('btnLogout').style.display = 'none';
   showScreen('screenLogin');
 }
 
@@ -298,10 +305,10 @@ function handleFile(file) {
   const zone  = document.getElementById('dropZone');
   const input = document.getElementById('pdfInput');
 
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-  zone.addEventListener('dragleave', ()  => zone.classList.remove('drag-over'));
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', ()  => zone.classList.remove('drag'));
   zone.addEventListener('drop', e => {
-    e.preventDefault(); zone.classList.remove('drag-over');
+    e.preventDefault(); zone.classList.remove('drag');
     if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
   });
   zone.addEventListener('click', () => input.click());
@@ -315,7 +322,7 @@ async function doMark() {
 
   const progressArea = document.getElementById('progressArea');
   const progressBar  = document.getElementById('progressBar');
-  const progressMsg  = document.getElementById('progressMsg');
+  const progressMsg  = document.getElementById('statusText');
   const resultsArea  = document.getElementById('resultsArea');
 
   progressArea.style.display = 'block';
@@ -344,8 +351,9 @@ async function doMark() {
       return;
     }
     progressMsg.textContent = 'Done! Rendering results…';
-    lastResults = data;
-    renderResults(data, studentName);
+    const result = data.result || data;   // unwrap { studentName, markedBy, timestamp, result: {...} }
+    lastResults = result;
+    renderResults(result, studentName);
     setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; }, 500);
   } catch (e) {
     clearInterval(ticker);
@@ -374,7 +382,7 @@ function renderResults(data, studentName) {
       const ftStr     = p.ft_applied ? '<span style="color:var(--accent)">FT applied</span>' : '';
 
       tr.innerHTML = `
-        <td>${q.question_number}${p.part_label ? '(' + p.part_label + ')' : ''}</td>
+        <td>${q.number}${p.part ? ' (' + p.part + ')' : ''}</td>
         <td>${p.mark_breakdown || '—'}</td>
         <td>${metStr}</td>
         <td>${missedStr} ${ftStr}</td>
@@ -430,8 +438,8 @@ function exportCSV() {
       const finalMark = inputs[idx] ? (inputs[idx].value || p.marks_awarded) : p.marks_awarded;
       rows.push([
         studentName,
-        q.question_number,
-        p.part_label || '',
+        q.number,
+        p.part || '',
         p.marks_awarded,
         finalMark,
         (p.criteria_met    || []).join('; '),
@@ -488,7 +496,8 @@ async function init() {
     const data = await res.json();
     if (res.ok && data.valid) {
       teacherToken = savedToken;
-      document.getElementById('teacherNameDisplay').textContent = savedName || data.email;
+      document.getElementById('navUser').textContent = savedName || data.email;
+      document.getElementById('btnLogout').style.display = 'inline';
       showScreen('screenMark');
     } else {
       localStorage.removeItem('teacherToken');
@@ -498,7 +507,8 @@ async function init() {
   } catch {
     // Network error — optimistically show mark screen if token exists
     teacherToken = savedToken;
-    document.getElementById('teacherNameDisplay').textContent = savedName || '';
+    document.getElementById('navUser').textContent = savedName || '';
+    document.getElementById('btnLogout').style.display = 'inline';
     showScreen('screenMark');
   }
 }
@@ -507,7 +517,7 @@ async function init() {
 document.getElementById('loginPassword').addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin();
 });
-document.getElementById('regInvite').addEventListener('keydown', e => {
+document.getElementById('regCode').addEventListener('keydown', e => {
   if (e.key === 'Enter') doRegister();
 });
 
