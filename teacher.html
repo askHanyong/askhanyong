@@ -322,42 +322,68 @@ async function doMark() {
 
   const progressArea = document.getElementById('progressArea');
   const progressBar  = document.getElementById('progressBar');
-  const progressMsg  = document.getElementById('statusText');
+  const statusText   = document.getElementById('statusText');
   const resultsArea  = document.getElementById('resultsArea');
+  const btnMark      = document.getElementById('btnMark');
 
   progressArea.style.display = 'block';
   resultsArea.style.display  = 'none';
-  progressBar.style.width    = '0%';
-  progressMsg.textContent    = 'Sending to AI examiner…';
+  progressBar.style.width    = '5%';
+  statusText.textContent     = 'Sending to AI examiner…';
+  btnMark.disabled = true;
 
-  // Animate bar while waiting
-  let pct = 0;
-  const ticker = setInterval(() => {
-    pct = Math.min(pct + (pct < 60 ? 3 : pct < 85 ? 1 : 0.3), 92);
-    progressBar.style.width = pct + '%';
-  }, 600);
+  // Generate a unique job ID
+  const jobId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).slice(2);
 
   try {
-    const res  = await fetch('/api/teacher-mark', {
+    // Fire background job (returns 202 immediately)
+    const submitRes = await fetch('/api/teacher-mark-background', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName }),
+      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName, jobId }),
     });
-    clearInterval(ticker);
-    progressBar.style.width = '100%';
-
-    const data = await res.json();
-    if (!res.ok) {
-      progressMsg.textContent = 'Error: ' + (data.error || res.statusText);
+    if (!submitRes.ok && submitRes.status !== 202) {
+      const err = await submitRes.json().catch(() => ({}));
+      statusText.textContent = 'Error: ' + (err.error || submitRes.statusText);
+      btnMark.disabled = false;
       return;
     }
-    progressMsg.textContent = 'Done! Rendering results…';
-    const result = data.result || data;   // unwrap { studentName, markedBy, timestamp, result: {...} }
-    lastResults = result;
-    renderResults(result, studentName);
-    setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; }, 500);
+
+    statusText.textContent = 'AI is reading and marking the script… (30–90 seconds)';
+
+    // Poll every 3 seconds, up to 2 minutes
+    let pct = 10;
+    for (let i = 0; i < 40; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      pct = Math.min(pct + 2, 90);
+      progressBar.style.width = pct + '%';
+
+      const poll = await fetch(
+        '/api/teacher-mark-status?jobId=' + encodeURIComponent(jobId) +
+        '&token=' + encodeURIComponent(teacherToken)
+      );
+      const data = await poll.json();
+
+      if (data.error) { statusText.textContent = 'Error: ' + data.error; btnMark.disabled = false; return; }
+
+      if (data.ready) {
+        progressBar.style.width = '100%';
+        statusText.textContent  = 'Done! Rendering results…';
+        const result = data.result || data;
+        lastResults  = result;
+        renderResults(result, studentName);
+        setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btnMark.disabled = false; }, 500);
+        return;
+      }
+    }
+
+    statusText.textContent = 'Timed out waiting for result. Please try again.';
+    btnMark.disabled = false;
+
   } catch (e) {
-    clearInterval(ticker);
-    progressMsg.textContent = 'Network error: ' + e.message;
+    statusText.textContent = 'Network error: ' + e.message;
+    btnMark.disabled = false;
   }
 }
 

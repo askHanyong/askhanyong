@@ -12,6 +12,9 @@
   timeout = 26
   included_files = ["calibration/*.pdf"]
 
+[functions."teacher-mark-background"]
+  included_files = ["calibration/*.pdf"]
+
 [[headers]]
   for = "/*"
   [headers.values]
