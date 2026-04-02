@@ -220,19 +220,11 @@ exports.handler = async (event) => {
 
   if (!ANTHROPIC_API_KEY) return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: 'API key not configured' }) };
 
-  // Include the official markscheme so the model has exact M/A/R criteria.
-  const markschemeB64 = readCalibrationPdf('M24 MAAHL P1 TZ1_markscheme.pdf');
-
   const content = [
     {
       type: 'text',
-      text: `Mark the following student script for "${studentName}" against the IB MAA HL May 2024 Paper 1 TZ1 using the official markscheme provided. Apply all IB marking rules from your system prompt. Use the submit_marks tool to return your structured result.\n\nCRITICAL: Field "n" (notes) must be 5 words or fewer. Omit "n" entirely when full marks are awarded. Do not add any text outside the tool call.`,
+      text: `Mark the following student script for "${studentName}" against the IB MAA HL May 2024 Paper 1 TZ1. Apply all IB marking rules from your system prompt. Use the submit_marks tool.\n\nCRITICAL: Field "n" (notes) must be 5 words or fewer. Omit "n" if full marks. No text outside the tool call.`,
     },
-    ...(markschemeB64 ? [{
-      type: 'document',
-      source: { type: 'base64', media_type: 'application/pdf', data: markschemeB64 },
-      title: 'Official IB Markscheme — MAA HL May 2024 P1 TZ1',
-    }] : []),
     {
       type: 'document',
       source: { type: 'base64', media_type: 'application/pdf', data: studentPdf },

@@ -1,12 +1,11 @@
 // ════════════════════════════════════════════════════════════════
-// Teacher Mark Status — reads job result from GAS
+// Teacher Mark Status — reads job result from Netlify Blobs
 // ════════════════════════════════════════════════════════════════
 
-const crypto = require('crypto');
+const crypto       = require('crypto');
+const { getStore } = require('@netlify/blobs');
 
-const SESSION_SECRET   = process.env.SESSION_SECRET;
-const SHEETS_URL       = process.env.SHEETS_URL;
-const GAS_ADMIN_SECRET = process.env.GAS_ADMIN_SECRET;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  '*',
@@ -43,22 +42,15 @@ exports.handler = async (event) => {
   const email = verifyTeacherToken(token);
   if (!email) return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Invalid or expired session' }) };
 
-  if (!SHEETS_URL || !GAS_ADMIN_SECRET) {
-    return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: 'GAS not configured' }) };
-  }
-
   try {
-    const url = `${SHEETS_URL}?action=getMarkJob&jobId=${encodeURIComponent(jobId)}&secret=${encodeURIComponent(GAS_ADMIN_SECRET)}`;
-    const res  = await fetch(url, { redirect: 'follow' });
-    const gas  = await res.json();
+    const store = getStore('marking-jobs');
+    const data  = await store.getJSON(jobId);
 
-    if (!gas.found) {
+    if (!data) {
       return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify({ ready: false }) };
     }
 
-    const data = JSON.parse(gas.data);
     return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify(data) };
-
   } catch (err) {
     return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: err.message }) };
   }
