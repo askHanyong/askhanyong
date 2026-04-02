@@ -17,7 +17,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-// Haiku + slim schema: ~1000 token output ≈ 5s generation + 10s input = 15s total (< 26s limit)
+// Haiku + minimal schema: ~1200 token output ≈ 6s generation + ~5s TTFT = 11s (< 26s limit)
 const MODEL = 'claude-haiku-4-5-20251001';
 
 // ── Teacher token verification (mirrors teacher-auth.js) ──────────
@@ -159,14 +159,14 @@ Marks lost and reasons:
 - Q12(e)-(g): Partially attempted, some correct steps.`;
 
 // ── Marking tool schema ───────────────────────────────────────────
-// Slim schema — removes verbose criteria arrays so the model outputs ~1000 tokens
-// (Haiku at 200 tok/s ≈ 5s generation + 10s input processing = 15s, within 26s limit).
+// Minimal schema — totals computed client-side; notes capped at 8 words to
+// keep output under 1500 tokens (Haiku ~7s generation, well within 26s limit).
 const MARKING_TOOL = {
   name: 'submit_marks',
-  description: 'Submit the complete structured marking result for this student script.',
+  description: 'Submit the complete structured marking result. Be concise: notes ≤8 words, omit notes if full marks.',
   input_schema: {
     type: 'object',
-    required: ['questions', 'total_awarded', 'total_available', 'examiner_summary'],
+    required: ['questions'],
     properties: {
       questions: {
         type: 'array',
@@ -184,16 +184,13 @@ const MARKING_TOOL = {
                   part:            { type: 'string',  description: 'e.g. "a", "b", "c(i)"' },
                   marks_available: { type: 'integer' },
                   marks_awarded:   { type: 'integer' },
-                  notes:           { type: 'string',  description: 'Key reason for marks lost, FT applied, or AG issue. Omit if full marks.' },
+                  notes:           { type: 'string',  description: '≤8 words. Omit if full marks.' },
                 },
               },
             },
           },
         },
       },
-      total_awarded:    { type: 'integer' },
-      total_available:  { type: 'integer', enum: [110] },
-      examiner_summary: { type: 'string',  description: '2-3 sentence summary: overall performance, key errors, strengths.' },
     },
   },
 };
@@ -244,7 +241,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 3000,
+        max_tokens: 2000,
         system:     SYSTEM_PROMPT,
         tools:      [MARKING_TOOL],
         tool_choice: { type: 'tool', name: 'submit_marks' },

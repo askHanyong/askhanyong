@@ -455,9 +455,10 @@ function exportCSV() {
   });
 
   // Add total row
-  let total = 0;
+  let total = 0, aiTotal = 0;
   inputs.forEach(i => { const v = parseInt(i.value, 10); if (!isNaN(v)) total += v; });
-  rows.push(['', '', 'TOTAL', lastResults.total_awarded || '', 110, total, '']);
+  (lastResults.questions || []).forEach(q => (q.parts || []).forEach(p => { aiTotal += (p.marks_awarded || 0); }));
+  rows.push(['', '', 'TOTAL', aiTotal, 110, total, '']);
 
   const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
