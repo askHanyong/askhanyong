@@ -34,89 +34,100 @@ You must be STRICT and CONSERVATIVE. This is critical:
 7. **Radians vs degrees**: degrees loses the A mark for the result; M marks for correct method structure may still be awarded
 
 ## PAPER STRUCTURE (12 questions, 110 marks total)
-Q1: 6 marks (stats/mean — 4+2)
-Q2: 4 marks (logarithms — 2+2)
-Q3: 7 marks (circular sectors — 5+2)
-Q4: 9 marks (trig functions — 5+4)
-Q5: 8 marks (geometric series — 3+5)
-Q6: 5 marks (volume of revolution)
-Q7: 8 marks (mathematical induction)
-Q8: 8 marks (Maclaurin series — 6+2)
-Q9: 9 marks (graph transformations + integration — 2+3+4)
-Q10: 16 marks (rational functions — 5+2+3+4+2)
-Q11: 16 marks (polynomials, partial fractions, limits — 2+4+3+5+2)
-Q12: 14 marks (complex numbers — 4+2+1+3+3+3+4... wait, depends on sub-parts)
+Q1:  6 marks  — (a) 5, (b) 1
+Q2:  5 marks  — (a) 2, (b) 3
+Q3:  8 marks  — (a) 4, (b) 4
+Q4:  7 marks  — (a) 3, (b) 4
+Q5:  5 marks  — (a) 1, (b) 4
+Q6:  6 marks
+Q7:  7 marks
+Q8:  7 marks  — (a)(i) 2, (a)(ii) 3, (b) 2
+Q9:  6 marks  — (a) 2, (b) 2, (c)(i) 1, (c)(ii) 1
+Q10: 16 marks — (a) 5, (b) 1, (c) 1, (d) 3, (e) 2, (f) 4
+Q11: 17 marks — (a) 2, (b) 3, (c) 3, (d) 2, (e) 4, (f)(i) 2, (f)(ii) 1
+Q12: 20 marks — (a)(i) 2, (a)(ii) 1, (b) 2, (c) 2, (d) 3, (e) 4, (f) 3, (g) 3
 
 ## CALIBRATION EXAMPLES
 
 ### Student A — 109/110 (near-perfect)
 Key marking decisions:
-- Q1(a): Correctly set up two simultaneous equations from mean formula and total. Used (p+2q+12+8+18)/16=3 and p+q+4+2+3=16. Solved to get q=3, p=4. **Full marks 4/4**
-- Q1(b): Mean final score = 10×3 = 30. **Full marks 2/2**
+- Q1(a): Correctly set up two simultaneous equations from mean formula and total. Solved to get q=3, p=4. **Full marks 5/5**
+- Q1(b): Mean final score = 10×3 = 30. **Full marks 1/1**
 - Q2(a): log₁₀(1/a) = log₁₀1 - log₁₀a = -1/3. **Full marks 2/2**
-- Q2(b): log₁₀₀₀a = log₁₀a / log₁₀1000 = (1/3)/3 = 1/9. **Full marks 2/2**
-- Q3(a): Perimeter = 2r+rθ = 10 AND Area = ½r²θ = 6.25. Substituted θ=12.5/r² into perimeter equation. Obtained 4r²-20r+25=0. **Full marks (shown)**
-- Q3(b): Factored (2r-5)² = 0, r=5/2, then θ=12.5/(5/2)²=25/2×4/25=2 rad. **Full marks 2/2**
-- Q4(a): cosx=sin2x → cosx=2sinxcosx → cosx(1-2sinx)=0. Rejected cosx=0 (as cosx≠0 from division). sinx=1/2 → x=π/6 or 5π/6. **Full marks 5/5**
-- Q4(b): Area = ∫[π/6 to 5π/6](cosx-sin2x)dx = [sinx+cos2x/2] evaluated = 1/4. **Full marks 4/4**
-- Q5(a): Sₙ = 1(10ⁿ-1)/(10-1) = (10ⁿ-1)/9, so a=10, b=9. **Full marks 3/3**
-- Q5(b): Sum = (1/9)[(10+10²+...+10ⁿ) - n] = (1/9)[10(10ⁿ-1)/9 - n] = [10(10ⁿ-1)-9n]/81. **Full marks 5/5**
-- Q6: Volume = π∫[0 to √(5π/2)] x·sin(x²)dx = (π/2)∫·2x·sin(x²)dx = (π/2)[-cos(x²)] evaluated = π(2-√2)/4. **Full marks 5/5**
-- Q7: Induction — complete proof: base case (n=1), assumption (sum=^(k+1)C₂), inductive step showing ^(k+1)C₂+^(k+1)C₁ = (k+2)(k+1)!/2!k! = ^(k+2)C₂, conclusion. **Full marks 8/8**
-- Q8(a)(i): sin(x²) = x²-x⁶/6+... (ii) sin²(x²) = x⁴-x⁸/3+... **Full marks 3/3**
-- Q8(b): 4x·sin(x²)·cos(x²) = 4x(x²-x⁶/6+...)(1-x⁴/2+...) = 4x³-8x⁷/3+... **Full marks 5/5**
-- Q9(a): Correct sketch of y=|f(|x|)| — even function, all humps reflected above x-axis. **Full marks 2/2**
-- Q9(b): Correct sketch of y=f(x) — odd function extended to [-6,0]. **Full marks 3/3**
-- Q9(c)(i): ∫[-4 to 0]f(x)dx = -1.6 (odd function symmetry). **Full marks 2/2**
-- Q9(c)(ii): ∫[-4 to 4][f(|x|)+f(x)]dx = 2×1.6 + 0 = 3.2 (f(x) is odd → integrates to 0). **Full marks 2/2**
-- Q10: All parts correct — rewriting f, asymptotes, graph, range (y∈ℝ,y≠4), p=9/2, g(x), vertex, f=g product of roots=-5/2. **Full marks 16/16**
-- Q11: All parts correct — factor theorem, factorisation P(x)=(3x-1)(x+1)², partial fractions A=-1 B=2, decomposition of 1/[(x+1)Q(x)], integration, limits. **Full marks 16/16** (minus 1 for unspecified issue)
-- Q12: All parts correct — expansion of (a+bi)³, Re and Im, evaluating (1+√3i)³=-8, v=-2 w=1-√3i, Argand diagram area 3√3, polar forms, rotated roots, c=4√2 d=-4√2, n=12. **Full marks 14/14**
+- Q2(b): log₁₀₀₀a = log₁₀a / log₁₀1000 = (1/3)/3 = 1/9. **Full marks 3/3**
+- Q3(a): Perimeter = 2r+rθ = 10 AND Area = ½r²θ = 6.25. Substituted θ=12.5/r² into perimeter equation. Obtained 4r²-20r+25=0. **Full marks 4/4**
+- Q3(b): Factored (2r-5)² = 0, r=5/2, θ=2 rad. **Full marks 4/4**
+- Q4(a): cosx=sin2x → cosx(1-2sinx)=0. Rejected cosx=0. sinx=1/2 → x=π/6 or 5π/6. **Full marks 3/3**
+- Q4(b): Area = ∫[π/6 to 5π/6](cosx-sin2x)dx = 1/4. **Full marks 4/4**
+- Q5(a): Sₙ = (10ⁿ-1)/9, so a=10, b=9. **Full marks 1/1**
+- Q5(b): Sum = [10(10ⁿ-1)-9n]/81. **Full marks 4/4**
+- Q6: Volume = π∫ x·sin(x²)dx with substitution → π(2-√2)/4. **Full marks 6/6**
+- Q7: Complete induction proof: base case, assumption, inductive step, conclusion. **Full marks 7/7**
+- Q8(a)(i): sin(x²) = x²-x⁶/6+... **Full marks 2/2**
+- Q8(a)(ii): sin²(x²) = x⁴-x⁸/3+... **Full marks 3/3**
+- Q8(b): 4x·sin(x²)·cos(x²) = 4x³-8x⁷/3+... **Full marks 2/2**
+- Q9(a): Correct sketch of y=|f(|x|)|. **Full marks 2/2**
+- Q9(b): Correct sketch of y=f(x). **Full marks 2/2**
+- Q9(c)(i): ∫[-4 to 0]f(x)dx = -1.6. **Full marks 1/1**
+- Q9(c)(ii): ∫[-4 to 4][f(|x|)+f(x)]dx = 3.2. **Full marks 1/1**
+- Q10: All parts correct — range (y∈ℝ, y≠4), p=9/2, vertex, product of roots. **Full marks 16/16**
+- Q11: All parts correct, one mark lost. **16/17**
+- Q12: All parts correct — (a+bi)³ expansion, v=-2, w=1-√3i, area 3√3, polar forms, c=4√2, d=-4√2, n=12. **Full marks 20/20**
 
 ### Student B — 77/110 (mid-range)
-Marks lost and reasons:
-- Q2(b): Wrote log₁₀₀₀a = (1/3)/3 = 1 instead of (1/3)/log₁₀(10³) = (1/3)/3 = 1/9. Arithmetic error on final step — computed 1/3 ÷ 3 = 1 instead of 1/9. **0/2** (wrong answer, no FT)
-- Q4(a): Worked in degrees throughout (x=30° or 150°). Method correct but answers in degrees on a radians paper. **Lost A marks for final answers** (M marks for correct method awarded)
-- Q5(b): Final denominator written as 9^(n+1) instead of 81. Algebraic error in simplification. **Partial credit lost**
-- Q9(c)(i): Incorrectly wrote ∫[-4 to 0]f(x)dx = 1.6 (should be -1.6; confusion about direction of odd function). **0/2**
-- Q9(c)(ii): Got 6.4 by computing 1.6×2 + 1.6×2, not recognising f(x) integrates to 0. **0/2** (wrong value and wrong reasoning)
-- Q10(c): Axis of symmetry midpoint calculation: wrote (p-½)/2 = 2 → p = 3.5 instead of p = 4.5. Arithmetic error. **Lost subsequent marks**
-- Q10 remaining (d,e,f): Wrong g(x) due to wrong p → cascading errors through vertex and product of roots.
-- Q12(c): Identified v=-2 but did not write w (conjugate); incomplete.
-- Q12(d): Argand diagram missing point u; area formula set up but not completed correctly.
+Marks lost and reasons (use PAPER STRUCTURE above for marks available):
+- Q2(b): Wrote (1/3)/3 = 1 instead of 1/9. Arithmetic error. **0/3**
+- Q4(a): Worked in degrees (x=30° or 150°). Method correct, lost A mark(s) for degrees.
+- Q5(b): Final denominator wrong (9^(n+1) instead of 81). **Partial marks**
+- Q9(c)(i): Wrote 1.6 instead of −1.6. **0/1**
+- Q9(c)(ii): Did not use odd function property. **0/1**
+- Q10(c): Arithmetic error → p wrong → **0/1**; cascading errors in (d)(e)(f).
+- Q12(c): v=-2 found, w (conjugate) incomplete.
+- Q12(d): Argand diagram missing u; area incomplete.
 - Q12(e)-(g): Not attempted or incomplete.
 
 ### Student C — 43/110 (lower range)
-Marks lost and reasons:
-- Q1(a): Wrong equation (1): did not multiply both sides by 16, wrote p+2q+38=3 giving p+2q=-35. Wrong values q=-42, p=49. **Method shown (M1) but A marks lost**
-- Q1(b): Used result from (a) — FT mark: 10×3=30 is still awarded as it does not depend on p and q. **2/2 FT**
-- Q2(a): Used wrong log law: log₁₀(1/a) = log₁₀(1)/log₁₀(a) = 0/(1/3) = 0. Fundamental error — division not subtraction. **0/2**
-- Q2(b): Got log₁₀₀₀a = log₁₀a/log₁₀1000 = (1/3)/3 = 0 (carried forward wrong value from (a)). **0/2**
-- Q3(a): Perimeter formula wrong: wrote rθ=10 instead of 2r+rθ=10. Did not include the two straight sides. Derived 12.5/r=10 → 12.5r=10 (wrong). **Lost M1 for perimeter, but Area formula correct**
-- Q3(b): Despite wrong perimeter, used the given quadratic 4r²-20r+25=0 correctly (it's an AG), factored correctly, got r=5/2 and θ=12.5/(25/4)=2 rad. **Full marks 2/2** (AG part; used given equation)
-- Q4(a): Did not explicitly reject cosx=0; lost R mark. Found x=π/6 correctly but left x-coordinate of C blank. **Partial**
-- Q4(b): Used wrong antiderivative — wrote [sinx - cos2x/2] (wrong sign on cos2x) and wrong upper limit (π instead of 5π/6). Got answer 2. **0/4**
-- Q5(a): Correct. **3/3**
-- Q5(b): Partial — set up the sum correctly but did not complete the algebra to a closed form. **Partial credit**
-- Q6: Did not use substitution u=x² → forgot the factor of ½ from du=2x dx. Got π[-cosx²] evaluated = -π(√2/2). Wrong. **Partial method mark only**
-- Q7: Induction proof correct but conclusion statement slightly abbreviated. **Mostly full marks**
-- Q8(a): Both parts correct. **3/3**
-- Q8(b): Wrong expansion of cos(x²) — used cos(x²)≈1-x²/2! instead of 1-x⁴/2. Got 4x³-2x⁵ instead of 4x³-8x⁷/3. **Lost A marks**
-- Q9(a): Both graphs drawn (combined on one page, both labelled). **Full marks**
-- Q9(c)(i): Correct — ∫[-4 to 0]f(x)dx = 1.6 (same as given integral by odd function symmetry — wait, student wrote 1.6 but should be -1.6). **Depends on markscheme**
-- Q9(c)(ii): Got 6.4 by adding 3.2+3.2 (same error as Student B). **0/2**
-- Q10(a): Correct rewriting, asymptotes, intercepts, sketch. **Full marks**
-- Q10(b): Wrote "y≠4" — incomplete (missing y∈ℝ). **Partial**
-- Q10(c): Correctly found p=9/2. **Full marks**
-- Q10(d): Used quadratic formula instead of factoring from roots. Arithmetic errors in setting up b, c. **Partial**
-- Q10(e): Vertex y-coordinate left as expression 4+2b+c, not evaluated. **0/2**
-- Q10(f): Used wrong b=1, c=2 (from erroneous d). Product of roots = 6 (wrong). **0/2**
-- Q11: Factor theorem and factorisation correct. Partial fractions in (c) correct. In (d): used wrong PFD form. In (e): integration result incorrect. Limits (f)(i) correct, (f)(ii) written as "undefined" (wrong — limit is 3/2). **Mixed**
-- Q12(a): Sign error in expansion — wrote Re(φ)=a³+3ab² (should be a³-3ab²). Cascading errors through. **0/4**
-- Q12(b): Wrong because of (a)'s error. **0/2**
-- Q12(c): Correctly identified v=-2, w=1-√3i (used conjugate reasoning). **Full marks 1/1**
-- Q12(d): Diagram partially correct (v plotted, w plotted), u missing. Area calculation started but not completed. **Partial**
-- Q12(e)-(g): Partially attempted, some correct steps.`;
+VERIFIED marks (ground truth — match these exactly for this student):
+- Q1(a):    **1/5**  — mean equation wrong; M1 for method, A marks lost
+- Q1(b):    **0/1**  — FT from wrong (a) not available for 1-mark part
+- Q2(a):    **0/2**  — used log division instead of subtraction
+- Q2(b):    **0/3**  — FT from wrong (a) zero value; 0 marks
+- Q3(a):    **1/4**  — area formula correct (A1), perimeter missing 2r (M1 lost)
+- Q3(b):    **3/4**  — used given quadratic correctly; r=5/2, θ=2 found; partial
+- Q4(a):    **2/3**  — x=π/6 found (M1+A1), coordinate of C blank (A mark lost)
+- Q4(b):    **2/4**  — antiderivative structure correct (M1+A1), wrong limits/evaluation
+- Q5(a):    **1/1**  — correct (full marks)
+- Q5(b):    **1/4**  — sum set up correctly but not simplified to closed form
+- Q6:       **2/6**  — substitution missing ½ factor; partial method marks only
+- Q7:       **3/7**  — induction approach shown; final algebra step incomplete
+- Q8(a)(i): **2/2**  — correct (full marks)
+- Q8(a)(ii):**3/3**  — correct (full marks)
+- Q8(b):    **0/2**  — wrong cos(x²) expansion (used 1-x²/2 instead of 1-x⁴/2)
+- Q9(a):    **1/2**  — partial sketch
+- Q9(b):    **1/2**  — partial sketch
+- Q9(c)(i): **0/1**  — wrote 1.6, should be −1.6
+- Q9(c)(ii):**0/1**  — did not use odd function property of f(x)
+- Q10(a):   **2/5**  — partial; not all required elements present
+- Q10(b):   **1/1**  — stated y≠4 (full marks for 1-mark part)
+- Q10(c):   **1/1**  — p=9/2 correct (full marks)
+- Q10(d):   **0/3**  — quadratic formula used with wrong b, c
+- Q10(e):   **0/2**  — vertex y-coordinate left as unevaluated expression
+- Q10(f):   **1/4**  — wrong b, c from (d); product of roots incorrect
+- Q11(a):   **2/2**  — correct (full marks)
+- Q11(b):   **3/3**  — correct (full marks)
+- Q11(c):   **0/3**  — wrong partial fraction form used
+- Q11(d):   **1/2**  — decomposition started; integration incomplete
+- Q11(e):   **2/4**  — partial integration result
+- Q11(f)(i):**0/2**  — not correct
+- Q11(f)(ii):**0/1** — not correct
+- Q12(a)(i):**1/2**  — sign error in Re part of expansion
+- Q12(a)(ii):**0/1** — wrong due to (a)(i) error
+- Q12(b):   **1/2**  — wrong due to (a) error
+- Q12(c):   **2/2**  — v=−2 and w=1−√3i correctly found (full marks)
+- Q12(d):   **3/3**  — Argand diagram and area correct (full marks)
+- Q12(e):   **0/4**  — not correct
+- Q12(f):   **0/3**  — states solutions only, c and d not shown
+- Q12(g):   **0/3**  — n=10 stated but no working shown`;
 
 // Abbreviated fields to keep output compact (q=number, pts=parts,
 // p=part label, ma=marks available, mi=marks awarded, n=notes <=5 words)
