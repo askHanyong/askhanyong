@@ -159,11 +159,12 @@ Marks lost and reasons:
 - Q12(e)-(g): Partially attempted, some correct steps.`;
 
 // ── Marking tool schema ───────────────────────────────────────────
-// Minimal schema — totals computed client-side; notes capped at 8 words to
-// keep output under 1500 tokens (Haiku ~7s generation, well within 26s limit).
+// Abbreviated field names to minimise JSON output size (~1200 tok for 50 parts).
+// q=question number, pts=parts array, p=part label, ma=marks available,
+// mi=marks awarded (in), n=notes (≤8 words, omit if full marks).
 const MARKING_TOOL = {
   name: 'submit_marks',
-  description: 'Submit the complete structured marking result. Be concise: notes ≤8 words, omit notes if full marks.',
+  description: 'Submit complete marking result. Field n (notes): ≤8 words, omit if full marks.',
   input_schema: {
     type: 'object',
     required: ['questions'],
@@ -172,19 +173,19 @@ const MARKING_TOOL = {
         type: 'array',
         items: {
           type: 'object',
-          required: ['number', 'parts'],
+          required: ['q', 'pts'],
           properties: {
-            number: { type: 'integer', description: 'Question number (1-12)' },
-            parts: {
+            q:   { type: 'integer', description: 'Question number 1-12' },
+            pts: {
               type: 'array',
               items: {
                 type: 'object',
-                required: ['part', 'marks_available', 'marks_awarded'],
+                required: ['p', 'ma', 'mi'],
                 properties: {
-                  part:            { type: 'string',  description: 'e.g. "a", "b", "c(i)"' },
-                  marks_available: { type: 'integer' },
-                  marks_awarded:   { type: 'integer' },
-                  notes:           { type: 'string',  description: '≤8 words. Omit if full marks.' },
+                  p:  { type: 'string',  description: 'Part label e.g. "a", "b(i)"' },
+                  ma: { type: 'integer', description: 'Marks available' },
+                  mi: { type: 'integer', description: 'Marks awarded' },
+                  n:  { type: 'string',  description: '≤8 words. Omit if full marks.' },
                 },
               },
             },
@@ -241,7 +242,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 2000,
+        max_tokens: 2500,
         system:     SYSTEM_PROMPT,
         tools:      [MARKING_TOOL],
         tool_choice: { type: 'tool', name: 'submit_marks' },

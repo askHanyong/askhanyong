@@ -382,22 +382,27 @@ function renderResults(data, studentName) {
 
   const questions = (data.questions || []);
   questions.forEach((q, qi) => {
-    const parts = (q.parts || []);
+    const parts = (q.pts || q.parts || []);
     parts.forEach((p, pi) => {
+      const qNum   = q.q   ?? q.number;
+      const pLabel = p.p   ?? p.part;
+      const avail  = p.ma  ?? p.marks_available;
+      const award  = p.mi  ?? p.marks_awarded;
+      const note   = p.n   ?? p.notes ?? '';
       const tr = document.createElement('tr');
-      tr.dataset.awarded  = p.marks_awarded;
+      tr.dataset.awarded = award;
       tr.dataset.qi = qi;
       tr.dataset.pi = pi;
 
       tr.innerHTML = `
-        <td>${q.number}${p.part ? ' (' + p.part + ')' : ''}</td>
-        <td class="marks-cell"><span class="awarded">${p.marks_awarded}</span><span class="available"> / ${p.marks_available !== undefined ? p.marks_available : '?'}</span></td>
-        <td class="notes-cell">${p.notes || ''}</td>
+        <td>${qNum}${pLabel ? ' (' + pLabel + ')' : ''}</td>
+        <td class="marks-cell"><span class="awarded">${award}</span><span class="available"> / ${avail !== undefined ? avail : '?'}</span></td>
+        <td class="notes-cell">${note}</td>
         <td class="override-cell">
           <input type="number" class="override-input" min="0"
-                 value="${p.marks_awarded}" data-original="${p.marks_awarded}"
+                 value="${award}" data-original="${award}"
                  oninput="onOverride(this)">
-          / ${p.marks_available !== undefined ? p.marks_available : '?'}
+          / ${avail !== undefined ? avail : '?'}
         </td>`;
       tbody.appendChild(tr);
     });
@@ -439,16 +444,20 @@ function exportCSV() {
   const questions = lastResults.questions || [];
   let idx = 0;
   questions.forEach(q => {
-    (q.parts || []).forEach(p => {
-      const finalMark = inputs[idx] ? (inputs[idx].value || p.marks_awarded) : p.marks_awarded;
+    (q.pts || q.parts || []).forEach(p => {
+      const award  = p.mi  ?? p.marks_awarded;
+      const avail  = p.ma  ?? p.marks_available ?? '';
+      const pLabel = p.p   ?? p.part ?? '';
+      const note   = p.n   ?? p.notes ?? '';
+      const finalMark = inputs[idx] ? (inputs[idx].value || award) : award;
       rows.push([
         studentName,
-        q.number,
-        p.part || '',
-        p.marks_awarded,
-        p.marks_available || '',
+        q.q ?? q.number,
+        pLabel,
+        award,
+        avail,
         finalMark,
-        (p.notes || '').replace(/"/g, '""'),
+        note.replace(/"/g, '""'),
       ]);
       idx++;
     });
@@ -457,7 +466,7 @@ function exportCSV() {
   // Add total row
   let total = 0, aiTotal = 0;
   inputs.forEach(i => { const v = parseInt(i.value, 10); if (!isNaN(v)) total += v; });
-  (lastResults.questions || []).forEach(q => (q.parts || []).forEach(p => { aiTotal += (p.marks_awarded || 0); }));
+  (lastResults.questions || []).forEach(q => (q.pts || q.parts || []).forEach(p => { aiTotal += (p.mi ?? p.marks_awarded ?? 0); }));
   rows.push(['', '', 'TOTAL', aiTotal, 110, total, '']);
 
   const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
