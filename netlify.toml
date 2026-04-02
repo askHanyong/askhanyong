@@ -68,10 +68,6 @@
   path = "/api/claude"
   function = "claude"
 
-[[edge_functions]]
-  path = "/api/teacher-mark"
-  function = "teacher-mark"
-
 
 [[redirects]]
   from = "/api/*"

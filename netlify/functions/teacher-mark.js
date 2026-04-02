@@ -17,7 +17,8 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-const MODEL = 'claude-haiku-4-5-20251001'; // Haiku: ~15s response vs Sonnet ~45s — fits 26s limit
+// Haiku + slim schema: ~1000 token output ≈ 5s generation + 10s input = 15s total (< 26s limit)
+const MODEL = 'claude-haiku-4-5-20251001';
 
 // ── Teacher token verification (mirrors teacher-auth.js) ──────────
 function verifyTeacherToken(token) {
@@ -158,6 +159,8 @@ Marks lost and reasons:
 - Q12(e)-(g): Partially attempted, some correct steps.`;
 
 // ── Marking tool schema ───────────────────────────────────────────
+// Slim schema — removes verbose criteria arrays so the model outputs ~1000 tokens
+// (Haiku at 200 tok/s ≈ 5s generation + 10s input processing = 15s, within 26s limit).
 const MARKING_TOOL = {
   name: 'submit_marks',
   description: 'Submit the complete structured marking result for this student script.',
@@ -171,48 +174,26 @@ const MARKING_TOOL = {
           type: 'object',
           required: ['number', 'parts'],
           properties: {
-            number: { type: 'integer', description: 'Question number (1–12)' },
+            number: { type: 'integer', description: 'Question number (1-12)' },
             parts: {
               type: 'array',
               items: {
                 type: 'object',
                 required: ['part', 'marks_available', 'marks_awarded'],
                 properties: {
-                  part: { type: 'string', description: 'e.g. "a", "b", "c(i)", "c(ii)"' },
+                  part:            { type: 'string',  description: 'e.g. "a", "b", "c(i)"' },
                   marks_available: { type: 'integer' },
-                  marks_awarded: { type: 'integer' },
-                  mark_breakdown: {
-                    type: 'string',
-                    description: 'e.g. "M1A1A0" showing which criteria were met/missed',
-                  },
-                  criteria_met: {
-                    type: 'array', items: { type: 'string' },
-                    description: 'Short description of each criterion that was awarded',
-                  },
-                  criteria_missed: {
-                    type: 'array', items: { type: 'string' },
-                    description: 'Short description of each criterion that was NOT awarded and why',
-                  },
-                  ft_applied: {
-                    type: 'boolean',
-                    description: 'True if follow-through marks were applied',
-                  },
-                  notes: {
-                    type: 'string',
-                    description: 'Examiner notes — e.g. worked in degrees, misread, AG issue',
-                  },
+                  marks_awarded:   { type: 'integer' },
+                  notes:           { type: 'string',  description: 'Key reason for marks lost, FT applied, or AG issue. Omit if full marks.' },
                 },
               },
             },
           },
         },
       },
-      total_awarded: { type: 'integer' },
-      total_available: { type: 'integer', enum: [110] },
-      examiner_summary: {
-        type: 'string',
-        description: 'Brief overall summary of student performance, key errors, and strengths (2–4 sentences)',
-      },
+      total_awarded:    { type: 'integer' },
+      total_available:  { type: 'integer', enum: [110] },
+      examiner_summary: { type: 'string',  description: '2-3 sentence summary: overall performance, key errors, strengths.' },
     },
   },
 };
@@ -263,7 +244,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 4096,
+        max_tokens: 1500,
         system:     SYSTEM_PROMPT,
         tools:      [MARKING_TOOL],
         tool_choice: { type: 'tool', name: 'submit_marks' },

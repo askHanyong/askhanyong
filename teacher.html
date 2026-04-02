@@ -180,9 +180,7 @@ td{padding:10px 12px;vertical-align:top}
         <thead>
           <tr>
             <th>Q</th>
-            <th>Breakdown</th>
-            <th>Criteria Met</th>
-            <th>Criteria Missed</th>
+            <th>Marks</th>
             <th>Notes</th>
             <th>Override</th>
           </tr>
@@ -386,17 +384,10 @@ function renderResults(data, studentName) {
       tr.dataset.qi = qi;
       tr.dataset.pi = pi;
 
-      // Criteria string
-      const metStr    = (p.criteria_met    || []).join(', ') || '—';
-      const missedStr = (p.criteria_missed || []).join(', ') || '—';
-      const ftStr     = p.ft_applied ? '<span style="color:var(--accent)">FT applied</span>' : '';
-
       tr.innerHTML = `
         <td>${q.number}${p.part ? ' (' + p.part + ')' : ''}</td>
-        <td>${p.mark_breakdown || '—'}</td>
-        <td>${metStr}</td>
-        <td>${missedStr} ${ftStr}</td>
-        <td>${p.notes || ''}</td>
+        <td class="marks-cell"><span class="awarded">${p.marks_awarded}</span><span class="available"> / ${p.marks_available !== undefined ? p.marks_available : '?'}</span></td>
+        <td class="notes-cell">${p.notes || ''}</td>
         <td class="override-cell">
           <input type="number" class="override-input" min="0"
                  value="${p.marks_awarded}" data-original="${p.marks_awarded}"
@@ -437,8 +428,7 @@ function updateTotal() {
 function exportCSV() {
   if (!lastResults) return;
   const studentName = document.getElementById('resultStudentName').textContent;
-  const rows = [['Student', 'Question', 'Part', 'AI Mark', 'Final Mark',
-                 'Criteria Met', 'Criteria Missed', 'FT Applied', 'Notes']];
+  const rows = [['Student', 'Question', 'Part', 'AI Mark', 'Available', 'Final Mark', 'Notes']];
 
   const inputs = Array.from(document.querySelectorAll('.override-input'));
   const questions = lastResults.questions || [];
@@ -451,10 +441,8 @@ function exportCSV() {
         q.number,
         p.part || '',
         p.marks_awarded,
+        p.marks_available || '',
         finalMark,
-        (p.criteria_met    || []).join('; '),
-        (p.criteria_missed || []).join('; '),
-        p.ft_applied ? 'Yes' : 'No',
         (p.notes || '').replace(/"/g, '""'),
       ]);
       idx++;
@@ -464,7 +452,7 @@ function exportCSV() {
   // Add total row
   let total = 0;
   inputs.forEach(i => { const v = parseInt(i.value, 10); if (!isNaN(v)) total += v; });
-  rows.push(['', '', 'TOTAL', lastResults.total_awarded || '', total, '', '', '', '']);
+  rows.push(['', '', 'TOTAL', lastResults.total_awarded || '', 110, total, '']);
 
   const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
