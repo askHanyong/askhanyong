@@ -267,6 +267,20 @@ exports.handler = async (event) => {
     return { statusCode: 502, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Marking engine did not return structured result' }) };
   }
 
+  // Diagnose empty questions (truncation vs PDF unreadable)
+  const markResult = toolUse.input;
+  if (!markResult.questions || markResult.questions.length === 0) {
+    const stopReason = apiResponse.stop_reason || 'unknown';
+    const usage = apiResponse.usage || {};
+    return {
+      statusCode: 502,
+      headers: CORS_HEADERS,
+      body: JSON.stringify({
+        error: `Model returned no questions. stop_reason="${stopReason}" output_tokens=${usage.output_tokens ?? '?'} input_tokens=${usage.input_tokens ?? '?'}. ${stopReason === 'max_tokens' ? 'Response was truncated — increase max_tokens.' : 'PDF may not have been readable.'}`,
+      }),
+    };
+  }
+
   return {
     statusCode: 200,
     headers: CORS_HEADERS,
@@ -274,7 +288,7 @@ exports.handler = async (event) => {
       studentName,
       markedBy: email,
       timestamp: new Date().toISOString(),
-      result: toolUse.input,
+      result: markResult,
     }),
   };
 };
