@@ -156,7 +156,12 @@ Marks lost and reasons:
 - Q12(b): Wrong because of (a)'s error. **0/2**
 - Q12(c): Correctly identified v=-2, w=1-√3i (used conjugate reasoning). **Full marks 1/1**
 - Q12(d): Diagram partially correct (v plotted, w plotted), u missing. Area calculation started but not completed. **Partial**
-- Q12(e)-(g): Partially attempted, some correct steps.`;
+- Q12(e)-(g): Partially attempted, some correct steps.
+
+## OUTPUT RULES
+- Use the submit_marks tool. No text outside the tool call.
+- Field "n" (notes): 5 words maximum. Omit "n" entirely if full marks awarded.
+- Be as terse as possible.`;
 
 // ── Marking tool schema ───────────────────────────────────────────
 // Abbreviated field names to minimise JSON output size (~1200 tok for 50 parts).
@@ -220,7 +225,7 @@ exports.handler = async (event) => {
   const content = [
     {
       type: 'text',
-      text: `Mark the following student script for "${studentName}" against the IB MAA HL May 2024 Paper 1 TZ1. Apply all IB marking rules and calibration from your system prompt. Use the submit_marks tool to return your structured result.`,
+      text: `Mark the following student script for "${studentName}" against the IB MAA HL May 2024 Paper 1 TZ1. Apply all IB marking rules and calibration from your system prompt. Use the submit_marks tool to return your structured result.\n\nCRITICAL: Field "n" (notes) must be 5 words or fewer. Omit "n" entirely when full marks are awarded. Do not add any text outside the tool call.`,
     },
     {
       type: 'document',
@@ -242,7 +247,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model:      MODEL,
-        max_tokens: 2500,
+        max_tokens: 3500,
         system:     SYSTEM_PROMPT,
         tools:      [MARKING_TOOL],
         tool_choice: { type: 'tool', name: 'submit_marks' },
