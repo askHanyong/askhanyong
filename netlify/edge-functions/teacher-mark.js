@@ -221,14 +221,35 @@ export default async (request) => {
   const content = [
     {
       type: 'text',
-      text: `Mark the following student script for "${studentName}" against the IB MAA HL May 2024 Paper 1 TZ1. Apply all IB marking rules. Use submit_marks tool. Notes field n: 5 words max, omit if full marks. No text outside the tool call.`,
-    },
-    {
-      type: 'document',
-      source: { type: 'base64', media_type: 'application/pdf', data: studentPdf },
-      title: `Student Script: ${studentName}`,
+      text: `Mark the following student script for "${studentName}" using the official IB markscheme provided. Apply all IB marking rules. Use submit_marks tool. Notes field n: 5 words max, omit if full marks. No text outside the tool call.`,
     },
   ];
+
+  // Fetch the markscheme PDF from static files (Netlify serves calibration/ directory)
+  try {
+    const origin = new URL(request.url).origin;
+    const msUrl  = `${origin}/calibration/M24%20MAAHL%20P1%20TZ1_markscheme.pdf`;
+    const msRes  = await fetch(msUrl);
+    if (msRes.ok) {
+      const buf = await msRes.arrayBuffer();
+      const u8  = new Uint8Array(buf);
+      let binary = '';
+      for (let i = 0; i < u8.length; i += 8192) {
+        binary += String.fromCharCode(...u8.subarray(i, Math.min(i + 8192, u8.length)));
+      }
+      content.push({
+        type: 'document',
+        source: { type: 'base64', media_type: 'application/pdf', data: btoa(binary) },
+        title: 'Official Markscheme — IB MAA HL May 2024 P1 TZ1',
+      });
+    }
+  } catch { /* proceed without markscheme if fetch fails */ }
+
+  content.push({
+    type: 'document',
+    source: { type: 'base64', media_type: 'application/pdf', data: studentPdf },
+    title: `Student Script: ${studentName}`,
+  });
 
   // Call Anthropic — collect streaming response in the edge function.
   // Streaming internally avoids holding a large JSON body in one shot,
