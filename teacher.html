@@ -347,13 +347,17 @@ async function doMark() {
     clearInterval(ticker);
     progressBar.style.width = '100%';
 
-    const data = await res.json();
+    // Check ok before json() — a non-JSON error body (e.g. HTML error page)
+    // would otherwise throw and mask the real status code.
     if (!res.ok) {
-      statusText.textContent = 'Error: ' + (data.error || res.statusText);
+      let errMsg = `Server error ${res.status}`;
+      try { const d = await res.json(); errMsg = d.error || errMsg; } catch {}
+      statusText.textContent = 'Error: ' + errMsg;
       btnMark.disabled = false;
       return;
     }
 
+    const data = await res.json();
     statusText.textContent = 'Done! Rendering results…';
     const result = data.result || data;
     lastResults  = result;

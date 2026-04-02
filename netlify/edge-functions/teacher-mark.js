@@ -198,6 +198,11 @@ export default async (request) => {
     { status, headers: { ...CORS, 'Content-Type': 'application/json' } },
   );
 
+  // Top-level catch — ensures any unhandled exception returns JSON
+  // (instead of Netlify's generic HTML error page) so the browser
+  // can display the real error message.
+  try {
+
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
   if (request.method !== 'POST')    return new Response('Method Not Allowed', { status: 405, headers: CORS });
 
@@ -311,4 +316,12 @@ export default async (request) => {
     status: 200,
     headers: { ...CORS, 'Content-Type': 'application/json' },
   });
+
+  } catch (err) {
+    // Expose the real exception so we can diagnose it
+    return new Response(
+      JSON.stringify({ error: `Edge function exception: ${err?.message ?? String(err)}` }),
+      { status: 500, headers: { ...CORS, 'Content-Type': 'application/json' } },
+    );
+  }
 };
