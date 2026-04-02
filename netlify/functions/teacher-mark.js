@@ -17,8 +17,8 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-// Haiku + minimal schema: ~1200 token output ≈ 6s generation + ~5s TTFT = 11s (< 26s limit)
-const MODEL = 'claude-haiku-4-5-20251001';
+// Sonnet for accuracy; brief notes keep output ~1200 tok → ~12s generation + ~6s TTFT = 18s (< 26s)
+const MODEL = 'claude-sonnet-4-6';
 
 // ── Teacher token verification (mirrors teacher-auth.js) ──────────
 function verifyTeacherToken(token) {
