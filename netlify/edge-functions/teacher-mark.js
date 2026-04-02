@@ -246,20 +246,14 @@ export default async (request) => {
     return btoa(binary);
   }
 
-  // Fetch question paper + markscheme PDFs from static files
+  // Fetch markscheme PDF from static files
+  // (question paper excluded — base64-encoding two large PDFs in one
+  //  edge function call exceeds Netlify's 50 ms CPU time limit)
   const origin = new URL(request.url).origin;
-  const [qPaperB64, markschemeB64] = await Promise.all([
-    fetchPdfB64(`${origin}/calibration/M24%20MAAHL%20P1%20TZ1.pdf`).catch(() => null),
-    fetchPdfB64(`${origin}/calibration/M24%20MAAHL%20P1%20TZ1_markscheme.pdf`).catch(() => null),
-  ]);
+  const markschemeB64 = await fetchPdfB64(
+    `${origin}/calibration/M24%20MAAHL%20P1%20TZ1_markscheme.pdf`,
+  ).catch(() => null);
 
-  if (qPaperB64) {
-    content.push({
-      type: 'document',
-      source: { type: 'base64', media_type: 'application/pdf', data: qPaperB64 },
-      title: 'Question Paper — IB MAA HL May 2024 P1 TZ1',
-    });
-  }
   if (markschemeB64) {
     content.push({
       type: 'document',
