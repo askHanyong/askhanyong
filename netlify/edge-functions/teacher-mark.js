@@ -293,7 +293,7 @@ export default async (request) => {
       stream:      true,
       system:      SYSTEM_PROMPT,
       tools:       [MARKING_TOOL],
-      tool_choice: { type: 'tool', name: 'submit_marks' },
+      tool_choice: { type: 'auto' },
       messages:    [{ role: 'user', content }],
     }),
   });
