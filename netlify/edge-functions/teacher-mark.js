@@ -233,35 +233,10 @@ export default async (request) => {
     },
   ];
 
-  // Helper: fetch a PDF from the static site and return base64
-  async function fetchPdfB64(url) {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const buf = await res.arrayBuffer();
-    const u8  = new Uint8Array(buf);
-    let binary = '';
-    for (let i = 0; i < u8.length; i += 8192) {
-      binary += String.fromCharCode(...u8.subarray(i, Math.min(i + 8192, u8.length)));
-    }
-    return btoa(binary);
-  }
-
-  // Fetch markscheme PDF from static files
-  // (question paper excluded — base64-encoding two large PDFs in one
-  //  edge function call exceeds Netlify's 50 ms CPU time limit)
-  const origin = new URL(request.url).origin;
-  const markschemeB64 = await fetchPdfB64(
-    `${origin}/calibration/M24%20MAAHL%20P1%20TZ1_markscheme.pdf`,
-  ).catch(() => null);
-
-  if (markschemeB64) {
-    content.push({
-      type: 'document',
-      source: { type: 'base64', media_type: 'application/pdf', data: markschemeB64 },
-      title: 'Official Markscheme — IB MAA HL May 2024 P1 TZ1',
-    });
-  }
-
+  // NOTE: markscheme PDF excluded — at 30,000 tokens/min rate limit,
+  // a single markscheme PDF (~15k tokens) + student script (~15k tokens)
+  // exceeds the budget. Marking criteria are covered by calibration
+  // examples in the system prompt instead.
   content.push({
     type: 'document',
     source: { type: 'base64', media_type: 'application/pdf', data: studentPdf },
