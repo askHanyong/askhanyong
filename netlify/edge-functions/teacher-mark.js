@@ -283,17 +283,16 @@ export default async (request) => {
     headers: {
       'x-api-key':         apiKey,
       'anthropic-version': '2023-06-01',
-      'anthropic-beta':    'pdfs-2024-09-25,interleaved-thinking-2025-05-14',
+      'anthropic-beta':    'pdfs-2024-09-25',
       'content-type':      'application/json',
     },
     body: JSON.stringify({
       model:      'claude-sonnet-4-6',
-      max_tokens: 16000,
-      thinking:   { type: 'enabled', budget_tokens: 10000 },
+      max_tokens: 8000,
       stream:      true,
       system:      SYSTEM_PROMPT,
       tools:       [MARKING_TOOL],
-      tool_choice: { type: 'auto' },
+      tool_choice: { type: 'tool', name: 'submit_marks' },
       messages:    [{ role: 'user', content }],
     }),
   });
