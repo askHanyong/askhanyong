@@ -2,8 +2,8 @@
 // Teacher Mark Status — reads job result from Netlify Blobs
 // ════════════════════════════════════════════════════════════════
 
-const crypto       = require('crypto');
-const { getStore } = require('@netlify/blobs');
+const crypto = require('crypto');
+// @netlify/blobs loaded lazily inside handler
 
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
@@ -43,6 +43,7 @@ exports.handler = async (event) => {
   if (!email) return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Invalid or expired session' }) };
 
   try {
+    const { getStore } = require('@netlify/blobs');
     const store = getStore('marking-jobs');
     const data  = await store.getJSON(jobId);
 
@@ -52,6 +53,6 @@ exports.handler = async (event) => {
 
     return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify(data) };
   } catch (err) {
-    return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: err.message }) };
+    return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Storage error: ' + err.message }) };
   }
 };

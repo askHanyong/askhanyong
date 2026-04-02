@@ -4,10 +4,10 @@
 // Stores result in Netlify Blobs; teacher-mark-status.js polls it.
 // ════════════════════════════════════════════════════════════════
 
-const crypto          = require('crypto');
-const fs              = require('fs');
-const path            = require('path');
-const { getStore }    = require('@netlify/blobs');
+const crypto = require('crypto');
+const fs     = require('fs');
+const path   = require('path');
+// @netlify/blobs loaded lazily inside storeJob to avoid top-level crash
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const SESSION_SECRET    = process.env.SESSION_SECRET;
@@ -51,10 +51,12 @@ function readCalibrationPdf(filename) {
 
 async function storeJob(jobId, data) {
   try {
+    const { getStore } = require('@netlify/blobs');
     const store = getStore('marking-jobs');
     await store.setJSON(jobId, data, { ttl: 86400 }); // 24h TTL
   } catch (e) {
     console.error('storeJob failed:', e.message);
+    throw e; // propagate so handler can return a meaningful error
   }
 }
 
@@ -139,8 +141,12 @@ exports.handler = async (event) => {
   if (!email) return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Invalid or expired session' }) };
   if (!ANTHROPIC_API_KEY) return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: 'API key not configured' }) };
 
-  // Mark as pending so the client knows the job started
-  await storeJob(jobId, { ready: false, studentName });
+  // Verify storage is available before starting the long Anthropic call
+  try {
+    await storeJob(jobId, { ready: false, studentName });
+  } catch (e) {
+    return { statusCode: 503, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Storage unavailable — Netlify Blobs not accessible: ' + e.message }) };
+  }
 
   // Build content: official markscheme + student script
   const markschemeB64 = readCalibrationPdf('M24 MAAHL P1 TZ1_markscheme.pdf');
