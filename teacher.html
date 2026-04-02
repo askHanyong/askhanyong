@@ -330,73 +330,42 @@ async function doMark() {
   statusText.textContent     = 'Sending to AI examiner…';
   btnMark.disabled = true;
 
-  // Animate progress bar slowly (marking takes 30-60s)
+  // Animate progress bar slowly — edge function may take 30-60s
   let pct = 2;
   const ticker = setInterval(() => {
     pct = Math.min(pct + (pct < 30 ? 1.5 : pct < 60 ? 0.6 : pct < 85 ? 0.2 : 0.05), 92);
     progressBar.style.width = pct + '%';
+    if (pct > 10) statusText.textContent = 'AI examiner is marking… (this may take up to 60 seconds)';
   }, 1000);
 
-  // Generate a unique job ID for this marking request
-  const jobId = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-
   try {
-    // Submit to background function (returns 202 immediately)
-    const startRes = await fetch('/api/teacher-mark-background', {
+    // Edge function — no Lambda timeout, waits for full Anthropic response
+    const res = await fetch('/api/teacher-mark', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName, jobId }),
+      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName }),
     });
+    clearInterval(ticker);
+    progressBar.style.width = '100%';
 
-    if (!startRes.ok) {
-      clearInterval(ticker);
-      let errMsg = `Server error ${startRes.status}`;
-      try { const d = await startRes.json(); errMsg = d.error || errMsg; } catch {}
+    if (!res.ok) {
+      let errMsg = `Server error ${res.status}`;
+      try { const d = await res.json(); errMsg = d.error || errMsg; } catch {}
       statusText.textContent = 'Error: ' + errMsg;
       btnMark.disabled = false;
       return;
     }
 
-    statusText.textContent = 'AI examiner is marking… (may take up to 60 seconds)';
-
-    // Poll for result every 3 seconds
-    let attempts = 0;
-    const maxAttempts = 60; // 3 min max
-    await new Promise((resolve, reject) => {
-      const poll = setInterval(async () => {
-        attempts++;
-        if (attempts > maxAttempts) {
-          clearInterval(poll);
-          reject(new Error('Marking timed out after 3 minutes. Please try again.'));
-          return;
-        }
-        try {
-          const statusRes = await fetch(`/api/teacher-mark-status?jobId=${encodeURIComponent(jobId)}&token=${encodeURIComponent(teacherToken)}`);
-          if (!statusRes.ok) return; // transient error, keep polling
-          const status = await statusRes.json();
-          if (!status.ready) return; // still processing
-          clearInterval(poll);
-          if (status.error) { reject(new Error(status.error)); return; }
-          resolve(status);
-        } catch { /* transient, keep polling */ }
-      }, 3000);
-    }).then(data => {
-      clearInterval(ticker);
-      progressBar.style.width = '100%';
-      const result = data.result || data;
-      if (!result.questions || result.questions.length === 0) {
-        statusText.textContent = 'Error: Marking returned no questions. Please try again.';
-        btnMark.disabled = false;
-        return;
-      }
-      statusText.textContent = 'Done! Rendering results…';
-      lastResults = result;
-      renderResults(result, studentName);
-      setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btnMark.disabled = false; }, 500);
-    }).catch(err => {
-      clearInterval(ticker);
-      statusText.textContent = 'Error: ' + err.message;
+    const data = await res.json();
+    const result = data.result || data;
+    if (!result.questions || result.questions.length === 0) {
+      statusText.textContent = 'Error: Marking returned no questions. Please try again.';
       btnMark.disabled = false;
-    });
+      return;
+    }
+    statusText.textContent = 'Done! Rendering results…';
+    lastResults = result;
+    renderResults(result, studentName);
+    setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btnMark.disabled = false; }, 500);
 
   } catch (e) {
     clearInterval(ticker);

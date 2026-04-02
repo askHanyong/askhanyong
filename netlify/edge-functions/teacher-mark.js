@@ -110,43 +110,38 @@ Marks lost and reasons:
 - Q12(d): Diagram partially correct (v plotted, w plotted), u missing. Area calculation started but not completed. **Partial**
 - Q12(e)-(g): Partially attempted, some correct steps.`;
 
+// Abbreviated fields to keep output compact (q=number, pts=parts,
+// p=part label, ma=marks available, mi=marks awarded, n=notes <=5 words)
 const MARKING_TOOL = {
   name: 'submit_marks',
-  description: 'Submit the complete structured marking result for this student script.',
+  description: 'Submit complete marking. Field n (notes): 5 words max, omit if full marks.',
   input_schema: {
     type: 'object',
-    required: ['questions', 'total_awarded', 'total_available', 'examiner_summary'],
+    required: ['questions'],
     properties: {
       questions: {
         type: 'array',
         items: {
           type: 'object',
-          required: ['number', 'parts'],
+          required: ['q', 'pts'],
           properties: {
-            number: { type: 'integer', description: 'Question number (1–12)' },
-            parts: {
+            q:   { type: 'integer', description: 'Question number 1-12' },
+            pts: {
               type: 'array',
               items: {
                 type: 'object',
-                required: ['part', 'marks_available', 'marks_awarded'],
+                required: ['p', 'ma', 'mi'],
                 properties: {
-                  part:            { type: 'string', description: 'e.g. "a", "b", "c(i)", "c(ii)"' },
-                  marks_available: { type: 'integer' },
-                  marks_awarded:   { type: 'integer' },
-                  mark_breakdown:  { type: 'string', description: 'e.g. "M1A1A0"' },
-                  criteria_met:    { type: 'array', items: { type: 'string' } },
-                  criteria_missed: { type: 'array', items: { type: 'string' } },
-                  ft_applied:      { type: 'boolean' },
-                  notes:           { type: 'string' },
+                  p:  { type: 'string',  description: 'Part label e.g. "a", "b(i)"' },
+                  ma: { type: 'integer', description: 'Marks available' },
+                  mi: { type: 'integer', description: 'Marks awarded' },
+                  n:  { type: 'string',  description: '5 words max. Omit if full marks.' },
                 },
               },
             },
           },
         },
       },
-      total_awarded:    { type: 'integer' },
-      total_available:  { type: 'integer', enum: [110] },
-      examiner_summary: { type: 'string', description: '2–4 sentence summary of performance, key errors, strengths' },
     },
   },
 };
@@ -226,7 +221,7 @@ export default async (request) => {
   const content = [
     {
       type: 'text',
-      text: `Mark the following student script for "${studentName}" against the IB MAA HL May 2024 Paper 1 TZ1. Apply all IB marking rules and calibration from your system prompt. Use the submit_marks tool to return your structured result.`,
+      text: `Mark the following student script for "${studentName}" against the IB MAA HL May 2024 Paper 1 TZ1. Apply all IB marking rules. Use submit_marks tool. Notes field n: 5 words max, omit if full marks. No text outside the tool call.`,
     },
     {
       type: 'document',
@@ -248,8 +243,8 @@ export default async (request) => {
       'content-type':      'application/json',
     },
     body: JSON.stringify({
-      model:       'claude-sonnet-4-6',
-      max_tokens:  4096,
+      model:      'claude-sonnet-4-6',
+      max_tokens: 4096,
       stream:      true,
       system:      SYSTEM_PROMPT,
       tools:       [MARKING_TOOL],
