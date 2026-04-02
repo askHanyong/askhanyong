@@ -9,21 +9,29 @@
 const SYSTEM_PROMPT = `You are a senior IB Mathematics Analysis & Approaches HL examiner with 15 years of experience.
 You are marking the IB MAA HL May 2024 Paper 1 TZ1 exam script.
 
+## STRICT MARKING POLICY
+You must be STRICT and CONSERVATIVE. This is critical:
+- Award a mark ONLY if you can clearly see the required working or answer in the student's script.
+- When in doubt, do NOT award the mark.
+- Do NOT give benefit of the doubt for illegible or ambiguous working.
+- A blank space, crossed-out work, or unclear notation means the mark is NOT awarded.
+- Your first instinct is usually too generous — check each mark again before confirming.
+
 ## MARK TYPES
-- **M** (Method): awarded for correct method even if arithmetic error follows
-- **A** (Accuracy): dependent on preceding M mark unless stated otherwise
-- **R** (Reasoning): must be accompanied by a correct, explicit statement
-- **AG** (Answer Given): the answer is printed — full working MUST be shown
-- **(M1)** / **(A1)**: implied marks — awarded if correct answer seen without explicit working
+- **M** (Method): awarded only if the correct method is clearly shown
+- **A** (Accuracy): awarded only if both the preceding M mark is earned AND the answer is correct
+- **R** (Reasoning): requires an explicit correct statement — implicit reasoning does NOT earn R
+- **AG** (Answer Given): the answer is printed — candidate MUST show every key step; if any step is missing, do NOT award
+- **(M1)** / **(A1)**: implied marks — awarded if the correct answer is seen, even without explicit working
 
 ## KEY RULES
-1. **Follow-Through (FT)**: award FT marks if method is correct but follows an earlier error
-2. **Misread (MR)**: if candidate misreads data, deduct 1 mark but award FT thereafter; max 1 MR per paper
-3. **3 significant figures**: accept answers correct to 3 sf unless question specifies exact; penalise wrong sf only once per paper
-4. **METHOD 1 / METHOD 2**: alternative valid methods are fully accepted
-5. **AG proofs**: if answer is given, candidate must show sufficient working — do not award if key steps omitted
+1. **Follow-Through (FT)**: award FT only if the method is demonstrably correct despite an earlier error — do NOT award FT for a correct answer by coincidence
+2. **Misread (MR)**: deduct 1 mark but award FT thereafter; max 1 MR per paper
+3. **3 significant figures**: accept answers to 3 sf unless exact is required; penalise wrong sf only once
+4. **Alternative methods**: valid alternative methods are fully accepted
+5. **AG proofs**: every key step must be shown — if the candidate jumps to the given answer, award 0
 6. **Do not penalise the same error twice**
-7. **Radians vs degrees**: Paper 1 assumes radian mode; working in degrees is an error and loses the A mark for the result, but M marks for correct method structure may still be awarded
+7. **Radians vs degrees**: degrees loses the A mark for the result; M marks for correct method structure may still be awarded
 
 ## PAPER STRUCTURE (12 questions, 110 marks total)
 Q1: 6 marks (stats/mean — 4+2)
@@ -225,25 +233,40 @@ export default async (request) => {
     },
   ];
 
-  // Fetch the markscheme PDF from static files (Netlify serves calibration/ directory)
-  try {
-    const origin = new URL(request.url).origin;
-    const msUrl  = `${origin}/calibration/M24%20MAAHL%20P1%20TZ1_markscheme.pdf`;
-    const msRes  = await fetch(msUrl);
-    if (msRes.ok) {
-      const buf = await msRes.arrayBuffer();
-      const u8  = new Uint8Array(buf);
-      let binary = '';
-      for (let i = 0; i < u8.length; i += 8192) {
-        binary += String.fromCharCode(...u8.subarray(i, Math.min(i + 8192, u8.length)));
-      }
-      content.push({
-        type: 'document',
-        source: { type: 'base64', media_type: 'application/pdf', data: btoa(binary) },
-        title: 'Official Markscheme — IB MAA HL May 2024 P1 TZ1',
-      });
+  // Helper: fetch a PDF from the static site and return base64
+  async function fetchPdfB64(url) {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const buf = await res.arrayBuffer();
+    const u8  = new Uint8Array(buf);
+    let binary = '';
+    for (let i = 0; i < u8.length; i += 8192) {
+      binary += String.fromCharCode(...u8.subarray(i, Math.min(i + 8192, u8.length)));
     }
-  } catch { /* proceed without markscheme if fetch fails */ }
+    return btoa(binary);
+  }
+
+  // Fetch question paper + markscheme PDFs from static files
+  const origin = new URL(request.url).origin;
+  const [qPaperB64, markschemeB64] = await Promise.all([
+    fetchPdfB64(`${origin}/calibration/M24%20MAAHL%20P1%20TZ1.pdf`).catch(() => null),
+    fetchPdfB64(`${origin}/calibration/M24%20MAAHL%20P1%20TZ1_markscheme.pdf`).catch(() => null),
+  ]);
+
+  if (qPaperB64) {
+    content.push({
+      type: 'document',
+      source: { type: 'base64', media_type: 'application/pdf', data: qPaperB64 },
+      title: 'Question Paper — IB MAA HL May 2024 P1 TZ1',
+    });
+  }
+  if (markschemeB64) {
+    content.push({
+      type: 'document',
+      source: { type: 'base64', media_type: 'application/pdf', data: markschemeB64 },
+      title: 'Official Markscheme — IB MAA HL May 2024 P1 TZ1',
+    });
+  }
 
   content.push({
     type: 'document',
@@ -260,12 +283,13 @@ export default async (request) => {
     headers: {
       'x-api-key':         apiKey,
       'anthropic-version': '2023-06-01',
-      'anthropic-beta':    'pdfs-2024-09-25',
+      'anthropic-beta':    'pdfs-2024-09-25,interleaved-thinking-2025-05-14',
       'content-type':      'application/json',
     },
     body: JSON.stringify({
       model:      'claude-sonnet-4-6',
-      max_tokens: 4096,
+      max_tokens: 16000,
+      thinking:   { type: 'enabled', budget_tokens: 10000 },
       stream:      true,
       system:      SYSTEM_PROMPT,
       tools:       [MARKING_TOOL],
