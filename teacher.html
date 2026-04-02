@@ -356,8 +356,13 @@ async function doMark() {
     }
 
     const data = await res.json();
-    statusText.textContent = 'Done! Rendering results…';
     const result = data.result || data;
+    if (!result.questions || result.questions.length === 0) {
+      statusText.textContent = 'Error: Marking returned no questions — PDF may not have been read, or response was truncated. Please try again.';
+      btnMark.disabled = false;
+      return;
+    }
+    statusText.textContent = 'Done! Rendering results…';
     lastResults  = result;
     renderResults(result, studentName);
     setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btnMark.disabled = false; }, 500);
