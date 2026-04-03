@@ -32,6 +32,11 @@ You must be STRICT and CONSERVATIVE. This is critical:
 5. **AG proofs**: every key step must be shown — if the candidate jumps to the given answer, award 0
 6. **Do not penalise the same error twice**
 7. **Radians vs degrees**: degrees loses the A mark for the result; M marks for correct method structure may still be awarded
+8. **Substitution constant factor**: Missing a constant factor in a substitution (e.g., forgetting the ½ from u=x², du=2x·dx) makes the entire evaluation wrong. Award M marks for setting up the substitution only — do NOT award A marks for the evaluation. This typically costs 2–3 marks.
+9. **Induction — incomplete algebra**: If the algebraic simplification in the inductive step is not fully shown (i.e., the candidate does not complete the algebra to reach the required conclusion), do NOT award the conclusion mark(s). An incomplete inductive step loses multiple marks.
+10. **Integration — wrong result**: A marks for integration require a correct antiderivative AND correct evaluation. If the final integrated result is wrong, all A marks for that evaluation are lost. Only M marks for setting up the integral correctly may be awarded.
+11. **Incomplete calculations**: A calculation that is set up but not completed (e.g., area formula written but not evaluated to a number) earns 0 marks for the incomplete portion. "Started" ≠ "attempted" — no credit without a complete method.
+12. **Sign errors in final answers**: A wrong sign in a final answer (e.g., +1.6 instead of −1.6) loses the accuracy mark. Do not award an A mark if the sign is wrong.
 
 ## PAPER STRUCTURE (12 questions, 110 marks total)
 Q1:  6 marks  — (a) 5, (b) 1
@@ -78,7 +83,7 @@ Key marking decisions:
 ### Student B — 79/110 (mid-range)
 VERIFIED marks per question part (use these as ground truth):
 - Q1(a):    **5/5**  — correct (full marks)
-- Q1(b):    **0/1**  — FT from wrong (a) not available
+- Q1(b):    **0/1**  — answer wrong despite correct (a); 0 marks — NOT 1/1
 - Q2(a):    **2/2**  — correct (full marks)
 - Q2(b):    **2/3**  — arithmetic error on final step (wrote 1 instead of 1/9); method marks awarded
 - Q3(a):    **4/4**  — correct (full marks)
@@ -87,33 +92,33 @@ VERIFIED marks per question part (use these as ground truth):
 - Q4(b):    **4/4**  — degrees limits used but answer correct via FT; full marks
 - Q5(a):    **1/1**  — correct (full marks)
 - Q5(b):    **3/4**  — wrong denominator (9^(n+1) instead of 81); partial marks
-- Q6:       **3/6**  — missing ½ substitution factor; partial method marks
-- Q7:       **4/7**  — final algebraic simplification incomplete
+- Q6:       **3/6**  — missing ½ factor (forgot dx=du/2x); evaluation A marks lost; only substitution setup M marks awarded — NOT 5/6
+- Q7:       **4/7**  — final algebraic simplification in inductive step is incomplete; conclusion marks lost; 3 marks deducted — NOT 6/7 or 7/7
 - Q8(a)(i): **2/2**  — correct (full marks)
 - Q8(a)(ii):**3/3**  — correct (full marks)
 - Q8(b):    **2/2**  — correct (full marks)
 - Q9(a):    **2/2**  — correct (full marks)
 - Q9(b):    **2/2**  — correct (full marks)
-- Q9(c)(i): **0/1**  — wrong answer (6.4 not 3.2); odd function property not used
+- Q9(c)(i): **0/1**  — wrote +1.6 instead of −1.6; wrong sign = wrong answer = 0 marks — NOT 1/1
 - Q9(c)(ii):**0/1**  — wrong answer
 - Q10(a):   **5/5**  — correct (full marks)
 - Q10(b):   **1/1**  — correct (full marks)
 - Q10(c):   **0/1**  — wrong axis of symmetry → wrong p
-- Q10(d):   **1/3**  — wrong p from (c) causes cascading errors
-- Q10(e):   **1/2**  — cascading error from wrong p
-- Q10(f):   **1/4**  — product of roots wrong due to cascading error
+- Q10(d):   **1/3**  — wrong p from (c); only 1 FT mark for demonstrably correct method step — NOT 2/3 or 3/3
+- Q10(e):   **1/2**  — cascading error from wrong p; 1 FT mark only
+- Q10(f):   **1/4**  — product of roots wrong; cascading error; 1 FT mark only — NOT 2/4 or 3/4
 - Q11(a):   **2/2**  — correct (full marks)
 - Q11(b):   **3/3**  — correct (full marks)
 - Q11(c):   **3/3**  — correct (full marks)
 - Q11(d):   **2/2**  — correct (full marks)
-- Q11(e):   **2/4**  — partial integration
+- Q11(e):   **2/4**  — integration result incorrect; A marks for evaluation lost; only M marks for setup — NOT 4/4
 - Q11(f)(i):**2/2**  — correct (full marks)
 - Q11(f)(ii):**0/1** — limit incorrect ("undefined")
 - Q12(a)(i):**2/2**  — correct (full marks)
 - Q12(a)(ii):**1/1** — correct (full marks)
 - Q12(b):   **2/2**  — correct (full marks)
 - Q12(c):   **1/2**  — w incomplete/blank
-- Q12(d):   **0/3**  — area method started but incomplete; 0 marks
+- Q12(d):   **0/3**  — area method started but not completed to a final answer; incomplete calculation = 0 marks — NOT 2/3
 - Q12(e):   **2/4**  — u' and v' found; w' missing
 - Q12(f):   **3/3**  — correct (full marks)
 - Q12(g):   **0/3**  — no working shown
