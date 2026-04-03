@@ -91,6 +91,21 @@ td{padding:10px 12px;vertical-align:top}
 /* Spinner */
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* Mode tabs */
+.mode-tabs{display:flex;gap:2px;background:var(--bg-mid);padding:4px;border-radius:10px;margin-bottom:24px;width:fit-content}
+.mode-tab{padding:8px 22px;border:none;background:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:var(--text-mid);transition:all .15s}
+.mode-tab.active{background:#fff;color:var(--navy);box-shadow:var(--shadow)}
+/* Bulk queue */
+.bulk-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;white-space:nowrap}
+.bulk-status.pending{background:var(--bg-mid);color:var(--text-soft)}
+.bulk-status.marking{background:#fef3c7;color:#92400e}
+.bulk-status.done{background:#f0fdf4;color:var(--green)}
+.bulk-status.error{background:#fef2f2;color:var(--red)}
+.bulk-name-input{padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;width:100%;min-width:140px;outline:none}
+.bulk-name-input:focus{border-color:var(--navy)}
+.bulk-name-input:disabled{background:var(--bg);color:var(--text-mid)}
+.bulk-score{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--navy)}
+.bulk-progress-text{font-size:13px;color:var(--text-mid);margin:10px 0 4px}
 @media(max-width:600px){.form-row{grid-template-columns:1fr}.auth-card{padding:28px 20px}.screen{padding:72px 16px 40px}}
 </style>
 </head>
@@ -141,6 +156,13 @@ td{padding:10px 12px;vertical-align:top}
   <h1 class="page-title">Mark Student Script</h1>
   <p class="page-sub">Upload a student's handwritten PDF. The AI will mark it against the official IB markscheme with calibration from 3 reference scripts.</p>
 
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="tabSingle" onclick="setMode('single')">Single Script</button>
+    <button class="mode-tab" id="tabBulk" onclick="setMode('bulk')">Bulk Upload</button>
+  </div>
+
+  <!-- ── SINGLE MODE ─────────────────────────────── -->
+  <div id="singleSection">
   <div class="card">
     <div class="card-title">Upload Script</div>
     <div class="upload-zone" id="dropZone" onclick="document.getElementById('pdfInput').click()">
@@ -198,6 +220,48 @@ td{padding:10px 12px;vertical-align:top}
       <button class="btn-export" onclick="resetForm()">← Mark another script</button>
     </div>
   </div>
+  </div><!-- /singleSection -->
+
+  <!-- ── BULK MODE ───────────────────────────────── -->
+  <div id="bulkSection" style="display:none">
+    <div class="card">
+      <div class="card-title">Upload Scripts</div>
+      <div class="upload-zone" id="bulkDropZone">
+        <input type="file" id="bulkInput" accept=".pdf" multiple>
+        <div class="upload-icon">📂</div>
+        <h3 id="bulkDropLabel">Drop multiple PDFs here or click to browse</h3>
+        <p>Select all student scripts at once · PDF only</p>
+      </div>
+    </div>
+
+    <!-- Queue table (shown once files are selected) -->
+    <div id="bulkQueueSection" style="display:none">
+      <div class="card" style="padding:0;overflow:hidden">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:32px">#</th>
+              <th>Student Name</th>
+              <th>File</th>
+              <th style="width:100px">Status</th>
+              <th style="width:70px">Score</th>
+            </tr>
+          </thead>
+          <tbody id="bulkQueueBody"></tbody>
+        </table>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn-primary" id="btnMarkAll" onclick="doBulkMark()" style="max-width:220px">Mark All Scripts</button>
+        <button class="btn-export" id="btnExportBulk" onclick="exportBulkCSV()" style="display:none">⬇ Export All CSV</button>
+      </div>
+
+      <div class="bulk-progress-text" id="bulkProgressText" style="display:none"></div>
+      <div class="progress-bar-wrap" id="bulkProgressWrap" style="display:none">
+        <div class="progress-bar" id="bulkProgressBar" style="width:0%"></div>
+      </div>
+    </div>
+  </div><!-- /bulkSection -->
 </div>
 
 <script>
@@ -206,11 +270,181 @@ let teacherToken   = null;
 let studentPdfB64  = null;
 let lastResults    = null;
 
+// Bulk state
+let bulkQueue      = [];   // [{file, name, b64, status, result, score, error}]
+let bulkRunning    = false;
+
 // ── Screen navigation ─────────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
+
+// ── Mode switching ────────────────────────────────────────────────────────
+function setMode(mode) {
+  document.getElementById('singleSection').style.display = mode === 'single' ? '' : 'none';
+  document.getElementById('bulkSection').style.display   = mode === 'bulk'   ? '' : 'none';
+  document.getElementById('tabSingle').classList.toggle('active', mode === 'single');
+  document.getElementById('tabBulk').classList.toggle('active',   mode === 'bulk');
+}
+
+// ── Bulk file handling ────────────────────────────────────────────────────
+function nameFromFilename(filename) {
+  return filename.replace(/\.pdf$/i, '').replace(/[_\-]+/g, ' ').trim();
+}
+
+function handleBulkFiles(files) {
+  const pdfs = Array.from(files).filter(f => f.type === 'application/pdf');
+  if (!pdfs.length) { alert('Please select PDF files.'); return; }
+  bulkQueue = pdfs.map(f => ({
+    file: f, name: nameFromFilename(f.name),
+    b64: null, status: 'pending', result: null, score: null, error: null,
+  }));
+  document.getElementById('bulkDropLabel').textContent = `✓ ${pdfs.length} file${pdfs.length > 1 ? 's' : ''} selected`;
+  document.getElementById('bulkDropZone').style.borderColor = 'var(--green)';
+  document.getElementById('bulkQueueSection').style.display = '';
+  document.getElementById('btnExportBulk').style.display = 'none';
+  renderBulkQueue();
+}
+
+function renderBulkQueue() {
+  const tbody = document.getElementById('bulkQueueBody');
+  tbody.innerHTML = '';
+  bulkQueue.forEach((item, i) => {
+    const tr = document.createElement('tr');
+    const statusHtml = {
+      pending: '<span class="bulk-status pending">Pending</span>',
+      marking: '<span class="bulk-status marking"><span class="spinner" style="border-top-color:#92400e;border-color:rgba(146,64,14,.3);width:12px;height:12px;margin-right:4px"></span>Marking…</span>',
+      done:    '<span class="bulk-status done">✓ Done</span>',
+      error:   `<span class="bulk-status error" title="${item.error || ''}">✗ Error</span>`,
+    }[item.status] || '';
+    const scoreHtml = item.score !== null
+      ? `<span class="bulk-score">${item.score}<span style="font-weight:400;color:var(--text-soft);font-size:11px"> /110</span></span>` : '—';
+    const locked = bulkRunning && item.status !== 'pending';
+    tr.innerHTML = `
+      <td style="color:var(--text-soft);font-size:12px">${i + 1}</td>
+      <td><input class="bulk-name-input" value="${item.name.replace(/"/g, '&quot;')}"
+            ${locked ? 'disabled' : ''}
+            onchange="bulkQueue[${i}].name = this.value"></td>
+      <td style="font-size:12px;color:var(--text-mid);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${item.file.name}">${item.file.name}</td>
+      <td>${statusHtml}</td>
+      <td>${scoreHtml}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function computeScore(result) {
+  let total = 0;
+  (result.questions || []).forEach(q =>
+    (q.pts || q.parts || []).forEach(p => { total += (p.mi ?? p.marks_awarded ?? 0); })
+  );
+  return total;
+}
+
+async function readFileAsB64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = e => resolve(e.target.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function doBulkMark() {
+  if (bulkRunning) return;
+  if (!bulkQueue.length) return;
+  if (!teacherToken) { alert('Please log in first.'); return; }
+  bulkRunning = true;
+  document.getElementById('btnMarkAll').disabled = true;
+
+  const progressText = document.getElementById('bulkProgressText');
+  const progressWrap = document.getElementById('bulkProgressWrap');
+  const progressBar  = document.getElementById('bulkProgressBar');
+  progressText.style.display = '';
+  progressWrap.style.display = '';
+
+  const total = bulkQueue.length;
+  let done = 0;
+
+  for (let i = 0; i < bulkQueue.length; i++) {
+    const item = bulkQueue[i];
+    if (item.status === 'done') { done++; continue; }
+
+    item.status = 'marking';
+    renderBulkQueue();
+    progressText.textContent = `Marking ${done + 1} of ${total}: ${item.name}…`;
+    progressBar.style.width  = `${Math.round((done / total) * 100)}%`;
+
+    try {
+      if (!item.b64) item.b64 = await readFileAsB64(item.file);
+      const res = await fetch('/api/teacher-mark', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: teacherToken, studentPdf: item.b64, studentName: item.name }),
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        item.status = 'error';
+        item.error  = d.error || `HTTP ${res.status}`;
+      } else {
+        const data   = await res.json();
+        item.result  = data.result || data;
+        item.status  = 'done';
+        item.score   = computeScore(item.result);
+      }
+    } catch (e) {
+      item.status = 'error';
+      item.error  = e.message;
+    }
+
+    done++;
+    renderBulkQueue();
+  }
+
+  progressBar.style.width  = '100%';
+  progressText.textContent = `Complete — ${done} of ${total} marked.`;
+  document.getElementById('btnMarkAll').disabled = false;
+  document.getElementById('btnExportBulk').style.display = '';
+  bulkRunning = false;
+}
+
+function exportBulkCSV() {
+  const rows = [['Student', 'Question', 'Part', 'AI Mark', 'Available', 'Notes']];
+  bulkQueue.filter(item => item.result).forEach(item => {
+    (item.result.questions || []).forEach(q => {
+      (q.pts || q.parts || []).forEach(p => {
+        rows.push([
+          item.name,
+          q.q ?? q.number,
+          p.p ?? p.part ?? '',
+          p.mi ?? p.marks_awarded ?? '',
+          p.ma ?? p.marks_available ?? '',
+          (p.n ?? p.notes ?? '').replace(/"/g, '""'),
+        ]);
+      });
+    });
+    rows.push([item.name, '', 'TOTAL', item.score, 110, '']);
+  });
+  const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'bulk_marks.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Bulk drag-and-drop
+(function () {
+  const zone  = document.getElementById('bulkDropZone');
+  const input = document.getElementById('bulkInput');
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', ()  => zone.classList.remove('drag'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag');
+    if (e.dataTransfer.files.length) handleBulkFiles(e.dataTransfer.files);
+  });
+  zone.addEventListener('click', () => input.click());
+  input.addEventListener('change', () => { if (input.files.length) handleBulkFiles(input.files); });
+})();
 
 // ── Auth ──────────────────────────────────────────────────────────────────
 async function doLogin() {
