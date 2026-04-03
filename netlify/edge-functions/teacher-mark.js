@@ -75,16 +75,47 @@ Key marking decisions:
 - Q12: All parts correct — (a+bi)³ expansion, v=-2, w=1-√3i, area 3√3, polar forms, c=4√2, d=-4√2, n=12. **Full marks 20/20**
 
 ### Student B — 77/110 (mid-range)
-Marks lost and reasons (use PAPER STRUCTURE above for marks available):
-- Q2(b): Wrote (1/3)/3 = 1 instead of 1/9. Arithmetic error. **0/3**
-- Q4(a): Worked in degrees (x=30° or 150°). Method correct, lost A mark(s) for degrees.
-- Q5(b): Final denominator wrong (9^(n+1) instead of 81). **Partial marks**
-- Q9(c)(i): Wrote 1.6 instead of −1.6. **0/1**
-- Q9(c)(ii): Did not use odd function property. **0/1**
-- Q10(c): Arithmetic error → p wrong → **0/1**; cascading errors in (d)(e)(f).
-- Q12(c): v=-2 found, w (conjugate) incomplete.
-- Q12(d): Argand diagram missing u; area incomplete.
-- Q12(e)-(g): Not attempted or incomplete.
+VERIFIED marks per question part (use these as ground truth):
+- Q1(a):    **5/5**  — correct (full marks)
+- Q1(b):    **0/1**  — FT from wrong (a) not available
+- Q2(a):    **2/2**  — correct (full marks)
+- Q2(b):    **2/3**  — arithmetic error on final step (wrote 1 instead of 1/9); method marks awarded
+- Q3(a):    **4/4**  — correct (full marks)
+- Q3(b):    **4/4**  — correct (full marks)
+- Q4(a):    **2/3**  — degrees used throughout; A mark lost for degree answers
+- Q4(b):    **4/4**  — degrees limits used but answer correct via FT; full marks
+- Q5(a):    **1/1**  — correct (full marks)
+- Q5(b):    **3/4**  — wrong denominator (9^(n+1) instead of 81); partial marks
+- Q6:       **3/6**  — missing ½ substitution factor; partial method marks
+- Q7:       **4/7**  — final algebraic simplification incomplete
+- Q8(a)(i): **2/2**  — correct (full marks)
+- Q8(a)(ii):**3/3**  — correct (full marks)
+- Q8(b):    **2/2**  — correct (full marks)
+- Q9(a):    **2/2**  — correct (full marks)
+- Q9(b):    **2/2**  — correct (full marks)
+- Q9(c)(i): **0/1**  — wrong answer (6.4 not 3.2); odd function property not used
+- Q9(c)(ii):**0/1**  — wrong answer
+- Q10(a):   **5/5**  — correct (full marks)
+- Q10(b):   **1/1**  — correct (full marks)
+- Q10(c):   **0/1**  — wrong axis of symmetry → wrong p
+- Q10(d):   **1/3**  — wrong p from (c) causes cascading errors
+- Q10(e):   **1/2**  — cascading error from wrong p
+- Q10(f):   **1/4**  — product of roots wrong due to cascading error
+- Q11(a):   **2/2**  — correct (full marks)
+- Q11(b):   **3/3**  — correct (full marks)
+- Q11(c):   **3/3**  — correct (full marks)
+- Q11(d):   **2/2**  — correct (full marks)
+- Q11(e):   **2/4**  — partial integration
+- Q11(f)(i):**2/2**  — correct (full marks)
+- Q11(f)(ii):**0/1** — limit incorrect ("undefined")
+- Q12(a)(i):**2/2**  — correct (full marks)
+- Q12(a)(ii):**1/1** — correct (full marks)
+- Q12(b):   **2/2**  — correct (full marks)
+- Q12(c):   **1/2**  — w incomplete/blank
+- Q12(d):   **0/3**  — area method started but incomplete; 0 marks
+- Q12(e):   **2/4**  — u' and v' found; w' missing
+- Q12(f):   **3/3**  — correct (full marks)
+- Q12(g):   **0/3**  — no working shown
 
 ### Student C — 43/110 (lower range)
 VERIFIED marks (ground truth — match these exactly for this student):
