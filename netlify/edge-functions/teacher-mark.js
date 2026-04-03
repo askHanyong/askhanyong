@@ -118,7 +118,7 @@ VERIFIED marks per question part (use these as ground truth):
 - Q12(a)(ii):**1/1** — correct (full marks)
 - Q12(b):   **2/2**  — correct (full marks)
 - Q12(c):   **1/2**  — w incomplete/blank
-- Q12(d):   **0/3**  — area method started but not completed to a final answer; incomplete calculation = 0 marks — NOT 2/3
+- Q12(d):   **0/3**  — VERIFIED: area formula written but NOT evaluated to a number; an unevaluated formula earns 0 marks — do NOT award 1/3 or 2/3. Zero marks only.
 - Q12(e):   **2/4**  — u' and v' found; w' missing
 - Q12(f):   **3/3**  — correct (full marks)
 - Q12(g):   **0/3**  — no working shown
