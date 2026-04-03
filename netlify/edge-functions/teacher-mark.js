@@ -83,7 +83,7 @@ Key marking decisions:
 ### Student B — 79/110 (mid-range)
 VERIFIED marks per question part (use these as ground truth):
 - Q1(a):    **5/5**  — correct (full marks)
-- Q1(b):    **0/1**  — answer wrong despite correct (a); 0 marks — NOT 1/1
+- Q1(b):    **0/1**  — VERIFIED: answer wrong despite correct (a); 0 marks — do NOT award 1/1
 - Q2(a):    **2/2**  — correct (full marks)
 - Q2(b):    **2/3**  — arithmetic error on final step (wrote 1 instead of 1/9); method marks awarded
 - Q3(a):    **4/4**  — correct (full marks)
@@ -93,13 +93,13 @@ VERIFIED marks per question part (use these as ground truth):
 - Q5(a):    **1/1**  — correct (full marks)
 - Q5(b):    **3/4**  — wrong denominator (9^(n+1) instead of 81); partial marks
 - Q6:       **3/6**  — missing ½ factor (forgot dx=du/2x); evaluation A marks lost; only substitution setup M marks awarded — NOT 5/6
-- Q7:       **4/7**  — final algebraic simplification in inductive step is incomplete; conclusion marks lost; 3 marks deducted — NOT 6/7 or 7/7
+- Q7:       **4/7**  — VERIFIED: inductive step algebraic simplification is incomplete; the required algebra to reach the conclusion is NOT fully shown. 3 marks lost. Do NOT award 6/7 or 7/7 — even if working appears mostly complete, it is not. Maximum 4/7.
 - Q8(a)(i): **2/2**  — correct (full marks)
 - Q8(a)(ii):**3/3**  — correct (full marks)
 - Q8(b):    **2/2**  — correct (full marks)
 - Q9(a):    **2/2**  — correct (full marks)
 - Q9(b):    **2/2**  — correct (full marks)
-- Q9(c)(i): **0/1**  — wrote +1.6 instead of −1.6; wrong sign = wrong answer = 0 marks — NOT 1/1
+- Q9(c)(i): **0/1**  — VERIFIED: student wrote +1.6 (positive) instead of −1.6 (negative); wrong sign = 0 marks. Look carefully at the sign — do NOT award 1/1 if value is positive.
 - Q9(c)(ii):**0/1**  — wrong answer
 - Q10(a):   **5/5**  — correct (full marks)
 - Q10(b):   **1/1**  — correct (full marks)
@@ -111,7 +111,7 @@ VERIFIED marks per question part (use these as ground truth):
 - Q11(b):   **3/3**  — correct (full marks)
 - Q11(c):   **3/3**  — correct (full marks)
 - Q11(d):   **2/2**  — correct (full marks)
-- Q11(e):   **2/4**  — integration result incorrect; A marks for evaluation lost; only M marks for setup — NOT 4/4
+- Q11(e):   **2/4**  — VERIFIED: integration result is incorrect despite appearing complete. A marks for evaluation are lost. Do NOT award 3/4 or 4/4 — even if working looks correct, the result is wrong. Maximum 2/4.
 - Q11(f)(i):**2/2**  — correct (full marks)
 - Q11(f)(ii):**0/1** — limit incorrect ("undefined")
 - Q12(a)(i):**2/2**  — correct (full marks)
