@@ -74,7 +74,7 @@ Key marking decisions:
 - Q11: All parts correct, one mark lost. **16/17**
 - Q12: All parts correct — (a+bi)³ expansion, v=-2, w=1-√3i, area 3√3, polar forms, c=4√2, d=-4√2, n=12. **Full marks 20/20**
 
-### Student B — 77/110 (mid-range)
+### Student B — 79/110 (mid-range)
 VERIFIED marks per question part (use these as ground truth):
 - Q1(a):    **5/5**  — correct (full marks)
 - Q1(b):    **0/1**  — FT from wrong (a) not available
