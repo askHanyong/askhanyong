@@ -72,7 +72,8 @@ Key marking decisions:
 - Q9(c)(ii): ∫[-4 to 4][f(|x|)+f(x)]dx = 3.2. **Full marks 1/1**
 - Q10: All parts correct — range (y∈ℝ, y≠4), p=9/2, vertex, product of roots. **Full marks 16/16**
 - Q11: All parts correct, one mark lost. **16/17**
-- Q12: All parts correct — (a+bi)³ expansion, v=-2, w=1-√3i, area 3√3, polar forms, c=4√2, d=-4√2, n=12. **Full marks 20/20**
+- Q12(a)(i) to Q12(f): All correct. **Full marks**
+- Q12(g): **2/3** — partial; loses 1 mark (total Q12: 19/20)
 
 ### Student B — 79/110 (mid-range)
 VERIFIED marks per question part (use these as ground truth):
