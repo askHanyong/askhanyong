@@ -304,8 +304,9 @@ export default async (request) => {
       'content-type':      'application/json',
     },
     body: JSON.stringify({
-      model:      'claude-sonnet-4-6',
-      max_tokens: 8000,
+      model:       'claude-sonnet-4-6',
+      max_tokens:  8000,
+      temperature: 0,
       stream:      true,
       system:      SYSTEM_PROMPT,
       tools:       [MARKING_TOOL],
