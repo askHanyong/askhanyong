@@ -74,6 +74,10 @@
   path = "/api/teacher-mark"
   function = "teacher-mark"
 
+[[edge_functions]]
+  path = "/api/teacher-save"
+  function = "teacher-save"
+
 
 [[redirects]]
   from = "/api/*"

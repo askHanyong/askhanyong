@@ -216,9 +216,11 @@ td{padding:10px 12px;vertical-align:top}
       <div id="examinerSummary"></div>
     </div>
 
-    <div style="margin-top:20px;text-align:center">
+    <div style="margin-top:20px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+      <button class="btn-primary" id="btnSave" onclick="saveMarking()" style="max-width:220px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save &amp; Confirm</button>
       <button class="btn-export" onclick="resetForm()">← Mark another script</button>
     </div>
+    <div id="saveMsg" class="msg" style="margin-top:10px;text-align:center"></div>
   </div>
   </div><!-- /singleSection -->
 
@@ -254,7 +256,9 @@ td{padding:10px 12px;vertical-align:top}
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px">
         <button class="btn-primary" id="btnMarkAll" onclick="doBulkMark()" style="max-width:220px">Mark All Scripts</button>
         <button class="btn-export" id="btnExportBulk" onclick="exportBulkCSV()" style="display:none">⬇ Export All CSV</button>
+        <button class="btn-primary" id="btnSaveBulk" onclick="saveBulkMarkings()" style="display:none;max-width:220px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save All &amp; Confirm</button>
       </div>
+      <div id="saveBulkMsg" class="msg" style="margin-top:10px"></div>
 
       <div class="bulk-progress-text" id="bulkProgressText" style="display:none"></div>
       <div class="progress-bar-wrap" id="bulkProgressWrap" style="display:none">
@@ -404,6 +408,7 @@ async function doBulkMark() {
   progressText.textContent = `Complete — ${done} of ${total} marked.`;
   document.getElementById('btnMarkAll').disabled = false;
   document.getElementById('btnExportBulk').style.display = '';
+  document.getElementById('btnSaveBulk').style.display = '';
   bulkRunning = false;
 }
 
@@ -430,6 +435,66 @@ function exportBulkCSV() {
   const a    = document.createElement('a');
   a.href = url; a.download = 'bulk_marks.csv'; a.click();
   URL.revokeObjectURL(url);
+}
+
+async function saveBulkMarkings() {
+  const btnSaveBulk = document.getElementById('btnSaveBulk');
+  const saveBulkMsg = document.getElementById('saveBulkMsg');
+  const completed   = bulkQueue.filter(item => item.result);
+  if (!completed.length) return;
+
+  btnSaveBulk.disabled = true;
+  btnSaveBulk.textContent = 'Saving…';
+  saveBulkMsg.className = 'msg';
+  saveBulkMsg.textContent = '';
+
+  let saved = 0, failed = 0;
+  for (const item of completed) {
+    const questions = item.result.questions || [];
+    const questionMarks = [];
+    let aiTotal = 0;
+    questions.forEach(q => {
+      (q.pts || q.parts || []).forEach(p => {
+        const aiMark = p.mi ?? p.marks_awarded ?? 0;
+        questionMarks.push({
+          q:     q.q ?? q.number,
+          p:     p.p ?? p.part ?? '',
+          ma:    p.ma ?? p.marks_available ?? null,
+          ai:    aiMark,
+          final: aiMark,  // bulk: no per-cell overrides, AI mark = final
+          delta: 0,
+          notes: p.n ?? p.notes ?? '',
+        });
+        aiTotal += aiMark;
+      });
+    });
+
+    try {
+      const res = await fetch('/api/teacher-save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token:         teacherToken,
+          studentName:   item.name,
+          aiScore:       aiTotal,
+          finalScore:    item.score ?? aiTotal,
+          questionMarks,
+        }),
+      });
+      if (res.ok) { saved++; } else { failed++; }
+    } catch { failed++; }
+  }
+
+  btnSaveBulk.disabled = false;
+  if (failed === 0) {
+    saveBulkMsg.textContent = `All ${saved} scripts saved. They will improve future AI accuracy.`;
+    saveBulkMsg.className = 'msg ok';
+    btnSaveBulk.textContent = '✓ All Saved';
+  } else {
+    saveBulkMsg.textContent = `Saved ${saved}, failed ${failed}. Check your connection and try again.`;
+    saveBulkMsg.className = 'msg err';
+    btnSaveBulk.textContent = '✓ Save All & Confirm';
+  }
 }
 
 // Bulk drag-and-drop
@@ -711,6 +776,74 @@ function exportCSV() {
   a.download = `${studentName.replace(/\s+/g, '_')}_marks.csv`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ── Save & Confirm ────────────────────────────────────────────────────────
+async function saveMarking() {
+  if (!lastResults) return;
+  const btnSave    = document.getElementById('btnSave');
+  const saveMsg    = document.getElementById('saveMsg');
+  const studentName = document.getElementById('resultStudentName').textContent;
+  saveMsg.className = 'msg';
+  saveMsg.textContent = '';
+
+  // Build questionMarks from lastResults + override inputs
+  const inputs    = Array.from(document.querySelectorAll('.override-input'));
+  const questions = lastResults.questions || [];
+  const questionMarks = [];
+  let aiTotal = 0, finalTotal = 0, idx = 0;
+  questions.forEach(q => {
+    (q.pts || q.parts || []).forEach(p => {
+      const aiMark    = p.mi ?? p.marks_awarded ?? 0;
+      const finalMark = inputs[idx] ? parseInt(inputs[idx].value, 10) : aiMark;
+      const avail     = p.ma ?? p.marks_available ?? null;
+      const safe      = isNaN(finalMark) ? aiMark : finalMark;
+      questionMarks.push({
+        q:     q.q ?? q.number,
+        p:     p.p ?? p.part ?? '',
+        ma:    avail,
+        ai:    aiMark,
+        final: safe,
+        delta: safe - aiMark,
+        notes: p.n ?? p.notes ?? '',
+      });
+      aiTotal    += aiMark;
+      finalTotal += safe;
+      idx++;
+    });
+  });
+
+  btnSave.disabled = true;
+  btnSave.textContent = 'Saving…';
+
+  try {
+    const res = await fetch('/api/teacher-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token:         teacherToken,
+        studentName,
+        aiScore:       aiTotal,
+        finalScore:    finalTotal,
+        questionMarks,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      saveMsg.textContent = 'Save failed: ' + (data.error || res.status);
+      saveMsg.className = 'msg err';
+    } else {
+      saveMsg.textContent = 'Marking saved! This script will help improve future AI accuracy.';
+      saveMsg.className = 'msg ok';
+      btnSave.textContent = '✓ Saved';
+    }
+  } catch (e) {
+    saveMsg.textContent = 'Network error: ' + e.message;
+    saveMsg.className = 'msg err';
+    btnSave.textContent = '✓ Save & Confirm';
+  } finally {
+    btnSave.disabled = false;
+  }
 }
 
 // ── Reset ─────────────────────────────────────────────────────────────────
