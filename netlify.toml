@@ -78,6 +78,18 @@
   path = "/api/teacher-save"
   function = "teacher-save"
 
+[[edge_functions]]
+  path = "/api/assignment-create"
+  function = "assignment-create"
+
+[[edge_functions]]
+  path = "/api/assignment-list"
+  function = "assignment-list"
+
+[[edge_functions]]
+  path = "/api/assignment-mark"
+  function = "assignment-mark"
+
 
 [[redirects]]
   from = "/api/*"

@@ -95,6 +95,30 @@ td{padding:10px 12px;vertical-align:top}
 .mode-tabs{display:flex;gap:2px;background:var(--bg-mid);padding:4px;border-radius:10px;margin-bottom:24px;width:fit-content}
 .mode-tab{padding:8px 22px;border:none;background:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:var(--text-mid);transition:all .15s}
 .mode-tab.active{background:#fff;color:var(--navy);box-shadow:var(--shadow)}
+/* Top-level section tabs */
+.section-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:28px}
+.section-tab{padding:10px 24px;border:none;background:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:var(--text-soft);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.section-tab.active{color:var(--navy);border-bottom-color:var(--navy)}
+/* Assignment list */
+.assign-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.assign-card:hover{border-color:var(--gold);box-shadow:var(--shadow-md)}
+.assign-card.selected{border-color:var(--navy);box-shadow:0 0 0 3px rgba(14,28,51,.08)}
+.assign-meta{font-size:11px;color:var(--text-soft);margin-top:2px}
+.assign-name{font-size:14px;font-weight:600;color:var(--text)}
+.assign-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--gold-pale);color:var(--gold);border:1px solid var(--gold-border);white-space:nowrap}
+.assign-badge.hw{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.assign-badge.test{background:#fdf4ff;color:#7e22ce;border-color:#e9d5ff}
+/* Structure builder */
+.struct-row{display:grid;grid-template-columns:60px 80px 1fr 32px;gap:8px;align-items:center;margin-bottom:8px}
+.struct-input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;outline:none;width:100%}
+.struct-input:focus{border-color:var(--navy)}
+.btn-icon{width:32px;height:32px;border:1.5px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.btn-icon:hover{background:var(--bg-mid)}
+.btn-sm{padding:7px 16px;border:1.5px solid var(--border);border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-sm:hover{background:var(--bg-mid)}
+.upload-zone-sm{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:18px;text-align:center;background:#fff;cursor:pointer;transition:border-color .2s;margin-bottom:4px;font-size:13px;color:var(--text-soft)}
+.upload-zone-sm:hover,.upload-zone-sm.ok{border-color:var(--green);color:var(--green)}
+.upload-zone-sm input{display:none}
 /* Bulk queue */
 .bulk-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;white-space:nowrap}
 .bulk-status.pending{background:var(--bg-mid);color:var(--text-soft)}
@@ -152,10 +176,19 @@ td{padding:10px 12px;vertical-align:top}
 
 <!-- ── MAIN MARKING SCREEN ──────────────────────────────────── -->
 <div id="screenMark" class="screen">
-  <div class="page-eyebrow">📋 IB MAA HL · May 2024 P1 TZ1</div>
-  <h1 class="page-title">Mark Student Script</h1>
-  <p class="page-sub">Upload a student's handwritten PDF. The AI will mark it against the official IB markscheme with calibration from 3 reference scripts.</p>
+  <h1 class="page-title">Teacher Marking Platform</h1>
+  <p class="page-sub">Mark IB papers or homework assignments. The AI reads student scripts and awards marks against the official markscheme or your solution set.</p>
 
+  <div class="section-tabs">
+    <button class="section-tab active" id="sTabIB"     onclick="setSection('ib')">IB Papers</button>
+    <button class="section-tab"        id="sTabAssign" onclick="setSection('assign')">Assignments</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       IB PAPER SECTION
+  ═════════════════════════════════════════════════════ -->
+  <div id="ibSection">
+  <div class="page-eyebrow" style="margin-bottom:16px">📋 IB MAA HL · May 2024 P1 TZ1</div>
   <div class="mode-tabs">
     <button class="mode-tab active" id="tabSingle" onclick="setMode('single')">Single Script</button>
     <button class="mode-tab" id="tabBulk" onclick="setMode('bulk')">Bulk Upload</button>
@@ -266,6 +299,162 @@ td{padding:10px 12px;vertical-align:top}
       </div>
     </div>
   </div><!-- /bulkSection -->
+  </div><!-- /ibSection -->
+
+  <!-- ════════════════════════════════════════════════════
+       ASSIGNMENTS SECTION
+  ═════════════════════════════════════════════════════ -->
+  <div id="assignSection" style="display:none">
+
+    <!-- Sub-tabs: My Assignments | Create New | Mark -->
+    <div class="mode-tabs" style="margin-bottom:20px">
+      <button class="mode-tab active" id="aTabList"   onclick="setAssignTab('list')">My Assignments</button>
+      <button class="mode-tab"        id="aTabCreate" onclick="setAssignTab('create')">+ Create New</button>
+      <button class="mode-tab"        id="aTabMark"   onclick="setAssignTab('mark')" id="aTabMark">Mark Script</button>
+    </div>
+
+    <!-- ── LIST: browse + select assignment ── -->
+    <div id="assignListPane">
+      <div id="assignList">
+        <p style="font-size:13px;color:var(--text-soft);padding:16px 0">Loading assignments…</p>
+      </div>
+      <button class="btn-sm" style="margin-top:8px" onclick="loadAssignments()">↺ Refresh</button>
+    </div>
+
+    <!-- ── CREATE: define a new assignment ── -->
+    <div id="assignCreatePane" style="display:none">
+      <div class="card">
+        <div class="card-title">Assignment Details</div>
+        <div class="form-row">
+          <div class="field" style="margin:0">
+            <label>ASSIGNMENT NAME</label>
+            <input id="aName" type="text" class="struct-input" placeholder="e.g. Chapter 5 Integration Homework">
+          </div>
+          <div class="field" style="margin:0">
+            <label>TYPE</label>
+            <select id="aType" class="struct-input">
+              <option value="homework">Homework</option>
+              <option value="internal_test">Internal Test / Quiz</option>
+              <option value="ib_paper">IB Paper (custom)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:10px">
+          <div class="field" style="margin:0">
+            <label>SUBJECT</label>
+            <input id="aSubject" type="text" class="struct-input" value="IB Math MAA HL" placeholder="e.g. IB Math MAA HL">
+          </div>
+          <div class="field" style="margin:0">
+            <label>TOTAL MARKS</label>
+            <input id="aTotalMarks" type="number" class="struct-input" placeholder="e.g. 20" min="1" max="200">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Mark Structure <span style="font-size:12px;font-weight:400;color:var(--text-soft)">(optional — helps AI award correct marks per part)</span></div>
+        <div style="display:grid;grid-template-columns:60px 80px 1fr 32px;gap:8px;margin-bottom:6px">
+          <span style="font-size:11px;font-weight:600;color:var(--text-soft);letter-spacing:.3px">Q</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text-soft);letter-spacing:.3px">MARKS</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text-soft);letter-spacing:.3px">LABEL (opt.)</span>
+          <span></span>
+        </div>
+        <div id="structRows"></div>
+        <button class="btn-sm" style="margin-top:6px" onclick="addStructRow()">+ Add row</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Upload Solution Set <span style="font-size:12px;font-weight:400;color:var(--text-soft)">(required)</span></div>
+        <div class="upload-zone-sm" id="solutionZone" onclick="document.getElementById('solutionInput').click()">
+          <input type="file" id="solutionInput" accept=".pdf" onchange="handleSolutionFile(this.files[0])">
+          Click to upload solution PDF
+        </div>
+        <p style="font-size:11px;color:var(--text-soft);margin-top:4px">The model-answer sheet for this assignment. No markscheme needed — solutions only.</p>
+
+        <div class="card-title" style="margin-top:18px">Upload Question Paper <span style="font-size:12px;font-weight:400;color:var(--text-soft)">(optional)</span></div>
+        <div class="upload-zone-sm" id="paperZone" onclick="document.getElementById('paperInput').click()">
+          <input type="file" id="paperInput" accept=".pdf" onchange="handlePaperFile(this.files[0])">
+          Click to upload question paper PDF (optional)
+        </div>
+      </div>
+
+      <div id="createMsg" class="msg"></div>
+      <button class="btn-primary" id="btnCreateAssign" onclick="createAssignment()" style="max-width:260px">Save Assignment</button>
+    </div>
+
+    <!-- ── MARK: select assignment + upload student script ── -->
+    <div id="assignMarkPane" style="display:none">
+      <!-- Selected assignment info -->
+      <div id="assignMarkHeader" class="card" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text-soft);letter-spacing:.3px;margin-bottom:3px">SELECTED ASSIGNMENT</div>
+            <div id="assignMarkName" style="font-size:15px;font-weight:700;color:var(--navy)"></div>
+            <div id="assignMarkMeta" style="font-size:12px;color:var(--text-soft);margin-top:2px"></div>
+          </div>
+          <button class="btn-sm" onclick="setAssignTab('list')">Change</button>
+        </div>
+      </div>
+      <div id="assignMarkSelectMsg" style="font-size:13px;color:var(--text-soft);padding:12px 0;display:none">
+        No assignment selected. <a onclick="setAssignTab('list')" style="color:var(--navy);cursor:pointer;font-weight:600">Pick one from My Assignments →</a>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Upload Student Script</div>
+        <div class="upload-zone" id="aDropZone" onclick="document.getElementById('aPdfInput').click()">
+          <input type="file" id="aPdfInput" accept=".pdf" onchange="handleAssignFile(this.files[0])">
+          <div class="upload-icon">📄</div>
+          <h3 id="aDropLabel">Drop PDF here or click to browse</h3>
+          <p>Student's handwritten answer script · PDF only</p>
+        </div>
+        <div class="field" style="margin:0">
+          <label>STUDENT NAME / ID</label>
+          <input id="aStudentName" type="text" placeholder="e.g. Student 01 or Jane Smith">
+        </div>
+      </div>
+
+      <div id="aMarkMsg" class="msg"></div>
+      <button class="btn-primary" id="btnAssignMark" onclick="doAssignMark()" style="max-width:260px">Mark this script</button>
+
+      <!-- Progress -->
+      <div id="aProgressArea" style="display:none;margin:20px 0">
+        <div class="progress-bar-wrap"><div class="progress-bar" id="aProgressBar" style="width:0%"></div></div>
+        <div id="aStatusText" style="font-size:13px;color:var(--text-mid);margin-top:6px">Preparing…</div>
+      </div>
+
+      <!-- Results -->
+      <div id="aResultsArea" style="display:none">
+        <div class="results-header">
+          <div>
+            <div class="score-sub" style="margin-bottom:4px">Results for: <strong id="aResultName"></strong></div>
+            <div id="aScoreDisplay" class="score-badge"></div>
+            <div class="score-sub"><span id="aScoreDenom"></span> marks</div>
+          </div>
+          <button class="btn-export" onclick="exportAssignCSV()">⬇ Export CSV</button>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden">
+          <table>
+            <thead><tr><th>Q</th><th>Marks</th><th>Notes</th><th>Override</th></tr></thead>
+            <tbody id="aResultsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="summary-box">
+          <div class="label">EXAMINER SUMMARY</div>
+          <div id="aExaminerSummary"></div>
+        </div>
+
+        <div style="margin-top:20px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+          <button class="btn-primary" id="btnAssignSave" onclick="saveAssignMarking()" style="max-width:220px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save &amp; Confirm</button>
+          <button class="btn-export" onclick="resetAssignMark()">← Mark another script</button>
+        </div>
+        <div id="aAssignSaveMsg" class="msg" style="margin-top:10px;text-align:center"></div>
+      </div>
+    </div>
+
+  </div><!-- /assignSection -->
+
 </div>
 
 <script>
@@ -278,18 +467,403 @@ let lastResults    = null;
 let bulkQueue      = [];   // [{file, name, b64, status, result, score, error}]
 let bulkRunning    = false;
 
+// Assignment state
+let assignments        = [];   // loaded from Supabase
+let selectedAssignment = null; // currently selected assignment for marking
+let assignPdfB64       = null; // student PDF for assignment marking
+let assignSolutionB64  = null; // solution PDF being uploaded
+let assignPaperB64     = null; // question paper PDF being uploaded (optional)
+let assignLastResult   = null; // last assignment marking result
+let structRowCount     = 0;
+
 // ── Screen navigation ─────────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// ── Mode switching ────────────────────────────────────────────────────────
+// ── Top-level section switching (IB / Assignments) ────────────────────────
+function setSection(section) {
+  document.getElementById('ibSection').style.display     = section === 'ib'     ? '' : 'none';
+  document.getElementById('assignSection').style.display = section === 'assign' ? '' : 'none';
+  document.getElementById('sTabIB').classList.toggle('active',     section === 'ib');
+  document.getElementById('sTabAssign').classList.toggle('active', section === 'assign');
+  if (section === 'assign') loadAssignments();
+}
+
+// ── Mode switching (IB paper: single / bulk) ──────────────────────────────
 function setMode(mode) {
   document.getElementById('singleSection').style.display = mode === 'single' ? '' : 'none';
   document.getElementById('bulkSection').style.display   = mode === 'bulk'   ? '' : 'none';
   document.getElementById('tabSingle').classList.toggle('active', mode === 'single');
   document.getElementById('tabBulk').classList.toggle('active',   mode === 'bulk');
+}
+
+// ── Assignment sub-tabs ────────────────────────────────────────────────────
+function setAssignTab(tab) {
+  document.getElementById('assignListPane').style.display   = tab === 'list'   ? '' : 'none';
+  document.getElementById('assignCreatePane').style.display = tab === 'create' ? '' : 'none';
+  document.getElementById('assignMarkPane').style.display   = tab === 'mark'   ? '' : 'none';
+  document.getElementById('aTabList').classList.toggle('active',   tab === 'list');
+  document.getElementById('aTabCreate').classList.toggle('active', tab === 'create');
+  document.getElementById('aTabMark').classList.toggle('active',   tab === 'mark');
+  if (tab === 'mark') refreshAssignMarkHeader();
+}
+
+// ── Load assignments from Supabase ────────────────────────────────────────
+async function loadAssignments() {
+  const listEl = document.getElementById('assignList');
+  listEl.innerHTML = '<p style="font-size:13px;color:var(--text-soft);padding:16px 0">Loading…</p>';
+  try {
+    const res  = await fetch('/api/assignment-list', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: teacherToken }),
+    });
+    const data = await res.json();
+    if (!res.ok) { listEl.innerHTML = `<p style="color:var(--red);font-size:13px">${data.error || 'Failed to load'}</p>`; return; }
+    assignments = data.assignments || [];
+    renderAssignList();
+  } catch (e) {
+    listEl.innerHTML = `<p style="color:var(--red);font-size:13px">Network error: ${e.message}</p>`;
+  }
+}
+
+function renderAssignList() {
+  const listEl = document.getElementById('assignList');
+  if (!assignments.length) {
+    listEl.innerHTML = '<p style="font-size:13px;color:var(--text-soft);padding:16px 0">No assignments yet. Create one using the "+ Create New" tab.</p>';
+    return;
+  }
+  listEl.innerHTML = assignments.map(a => {
+    const typeLabel = a.type === 'homework' ? 'Homework' : a.type === 'internal_test' ? 'Internal Test' : 'IB Paper';
+    const badgeCls  = a.type === 'homework' ? 'hw' : a.type === 'internal_test' ? 'test' : '';
+    const selected  = selectedAssignment?.id === a.id ? ' selected' : '';
+    return `<div class="assign-card${selected}" onclick="selectAssignment(${JSON.stringify(a).replace(/"/g,'&quot;')})">
+      <div>
+        <div class="assign-name">${a.name}</div>
+        <div class="assign-meta">${a.subject || ''} · ${a.total_marks} marks · ${new Date(a.created_at).toLocaleDateString()}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="assign-badge ${badgeCls}">${typeLabel}</span>
+        <button class="btn-sm" onclick="event.stopPropagation();selectAssignment(${JSON.stringify(a).replace(/"/g,'&quot;')});setAssignTab('mark')">Mark →</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectAssignment(a) {
+  selectedAssignment = a;
+  renderAssignList();
+  refreshAssignMarkHeader();
+}
+
+function refreshAssignMarkHeader() {
+  const header  = document.getElementById('assignMarkHeader');
+  const selectMsg = document.getElementById('assignMarkSelectMsg');
+  if (selectedAssignment) {
+    document.getElementById('assignMarkName').textContent = selectedAssignment.name;
+    document.getElementById('assignMarkMeta').textContent =
+      `${selectedAssignment.subject || ''} · ${selectedAssignment.total_marks} marks · ${selectedAssignment.type}`;
+    header.style.display    = '';
+    selectMsg.style.display = 'none';
+  } else {
+    header.style.display    = 'none';
+    selectMsg.style.display = '';
+  }
+}
+
+// ── Structure row builder ─────────────────────────────────────────────────
+function addStructRow(q, marks, label) {
+  structRowCount++;
+  const id  = structRowCount;
+  const row = document.createElement('div');
+  row.className = 'struct-row';
+  row.id = `srow-${id}`;
+  row.innerHTML = `
+    <input class="struct-input" placeholder="1" value="${q ?? ''}" data-field="q">
+    <input class="struct-input" type="number" placeholder="3" value="${marks ?? ''}" min="1" data-field="marks">
+    <input class="struct-input" placeholder="(a)" value="${label ?? ''}" data-field="label">
+    <button class="btn-icon" onclick="document.getElementById('srow-${id}').remove()">×</button>`;
+  document.getElementById('structRows').appendChild(row);
+}
+
+function readStructure() {
+  const rows = document.querySelectorAll('#structRows .struct-row');
+  const result = [];
+  rows.forEach(row => {
+    const q      = row.querySelector('[data-field="q"]').value.trim();
+    const marks  = parseInt(row.querySelector('[data-field="marks"]').value, 10);
+    const label  = row.querySelector('[data-field="label"]').value.trim();
+    if (q && !isNaN(marks) && marks > 0) result.push({ q, marks, label: label || '' });
+  });
+  return result;
+}
+
+// ── PDF upload handlers for Create form ───────────────────────────────────
+function handleSolutionFile(file) {
+  if (!file) return;
+  const zone = document.getElementById('solutionZone');
+  const reader = new FileReader();
+  reader.onload = e => {
+    assignSolutionB64 = e.target.result.split(',')[1];
+    zone.textContent = `✓ ${file.name}`;
+    zone.classList.add('ok');
+  };
+  reader.readAsDataURL(file);
+}
+
+function handlePaperFile(file) {
+  if (!file) return;
+  const zone = document.getElementById('paperZone');
+  const reader = new FileReader();
+  reader.onload = e => {
+    assignPaperB64 = e.target.result.split(',')[1];
+    zone.textContent = `✓ ${file.name}`;
+    zone.classList.add('ok');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Create assignment ─────────────────────────────────────────────────────
+async function createAssignment() {
+  const msgEl = document.getElementById('createMsg');
+  const btn   = document.getElementById('btnCreateAssign');
+  msgEl.className = 'msg'; msgEl.textContent = '';
+
+  const name       = document.getElementById('aName').value.trim();
+  const type       = document.getElementById('aType').value;
+  const subject    = document.getElementById('aSubject').value.trim();
+  const totalMarks = parseInt(document.getElementById('aTotalMarks').value, 10);
+
+  if (!name)            { msgEl.textContent = 'Assignment name required.';   msgEl.className = 'msg err'; return; }
+  if (!totalMarks || totalMarks < 1) { msgEl.textContent = 'Total marks required.'; msgEl.className = 'msg err'; return; }
+  if (!assignSolutionB64)  { msgEl.textContent = 'Please upload a solution PDF.'; msgEl.className = 'msg err'; return; }
+
+  const structure = readStructure();
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  try {
+    const res = await fetch('/api/assignment-create', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: teacherToken, name, type, subject, totalMarks, structure,
+        solutionPdf: assignSolutionB64,
+        paperPdf:    assignPaperB64 || undefined,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) { msgEl.textContent = data.error || 'Save failed.'; msgEl.className = 'msg err'; }
+    else {
+      msgEl.textContent = `Assignment "${name}" saved!`; msgEl.className = 'msg ok';
+      // Reset form
+      document.getElementById('aName').value = '';
+      document.getElementById('aTotalMarks').value = '';
+      document.getElementById('structRows').innerHTML = '';
+      structRowCount = 0; assignSolutionB64 = null; assignPaperB64 = null;
+      document.getElementById('solutionZone').textContent = 'Click to upload solution PDF';
+      document.getElementById('solutionZone').classList.remove('ok');
+      document.getElementById('paperZone').textContent = 'Click to upload question paper PDF (optional)';
+      document.getElementById('paperZone').classList.remove('ok');
+      // Switch to list and reload
+      await loadAssignments();
+      setTimeout(() => setAssignTab('list'), 800);
+    }
+  } catch (e) {
+    msgEl.textContent = 'Network error: ' + e.message; msgEl.className = 'msg err';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Assignment';
+  }
+}
+
+// ── Assignment marking ────────────────────────────────────────────────────
+function handleAssignFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    assignPdfB64 = e.target.result.split(',')[1];
+    document.getElementById('aDropLabel').textContent = `✓ ${file.name}`;
+    document.getElementById('aDropZone').style.borderColor = 'var(--green)';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function doAssignMark() {
+  if (!selectedAssignment) { alert('Please select an assignment first.'); setAssignTab('list'); return; }
+  if (!assignPdfB64)        { alert('Please upload a student script.'); return; }
+  const studentName = document.getElementById('aStudentName').value.trim() || 'Student';
+
+  const progressArea = document.getElementById('aProgressArea');
+  const progressBar  = document.getElementById('aProgressBar');
+  const statusText   = document.getElementById('aStatusText');
+  const resultsArea  = document.getElementById('aResultsArea');
+  const btn          = document.getElementById('btnAssignMark');
+
+  progressArea.style.display = 'block';
+  resultsArea.style.display  = 'none';
+  progressBar.style.width    = '2%';
+  statusText.textContent     = 'Sending to AI examiner…';
+  btn.disabled = true;
+
+  let pct = 2;
+  const ticker = setInterval(() => {
+    pct = Math.min(pct + (pct < 30 ? 1.5 : pct < 60 ? 0.6 : pct < 85 ? 0.2 : 0.05), 92);
+    progressBar.style.width = pct + '%';
+    if (pct > 10) statusText.textContent = 'AI examiner is marking… (up to 60 seconds)';
+  }, 1000);
+
+  try {
+    const res = await fetch('/api/assignment-mark', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: teacherToken,
+        assignmentId: selectedAssignment.id,
+        studentName,
+        studentPdf: assignPdfB64,
+      }),
+    });
+    clearInterval(ticker);
+    progressBar.style.width = '100%';
+
+    if (!res.ok) {
+      let errMsg = `Server error ${res.status}`;
+      try { const d = await res.json(); errMsg = d.error || errMsg; } catch {}
+      statusText.textContent = 'Error: ' + errMsg;
+      btn.disabled = false;
+      return;
+    }
+
+    const data = await res.json();
+    const result = data.result || data;
+    if (!result.questions || !result.questions.length) {
+      statusText.textContent = 'Error: No questions returned. Please try again.';
+      btn.disabled = false;
+      return;
+    }
+    statusText.textContent = 'Done! Rendering results…';
+    assignLastResult = { ...data, studentName };
+    renderAssignResults(result, studentName, data.totalMarks);
+    setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btn.disabled = false; }, 500);
+
+  } catch (e) {
+    clearInterval(ticker);
+    statusText.textContent = 'Network error: ' + e.message;
+    btn.disabled = false;
+  }
+}
+
+function renderAssignResults(data, studentName, totalMarks) {
+  document.getElementById('aResultName').textContent = studentName;
+  const tbody = document.getElementById('aResultsBody');
+  tbody.innerHTML = '';
+  (data.questions || []).forEach(q => {
+    (q.pts || q.parts || []).forEach(p => {
+      const qNum  = q.q   ?? q.number;
+      const pLbl  = p.p   ?? p.part;
+      const avail = p.ma  ?? p.marks_available;
+      const award = p.mi  ?? p.marks_awarded;
+      const note  = p.n   ?? p.notes ?? '';
+      const tr    = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${qNum}${pLbl ? ' (' + pLbl + ')' : ''}</td>
+        <td class="marks-cell"><span class="awarded">${award}</span><span class="available"> / ${avail ?? '?'}</span></td>
+        <td class="notes-cell">${note}</td>
+        <td class="override-cell">
+          <input type="number" class="override-input assign-override" min="0"
+                 value="${award}" data-original="${award}" oninput="updateAssignTotal()">
+          / ${avail ?? '?'}
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  });
+  updateAssignTotal(totalMarks);
+  document.getElementById('aExaminerSummary').textContent = data.examiner_summary || '';
+  document.getElementById('aScoreDenom').textContent      = `/ ${totalMarks}`;
+}
+
+function updateAssignTotal(denom) {
+  let total = 0;
+  document.querySelectorAll('.assign-override').forEach(inp => {
+    const v = parseInt(inp.value, 10);
+    if (!isNaN(v)) total += v;
+  });
+  document.getElementById('aScoreDisplay').textContent = total;
+  if (denom !== undefined) document.getElementById('aScoreDenom').textContent = `/ ${denom}`;
+}
+
+function exportAssignCSV() {
+  if (!assignLastResult) return;
+  const name  = document.getElementById('aResultName').textContent;
+  const rows  = [['Student', 'Question', 'Part', 'AI Mark', 'Available', 'Final Mark', 'Notes']];
+  const inputs = Array.from(document.querySelectorAll('.assign-override'));
+  let idx = 0;
+  (assignLastResult.result?.questions || []).forEach(q => {
+    (q.pts || q.parts || []).forEach(p => {
+      const award = p.mi ?? p.marks_awarded;
+      rows.push([name, q.q ?? q.number, p.p ?? p.part ?? '', award,
+        p.ma ?? p.marks_available ?? '', inputs[idx]?.value ?? award, (p.n ?? p.notes ?? '').replace(/"/g,'""')]);
+      idx++;
+    });
+  });
+  const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = `${name.replace(/\s+/g,'_')}_marks.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function saveAssignMarking() {
+  if (!assignLastResult || !selectedAssignment) return;
+  const btn    = document.getElementById('btnAssignSave');
+  const msgEl  = document.getElementById('aAssignSaveMsg');
+  const name   = document.getElementById('aResultName').textContent;
+  msgEl.className = 'msg'; msgEl.textContent = '';
+
+  const inputs    = Array.from(document.querySelectorAll('.assign-override'));
+  const questions = assignLastResult.result?.questions || [];
+  const questionMarks = []; let aiTotal = 0, finalTotal = 0, idx = 0;
+  questions.forEach(q => {
+    (q.pts || q.parts || []).forEach(p => {
+      const aiMark    = p.mi ?? p.marks_awarded ?? 0;
+      const finalMark = inputs[idx] ? parseInt(inputs[idx].value, 10) : aiMark;
+      const safe      = isNaN(finalMark) ? aiMark : finalMark;
+      questionMarks.push({ q: q.q ?? q.number, p: p.p ?? p.part ?? '',
+        ma: p.ma ?? p.marks_available ?? null, ai: aiMark, final: safe,
+        delta: safe - aiMark, notes: p.n ?? p.notes ?? '' });
+      aiTotal += aiMark; finalTotal += safe; idx++;
+    });
+  });
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const res = await fetch('/api/teacher-save', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: teacherToken, studentName: name,
+        aiScore: aiTotal, finalScore: finalTotal, questionMarks,
+        examId: selectedAssignment.id,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) { msgEl.textContent = 'Save failed: ' + (data.error || res.status); msgEl.className = 'msg err'; }
+    else { msgEl.textContent = 'Saved! This script will improve future accuracy.'; msgEl.className = 'msg ok'; btn.textContent = '✓ Saved'; }
+  } catch (e) {
+    msgEl.textContent = 'Network error: ' + e.message; msgEl.className = 'msg err';
+    btn.textContent = '✓ Save & Confirm';
+  } finally { btn.disabled = false; }
+}
+
+function resetAssignMark() {
+  assignPdfB64 = null; assignLastResult = null;
+  document.getElementById('aStudentName').value = '';
+  document.getElementById('aDropLabel').textContent = 'Drop PDF here or click to browse';
+  document.getElementById('aDropZone').style.borderColor = '';
+  document.getElementById('aPdfInput').value = '';
+  document.getElementById('aProgressArea').style.display = 'none';
+  document.getElementById('aResultsArea').style.display  = 'none';
+  document.getElementById('aResultsBody').innerHTML      = '';
+  document.getElementById('aExaminerSummary').textContent = '';
+  document.getElementById('aScoreDisplay').textContent    = '0';
 }
 
 // ── Bulk file handling ────────────────────────────────────────────────────
