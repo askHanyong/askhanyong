@@ -2279,9 +2279,9 @@ function parseQuestionId(qid) {
   const tz = s.match(/TZ([0-9])/);
   if (tz) out.tz = tz[1];
 
-  // Question number
-  const q = s.match(/Q(\d+)$/);
-  if (q) out.question = q[1];
+  // Question number — matches Q7, Q7a, Q10b, Q3ii etc.
+  const q = s.match(/Q(\d+[A-Z]*)$/i);
+  if (q) out.question = q[1].toLowerCase(); // store as '7', '7a', '10b'
 
   return out;
 }
@@ -2302,6 +2302,14 @@ function enrichRecord(r) {
   };
 }
 
+// Format question number: '7' → 'Q7', '7a' → 'Q7(a)', '10b' → 'Q10(b)'
+function formatQNum(q) {
+  if (!q) return '';
+  const m = String(q).match(/^(\d+)([a-z]+)?$/i);
+  if (!m) return 'Q' + q;
+  return m[2] ? 'Q' + m[1] + '(' + m[2].toLowerCase() + ')' : 'Q' + m[1];
+}
+
 function buildRef(r) {
   // Parse missing fields from Question ID if sheet columns are empty
   const meta = enrichRecord(r);
@@ -2310,7 +2318,7 @@ function buildRef(r) {
     meta.year,
     meta.session,
     meta.tz !== '' ? 'TZ' + meta.tz : '',
-    meta.question ? 'Q' + meta.question : ''
+    meta.question ? formatQNum(meta.question) : ''
   ].filter(Boolean);
   return parts.join(' · ') || r['Question ID'] || 'Unknown reference';
 }
@@ -3755,7 +3763,7 @@ function openSheet(idx) {
     `<div><strong>Paper:</strong> ${meta.paper || '—'}</div>` +
     `<div><strong>Session:</strong> ${meta.session || '—'}</div>` +
     (meta.tz !== '' ? `<div><strong>Time Zone:</strong> TZ${meta.tz}</div>` : '') +
-    `<div><strong>Question:</strong> ${meta.question ? 'Q' + meta.question : '—'}</div>` +
+    `<div><strong>Question:</strong> ${meta.question ? formatQNum(meta.question) : '—'}</div>` +
     `<div><strong>Topic:</strong> ${meta.topic || '—'}${meta.subtopic ? ' — ' + meta.subtopic : ''}</div>` +
     `<div><strong>Marks:</strong> ${meta.marks || '—'}</div>`;
 
