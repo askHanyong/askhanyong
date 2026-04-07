@@ -2141,6 +2141,7 @@ function setPracticeMode(mode) {
   document.getElementById('pmode-paste').classList.toggle('active', mode === 'paste');
   document.getElementById('browsePaneWrap').classList.toggle('active', mode === 'browse');
   document.getElementById('pastePaneWrap').classList.toggle('active', mode === 'paste');
+  if (mode === 'paste') setTimeout(() => { const ta = document.getElementById('pasteQText'); if (ta) ta.focus(); }, 50);
 }
 
 function updatePasteBtn() {
