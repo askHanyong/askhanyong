@@ -71,6 +71,10 @@
   function = "claude"
 
 [[edge_functions]]
+  path = "/api/teacher-auth"
+  function = "teacher-auth"
+
+[[edge_functions]]
   path = "/api/teacher-mark"
   function = "teacher-mark"
 
