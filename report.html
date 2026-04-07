@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marking Report — askHanyong</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgCiAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIAogICAgZm9udC1zaXplPSIyMiIgCiAgICBmb250LXdlaWdodD0iYm9sZCIKICAgIGZpbGw9IiNDOUE4NEMiIAogICAgdGV4dC1hbmNob3I9Im1pZGRsZSI+zqM8L3RleHQ+Cjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0e1c33;--navy-dark:#0a1628;--gold:#C9A84C;--gold-pale:rgba(201,168,76,0.1);--gold-border:rgba(201,168,76,0.35);--bg:#f5f4f1;--text:#111827;--text-mid:#4b5563;--text-soft:#9ca3af;--border:#e4e2dc;--green:#059669;--red:#dc2626;--radius:14px;--radius-sm:8px;--shadow:0 1px 8px rgba(0,0,0,.07);--shadow-md:0 6px 28px rgba(0,0,0,.11)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.page{max-width:720px;margin:0 auto;padding:40px 24px 80px}
+
+/* Header */
+.report-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+.logo-badge{width:36px;height:36px;background:var(--navy);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:var(--gold)}
+.logo-name{font-size:16px;font-weight:700;color:var(--navy);font-family:'Playfair Display',serif}
+.logo-tag{font-size:11px;font-weight:600;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:10px;padding:2px 8px}
+
+/* Hero score */
+.report-hero{background:var(--navy-dark);color:#fff;border-radius:var(--radius);padding:32px 36px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.hero-left .exam-label{font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.5px;margin-bottom:6px}
+.hero-left .student-name{font-size:22px;font-weight:700;font-family:'Playfair Display',serif;margin-bottom:4px}
+.hero-left .marked-date{font-size:12px;color:rgba(255,255,255,.45)}
+.hero-right{text-align:right}
+.score-num{font-size:52px;font-weight:700;font-family:'DM Mono',monospace;color:#fff;line-height:1}
+.score-denom{font-size:18px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace}
+.score-pct{font-size:14px;font-weight:600;color:var(--gold);margin-top:4px}
+
+/* Band bar */
+.band-bar{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:16px}
+.band-label{font-size:11px;font-weight:600;color:var(--text-soft);letter-spacing:.3px;width:60px;flex-shrink:0}
+.band-track{flex:1;height:10px;background:var(--bg);border-radius:5px;overflow:hidden}
+.band-fill{height:100%;border-radius:5px;transition:width .6s ease;background:linear-gradient(90deg,#dc2626,#f59e0b,#059669)}
+.band-pct-label{font-size:13px;font-weight:700;font-family:'DM Mono',monospace;color:var(--navy);width:44px;text-align:right;flex-shrink:0}
+
+/* Breakdown table */
+.section-title{font-size:13px;font-weight:700;letter-spacing:.4px;color:var(--text-soft);text-transform:uppercase;margin-bottom:12px}
+.card{background:#fff;border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--navy-dark);color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:11px;letter-spacing:.4px}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#faf9f7}
+td{padding:10px 14px;vertical-align:middle}
+.q-col{font-weight:700;color:var(--navy);white-space:nowrap;width:80px}
+.marks-col{font-family:'DM Mono',monospace;font-size:13px;white-space:nowrap;width:80px}
+.marks-num{font-weight:700}
+.marks-avail{color:var(--text-soft)}
+.pct-col{width:60px}
+.pct-pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px}
+.pct-full{background:#f0fdf4;color:var(--green)}
+.pct-good{background:#eff6ff;color:#1d4ed8}
+.pct-part{background:#fef3c7;color:#92400e}
+.pct-low{background:#fef2f2;color:var(--red)}
+.notes-col{font-size:11px;color:var(--text-soft);font-style:italic}
+
+/* Question group header */
+.q-group{background:rgba(14,28,51,.04);font-weight:700;font-size:12px;color:var(--navy);padding:8px 14px;letter-spacing:.3px}
+
+/* Summary */
+.summary-box{background:var(--navy-dark);color:#fff;border-radius:var(--radius);padding:20px 24px;font-size:13px;line-height:1.75;margin-bottom:28px}
+.summary-label{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.6px;margin-bottom:8px}
+
+/* Footer */
+.report-footer{text-align:center;font-size:11px;color:var(--text-soft);margin-top:40px;line-height:1.7}
+.report-footer strong{color:var(--text-mid)}
+
+/* Loading / error states */
+.state-box{text-align:center;padding:80px 24px}
+.state-box .icon{font-size:40px;margin-bottom:16px}
+.state-box h2{font-size:18px;font-weight:700;margin-bottom:6px}
+.state-box p{font-size:13px;color:var(--text-soft)}
+
+/* Print */
+@media print{
+  body{background:#fff}
+  .page{padding:20px}
+  .report-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  thead{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .summary-box{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .no-print{display:none}
+}
+@media(max-width:540px){
+  .report-hero{flex-direction:column;align-items:flex-start}
+  .hero-right{text-align:left}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="report-logo">
+    <div class="logo-badge">Σ</div>
+    <span class="logo-name">askHanyong</span>
+    <span class="logo-tag">Marking Report</span>
+  </div>
+
+  <!-- Loading state -->
+  <div id="stateLoading" class="state-box">
+    <div class="icon">⏳</div>
+    <h2>Loading your report…</h2>
+    <p>Please wait a moment.</p>
+  </div>
+
+  <!-- Error state -->
+  <div id="stateError" class="state-box" style="display:none">
+    <div class="icon">⚠️</div>
+    <h2 id="errTitle">Report not found</h2>
+    <p id="errMsg">This link may be invalid or has expired.</p>
+  </div>
+
+  <!-- Report content -->
+  <div id="reportContent" style="display:none">
+
+    <div class="report-hero">
+      <div class="hero-left">
+        <div class="exam-label" id="rExamLabel"></div>
+        <div class="student-name" id="rStudentName"></div>
+        <div class="marked-date" id="rMarkedDate"></div>
+      </div>
+      <div class="hero-right">
+        <div class="score-num" id="rScore"></div>
+        <div class="score-denom" id="rDenom"></div>
+        <div class="score-pct" id="rPct"></div>
+      </div>
+    </div>
+
+    <div class="band-bar">
+      <div class="band-label">SCORE</div>
+      <div class="band-track"><div class="band-fill" id="rBandFill" style="width:0%"></div></div>
+      <div class="band-pct-label" id="rBandPct"></div>
+    </div>
+
+    <p class="section-title">Question Breakdown</p>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Marks</th>
+            <th></th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="rTableBody"></tbody>
+      </table>
+    </div>
+
+    <div id="rSummaryBox" class="summary-box" style="display:none">
+      <div class="summary-label">EXAMINER NOTES</div>
+      <div id="rSummary"></div>
+    </div>
+
+    <div class="report-footer no-print">
+      Marked by <strong>askHanyong AI Marking Platform</strong> · Results are provisional pending teacher confirmation<br>
+      <a href="/" style="color:inherit">askhanyong.com</a>
+    </div>
+
+    <div style="text-align:center;margin-top:24px" class="no-print">
+      <button onclick="window.print()" style="padding:9px 20px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">🖨 Print / Save PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+async function loadReport() {
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('t');
+
+  if (!token) {
+    showError('No report token', 'This link is missing the report token (?t=...). Please check your link.');
+    return;
+  }
+
+  try {
+    const res  = await fetch(`/api/student-report?t=${encodeURIComponent(token)}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError(data.error || 'Report not found', 'This link may be invalid or the report has not been published yet.');
+      return;
+    }
+
+    renderReport(data);
+  } catch (e) {
+    showError('Network error', e.message);
+  }
+}
+
+function showError(title, msg) {
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('stateError').style.display   = '';
+  document.getElementById('errTitle').textContent = title;
+  document.getElementById('errMsg').textContent   = msg;
+}
+
+function renderReport(data) {
+  document.getElementById('stateLoading').style.display  = 'none';
+  document.getElementById('reportContent').style.display = '';
+  document.title = `${data.studentName} — Marking Report`;
+
+  // Hero
+  document.getElementById('rExamLabel').textContent   = data.examLabel || data.examId || 'Exam';
+  document.getElementById('rStudentName').textContent = data.studentName;
+  document.getElementById('rMarkedDate').textContent  =
+    'Marked ' + new Date(data.markedAt).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('rScore').textContent  = data.finalScore;
+
+  // Derive total from question_marks
+  const questionMarks = data.questionMarks || [];
+  const totalAvail    = questionMarks.reduce((s, p) => s + (p.ma || 0), 0) || null;
+  const denomStr      = totalAvail ? ` / ${totalAvail}` : '';
+  document.getElementById('rDenom').textContent = denomStr;
+
+  const pct = totalAvail ? Math.round(data.finalScore / totalAvail * 100) : null;
+  document.getElementById('rPct').textContent   = pct !== null ? `${pct}%` : '';
+  document.getElementById('rBandFill').style.width = pct !== null ? pct + '%' : '0%';
+  document.getElementById('rBandPct').textContent  = pct !== null ? pct + '%' : '';
+
+  // Table — group by question number
+  const tbody = document.getElementById('rTableBody');
+  tbody.innerHTML = '';
+
+  // Build structure: group parts by question
+  const groups = {};
+  questionMarks.forEach(part => {
+    const q = String(part.q);
+    if (!groups[q]) groups[q] = [];
+    groups[q].push(part);
+  });
+
+  Object.entries(groups).forEach(([qNum, parts]) => {
+    // Question subtotal row
+    const qTotal  = parts.reduce((s, p) => s + (p.final ?? p.ai ?? 0), 0);
+    const qAvail  = parts.reduce((s, p) => s + (p.ma || 0), 0);
+
+    if (parts.length > 1) {
+      const groupRow = document.createElement('tr');
+      groupRow.innerHTML = `<td class="q-group" colspan="4">Question ${qNum} — ${qTotal} / ${qAvail}</td>`;
+      tbody.appendChild(groupRow);
+    }
+
+    parts.forEach(part => {
+      const awarded = part.final ?? part.ai ?? 0;
+      const avail   = part.ma || 0;
+      const partPct = avail > 0 ? Math.round(awarded / avail * 100) : null;
+      const pctCls  = partPct === null ? '' : partPct === 100 ? 'pct-full' : partPct >= 70 ? 'pct-good' : partPct >= 40 ? 'pct-part' : 'pct-low';
+      const pctTxt  = partPct !== null ? partPct + '%' : '';
+      const label   = part.p ? `Q${qNum} (${part.p})` : `Q${qNum}`;
+      const tr      = document.createElement('tr');
+      tr.innerHTML  = `
+        <td class="q-col">${label}</td>
+        <td class="marks-col"><span class="marks-num">${awarded}</span><span class="marks-avail"> / ${avail || '?'}</span></td>
+        <td class="pct-col">${pctTxt ? `<span class="pct-pill ${pctCls}">${pctTxt}</span>` : ''}</td>
+        <td class="notes-col">${part.notes || ''}</td>`;
+      tbody.appendChild(tr);
+    });
+  });
+
+  // Examiner summary (stored in question_marks as separate field, or from delta patterns)
+  if (data.examinerSummary) {
+    document.getElementById('rSummary').textContent    = data.examinerSummary;
+    document.getElementById('rSummaryBox').style.display = '';
+  }
+}
+
+loadReport();
+</script>
+</body>
+</html>

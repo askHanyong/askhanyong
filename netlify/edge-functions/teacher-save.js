@@ -110,7 +110,12 @@ export default async (request) => {
     const rows = await insertRes.json();
     const saved = Array.isArray(rows) ? rows[0] : rows;
 
-    return jsonOk({ ok: true, id: saved?.id ?? null, message: 'Marking saved successfully.' });
+    return jsonOk({
+      ok:           true,
+      id:           saved?.id ?? null,
+      report_token: saved?.report_token ?? null,
+      message:      'Marking saved successfully.',
+    });
 
   } catch (err) {
     return new Response(

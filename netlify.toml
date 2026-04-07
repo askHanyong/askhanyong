@@ -90,6 +90,14 @@
   path = "/api/assignment-mark"
   function = "assignment-mark"
 
+[[edge_functions]]
+  path = "/api/exam-list"
+  function = "exam-list"
+
+[[edge_functions]]
+  path = "/api/student-report"
+  function = "student-report"
+
 
 [[redirects]]
   from = "/api/*"
@@ -142,5 +150,12 @@
 [[redirects]]
   from = "/teacher"
   to = "/teacher.html"
+  status = 200
+  force = true
+
+# /report serves student marking reports (public, token-gated)
+[[redirects]]
+  from = "/report"
+  to = "/report.html"
   status = 200
   force = true

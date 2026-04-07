@@ -188,7 +188,16 @@ td{padding:10px 12px;vertical-align:top}
        IB PAPER SECTION
   ═════════════════════════════════════════════════════ -->
   <div id="ibSection">
-  <div class="page-eyebrow" style="margin-bottom:16px">📋 IB MAA HL · May 2024 P1 TZ1</div>
+  <!-- Exam selector -->
+  <div class="card" style="padding:16px 20px;margin-bottom:18px">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="font-size:12px;font-weight:700;color:var(--text-soft);letter-spacing:.3px;flex-shrink:0">EXAM PAPER</div>
+      <select id="examSelect" class="struct-input" style="flex:1;min-width:200px;max-width:480px" onchange="onExamChange()">
+        <option value="MAA-HL-M24-P1-TZ1">IB MAA HL May 2024 Paper 1 TZ1 — 110 marks</option>
+      </select>
+      <span id="examLoadingMsg" style="font-size:12px;color:var(--text-soft)"></span>
+    </div>
+  </div>
   <div class="mode-tabs">
     <button class="mode-tab active" id="tabSingle" onclick="setMode('single')">Single Script</button>
     <button class="mode-tab" id="tabBulk" onclick="setMode('bulk')">Bulk Upload</button>
@@ -467,6 +476,9 @@ let lastResults    = null;
 let bulkQueue      = [];   // [{file, name, b64, status, result, score, error}]
 let bulkRunning    = false;
 
+// IB exam state
+let selectedExamId = 'MAA-HL-M24-P1-TZ1';
+
 // Assignment state
 let assignments        = [];   // loaded from Supabase
 let selectedAssignment = null; // currently selected assignment for marking
@@ -489,6 +501,37 @@ function setSection(section) {
   document.getElementById('sTabIB').classList.toggle('active',     section === 'ib');
   document.getElementById('sTabAssign').classList.toggle('active', section === 'assign');
   if (section === 'assign') loadAssignments();
+  if (section === 'ib')     loadExams();
+}
+
+// ── Load available IB exams ───────────────────────────────────────────────
+async function loadExams() {
+  const msg = document.getElementById('examLoadingMsg');
+  const sel = document.getElementById('examSelect');
+  msg.textContent = 'Loading papers…';
+  try {
+    const res  = await fetch('/api/exam-list', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: teacherToken }),
+    });
+    if (!res.ok) { msg.textContent = ''; return; }
+    const data = await res.json();
+    const exams = data.exams || [];
+    // Rebuild options
+    sel.innerHTML = '';
+    exams.forEach(e => {
+      const opt  = document.createElement('option');
+      opt.value  = e.id;
+      opt.text   = `${e.label} — ${e.total_marks} marks`;
+      if (e.id === selectedExamId) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    msg.textContent = exams.length > 1 ? `${exams.length} papers available` : '';
+  } catch { msg.textContent = ''; }
+}
+
+function onExamChange() {
+  selectedExamId = document.getElementById('examSelect').value;
 }
 
 // ── Mode switching (IB paper: single / bulk) ──────────────────────────────
@@ -846,7 +889,17 @@ async function saveAssignMarking() {
     });
     const data = await res.json();
     if (!res.ok) { msgEl.textContent = 'Save failed: ' + (data.error || res.status); msgEl.className = 'msg err'; }
-    else { msgEl.textContent = 'Saved! This script will improve future accuracy.'; msgEl.className = 'msg ok'; btn.textContent = '✓ Saved'; }
+    else {
+      btn.textContent = '✓ Saved';
+      let saveText = 'Saved!';
+      if (data.report_token) {
+        const link = `${location.origin}/report?t=${data.report_token}`;
+        saveText += ` <a href="${link}" target="_blank" style="color:var(--green);font-weight:600;text-decoration:underline">View student report ↗</a>
+          <button onclick="navigator.clipboard.writeText('${link}');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy link',2000)"
+            style="margin-left:8px;padding:2px 8px;border:1px solid var(--green);border-radius:5px;background:#f0fdf4;color:var(--green);font-size:11px;font-weight:600;cursor:pointer">Copy link</button>`;
+      }
+      msgEl.innerHTML = saveText; msgEl.className = 'msg ok';
+    }
   } catch (e) {
     msgEl.textContent = 'Network error: ' + e.message; msgEl.className = 'msg err';
     btn.textContent = '✓ Save & Confirm';
@@ -1137,6 +1190,7 @@ async function doRegister() {
     document.getElementById('navUser').textContent = data.name;
     document.getElementById('btnLogout').style.display = 'inline';
     showScreen('screenMark');
+    loadExams();
   } catch (e) {
     errEl.textContent = 'Network error. Please try again.'; errEl.className = 'msg err';
   }
@@ -1215,7 +1269,7 @@ async function doMark() {
     // Edge function — no Lambda timeout, waits for full Anthropic response
     const res = await fetch('/api/teacher-mark', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName }),
+      body: JSON.stringify({ token: teacherToken, studentPdf: studentPdfB64, studentName, examId: selectedExamId }),
     });
     clearInterval(ticker);
     progressBar.style.width = '100%';
@@ -1400,6 +1454,7 @@ async function saveMarking() {
         aiScore:       aiTotal,
         finalScore:    finalTotal,
         questionMarks,
+        examId:        selectedExamId,
       }),
     });
     const data = await res.json();
@@ -1407,9 +1462,16 @@ async function saveMarking() {
       saveMsg.textContent = 'Save failed: ' + (data.error || res.status);
       saveMsg.className = 'msg err';
     } else {
-      saveMsg.textContent = 'Marking saved! This script will help improve future AI accuracy.';
-      saveMsg.className = 'msg ok';
       btnSave.textContent = '✓ Saved';
+      let msg = 'Marking saved!';
+      if (data.report_token) {
+        const link = `${location.origin}/report?t=${data.report_token}`;
+        msg += ` <a href="${link}" target="_blank" style="color:var(--green);font-weight:600;text-decoration:underline">View student report ↗</a>
+          <button onclick="navigator.clipboard.writeText('${link}');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy link',2000)"
+            style="margin-left:8px;padding:2px 8px;border:1px solid var(--green);border-radius:5px;background:#f0fdf4;color:var(--green);font-size:11px;font-weight:600;cursor:pointer">Copy link</button>`;
+      }
+      saveMsg.innerHTML = msg;
+      saveMsg.className = 'msg ok';
     }
   } catch (e) {
     saveMsg.textContent = 'Network error: ' + e.message;
