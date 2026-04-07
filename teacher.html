@@ -1143,25 +1143,39 @@ async function doLogin() {
   const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const errEl    = document.getElementById('loginMsg');
+  const btn      = document.querySelector('#screenLogin .btn-primary');
   errEl.textContent = '';
   errEl.className = 'msg';
   if (!email || !password) { errEl.textContent = 'Email and password required.'; errEl.className = 'msg err'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
 
   try {
     const res  = await fetch('/api/teacher-auth', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'login', email, password }),
     });
-    const data = await res.json();
-    if (!res.ok) { errEl.textContent = data.error || 'Login failed.'; errEl.className = 'msg err'; return; }
+    let data = {};
+    try { data = await res.json(); } catch {}
+    if (!res.ok) {
+      errEl.textContent = data.error || `Login failed (${res.status}). Please try again.`;
+      errEl.className = 'msg err';
+      return;
+    }
     teacherToken = data.token;
     localStorage.setItem('teacherToken', data.token);
-    localStorage.setItem('teacherName',  data.name);
-    document.getElementById('navUser').textContent = data.name;
+    localStorage.setItem('teacherName',  data.name || email);
+    document.getElementById('navUser').textContent = data.name || email;
     document.getElementById('btnLogout').style.display = 'inline';
     showScreen('screenMark');
+    loadExams();
   } catch (e) {
-    errEl.textContent = 'Network error. Please try again.'; errEl.className = 'msg err';
+    errEl.textContent = 'Network error — ' + e.message + '. Please try again.';
+    errEl.className = 'msg err';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
   }
 }
 
