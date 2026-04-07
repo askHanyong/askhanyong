@@ -1206,7 +1206,6 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         <div><div class="mock-section-title">Paper Type</div><div class="mock-chips" id="mockPaperType">
           <button class="mock-chip sel" data-val="P1" onclick="selChip(this,'mockPaperType')"><div class="mock-chip-icon">✏️</div><div class="mock-chip-label">Paper 1</div><div class="mock-chip-sub">No GDC · Exact</div></button>
           <button class="mock-chip" data-val="P2" onclick="selChip(this,'mockPaperType')"><div class="mock-chip-icon">🖩</div><div class="mock-chip-label">Paper 2</div><div class="mock-chip-sub">GDC Allowed</div></button>
-          <button class="mock-chip" data-val="Mixed" onclick="selChip(this,'mockPaperType')"><div class="mock-chip-icon">🔀</div><div class="mock-chip-label">Mixed</div><div class="mock-chip-sub">Both Papers</div></button>
         </div></div>
         <div><div class="mock-section-title">Topics</div><div class="mock-topics" id="mockTopics">
           <button class="mock-topic sel" data-val="All">All Topics</button>
@@ -1217,7 +1216,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
           <button class="mock-topic" data-val="Number &amp; Algebra">Number &amp; Algebra</button>
           <button class="mock-topic" data-val="Complex Numbers">Complex Numbers</button>
         </div></div>
-        <div><div class="mock-section-title">Target Marks</div><div class="marks-row"><div class="marks-num" id="marksVal">40</div><input type="range" min="10" max="120" value="40" step="5" id="marksSlider" oninput="marksSliderChange(this.value)"><div class="marks-hint">~<span id="timeHint">52</span> min</div></div></div>
+        <div><div class="mock-section-title">Target Marks</div><div class="marks-row"><div class="marks-num" id="marksVal">110</div><input type="range" min="10" max="110" value="110" step="5" id="marksSlider" oninput="marksSliderChange(this.value)"><div class="marks-hint">~<span id="timeHint">2h</span></div></div></div>
         <div><button class="generate-btn" onclick="generateMock()">⚡ Generate My Mock Paper</button><div class="generate-note" id="mockUsageNote">Selects real past paper questions from Hanyong's verified bank</div></div>
       </div>
     </div>
@@ -1328,7 +1327,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
           <p>HAN knows mark schemes, understands where students commonly slip up, and explains mathematics the way a student would understand. Every response is built around helping you understand <em>why</em>, not just <em>what</em>.</p>
         </div>
       </div>
-      <div class="about-section" id="accuracySection">
+      <div class="about-section" id="accuracySection" style="display:none">
         <div class="about-section-title">HAN Accuracy — Independently Verified</div>
         <div style="background:var(--ice-light);border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center">
           <div style="font-size:22px;margin-bottom:8px">🔬</div>
@@ -1338,7 +1337,7 @@ input[type=range] { flex:1; accent-color:var(--blue); }
         </div>
         <p style="font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.6">Scored across real IB exam questions using a 5-dimension rubric (Final Answer, Method, Mark Scheme Fit, IB Presentation, Examiner Note). Max 8 points per question, normalised to %.</p>
       </div>
-      <div class="about-section">
+      <div class="about-section" style="display:none">
         <div class="about-section-title">The 45 Aspiration</div>
         <div class="about-body">
           <p>In the IB, <strong>45 is the perfect score</strong>. Very few students reach it — but the aspiration matters. When I set the contribution at S$45, it wasn't arbitrary. It's a symbol: this tool exists to help you reach for that 45, or as close to it as possible.</p>
@@ -1456,199 +1455,12 @@ input[type=range] { flex:1; accent-color:var(--blue); }
     <div class="mark-hero">
       <div class="mark-hero-title">📄 Mark My Script</div>
       <div class="mark-hero-sub">Upload your completed IB paper — HAN marks each question, gives feedback, and tracks your topic strengths.</div>
-      <div id="markQuotaPill" class="mark-quota-pill" style="display:none">
-        <div id="markQuotaDot" class="mark-quota-dot"></div>
-        <span id="markQuotaText"></span>
-      </div>
     </div>
 
-    <!-- Sign-in gate (shown when not logged in) -->
-    <div id="markSignInGate" class="mark-signin-gate" style="display:none">
-      <div style="font-size:48px">🔐</div>
-      <div style="font-size:16px;font-weight:700;color:var(--text)">Sign in to mark your script</div>
-      <div style="font-size:13px;color:var(--text-soft);line-height:1.6;max-width:260px">Script marking is available for subscribers. Sign in to check your access.</div>
-      <button onclick="showLogin()" style="padding:11px 28px;background:var(--navy);color:white;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Sign In →</button>
-    </div>
-
-    <!-- Paywall (shown when not subscribed or quota exceeded) -->
-    <div id="markPaywall" class="mark-body" style="display:none">
-      <div class="mark-paywall">
-        <div class="mark-paywall-icon">📋</div>
-        <div class="mark-paywall-title" id="markPaywallTitle">Script Marking — Subscribers Only</div>
-        <div class="mark-paywall-sub" id="markPaywallSub">Upload your completed IB paper and get it marked by HAN. Available with a monthly subscription — includes 3 full script markings per month.</div>
-        <button class="mark-paywall-btn" onclick="showUpgrade()">Get Unlimited Access — S$19/mo</button>
-        <div class="mark-paywall-note" id="markPaywallNote">Need more than 3 scripts/month? Pay-per-script pricing coming soon.</div>
-      </div>
-    </div>
-
-    <!-- Main upload form -->
-    <div id="markUploadForm" class="mark-body" style="display:none">
-      <!-- Drop zone -->
-      <div id="markDropZone" class="mark-drop-zone" onclick="document.getElementById('markFileInput').click()" ondragover="markDragOver(event)" ondragleave="markDragLeave(event)" ondrop="markDrop(event)">
-        <input type="file" id="markFileInput" accept="application/pdf" style="display:none" onchange="markFileSelected(this.files[0])">
-        <div id="markDropDefault">
-          <div class="mark-drop-icon">📤</div>
-          <div class="mark-drop-title">Upload your completed IB paper</div>
-          <div class="mark-drop-sub">PDF format · Your answer script with questions and working</div>
-          <div class="mark-drop-hint">Tap to browse or drag-and-drop your PDF here</div>
-        </div>
-        <div id="markFilePreview" class="mark-file-preview" style="display:none">
-          <div class="mark-file-icon">📄</div>
-          <div style="flex:1;min-width:0">
-            <div class="mark-file-name" id="markFileName"></div>
-            <div class="mark-file-pages" id="markFilePages"></div>
-          </div>
-          <button class="mark-file-remove" onclick="markRemoveFile(event)" title="Remove file">✕</button>
-        </div>
-      </div>
-
-      <!-- Copyright notice -->
-      <div class="mark-copyright-note">
-        📋 <strong>Privacy:</strong> Your PDF is converted to images for marking and <strong>never stored</strong>. Only the marking result is saved for 7 days so you can download it. IB past paper questions are © International Baccalaureate Organization — we process only <em>your</em> written answers.
-      </div>
-
-      <!-- Paper selector -->
-      <div>
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">Paper details (optional — helps HAN mark more accurately)</div>
-        <div class="mark-selector-grid">
-          <div class="mark-select-group">
-            <label class="mark-select-label">Course</label>
-            <select id="markLevel" class="mark-select">
-              <option value="">— Select —</option>
-              <option value="AA HL">Analysis &amp; Approaches HL</option>
-              <option value="AA SL">Analysis &amp; Approaches SL</option>
-              <option value="AI HL">Applications &amp; Interpretation HL</option>
-              <option value="AI SL">Applications &amp; Interpretation SL</option>
-            </select>
-          </div>
-          <div class="mark-select-group">
-            <label class="mark-select-label">Paper</label>
-            <select id="markPaper" class="mark-select">
-              <option value="">— Select —</option>
-              <option value="Paper 1">Paper 1 (No GDC)</option>
-              <option value="Paper 2">Paper 2 (GDC)</option>
-              <option value="Paper 3">Paper 3 (HL Extended)</option>
-            </select>
-          </div>
-          <div class="mark-select-group">
-            <label class="mark-select-label">Year</label>
-            <select id="markYear" class="mark-select">
-              <option value="">— Select —</option>
-              <option>2025</option><option>2024</option><option>2023</option><option>2022</option>
-              <option>2021</option><option>2020</option><option>2019</option>
-              <option>2018</option><option>2017</option><option>2016</option>
-            </select>
-          </div>
-          <div class="mark-select-group">
-            <label class="mark-select-label">Session</label>
-            <select id="markSession" class="mark-select">
-              <option value="">— Select —</option>
-              <option value="May">May</option>
-              <option value="November">November</option>
-            </select>
-          </div>
-          <div class="mark-select-group">
-            <label class="mark-select-label">Time Zone</label>
-            <select id="markTimezone" class="mark-select">
-              <option value="">— Select —</option>
-              <option value="TZ0">TZ0</option>
-              <option value="TZ1">TZ1</option>
-              <option value="TZ2">TZ2</option>
-              <option value="TZ3">TZ3</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Submit -->
-      <button id="markSubmitBtn" class="mark-submit-btn" onclick="markSubmitPaper()" disabled>
-        <span>✦</span> Mark My Paper
-      </button>
-    </div>
-
-    <!-- Processing state -->
-    <div id="markProcessing" class="mark-body" style="display:none">
-      <div class="mark-processing">
-        <div class="mark-proc-spinner"></div>
-        <div class="mark-proc-title">HAN is marking your paper…</div>
-        <div class="mark-proc-sub">This takes 30–60 seconds. Please keep this page open.</div>
-        <div class="mark-proc-steps">
-          <div class="mark-proc-step" id="mstep-read"><div class="mark-step-dot"></div>Reading your script</div>
-          <div class="mark-proc-step" id="mstep-mark"><div class="mark-step-dot"></div>Marking each question</div>
-          <div class="mark-proc-step" id="mstep-feedback"><div class="mark-step-dot"></div>Writing feedback</div>
-          <div class="mark-proc-step" id="mstep-topics"><div class="mark-step-dot"></div>Analysing topic performance</div>
-        </div>
-        <div id="markProcessingDetail" style="font-size:12px;color:var(--text-soft);margin-top:8px;min-height:16px;text-align:center"></div>
-      </div>
-    </div>
-
-    <!-- Results state -->
-    <div id="markResults" style="display:none">
-      <!-- Score card -->
-      <div class="mark-results">
-        <div class="mark-score-card">
-          <div class="mark-score-label">Total Score</div>
-          <div class="mark-score-big"><span id="mresTotal">—</span><span class="mark-score-denom"> / <span id="mresMax">—</span></span></div>
-          <div class="mark-score-pct" id="mresPct"></div>
-          <div class="mark-score-paper" id="mresPaper"></div>
-          <div id="mresReviewBadge" class="mark-review-badge" style="display:none">
-            🔍 Under review — Hanyong will verify this marking
-          </div>
-        </div>
-
-        <!-- Overall feedback -->
-        <div style="background:var(--ice-light);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px">
-          <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Examiner's Overall Feedback</div>
-          <div id="mresOverall" style="font-size:13px;color:var(--text);line-height:1.7"></div>
-        </div>
-
-        <!-- Topic performance -->
-        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px">
-          <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Topic Performance</div>
-          <div id="mresTopics" class="mark-topic-grid"></div>
-        </div>
-
-        <!-- Strengths & Improvements -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:var(--radius);padding:12px">
-            <div style="font-size:11px;font-weight:700;color:#15803d;margin-bottom:8px">✦ Strengths</div>
-            <div id="mresStrengths" class="mark-list"></div>
-          </div>
-          <div style="background:linear-gradient(135deg,#fefce8,#fef9c3);border:1.5px solid #fde68a;border-radius:var(--radius);padding:12px">
-            <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:8px">⟳ Focus Areas</div>
-            <div id="mresImprovements" class="mark-list"></div>
-          </div>
-        </div>
-
-        <!-- Question-by-question breakdown -->
-        <div>
-          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">Question Breakdown</div>
-          <div id="mresQuestions" style="display:flex;flex-direction:column;gap:8px"></div>
-        </div>
-
-        <!-- Share card -->
-        <div class="mark-share-card">
-          <div class="mark-share-title">Compare scores with classmates</div>
-          <div class="mark-share-sub">Share your result (score + topic chart) — without revealing your working. See how you stack up.</div>
-          <div class="mark-share-btns">
-            <button class="mark-share-btn" onclick="markShareResult('whatsapp')">💬 WhatsApp</button>
-            <button class="mark-share-btn" onclick="markShareResult('telegram')">✈ Telegram</button>
-            <button class="mark-share-btn" onclick="markShareResult('copy')">📋 Copy Link</button>
-          </div>
-        </div>
-
-        <!-- Action row -->
-        <div class="mark-action-row">
-          <button class="mark-action-btn primary" id="markDownloadBtn" onclick="markDownloadPDF()">
-            ⬇ Download Marked Script
-          </button>
-          <button class="mark-action-btn secondary" onclick="markStartNew()">
-            ＋ Mark Another
-          </button>
-        </div>
-        <div style="font-size:11px;color:var(--text-soft);text-align:center;line-height:1.6">
-          Your marked result is saved for <strong>7 days</strong>, then permanently deleted.<br>Download it to keep a copy.
-        </div>
+    <div class="ia-body">
+      <div class="ia-coming-banner">
+        <h3>Script marking is being built.</h3>
+        <p>Upload your completed IB paper and HAN will mark each question, give detailed feedback, and track your topic strengths. Coming soon.</p>
       </div>
     </div>
   </div>
@@ -3026,6 +2838,28 @@ document.addEventListener('paste', function(e) {
 
   const items = e.clipboardData && e.clipboardData.items;
   if (!items) return;
+
+  // If paste pane is visible and clipboard has text, route to pasteQText
+  const pastePaneWrap = document.getElementById('pastePaneWrap');
+  const pasteQText = document.getElementById('pasteQText');
+  if (pastePaneWrap && pastePaneWrap.classList.contains('active') && pasteQText) {
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].kind === 'string' && items[i].type === 'text/plain') {
+        e.preventDefault();
+        items[i].getAsString(function(text) {
+          const start = pasteQText.selectionStart;
+          const end = pasteQText.selectionEnd;
+          const current = pasteQText.value;
+          pasteQText.value = current.slice(0, start) + text + current.slice(end);
+          pasteQText.selectionStart = pasteQText.selectionEnd = start + text.length;
+          pasteQText.dispatchEvent(new Event('input'));
+          pasteQText.focus();
+        });
+        return;
+      }
+    }
+  }
+
   for (let i = 0; i < items.length; i++) {
     if (items[i].type.startsWith('image/')) {
       e.preventDefault();
@@ -3999,7 +3833,8 @@ function selChip(el, groupId) {
 }
 function marksSliderChange(val) {
   document.getElementById('marksVal').textContent = val;
-  document.getElementById('timeHint').textContent = Math.round(val * 1.3);
+  const mins = Math.round(val * 1.3);
+  document.getElementById('timeHint').textContent = mins >= 110 ? '2h' : mins + ' min';
 }
 async function generateMock() {
   if (!canUseMock()) { showPracticePaywall('mock'); return; }
