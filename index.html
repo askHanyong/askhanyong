@@ -2891,20 +2891,16 @@ function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault
 
 // ── Ctrl+V / paste image support ──
 document.addEventListener('paste', function(e) {
-  // Only handle if we're focused on chat (not in other text areas)
   const active = document.activeElement;
-  const isInChatInput = active && active.id === 'userInput';
   const isPasteArea = active && (active.classList.contains('paste-textarea') || active.classList.contains('fb-input'));
-  if (isPasteArea) return; // let normal paste work in other textareas
 
   const items = e.clipboardData && e.clipboardData.items;
   if (!items) return;
 
-  // If paste pane is visible, route text/image to the paste pane
+  // If paste pane is active, handle images FIRST (even when textarea is focused)
   const pastePaneWrap = document.getElementById('pastePaneWrap');
   const pasteQText = document.getElementById('pasteQText');
   if (pastePaneWrap && pastePaneWrap.classList.contains('active') && pasteQText) {
-    // Route images to paste pane preview
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.startsWith('image/')) {
         e.preventDefault();
@@ -2913,7 +2909,8 @@ document.addEventListener('paste', function(e) {
         return;
       }
     }
-    // Route text to paste textarea
+    // Text: let native paste work when textarea is focused; route if not focused
+    if (isPasteArea) return;
     for (let i = 0; i < items.length; i++) {
       if (items[i].kind === 'string' && items[i].type === 'text/plain') {
         e.preventDefault();
@@ -2929,8 +2926,12 @@ document.addEventListener('paste', function(e) {
         return;
       }
     }
+    return;
   }
 
+  if (isPasteArea) return; // let normal paste work in fb-input etc.
+
+  // Chat tab: handle image paste
   for (let i = 0; i < items.length; i++) {
     if (items[i].type.startsWith('image/')) {
       e.preventDefault();
