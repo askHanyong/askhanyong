@@ -1015,8 +1015,17 @@ async function renderAnnotationViewer(annotations, pdfB64) {
   viewer.style.display = 'none';
   pagesDiv.innerHTML   = '';
 
-  if (!annotations || !annotations.length || !pdfB64) return;
-  if (typeof pdfjsLib === 'undefined') return;
+  if (!pdfB64) return;
+  if (!annotations || !annotations.length) {
+    viewer.style.display = '';
+    pagesDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:4px 0">No annotations returned by AI for this script.</p>';
+    return;
+  }
+  if (typeof pdfjsLib === 'undefined') {
+    viewer.style.display = '';
+    pagesDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:4px 0">PDF viewer unavailable (PDF.js not loaded).</p>';
+    return;
+  }
 
   // Group annotations by page
   const byPage = {};

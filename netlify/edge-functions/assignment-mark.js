@@ -173,7 +173,7 @@ function buildMarkingTool(structure, totalMarks) {
             },
           },
         },
-        required: ['questions'],
+        required: ['questions', 'annotations'],
       },
     };
   }
@@ -225,7 +225,7 @@ function buildMarkingTool(structure, totalMarks) {
           },
         },
       },
-      required: ['questions'],
+      required: ['questions', 'annotations'],
     },
   };
 }
