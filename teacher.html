@@ -147,8 +147,23 @@ td{padding:10px 12px;vertical-align:top}
 .dash-detail-inner{padding:8px 16px 12px}
 .dash-detail-inner table{margin:0;font-size:12px}
 .dash-detail-inner thead th{background:var(--bg-mid);color:var(--text-mid);font-size:11px}
+/* Annotation viewer */
+.annot-viewer{margin-top:20px}
+.annot-viewer-title{font-size:12px;font-weight:700;color:var(--text-mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.annot-page-wrap{position:relative;display:inline-block;margin-bottom:16px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow)}
+.annot-page-wrap canvas{display:block;max-width:100%}
+.annot-symbol{position:absolute;left:6%;transform:translateY(-50%);font-size:22px;line-height:1;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.annot-symbol.tick{color:#059669}
+.annot-symbol.cross{color:#dc2626}
+.annot-comment{position:absolute;left:calc(6% + 28px);transform:translateY(-50%);font-size:10px;font-weight:600;color:#dc2626;background:rgba(255,255,255,.92);border:1px solid #fca5a5;border-radius:4px;padding:1px 5px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+/* Annotation badges in Dashboard */
+.annot-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;margin:2px 3px 2px 0}
+.annot-badge.tick{background:#d1fae5;color:#065f46}
+.annot-badge.cross{background:#fee2e2;color:#991b1b}
 </style>
 </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>if(typeof pdfjsLib!=='undefined'){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}</script>
 <body>
 <nav>
   <a class="nav-logo" href="/teacher">
@@ -469,6 +484,12 @@ td{padding:10px 12px;vertical-align:top}
         <div class="summary-box">
           <div class="label">EXAMINER SUMMARY</div>
           <div id="aExaminerSummary"></div>
+        </div>
+
+        <!-- Annotation viewer: rendered after marking -->
+        <div id="aAnnotViewer" class="annot-viewer" style="display:none">
+          <div class="annot-viewer-title">Annotated Script</div>
+          <div id="aAnnotPages"></div>
         </div>
 
         <div style="margin-top:20px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
@@ -848,6 +869,7 @@ async function doAssignMark() {
     statusText.textContent = 'Done! Rendering results…';
     assignLastResult = { ...data, studentName };
     renderAssignResults(result, studentName, data.totalMarks);
+    renderAnnotationViewer(data.annotations || [], assignPdfB64);
     setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btn.disabled = false; }, 500);
 
   } catch (e) {
@@ -948,6 +970,7 @@ async function saveAssignMarking() {
         token: teacherToken, studentName: name,
         aiScore: aiTotal, finalScore: finalTotal, questionMarks,
         examId: selectedAssignment.id,
+        annotations: assignLastResult?.annotations || [],
       }),
     });
     const data = await res.json();
@@ -980,6 +1003,77 @@ function resetAssignMark() {
   document.getElementById('aResultsBody').innerHTML      = '';
   document.getElementById('aExaminerSummary').textContent = '';
   document.getElementById('aScoreDisplay').textContent    = '0';
+  const viewerEl = document.getElementById('aAnnotViewer');
+  if (viewerEl) { viewerEl.style.display = 'none'; document.getElementById('aAnnotPages').innerHTML = ''; }
+}
+
+// ── Annotation viewer ─────────────────────────────────────────────────────
+async function renderAnnotationViewer(annotations, pdfB64) {
+  const viewer   = document.getElementById('aAnnotViewer');
+  const pagesDiv = document.getElementById('aAnnotPages');
+  if (!viewer || !pagesDiv) return;
+  viewer.style.display = 'none';
+  pagesDiv.innerHTML   = '';
+
+  if (!annotations || !annotations.length || !pdfB64) return;
+  if (typeof pdfjsLib === 'undefined') return;
+
+  // Group annotations by page
+  const byPage = {};
+  for (const a of annotations) {
+    const pg = a.page || 1;
+    if (!byPage[pg]) byPage[pg] = [];
+    byPage[pg].push(a);
+  }
+  const pages = Object.keys(byPage).map(Number).sort((a, b) => a - b);
+
+  try {
+    const pdfData = atob(pdfB64);
+    const uint8   = new Uint8Array(pdfData.length);
+    for (let i = 0; i < pdfData.length; i++) uint8[i] = pdfData.charCodeAt(i);
+    const pdfDoc  = await pdfjsLib.getDocument({ data: uint8 }).promise;
+
+    for (const pg of pages) {
+      const page     = await pdfDoc.getPage(pg);
+      const viewport = page.getViewport({ scale: 1.4 });
+      const canvas   = document.createElement('canvas');
+      canvas.width   = viewport.width;
+      canvas.height  = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'annot-page-wrap';
+      wrap.style.width = viewport.width + 'px';
+      wrap.appendChild(canvas);
+
+      for (const a of byPage[pg]) {
+        const yPct   = ((a.y_zone - 1) / 9) * 100;
+        const symbol = document.createElement('div');
+        symbol.className  = `annot-symbol ${a.symbol}`;
+        symbol.style.top  = yPct + '%';
+        symbol.textContent = a.symbol === 'tick' ? '✓' : '✗';
+        wrap.appendChild(symbol);
+
+        if (a.symbol === 'cross' && a.comment) {
+          const comm = document.createElement('div');
+          comm.className  = 'annot-comment';
+          comm.style.top  = yPct + '%';
+          comm.textContent = a.comment;
+          wrap.appendChild(comm);
+        }
+      }
+
+      const label = document.createElement('div');
+      label.style.cssText = 'font-size:11px;color:var(--text-soft);font-weight:600;margin-bottom:4px';
+      label.textContent = `Page ${pg}`;
+      pagesDiv.appendChild(label);
+      pagesDiv.appendChild(wrap);
+    }
+
+    viewer.style.display = '';
+  } catch (err) {
+    console.warn('Annotation viewer error:', err);
+  }
 }
 
 // ── Bulk file handling ────────────────────────────────────────────────────
@@ -1724,7 +1818,7 @@ function renderDashboard() {
     const tr = document.createElement('tr');
     tr.className  = 'dash-row';
     tr.dataset.id = m.id;
-    tr.onclick    = () => toggleDashRow(m.id, m.question_marks || []);
+    tr.onclick    = () => toggleDashRow(m.id, m.question_marks || [], m.annotations || []);
     tr.innerHTML  = `
       <td style="font-weight:600">${escHtml(m.student_name)}</td>
       <td style="font-size:12px;color:var(--text-mid);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
@@ -1746,7 +1840,7 @@ function renderDashboard() {
   document.getElementById('dashTableWrap').style.display = '';
 }
 
-function toggleDashRow(id, questionMarks) {
+function toggleDashRow(id, questionMarks, annotations) {
   const detRow  = document.getElementById(`dd-${id}`);
   const mainRow = document.querySelector(`tr[data-id="${id}"]`);
   if (!detRow) return;
@@ -1757,29 +1851,46 @@ function toggleDashRow(id, questionMarks) {
   if (isOpen) return;
 
   const inner = document.getElementById(`ddi-${id}`);
+  let html = '';
+
   if (!questionMarks.length) {
-    inner.innerHTML = '<p style="padding:10px;font-size:12px;color:var(--text-soft)">No question breakdown available.</p>';
-    return;
+    html += '<p style="padding:10px;font-size:12px;color:var(--text-soft)">No question breakdown available.</p>';
+  } else {
+    const rows = questionMarks.map(q => {
+      const deltaHtml = q.delta
+        ? ` <span style="font-size:10px;color:${q.delta > 0 ? 'var(--green)' : 'var(--red)'}">(${q.delta > 0 ? '+' : ''}${q.delta})</span>`
+        : '';
+      return `<tr>
+        <td class="q-label">${escHtml(String(q.q ?? ''))}</td>
+        <td style="color:var(--text-mid)">${escHtml(String(q.p ?? ''))}</td>
+        <td style="font-family:'DM Mono',monospace">${q.ma ?? '—'}</td>
+        <td style="font-family:'DM Mono',monospace;color:var(--text-mid)">${q.ai ?? '—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--navy)">${q.final ?? '—'}${deltaHtml}</td>
+        <td style="color:var(--text-soft);font-size:11px;max-width:280px">${escHtml(String(q.notes ?? ''))}</td>
+      </tr>`;
+    }).join('');
+    html += `<table>
+      <thead><tr>
+        <th>Q</th><th>Part</th><th>Available</th><th>AI Mark</th><th>Final</th><th>Notes</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
   }
-  const rows = questionMarks.map(q => {
-    const deltaHtml = q.delta
-      ? ` <span style="font-size:10px;color:${q.delta > 0 ? 'var(--green)' : 'var(--red)'}">(${q.delta > 0 ? '+' : ''}${q.delta})</span>`
-      : '';
-    return `<tr>
-      <td class="q-label">${escHtml(String(q.q ?? ''))}</td>
-      <td style="color:var(--text-mid)">${escHtml(String(q.p ?? ''))}</td>
-      <td style="font-family:'DM Mono',monospace">${q.ma ?? '—'}</td>
-      <td style="font-family:'DM Mono',monospace;color:var(--text-mid)">${q.ai ?? '—'}</td>
-      <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--navy)">${q.final ?? '—'}${deltaHtml}</td>
-      <td style="color:var(--text-soft);font-size:11px;max-width:280px">${escHtml(String(q.notes ?? ''))}</td>
-    </tr>`;
-  }).join('');
-  inner.innerHTML = `<table>
-    <thead><tr>
-      <th>Q</th><th>Part</th><th>Available</th><th>AI Mark</th><th>Final</th><th>Notes</th>
-    </tr></thead>
-    <tbody>${rows}</tbody>
-  </table>`;
+
+  // Annotation badges
+  if (annotations && annotations.length) {
+    const badges = annotations.map(a => {
+      const icon    = a.symbol === 'tick' ? '✓' : '✗';
+      const comment = a.comment ? ` — ${escHtml(a.comment)}` : '';
+      return `<span class="annot-badge ${a.symbol}">${icon} p${a.page}${comment}</span>`;
+    }).join('');
+    html += `<div style="padding:8px 0 4px">
+      <div style="font-size:10px;font-weight:700;color:var(--text-mid);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px">Annotations</div>
+      ${badges}
+    </div>`;
+  }
+
+  inner.innerHTML = html;
 }
 
 function exportDashCSV() {

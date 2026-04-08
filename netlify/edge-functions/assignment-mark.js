@@ -107,7 +107,17 @@ Compare each student answer against the corresponding solution. Award marks base
 Use the submit_marks tool. For each question/part:
 - Award marks based on the structure provided
 - Keep notes to 5 words max; omit if full marks awarded
-- Be conservative — your first instinct is usually too generous`;
+- Be conservative — your first instinct is usually too generous
+
+## ANNOTATIONS
+Also include an \`annotations\` array. For each region of the student script:
+- Place a \`tick\` where a mark-worthy step or answer is correct
+- Place a \`cross\` where the student made an error that cost marks
+- \`page\`: page number of the student script (1-indexed)
+- \`y_zone\`: vertical position 1 (top) to 10 (bottom) indicating where on the page
+- \`symbol\`: "tick" or "cross"
+- \`comment\`: reason for cross only, max 8 words; empty string for ticks
+- Aim for 1–3 annotations per question; skip minor issues if already noted in marks`;
 }
 
 // The marking tool schema (same structure as IB marking but flexible totals)
@@ -148,6 +158,20 @@ function buildMarkingTool(structure, totalMarks) {
             type:        'string',
             description: 'One sentence summary of the student\'s overall performance.',
           },
+          annotations: {
+            type:  'array',
+            description: 'Tick/cross positions on the student script pages.',
+            items: {
+              type: 'object',
+              properties: {
+                page:    { type: 'integer', description: 'Page number (1-indexed)' },
+                y_zone:  { type: 'integer', description: '1=top of page, 10=bottom of page', minimum: 1, maximum: 10 },
+                symbol:  { type: 'string', enum: ['tick', 'cross'] },
+                comment: { type: 'string', description: 'Reason for cross, max 8 words. Empty string for ticks.' },
+              },
+              required: ['page', 'y_zone', 'symbol'],
+            },
+          },
         },
         required: ['questions'],
       },
@@ -186,6 +210,20 @@ function buildMarkingTool(structure, totalMarks) {
           },
         },
         examiner_summary: { type: 'string' },
+        annotations: {
+          type:  'array',
+          description: 'Tick/cross positions on the student script pages.',
+          items: {
+            type: 'object',
+            properties: {
+              page:    { type: 'integer', description: 'Page number (1-indexed)' },
+              y_zone:  { type: 'integer', description: '1=top of page, 10=bottom of page', minimum: 1, maximum: 10 },
+              symbol:  { type: 'string', enum: ['tick', 'cross'] },
+              comment: { type: 'string', description: 'Reason for cross, max 8 words. Empty string for ticks.' },
+            },
+            required: ['page', 'y_zone', 'symbol'],
+          },
+        },
       },
       required: ['questions'],
     },
@@ -339,6 +377,7 @@ export default async (request) => {
       markedBy:       email,
       timestamp:      new Date().toISOString(),
       result:         markResult,
+      annotations:    Array.isArray(markResult.annotations) ? markResult.annotations : [],
     }), {
       status:  200,
       headers: { ...CORS, 'Content-Type': 'application/json' },

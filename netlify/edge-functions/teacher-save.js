@@ -72,7 +72,7 @@ export default async (request) => {
     try { body = await request.json(); }
     catch { return jsonErr(400, 'Invalid JSON'); }
 
-    const { token, studentName, aiScore, finalScore, questionMarks, examId } = body;
+    const { token, studentName, aiScore, finalScore, questionMarks, examId, annotations } = body;
 
     if (!token)         return jsonErr(401, 'token required');
     if (!studentName)   return jsonErr(400, 'studentName required');
@@ -98,6 +98,7 @@ export default async (request) => {
         ai_score:       typeof aiScore === 'number' ? aiScore : null,
         final_score:    finalScore,
         question_marks: questionMarks,
+        ...(Array.isArray(annotations) && annotations.length > 0 ? { annotations } : {}),
       }),
     });
 
