@@ -175,6 +175,25 @@ td{padding:10px 12px;vertical-align:top}
 .annot-badge.tick{background:#d1fae5;color:#065f46}
 .annot-badge.cross{background:#fee2e2;color:#991b1b}
 .annot-badge.note{background:#dbeafe;color:#1d4ed8}
+/* Class colour pills */
+.class-pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap}
+.class-pill-0{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.class-pill-1{background:#f0fdf4;color:#059669;border:1px solid #bbf7d0}
+.class-pill-2{background:#fdf4ff;color:#7e22ce;border:1px solid #e9d5ff}
+.class-pill-3{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.class-pill-4{background:#fefce8;color:#a16207;border:1px solid #fde68a}
+.class-pill-5{background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd}
+/* Dashboard row chevron */
+.dash-chevron{display:inline-block;transition:transform .2s;color:var(--text-soft);font-size:14px;font-weight:700;line-height:1;user-select:none}
+.dash-row.open .dash-chevron{transform:rotate(90deg)}
+/* Click-to-edit override cells */
+.override-cell{cursor:pointer;user-select:none}
+.override-cell:hover .override-display{text-decoration:underline dotted;color:var(--navy)}
+.override-display{font-family:'DM Mono',monospace;font-weight:700}
+.override-display.changed{color:var(--gold)}
+.override-cell.editing{cursor:default}
+.override-cell.editing .override-display,.override-cell.editing .override-sep,.override-cell.editing .override-avail{display:none!important}
+.override-cell.editing .override-input{display:inline-block!important}
 </style>
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -282,8 +301,8 @@ td{padding:10px 12px;vertical-align:top}
     <div class="results-header">
       <div>
         <div class="score-sub" style="margin-bottom:4px">Results for: <strong id="resultStudentName"></strong></div>
-        <div id="scoreDisplay" class="score-badge"></div>
-        <div class="score-sub">marks awarded / 110</div>
+        <div class="score-badge"><span id="scoreDisplay">0</span><span id="scoreDenomIB" class="score-sub" style="font-size:16px;font-weight:500;margin-left:4px">/ 110</span></div>
+        <div class="score-sub">marks awarded</div>
       </div>
       <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
     </div>
@@ -373,6 +392,10 @@ td{padding:10px 12px;vertical-align:top}
 
     <!-- ── LIST: browse + select assignment ── -->
     <div id="assignListPane">
+      <div style="margin-bottom:10px">
+        <input id="assignSearch" type="text" class="struct-input" placeholder="Search assignments…"
+               oninput="renderAssignList()" style="max-width:320px">
+      </div>
       <div id="assignList">
         <p style="font-size:13px;color:var(--text-soft);padding:16px 0">Loading assignments…</p>
       </div>
@@ -489,8 +512,8 @@ td{padding:10px 12px;vertical-align:top}
         <div class="results-header">
           <div>
             <div class="score-sub" style="margin-bottom:4px">Results for: <strong id="aResultName"></strong></div>
-            <div id="aScoreDisplay" class="score-badge"></div>
-            <div class="score-sub"><span id="aScoreDenom"></span> marks</div>
+            <div class="score-badge"><span id="aScoreDisplay">0</span><span id="aScoreDenom" class="score-sub" style="font-size:16px;font-weight:500;margin-left:4px"></span></div>
+            <div class="score-sub">marks awarded</div>
           </div>
           <button class="btn-export" onclick="exportAssignCSV()">⬇ Export CSV</button>
         </div>
@@ -571,6 +594,7 @@ td{padding:10px 12px;vertical-align:top}
       <table>
         <thead>
           <tr>
+            <th style="width:22px"></th>
             <th>Student</th>
             <th>Assignment / Exam</th>
             <th style="width:80px">Class</th>
@@ -701,11 +725,19 @@ async function loadAssignments() {
 
 function renderAssignList() {
   const listEl = document.getElementById('assignList');
+  const query  = (document.getElementById('assignSearch')?.value || '').toLowerCase().trim();
+  const visible = query
+    ? assignments.filter(a => a.name.toLowerCase().includes(query) || (a.subject || '').toLowerCase().includes(query))
+    : assignments;
   if (!assignments.length) {
     listEl.innerHTML = '<p style="font-size:13px;color:var(--text-soft);padding:16px 0">No assignments yet. Create one using the "+ Create New" tab.</p>';
     return;
   }
-  listEl.innerHTML = assignments.map(a => {
+  if (!visible.length) {
+    listEl.innerHTML = '<p style="font-size:13px;color:var(--text-soft);padding:16px 0">No assignments match your search.</p>';
+    return;
+  }
+  listEl.innerHTML = visible.map(a => {
     const typeLabel = a.type === 'homework' ? 'Homework' : a.type === 'internal_test' ? 'Internal Test' : 'IB Paper';
     const badgeCls  = a.type === 'homework' ? 'hw' : a.type === 'internal_test' ? 'test' : '';
     const selected  = selectedAssignment?.id === a.id ? ' selected' : '';
@@ -914,7 +946,18 @@ async function doAssignMark() {
     assignLastResult = { ...data, studentName };
     renderAssignResults(result, studentName, data.totalMarks);
     renderAnnotationViewer(data.annotations || [], assignPdfB64);
-    setTimeout(() => { progressArea.style.display = 'none'; resultsArea.style.display = 'block'; btn.disabled = false; }, 500);
+    setTimeout(() => {
+      progressArea.style.display = 'none';
+      resultsArea.style.display  = 'block';
+      btn.disabled = false;
+      // Auto-scroll to annotation viewer once PDF has rendered
+      setTimeout(() => {
+        const viewer = document.getElementById('aAnnotViewer');
+        if (viewer && viewer.style.display !== 'none') {
+          viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 1200);
+    }, 500);
 
   } catch (e) {
     clearInterval(ticker);
@@ -939,10 +982,12 @@ function renderAssignResults(data, studentName, totalMarks) {
         <td>${qNum}${pLbl ? ' (' + pLbl + ')' : ''}</td>
         <td class="marks-cell"><span class="awarded">${award}</span><span class="available"> / ${avail ?? '?'}</span></td>
         <td class="notes-cell">${note}</td>
-        <td class="override-cell">
-          <input type="number" class="override-input assign-override" min="0"
-                 value="${award}" data-original="${award}" oninput="updateAssignTotal()">
-          / ${avail ?? '?'}
+        <td class="override-cell" title="Click to edit" onclick="activateOverride(this)">
+          <span class="override-display">${award}</span><span class="override-sep"> / </span><span class="override-avail">${avail ?? '?'}</span>
+          <input type="number" class="override-input assign-override" min="0" style="display:none;width:48px"
+                 value="${award}" data-original="${award}"
+                 oninput="onOverride(this)" onblur="deactivateOverride(this)"
+                 onkeydown="if(event.key==='Enter')this.blur()">
         </td>`;
       tbody.appendChild(tr);
     });
@@ -1023,6 +1068,8 @@ async function saveAssignMarking() {
     if (!res.ok) { msgEl.textContent = 'Save failed: ' + (data.error || res.status); msgEl.className = 'msg err'; }
     else {
       btn.textContent = '✓ Saved';
+      btn.disabled    = true;
+      btn.title       = 'Already saved';
       let saveText = 'Saved!';
       if (data.report_token) {
         const link = `${location.origin}/report?t=${data.report_token}`;
@@ -1036,6 +1083,7 @@ async function saveAssignMarking() {
       if (data.id && assignPdfB64) {
         _uploadScriptPdf(data.id, assignPdfB64, msgEl);
       }
+      return; // keep disabled — don't reach finally re-enable
     }
   } catch (e) {
     msgEl.textContent = 'Network error: ' + e.message; msgEl.className = 'msg err';
@@ -1106,6 +1154,13 @@ async function renderAnnotationViewer(annotations, pdfB64) {
 
     for (let pg = 1; pg <= annotPdfDoc.numPages; pg++) {
       await _renderAnnotPage(pg);
+    }
+    if (!currentAnnotations.length) {
+      const hint = document.createElement('p');
+      hint.id = 'aAnnotEmpty';
+      hint.style.cssText = 'font-size:12px;color:var(--text-soft);text-align:center;padding:6px 0 14px;font-style:italic';
+      hint.textContent = 'No annotations yet — use Add Tick, Add Cross or Add Note to mark up the script.';
+      pagesDiv.appendChild(hint);
     }
   } catch (err) {
     console.warn('Annotation viewer error:', err);
@@ -1789,11 +1844,12 @@ function renderResults(data, studentName) {
         <td>${qNum}${pLabel ? ' (' + pLabel + ')' : ''}</td>
         <td class="marks-cell"><span class="awarded">${award}</span><span class="available"> / ${avail !== undefined ? avail : '?'}</span></td>
         <td class="notes-cell">${note}</td>
-        <td class="override-cell">
-          <input type="number" class="override-input" min="0"
+        <td class="override-cell" title="Click to edit" onclick="activateOverride(this)">
+          <span class="override-display">${award}</span><span class="override-sep"> / </span><span class="override-avail">${avail !== undefined ? avail : '?'}</span>
+          <input type="number" class="override-input" min="0" style="display:none;width:48px"
                  value="${award}" data-original="${award}"
-                 oninput="onOverride(this)">
-          / ${avail !== undefined ? avail : '?'}
+                 oninput="onOverride(this)" onblur="deactivateOverride(this)"
+                 onkeydown="if(event.key==='Enter')this.blur()">
         </td>`;
       tbody.appendChild(tr);
     });
@@ -1805,15 +1861,34 @@ function renderResults(data, studentName) {
   summaryEl.textContent = data.examiner_summary || '';
 }
 
+function activateOverride(cell) {
+  if (cell.classList.contains('editing')) return;
+  cell.classList.add('editing');
+  const input = cell.querySelector('.override-input');
+  if (input) { input.focus(); input.select(); }
+}
+
+function deactivateOverride(input) {
+  const cell = input.parentElement;
+  cell.classList.remove('editing');
+  const disp = cell.querySelector('.override-display');
+  const v    = parseInt(input.value, 10);
+  if (disp && !isNaN(v)) {
+    disp.textContent = v;
+    disp.classList.toggle('changed', v !== parseInt(input.dataset.original, 10));
+  }
+  // Trigger totals update for both IB and assignment tables
+  if (input.classList.contains('assign-override')) updateAssignTotal();
+  else updateTotal();
+}
+
 function onOverride(input) {
   const original = parseInt(input.dataset.original, 10);
   const current  = parseInt(input.value, 10);
-  if (!isNaN(current) && current !== original) {
-    input.classList.add('changed');
-  } else {
-    input.classList.remove('changed');
-  }
-  updateTotal();
+  const disp = input.parentElement?.querySelector('.override-display');
+  if (disp) disp.classList.toggle('changed', !isNaN(current) && current !== original);
+  if (input.classList.contains('assign-override')) updateAssignTotal();
+  else updateTotal();
 }
 
 function updateTotal() {
@@ -1927,6 +2002,8 @@ async function saveMarking() {
       saveMsg.className = 'msg err';
     } else {
       btnSave.textContent = '✓ Saved';
+      btnSave.disabled    = true;
+      btnSave.title       = 'Already saved';
       let msg = 'Marking saved!';
       if (data.report_token) {
         const link = `${location.origin}/report?t=${data.report_token}`;
@@ -1936,6 +2013,7 @@ async function saveMarking() {
       }
       saveMsg.innerHTML = msg;
       saveMsg.className = 'msg ok';
+      return; // keep disabled — don't reach finally re-enable
     }
   } catch (e) {
     saveMsg.textContent = 'Network error: ' + e.message;
@@ -2135,11 +2213,11 @@ function renderDashboard() {
       : '<span style="color:var(--text-soft);font-size:12px">—</span>';
 
     const classHtml = m.class_label
-      ? `<span style="font-size:12px;font-weight:600;color:var(--text-mid)">${escHtml(m.class_label)}</span>`
+      ? `<span class="class-pill class-pill-${classColorIdx(m.class_label)}">${escHtml(m.class_label)}</span>`
       : '<span style="color:var(--text-soft);font-size:12px">—</span>';
     const safeName  = escHtml(m.student_name).replace(/'/g, '&#39;');
     const pdfHtml   = m.script_path
-      ? `<button onclick="event.stopPropagation();downloadDashPdf('${m.id}','${safeName}');this.disabled=true;this.textContent='⏳'"
+      ? `<button onclick="event.stopPropagation();downloadDashPdf('${m.id}','${safeName}',this)"
              style="font-size:11px;font-weight:600;color:var(--navy);background:#fff;border:1.5px solid var(--border);border-radius:5px;padding:2px 8px;cursor:pointer">⬇ PDF</button>`
       : '<span style="color:var(--text-soft);font-size:12px">—</span>';
 
@@ -2148,6 +2226,7 @@ function renderDashboard() {
     tr.dataset.id = m.id;
     tr.onclick    = () => toggleDashRow(m.id, m.question_marks || [], m.annotations || []);
     tr.innerHTML  = `
+      <td style="padding:10px 4px 10px 12px"><span class="dash-chevron">›</span></td>
       <td style="font-weight:600">${escHtml(m.student_name)}</td>
       <td style="font-size:12px;color:var(--text-mid);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
           title="${escHtml(m.assignName)}">${escHtml(m.assignName)}</td>
@@ -2163,7 +2242,7 @@ function renderDashboard() {
     const det = document.createElement('tr');
     det.id    = `dd-${m.id}`;
     det.style.display = 'none';
-    det.innerHTML = `<td colspan="8" style="padding:0"><div class="dash-detail-inner" id="ddi-${m.id}"></div></td>`;
+    det.innerHTML = `<td colspan="9" style="padding:0"><div class="dash-detail-inner" id="ddi-${m.id}"></div></td>`;
     tbody.appendChild(det);
   });
 
@@ -2246,6 +2325,12 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function classColorIdx(label) {
+  let h = 0;
+  for (let i = 0; i < label.length; i++) h = (h * 31 + label.charCodeAt(i)) & 0xffff;
+  return h % 6;
+}
+
 // ── Shared: render a pdfB64 + annotations array → jsPDF arraybuffer ──────
 async function _renderAnnotatedPdfBytes(pdfB64, annotations) {
   const { jsPDF } = window.jspdf;
@@ -2312,10 +2397,11 @@ async function _renderAnnotatedPdfBytes(pdfB64, annotations) {
 }
 
 // ── Dashboard: download individual annotated PDF ──────────────────────────
-async function downloadDashPdf(markingId, studentName) {
+async function downloadDashPdf(markingId, studentName, btn) {
   if (!window.jspdf || typeof pdfjsLib === 'undefined') {
     alert('PDF libraries not loaded. Please refresh and try again.'); return;
   }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
   const progressEl = document.getElementById('dashDlProgress');
   progressEl.textContent = `Fetching PDF for ${studentName}…`;
   progressEl.style.display = '';
@@ -2325,7 +2411,7 @@ async function downloadDashPdf(markingId, studentName) {
       body: JSON.stringify({ token: teacherToken, markingId }),
     });
     const data = await res.json();
-    if (!res.ok) { alert('Fetch failed: ' + (data.error || res.status)); progressEl.style.display = 'none'; return; }
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
     progressEl.textContent = `Rendering annotated PDF for ${studentName}…`;
     const bytes = await _renderAnnotatedPdfBytes(data.scriptPdfB64, data.annotations || []);
     const blob  = new Blob([bytes], { type: 'application/pdf' });
@@ -2336,10 +2422,12 @@ async function downloadDashPdf(markingId, studentName) {
     a.click();
     URL.revokeObjectURL(url);
     progressEl.textContent = `Downloaded: ${studentName}`;
+    if (btn) { btn.textContent = '✓ Done'; }
     setTimeout(() => { progressEl.style.display = 'none'; }, 3000);
   } catch (err) {
     alert('Download error: ' + err.message);
     progressEl.style.display = 'none';
+    if (btn) { btn.disabled = false; btn.textContent = '⬇ PDF'; }
   }
 }
 
