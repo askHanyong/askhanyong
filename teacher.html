@@ -194,6 +194,13 @@ td{padding:10px 12px;vertical-align:top}
 .override-cell.editing{cursor:default}
 .override-cell.editing .override-display,.override-cell.editing .override-sep,.override-cell.editing .override-avail{display:none!important}
 .override-cell.editing .override-input{display:inline-block!important}
+/* Q-by-Q review nav pills */
+.q-nav-pill{padding:5px 13px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:var(--text-mid);transition:all .15s}
+.q-nav-pill:hover{border-color:var(--navy);color:var(--navy)}
+.q-nav-pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.q-nav-pill.done:not(.active){border-color:#059669;color:#059669}
+.q-nav-pill.done:not(.active)::after{content:' ✓';font-size:10px}
+.q-nav-pill.active.done{background:#059669;border-color:#059669}
 </style>
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -387,7 +394,8 @@ td{padding:10px 12px;vertical-align:top}
     <div class="mode-tabs" style="margin-bottom:20px">
       <button class="mode-tab active" id="aTabList"   onclick="setAssignTab('list')">My Assignments</button>
       <button class="mode-tab"        id="aTabCreate" onclick="setAssignTab('create')">+ Create New</button>
-      <button class="mode-tab"        id="aTabMark"   onclick="setAssignTab('mark')" id="aTabMark">Mark Script</button>
+      <button class="mode-tab"        id="aTabMark"   onclick="setAssignTab('mark')">Mark Script</button>
+      <button class="mode-tab"        id="aTabBulk"   onclick="setAssignTab('bulk')">Bulk Mark</button>
     </div>
 
     <!-- ── LIST: browse + select assignment ── -->
@@ -559,6 +567,108 @@ td{padding:10px 12px;vertical-align:top}
       </div>
     </div>
 
+    <!-- ── BULK MARK pane ── -->
+    <div id="assignBulkPane" style="display:none">
+
+      <div id="aBulkAssignHeader" class="card" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text-soft);letter-spacing:.3px;margin-bottom:3px">SELECTED ASSIGNMENT</div>
+            <div id="aBulkAssignName" style="font-size:15px;font-weight:700;color:var(--navy)"></div>
+            <div id="aBulkAssignMeta" style="font-size:12px;color:var(--text-soft);margin-top:2px"></div>
+          </div>
+          <button class="btn-sm" onclick="setAssignTab('list')">Change</button>
+        </div>
+      </div>
+      <div id="aBulkAssignSelectMsg" style="font-size:13px;color:var(--text-soft);padding:12px 0">
+        No assignment selected. <a onclick="setAssignTab('list')" style="color:var(--navy);cursor:pointer;font-weight:600">Pick one from My Assignments →</a>
+      </div>
+
+      <div class="card">
+        <div class="field" style="margin:0">
+          <label>CLASS / GROUP <span style="font-weight:400;color:var(--text-soft)">(optional)</span></label>
+          <input id="aBulkClassLabel" type="text" placeholder="e.g. 5A, IB Year 1, Class B" maxlength="60" style="max-width:320px">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Upload Student Scripts</div>
+        <div class="upload-zone" id="aBulkDropZone">
+          <input type="file" id="aBulkInput" accept=".pdf" multiple>
+          <div class="upload-icon">📂</div>
+          <h3 id="aBulkDropLabel">Drop multiple PDFs here or click to browse</h3>
+          <p>Select all student scripts at once · PDF only</p>
+        </div>
+      </div>
+
+      <div id="aBulkQueueSection" style="display:none">
+        <div class="card" style="padding:0;overflow:hidden">
+          <table>
+            <thead><tr><th style="width:32px">#</th><th>Student Name</th><th>File</th><th style="width:100px">Status</th><th style="width:70px">Score</th></tr></thead>
+            <tbody id="aBulkQueueBody"></tbody>
+          </table>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px">
+          <button class="btn-primary" id="btnMarkBulkAssign" onclick="doBulkAssignMark()" style="max-width:220px">Mark All Scripts</button>
+        </div>
+        <div id="aBulkProgressText" style="display:none;font-size:13px;color:var(--text-mid);margin:10px 0 4px"></div>
+        <div class="progress-bar-wrap" id="aBulkProgressWrap" style="display:none">
+          <div class="progress-bar" id="aBulkProgressBar" style="width:0%"></div>
+        </div>
+        <div id="aBulkReviewReady" style="display:none;margin-top:16px">
+          <div class="msg ok" style="display:block;margin-bottom:12px">All scripts marked! Review marks question by question, or save directly.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn-primary" onclick="startQReview()" style="max-width:240px">📋 Review by Question →</button>
+            <button id="btnDirectSaveBulkAssign" class="btn-primary" onclick="saveAllBulkAssign(this,'aBulkDirectSaveMsg')"
+              style="max-width:240px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save All (skip review)</button>
+          </div>
+          <div id="aBulkDirectSaveMsg" class="msg" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div><!-- /assignBulkPane -->
+
+    <!-- ── Q-BY-Q REVIEW pane ── -->
+    <div id="assignQReviewPane" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <button class="btn-sm" onclick="exitQReview()">← Back to Queue</button>
+        <div id="qReviewProgress" style="font-size:12px;font-weight:600;color:var(--text-mid)">0 / 0 questions reviewed</div>
+      </div>
+
+      <div id="qNavBar" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px"></div>
+
+      <div class="card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+          <div>
+            <div id="qReviewTitle" style="font-size:16px;font-weight:700;color:var(--navy)">Question</div>
+            <div id="qReviewStats" style="font-size:12px;color:var(--text-soft);margin-top:3px"></div>
+          </div>
+          <button onclick="acceptAllForQ()"
+            style="padding:6px 14px;background:var(--gold-pale);border:1.5px solid var(--gold);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;color:var(--navy);flex-shrink:0">
+            ✓ Accept all AI marks
+          </button>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+          <table>
+            <thead><tr><th>Student</th><th style="width:110px">AI Mark</th><th>Notes</th><th style="width:110px">Final</th></tr></thead>
+            <tbody id="qReviewBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px">
+        <button id="btnQPrev" onclick="navQuestion(-1)" class="btn-sm">← Prev</button>
+        <div id="qNavCounter" style="font-size:13px;font-weight:600;color:var(--text-mid)"></div>
+        <button id="btnQNext" onclick="navQuestion(1)" class="btn-primary" style="max-width:140px">Next Q →</button>
+      </div>
+
+      <div id="aBulkSaveSection" style="display:none;margin-top:20px;padding-top:16px;border-top:1.5px solid var(--border)">
+        <p style="font-size:13px;color:var(--text-mid);margin-bottom:12px">All questions reviewed. Ready to save.</p>
+        <button id="btnSaveBulkAssign" onclick="saveAllBulkAssign(this,'aBulkSaveMsg')" class="btn-primary"
+          style="max-width:260px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save All &amp; Confirm</button>
+        <div id="aBulkSaveMsg" class="msg" style="margin-top:10px"></div>
+      </div>
+    </div><!-- /assignQReviewPane -->
+
   </div><!-- /assignSection -->
 
   <!-- ════════════════════════════════════════════════════
@@ -637,6 +747,14 @@ let assignPaperB64     = null; // question paper PDF being uploaded (optional)
 let assignLastResult   = null; // last assignment marking result
 let structRowCount     = 0;
 
+// Bulk assignment marking state
+let bulkAssignQueue   = [];   // [{file, name, b64, status, result, error}]
+let bulkAssignRunning = false;
+// Q-by-Q review state
+let questionIndex  = {};   // { qKey: {label,qNum,part,ma,items:[...]} }
+let qKeys          = [];   // ordered array of question keys
+let currentQKeyIdx = 0;
+
 // ── Screen navigation ─────────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -696,13 +814,32 @@ function setMode(mode) {
 
 // ── Assignment sub-tabs ────────────────────────────────────────────────────
 function setAssignTab(tab) {
-  document.getElementById('assignListPane').style.display   = tab === 'list'   ? '' : 'none';
-  document.getElementById('assignCreatePane').style.display = tab === 'create' ? '' : 'none';
-  document.getElementById('assignMarkPane').style.display   = tab === 'mark'   ? '' : 'none';
+  document.getElementById('assignListPane').style.display      = tab === 'list'   ? '' : 'none';
+  document.getElementById('assignCreatePane').style.display    = tab === 'create' ? '' : 'none';
+  document.getElementById('assignMarkPane').style.display      = tab === 'mark'   ? '' : 'none';
+  document.getElementById('assignBulkPane').style.display      = tab === 'bulk'   ? '' : 'none';
+  document.getElementById('assignQReviewPane').style.display   = 'none'; // only shown via startQReview()
   document.getElementById('aTabList').classList.toggle('active',   tab === 'list');
   document.getElementById('aTabCreate').classList.toggle('active', tab === 'create');
   document.getElementById('aTabMark').classList.toggle('active',   tab === 'mark');
+  document.getElementById('aTabBulk').classList.toggle('active',   tab === 'bulk');
   if (tab === 'mark') refreshAssignMarkHeader();
+  if (tab === 'bulk') refreshBulkAssignHeader();
+}
+
+function refreshBulkAssignHeader() {
+  const header    = document.getElementById('aBulkAssignHeader');
+  const selectMsg = document.getElementById('aBulkAssignSelectMsg');
+  if (selectedAssignment) {
+    document.getElementById('aBulkAssignName').textContent = selectedAssignment.name;
+    document.getElementById('aBulkAssignMeta').textContent =
+      `${selectedAssignment.subject || ''} · ${selectedAssignment.total_marks} marks · ${selectedAssignment.type}`;
+    header.style.display    = '';
+    selectMsg.style.display = 'none';
+  } else {
+    header.style.display    = 'none';
+    selectMsg.style.display = '';
+  }
 }
 
 // ── Load assignments from Supabase ────────────────────────────────────────
@@ -758,6 +895,7 @@ function selectAssignment(a) {
   selectedAssignment = a;
   renderAssignList();
   refreshAssignMarkHeader();
+  refreshBulkAssignHeader();
 }
 
 function refreshAssignMarkHeader() {
@@ -1629,6 +1767,124 @@ async function saveBulkMarkings() {
   }
 }
 
+// ── Bulk Assignment: queue + mark ────────────────────────────────────────
+function handleBulkAssignFiles(files) {
+  const pdfs = Array.from(files).filter(f => f.type === 'application/pdf');
+  if (!pdfs.length) { alert('Please select PDF files.'); return; }
+  bulkAssignQueue = pdfs.map(f => ({
+    file: f, name: nameFromFilename(f.name),
+    b64: null, status: 'pending', result: null, error: null,
+  }));
+  document.getElementById('aBulkDropLabel').textContent = `✓ ${pdfs.length} file${pdfs.length > 1 ? 's' : ''} selected`;
+  document.getElementById('aBulkDropZone').style.borderColor = 'var(--green)';
+  document.getElementById('aBulkQueueSection').style.display = '';
+  document.getElementById('aBulkReviewReady').style.display  = 'none';
+  renderBulkAssignQueue();
+}
+
+function renderBulkAssignQueue() {
+  const tbody = document.getElementById('aBulkQueueBody');
+  tbody.innerHTML = '';
+  bulkAssignQueue.forEach((item, i) => {
+    const statusHtml = {
+      pending: '<span class="bulk-status pending">Pending</span>',
+      marking: '<span class="bulk-status marking"><span class="spinner" style="border-top-color:#92400e;border-color:rgba(146,64,14,.3);width:12px;height:12px;margin-right:4px"></span>Marking…</span>',
+      done:    '<span class="bulk-status done">✓ Done</span>',
+      error:   `<span class="bulk-status error" title="${escHtml(item.error||'')}">✗ Error</span>`,
+    }[item.status] || '';
+    const scoreHtml = item.result
+      ? (() => { let t=0; (item.result.questions||[]).forEach(q=>(q.pts||q.parts||[]).forEach(p=>{t+=p.mi??p.marks_awarded??0;})); return `<span class="bulk-score">${t}</span>`; })()
+      : '—';
+    const locked = bulkAssignRunning && item.status !== 'pending';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--text-soft);font-size:12px">${i+1}</td>
+      <td><input class="bulk-name-input" value="${item.name.replace(/"/g,'&quot;')}"
+            ${locked?'disabled':''} onchange="bulkAssignQueue[${i}].name=this.value"></td>
+      <td style="font-size:12px;color:var(--text-mid);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+          title="${escHtml(item.file.name)}">${escHtml(item.file.name)}</td>
+      <td>${statusHtml}</td>
+      <td>${scoreHtml}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+async function doBulkAssignMark() {
+  if (bulkAssignRunning) return;
+  if (!bulkAssignQueue.length) return;
+  if (!selectedAssignment) { alert('Please select an assignment first.'); setAssignTab('list'); return; }
+  if (!teacherToken) { alert('Please log in first.'); return; }
+
+  bulkAssignRunning = true;
+  const btn      = document.getElementById('btnMarkBulkAssign');
+  const progWrap = document.getElementById('aBulkProgressWrap');
+  const progBar  = document.getElementById('aBulkProgressBar');
+  const progText = document.getElementById('aBulkProgressText');
+  btn.disabled = true;
+  progWrap.style.display = '';
+  progText.style.display = '';
+  document.getElementById('aBulkReviewReady').style.display = 'none';
+
+  const total = bulkAssignQueue.length;
+  let done = 0;
+
+  for (let i = 0; i < bulkAssignQueue.length; i++) {
+    const item = bulkAssignQueue[i];
+    if (item.status === 'done') { done++; continue; }
+    item.status = 'marking';
+    renderBulkAssignQueue();
+    progText.textContent = `Marking ${done+1} of ${total}: ${item.name}…`;
+    progBar.style.width  = `${Math.round(done/total*100)}%`;
+
+    try {
+      if (!item.b64) item.b64 = await readFileAsB64(item.file);
+      const res = await fetch('/api/assignment-mark', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: teacherToken, assignmentId: selectedAssignment.id,
+          studentName: item.name, studentPdf: item.b64,
+        }),
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(()=>({}));
+        item.status = 'error'; item.error = d.error || `HTTP ${res.status}`;
+      } else {
+        const data = await res.json();
+        item.result = data.result || data;
+        item.status = 'done';
+      }
+    } catch(e) { item.status = 'error'; item.error = e.message; }
+    done++;
+    renderBulkAssignQueue();
+  }
+
+  progBar.style.width  = '100%';
+  progText.textContent = `Complete — ${bulkAssignQueue.filter(it=>it.status==='done').length} of ${total} marked.`;
+  btn.disabled = false;
+  bulkAssignRunning = false;
+  if (bulkAssignQueue.some(it => it.status === 'done')) {
+    document.getElementById('aBulkReviewReady').style.display = '';
+  }
+}
+
+// Bulk assign drag-and-drop
+(function() {
+  // Deferred to DOMContentLoaded to ensure elements exist
+  document.addEventListener('DOMContentLoaded', () => {
+    const zone  = document.getElementById('aBulkDropZone');
+    const input = document.getElementById('aBulkInput');
+    if (!zone || !input) return;
+    zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('drag');
+      if (e.dataTransfer.files.length) handleBulkAssignFiles(e.dataTransfer.files);
+    });
+    zone.addEventListener('click', () => input.click());
+    input.addEventListener('change', () => { if (input.files.length) handleBulkAssignFiles(input.files); });
+  });
+})();
+
 // Bulk drag-and-drop
 (function () {
   const zone  = document.getElementById('bulkDropZone');
@@ -2319,6 +2575,233 @@ function exportDashCSV() {
   const a    = document.createElement('a');
   a.href = url; a.download = 'class_results.csv'; a.click();
   URL.revokeObjectURL(url);
+}
+
+// ── Q-by-Q Review ─────────────────────────────────────────────────────────
+function buildQuestionIndex() {
+  questionIndex = {};
+  qKeys = [];
+  // Use first successful result to get canonical question order
+  const template = bulkAssignQueue.find(it => it.result);
+  if (!template) return;
+  (template.result.questions || []).forEach(q => {
+    (q.pts || q.parts || []).forEach(p => {
+      const qNum = String(q.q ?? q.number ?? '');
+      const part = String(p.p ?? p.part ?? '');
+      const key  = part ? `${qNum}_${part}` : qNum;
+      if (!questionIndex[key]) {
+        questionIndex[key] = { key, qNum, part, label: qNum + (part ? ` (${part})` : ''), ma: p.ma ?? p.marks_available ?? null, items: [] };
+        qKeys.push(key);
+      }
+    });
+  });
+  // Populate items per student in queue order
+  bulkAssignQueue.forEach((item, studentIdx) => {
+    if (!item.result) {
+      qKeys.forEach(key => questionIndex[key].items.push({ studentIdx, studentName: item.name, aiMark: null, finalMark: null, notes: '', reviewed: false }));
+      return;
+    }
+    (item.result.questions || []).forEach(q => {
+      (q.pts || q.parts || []).forEach(p => {
+        const qNum = String(q.q ?? q.number ?? '');
+        const part = String(p.p ?? p.part ?? '');
+        const key  = part ? `${qNum}_${part}` : qNum;
+        if (!questionIndex[key]) return;
+        const ai = p.mi ?? p.marks_awarded ?? 0;
+        questionIndex[key].items.push({ studentIdx, studentName: item.name, aiMark: ai, finalMark: ai, notes: p.n ?? p.notes ?? '', reviewed: false });
+      });
+    });
+  });
+}
+
+function startQReview() {
+  buildQuestionIndex();
+  if (!qKeys.length) { alert('No question data available.'); return; }
+  currentQKeyIdx = 0;
+  document.getElementById('assignBulkPane').style.display    = 'none';
+  document.getElementById('assignQReviewPane').style.display = '';
+  renderQNav();
+  renderQReviewTable(qKeys[0]);
+}
+
+function exitQReview() {
+  document.getElementById('assignQReviewPane').style.display = 'none';
+  document.getElementById('assignBulkPane').style.display    = '';
+}
+
+function renderQNav() {
+  const bar      = document.getElementById('qNavBar');
+  const reviewed = qKeys.filter(k => questionIndex[k].items.length > 0 && questionIndex[k].items.every(it => it.reviewed)).length;
+  document.getElementById('qReviewProgress').textContent = `${reviewed} / ${qKeys.length} questions reviewed`;
+  bar.innerHTML = '';
+  qKeys.forEach((key, idx) => {
+    const qData  = questionIndex[key];
+    const isDone = qData.items.length > 0 && qData.items.every(it => it.reviewed);
+    const btn    = document.createElement('button');
+    btn.className = 'q-nav-pill' + (idx === currentQKeyIdx ? ' active' : '') + (isDone ? ' done' : '');
+    btn.textContent = qData.label;
+    btn.onclick = () => { markCurrentQReviewed(); currentQKeyIdx = idx; renderQNav(); renderQReviewTable(qKeys[idx]); };
+    bar.appendChild(btn);
+  });
+  // Show save section when all questions reviewed
+  const allDone = qKeys.every(k => questionIndex[k].items.every(it => it.reviewed));
+  document.getElementById('aBulkSaveSection').style.display = allDone ? '' : 'none';
+}
+
+function markCurrentQReviewed() {
+  const key = qKeys[currentQKeyIdx];
+  if (key && questionIndex[key]) questionIndex[key].items.forEach(it => { it.reviewed = true; });
+}
+
+function renderQReviewTable(qKey) {
+  const qData = questionIndex[qKey];
+  document.getElementById('qReviewTitle').textContent = `Question ${qData.label}  —  ${qData.ma ?? '?'} marks`;
+  const validMarks = qData.items.filter(it => it.aiMark !== null).map(it => it.aiMark);
+  if (validMarks.length) {
+    const avg = (validMarks.reduce((s,v)=>s+v,0) / validMarks.length).toFixed(1);
+    document.getElementById('qReviewStats').textContent =
+      `AI avg: ${avg} / ${qData.ma ?? '?'}  ·  Range: ${Math.min(...validMarks)}–${Math.max(...validMarks)}  ·  ${qData.items.length} students`;
+  }
+  document.getElementById('qNavCounter').textContent = `${currentQKeyIdx+1} of ${qKeys.length}`;
+  document.getElementById('btnQPrev').disabled = currentQKeyIdx === 0;
+  const nextBtn = document.getElementById('btnQNext');
+  nextBtn.textContent = currentQKeyIdx < qKeys.length - 1 ? 'Next Q →' : 'Finish ✓';
+  nextBtn.style.background = currentQKeyIdx < qKeys.length - 1 ? '' : 'linear-gradient(135deg,#064e3b,#065f46)';
+
+  const tbody = document.getElementById('qReviewBody');
+  tbody.innerHTML = '';
+  qData.items.forEach((item, rowIdx) => {
+    const tr = document.createElement('tr');
+    tr.id = `qr-row-${rowIdx}`;
+    if (item.aiMark === null) {
+      tr.innerHTML = `<td style="font-weight:600">${escHtml(item.studentName)}</td><td colspan="3" style="font-size:12px;color:var(--text-soft);font-style:italic">Not marked</td>`;
+    } else {
+      const changed = item.finalMark !== item.aiMark;
+      tr.innerHTML = `
+        <td style="font-weight:600">${escHtml(item.studentName)}</td>
+        <td><span style="font-family:'DM Mono',monospace;font-weight:700">${item.aiMark}</span><span style="color:var(--text-soft)"> / ${qData.ma??'?'}</span></td>
+        <td style="font-size:11px;color:var(--text-soft);max-width:240px">${escHtml(item.notes)}</td>
+        <td class="override-cell" title="Click to edit" onclick="activateOverride(this)">
+          <span class="override-display${changed?' changed':''}">${item.finalMark}</span><span class="override-sep"> / </span><span class="override-avail">${qData.ma??'?'}</span>
+          <input type="number" class="override-input" min="0" style="display:none;width:48px"
+                 value="${item.finalMark}" data-original="${item.aiMark}"
+                 data-qkey="${qKey}" data-rowidx="${rowIdx}"
+                 oninput="onQOverride(this)" onblur="deactivateQOverride(this)"
+                 onkeydown="if(event.key==='Enter')this.blur()">
+        </td>`;
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+function onQOverride(input) {
+  const v      = parseInt(input.value, 10);
+  const qKey   = input.dataset.qkey;
+  const rowIdx = parseInt(input.dataset.rowidx, 10);
+  if (!isNaN(v) && questionIndex[qKey]) {
+    questionIndex[qKey].items[rowIdx].finalMark = v;
+    const disp = input.parentElement?.querySelector('.override-display');
+    if (disp) { disp.textContent = v; disp.classList.toggle('changed', v !== parseInt(input.dataset.original,10)); }
+  }
+}
+
+function deactivateQOverride(input) {
+  input.parentElement.classList.remove('editing');
+  const disp = input.parentElement.querySelector('.override-display');
+  const v    = parseInt(input.value, 10);
+  if (disp && !isNaN(v)) { disp.textContent = v; disp.classList.toggle('changed', v !== parseInt(input.dataset.original,10)); }
+}
+
+function acceptAllForQ() {
+  const key   = qKeys[currentQKeyIdx];
+  const qData = questionIndex[key];
+  qData.items.forEach((item, rowIdx) => {
+    item.finalMark = item.aiMark;
+    item.reviewed  = true;
+    const disp = document.querySelector(`#qr-row-${rowIdx} .override-display`);
+    const inp  = document.querySelector(`#qr-row-${rowIdx} .override-input`);
+    if (disp) { disp.textContent = item.finalMark ?? ''; disp.classList.remove('changed'); }
+    if (inp)  inp.value = item.finalMark ?? '';
+  });
+  renderQNav();
+}
+
+function navQuestion(delta) {
+  markCurrentQReviewed();
+  const next = currentQKeyIdx + delta;
+  if (next < 0 || next > qKeys.length) return;
+  if (next === qKeys.length) { renderQNav(); return; } // at finish — save section will appear
+  currentQKeyIdx = next;
+  renderQNav();
+  renderQReviewTable(qKeys[currentQKeyIdx]);
+}
+
+async function saveAllBulkAssign(btn, msgElId) {
+  const msgEl      = document.getElementById(msgElId);
+  const classLabel = document.getElementById('aBulkClassLabel')?.value.trim() || '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  if (msgEl) { msgEl.className = 'msg'; msgEl.textContent = ''; }
+
+  const toSave = bulkAssignQueue.filter(it => it.result);
+  let saved = 0, failed = 0;
+
+  for (let si = 0; si < toSave.length; si++) {
+    const item       = toSave[si];
+    const studentIdx = bulkAssignQueue.indexOf(item);
+    if (btn) btn.textContent = `Saving ${si+1} / ${toSave.length}…`;
+
+    const questionMarks = [];
+    let aiTotal = 0, finalTotal = 0;
+    qKeys.forEach(key => {
+      const qData = questionIndex[key];
+      if (!qData) return;
+      const itm = qData.items.find(it => it.studentIdx === studentIdx);
+      if (!itm || itm.aiMark === null) return;
+      const fm = itm.finalMark ?? itm.aiMark;
+      questionMarks.push({ q: qData.qNum, p: qData.part, ma: qData.ma, ai: itm.aiMark, final: fm, delta: fm - itm.aiMark, notes: itm.notes });
+      aiTotal    += itm.aiMark;
+      finalTotal += fm;
+    });
+    // Fallback: build from result directly if questionIndex not built (skip-review path)
+    if (!questionMarks.length && item.result) {
+      (item.result.questions || []).forEach(q => {
+        (q.pts || q.parts || []).forEach(p => {
+          const ai = p.mi ?? p.marks_awarded ?? 0;
+          questionMarks.push({ q: q.q??q.number, p: p.p??p.part??'', ma: p.ma??p.marks_available??null, ai, final: ai, delta: 0, notes: p.n??p.notes??'' });
+          aiTotal += ai; finalTotal += ai;
+        });
+      });
+    }
+
+    try {
+      const res  = await fetch('/api/teacher-save', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: teacherToken, studentName: item.name,
+          aiScore: aiTotal, finalScore: finalTotal, questionMarks,
+          examId: selectedAssignment?.id,
+          annotations: [],
+          ...(classLabel ? { classLabel } : {}),
+        }),
+      });
+      const data = await res.json().catch(()=>({}));
+      if (res.ok) {
+        saved++;
+        if (data.id && item.b64) _uploadScriptPdf(data.id, item.b64, null);
+      } else { failed++; }
+    } catch { failed++; }
+  }
+
+  if (btn) {
+    if (failed === 0) { btn.textContent = `✓ All ${saved} saved`; btn.disabled = true; }
+    else              { btn.textContent = 'Retry Save'; btn.disabled = false; }
+  }
+  if (msgEl) {
+    msgEl.textContent = failed === 0
+      ? `All ${saved} scripts saved successfully.`
+      : `Saved ${saved}, failed ${failed}. Please retry.`;
+    msgEl.className = failed === 0 ? 'msg ok' : 'msg err';
+  }
 }
 
 function escHtml(s) {
