@@ -149,13 +149,22 @@ td{padding:10px 12px;vertical-align:top}
 .dash-detail-inner thead th{background:var(--bg-mid);color:var(--text-mid);font-size:11px}
 /* Annotation viewer */
 .annot-viewer{margin-top:20px}
-.annot-viewer-title{font-size:12px;font-weight:700;color:var(--text-mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
-.annot-page-wrap{position:relative;display:inline-block;margin-bottom:16px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow)}
+.annot-viewer-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.annot-viewer-title{font-size:12px;font-weight:700;color:var(--text-mid);letter-spacing:.5px;text-transform:uppercase}
+.annot-toolbar{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.annot-tool-btn{padding:4px 10px;border:1.5px solid var(--border);border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--text);transition:background .15s,color .15s}
+.annot-tool-btn:hover{background:var(--bg-mid)}
+.annot-tool-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.annot-page-wrap{position:relative;display:block;margin-bottom:20px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow)}
 .annot-page-wrap canvas{display:block;max-width:100%}
-.annot-symbol{position:absolute;left:6%;transform:translateY(-50%);font-size:22px;line-height:1;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.annot-page-wrap.mode-tick,.annot-page-wrap.mode-cross{cursor:crosshair}
+.annot-page-wrap.mode-delete{cursor:default}
+.annot-symbol{position:absolute;transform:translate(-50%,-50%);font-size:22px;line-height:1;text-shadow:0 1px 3px rgba(0,0,0,.25);cursor:default;user-select:none}
 .annot-symbol.tick{color:#059669}
 .annot-symbol.cross{color:#dc2626}
-.annot-comment{position:absolute;left:calc(6% + 28px);transform:translateY(-50%);font-size:10px;font-weight:600;color:#dc2626;background:rgba(255,255,255,.92);border:1px solid #fca5a5;border-radius:4px;padding:1px 5px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.annot-page-wrap.mode-delete .annot-symbol{cursor:pointer;opacity:.8}
+.annot-page-wrap.mode-delete .annot-symbol:hover{opacity:1;filter:brightness(1.2)}
+.annot-comment{position:absolute;transform:translateY(-50%);font-size:10px;font-weight:600;color:#dc2626;background:rgba(255,255,255,.93);border:1px solid #fca5a5;border-radius:4px;padding:2px 6px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 /* Annotation badges in Dashboard */
 .annot-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;margin:2px 3px 2px 0}
 .annot-badge.tick{background:#d1fae5;color:#065f46}
@@ -164,6 +173,7 @@ td{padding:10px 12px;vertical-align:top}
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>if(typeof pdfjsLib!=='undefined'){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <body>
 <nav>
   <a class="nav-logo" href="/teacher">
@@ -488,7 +498,21 @@ td{padding:10px 12px;vertical-align:top}
 
         <!-- Annotation viewer: rendered after marking -->
         <div id="aAnnotViewer" class="annot-viewer" style="display:none">
-          <div class="annot-viewer-title">Annotated Script</div>
+          <div class="annot-viewer-header">
+            <div class="annot-viewer-title">Annotated Script</div>
+            <div class="annot-toolbar">
+              <button id="aModeView"   class="annot-tool-btn active"  onclick="setAnnotMode('view')">👁 View</button>
+              <button id="aModeTick"   class="annot-tool-btn"         onclick="setAnnotMode('tick')">✓ Add Tick</button>
+              <button id="aModeCross"  class="annot-tool-btn"         onclick="setAnnotMode('cross')">✗ Add Cross</button>
+              <button id="aModeDelete" class="annot-tool-btn"         onclick="setAnnotMode('delete')">🗑 Delete</button>
+              <button                  class="annot-tool-btn"         onclick="downloadAnnotatedPdf()"
+                style="margin-left:4px;background:var(--navy);color:#fff;border-color:var(--navy)">⬇ Download PDF</button>
+            </div>
+          </div>
+          <div id="aAnnotHint" style="font-size:11px;color:var(--text-soft);margin-bottom:10px">
+            Click <strong>Add Tick</strong> or <strong>Add Cross</strong> then click anywhere on the page to annotate.
+            <strong>Delete</strong> mode: click a symbol to remove it.
+          </div>
           <div id="aAnnotPages"></div>
         </div>
 
@@ -970,7 +994,7 @@ async function saveAssignMarking() {
         token: teacherToken, studentName: name,
         aiScore: aiTotal, finalScore: finalTotal, questionMarks,
         examId: selectedAssignment.id,
-        annotations: assignLastResult?.annotations || [],
+        annotations: currentAnnotations,
       }),
     });
     const data = await res.json();
@@ -1005,83 +1029,204 @@ function resetAssignMark() {
   document.getElementById('aScoreDisplay').textContent    = '0';
   const viewerEl = document.getElementById('aAnnotViewer');
   if (viewerEl) { viewerEl.style.display = 'none'; document.getElementById('aAnnotPages').innerHTML = ''; }
+  annotPdfDoc = null; currentAnnotations = []; annotMode = 'view';
 }
 
-// ── Annotation viewer ─────────────────────────────────────────────────────
+// ── Annotation viewer (interactive) ──────────────────────────────────────
+let annotMode        = 'view';   // 'view' | 'tick' | 'cross' | 'delete'
+let annotPdfDoc      = null;     // pdfjsLib document
+let currentAnnotations = [];     // mutable annotation list
+
 async function renderAnnotationViewer(annotations, pdfB64) {
   const viewer   = document.getElementById('aAnnotViewer');
   const pagesDiv = document.getElementById('aAnnotPages');
   if (!viewer || !pagesDiv) return;
-  viewer.style.display = 'none';
-  pagesDiv.innerHTML   = '';
+  pagesDiv.innerHTML = '';
+  currentAnnotations = Array.isArray(annotations) ? [...annotations] : [];
 
   if (!pdfB64) return;
-  if (!annotations || !annotations.length) {
-    viewer.style.display = '';
-    pagesDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:4px 0">No annotations returned by AI for this script.</p>';
-    return;
-  }
-  if (typeof pdfjsLib === 'undefined') {
-    viewer.style.display = '';
-    pagesDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:4px 0">PDF viewer unavailable (PDF.js not loaded).</p>';
-    return;
-  }
+  viewer.style.display = '';
+  setAnnotMode('view');
 
-  // Group annotations by page
-  const byPage = {};
-  for (const a of annotations) {
-    const pg = a.page || 1;
-    if (!byPage[pg]) byPage[pg] = [];
-    byPage[pg].push(a);
+  if (typeof pdfjsLib === 'undefined') {
+    pagesDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft)">PDF viewer unavailable (PDF.js not loaded).</p>';
+    return;
   }
-  const pages = Object.keys(byPage).map(Number).sort((a, b) => a - b);
 
   try {
     const pdfData = atob(pdfB64);
     const uint8   = new Uint8Array(pdfData.length);
     for (let i = 0; i < pdfData.length; i++) uint8[i] = pdfData.charCodeAt(i);
-    const pdfDoc  = await pdfjsLib.getDocument({ data: uint8 }).promise;
+    annotPdfDoc = await pdfjsLib.getDocument({ data: uint8 }).promise;
 
-    for (const pg of pages) {
-      const page     = await pdfDoc.getPage(pg);
-      const viewport = page.getViewport({ scale: 1.4 });
+    for (let pg = 1; pg <= annotPdfDoc.numPages; pg++) {
+      await _renderAnnotPage(pg);
+    }
+  } catch (err) {
+    console.warn('Annotation viewer error:', err);
+    pagesDiv.innerHTML += '<p style="font-size:12px;color:var(--red)">Error rendering PDF: ' + escHtml(err.message) + '</p>';
+  }
+}
+
+async function _renderAnnotPage(pg) {
+  const pagesDiv = document.getElementById('aAnnotPages');
+
+  // Remove existing wrap for this page if re-rendering
+  const existing = document.getElementById(`ap-${pg}`);
+  if (existing) existing.remove();
+  const existingLabel = document.getElementById(`apl-${pg}`);
+  if (existingLabel) existingLabel.remove();
+
+  const page     = await annotPdfDoc.getPage(pg);
+  const viewport = page.getViewport({ scale: 1.4 });
+  const canvas   = document.createElement('canvas');
+  canvas.width   = viewport.width;
+  canvas.height  = viewport.height;
+  await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+
+  const wrap = document.createElement('div');
+  wrap.className   = 'annot-page-wrap';
+  wrap.id          = `ap-${pg}`;
+  wrap.dataset.page = String(pg);
+  wrap.style.width = viewport.width + 'px';
+  wrap.appendChild(canvas);
+
+  // Click handler for placing new annotations
+  wrap.addEventListener('click', (e) => {
+    if (annotMode === 'view' || annotMode === 'delete') return;
+    if (e.target !== canvas) return; // ignore clicks on symbols
+    const rect = canvas.getBoundingClientRect();
+    const xPct = (e.clientX - rect.left) / rect.width;
+    const yPct = (e.clientY - rect.top)  / rect.height;
+    const x_zone = Math.max(1, Math.min(10, Math.round(xPct * 10)));
+    const y_zone = Math.max(1, Math.min(10, Math.round(yPct * 10)));
+    let comment = '';
+    if (annotMode === 'cross') {
+      const raw = prompt('Comment for cross (max 8 words, or leave empty):') || '';
+      comment = raw.trim().split(/\s+/).slice(0, 8).join(' ');
+    }
+    currentAnnotations.push({ page: pg, x_zone, y_zone, symbol: annotMode, comment });
+    _renderAnnotPage(pg);
+  });
+
+  // Render annotation symbols for this page
+  const pageAnnots = currentAnnotations.filter(a => (a.page || 1) === pg);
+  pageAnnots.forEach((a, localIdx) => {
+    const globalIdx = currentAnnotations.indexOf(a);
+    const xPct = ((a.x_zone || 1) - 1) / 9 * 100;
+    const yPct = ((a.y_zone  - 1) / 9) * 100;
+
+    const sym = document.createElement('div');
+    sym.className    = `annot-symbol ${a.symbol}`;
+    sym.style.left   = xPct + '%';
+    sym.style.top    = yPct + '%';
+    sym.textContent  = a.symbol === 'tick' ? '✓' : '✗';
+    sym.dataset.idx  = globalIdx;
+    sym.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (annotMode !== 'delete') return;
+      currentAnnotations.splice(globalIdx, 1);
+      _renderAnnotPage(pg);
+    });
+    wrap.appendChild(sym);
+
+    if (a.symbol === 'cross' && a.comment) {
+      const comm = document.createElement('div');
+      comm.className  = 'annot-comment';
+      comm.style.left = `calc(${xPct}% + 20px)`;
+      comm.style.top  = yPct + '%';
+      comm.textContent = a.comment;
+      wrap.appendChild(comm);
+    }
+  });
+
+  // Apply current mode cursor class
+  wrap.classList.toggle('mode-tick',   annotMode === 'tick');
+  wrap.classList.toggle('mode-cross',  annotMode === 'cross');
+  wrap.classList.toggle('mode-delete', annotMode === 'delete');
+
+  const label = document.createElement('div');
+  label.id = `apl-${pg}`;
+  label.style.cssText = 'font-size:11px;color:var(--text-soft);font-weight:600;margin-bottom:4px';
+  label.textContent = `Page ${pg}`;
+  pagesDiv.appendChild(label);
+  pagesDiv.appendChild(wrap);
+}
+
+function setAnnotMode(mode) {
+  annotMode = mode;
+  ['view', 'tick', 'cross', 'delete'].forEach(m => {
+    const btn = document.getElementById('aMode' + m.charAt(0).toUpperCase() + m.slice(1));
+    if (btn) btn.classList.toggle('active', m === mode);
+  });
+  // Update cursor class on all page wraps
+  document.querySelectorAll('.annot-page-wrap').forEach(wrap => {
+    wrap.classList.toggle('mode-tick',   mode === 'tick');
+    wrap.classList.toggle('mode-cross',  mode === 'cross');
+    wrap.classList.toggle('mode-delete', mode === 'delete');
+  });
+  const hint = document.getElementById('aAnnotHint');
+  if (hint) hint.style.display = mode === 'view' ? 'none' : '';
+}
+
+async function downloadAnnotatedPdf() {
+  if (!annotPdfDoc) { alert('No annotated PDF to download. Mark a script first.'); return; }
+  const jspdfLib = window.jspdf;
+  if (!jspdfLib) { alert('PDF export library not loaded. Please refresh and try again.'); return; }
+
+  const btn = event?.currentTarget;
+  if (btn) { btn.textContent = '⏳ Generating…'; btn.disabled = true; }
+
+  try {
+    const { jsPDF } = jspdfLib;
+    let pdf = null;
+
+    for (let pg = 1; pg <= annotPdfDoc.numPages; pg++) {
+      const page     = await annotPdfDoc.getPage(pg);
+      const viewport = page.getViewport({ scale: 2 }); // higher res for export
       const canvas   = document.createElement('canvas');
       canvas.width   = viewport.width;
       canvas.height  = viewport.height;
-      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
 
-      const wrap = document.createElement('div');
-      wrap.className = 'annot-page-wrap';
-      wrap.style.width = viewport.width + 'px';
-      wrap.appendChild(canvas);
-
-      for (const a of byPage[pg]) {
-        const yPct   = ((a.y_zone - 1) / 9) * 100;
-        const symbol = document.createElement('div');
-        symbol.className  = `annot-symbol ${a.symbol}`;
-        symbol.style.top  = yPct + '%';
-        symbol.textContent = a.symbol === 'tick' ? '✓' : '✗';
-        wrap.appendChild(symbol);
-
+      // Draw annotations on the canvas
+      const pageAnnots = currentAnnotations.filter(a => (a.page || 1) === pg);
+      for (const a of pageAnnots) {
+        const x = ((a.x_zone || 1) - 1) / 9 * canvas.width;
+        const y = ((a.y_zone - 1) / 9)  * canvas.height;
+        ctx.font = 'bold 40px Arial';
+        ctx.shadowColor = 'rgba(0,0,0,.2)'; ctx.shadowBlur = 3;
+        ctx.fillStyle = a.symbol === 'tick' ? '#059669' : '#dc2626';
+        ctx.fillText(a.symbol === 'tick' ? '✓' : '✗', x - 20, y + 14);
+        ctx.shadowBlur = 0;
         if (a.symbol === 'cross' && a.comment) {
-          const comm = document.createElement('div');
-          comm.className  = 'annot-comment';
-          comm.style.top  = yPct + '%';
-          comm.textContent = a.comment;
-          wrap.appendChild(comm);
+          ctx.font = '22px Arial';
+          const metrics = ctx.measureText(a.comment);
+          ctx.fillStyle = 'rgba(255,255,255,.9)';
+          ctx.fillRect(x + 24, y - 20, metrics.width + 10, 28);
+          ctx.fillStyle = '#dc2626';
+          ctx.fillText(a.comment, x + 29, y + 3);
         }
       }
 
-      const label = document.createElement('div');
-      label.style.cssText = 'font-size:11px;color:var(--text-soft);font-weight:600;margin-bottom:4px';
-      label.textContent = `Page ${pg}`;
-      pagesDiv.appendChild(label);
-      pagesDiv.appendChild(wrap);
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      const ptW = viewport.width  * 0.75; // px → pt
+      const ptH = viewport.height * 0.75;
+      if (pg === 1) {
+        pdf = new jsPDF({ orientation: ptW > ptH ? 'l' : 'p', unit: 'pt', format: [ptW, ptH] });
+      } else {
+        pdf.addPage([ptW, ptH], ptW > ptH ? 'l' : 'p');
+      }
+      pdf.addImage(imgData, 'JPEG', 0, 0, ptW, ptH);
     }
 
-    viewer.style.display = '';
+    const name = (document.getElementById('aResultName')?.textContent || 'student').replace(/\s+/g, '_');
+    pdf.save(`${name}_annotated.pdf`);
   } catch (err) {
-    console.warn('Annotation viewer error:', err);
+    alert('Download failed: ' + err.message);
+  } finally {
+    if (btn) { btn.textContent = '⬇ Download PDF'; btn.disabled = false; }
   }
 }
 

@@ -114,10 +114,11 @@ Also include an \`annotations\` array. For each region of the student script:
 - Place a \`tick\` where a mark-worthy step or answer is correct
 - Place a \`cross\` where the student made an error that cost marks
 - \`page\`: page number of the student script (1-indexed)
-- \`y_zone\`: vertical position 1 (top) to 10 (bottom) indicating where on the page
+- \`y_zone\`: vertical position 1 (top of page) to 10 (bottom of page)
+- \`x_zone\`: horizontal position 1 (left margin) to 10 (right edge) — place near the actual working
 - \`symbol\`: "tick" or "cross"
 - \`comment\`: reason for cross only, max 8 words; empty string for ticks
-- Aim for 1–3 annotations per question; skip minor issues if already noted in marks`;
+- Aim for 1–3 annotations per question; place each symbol next to the relevant line of working`;
 }
 
 // The marking tool schema (same structure as IB marking but flexible totals)
@@ -166,10 +167,11 @@ function buildMarkingTool(structure, totalMarks) {
               properties: {
                 page:    { type: 'integer', description: 'Page number (1-indexed)' },
                 y_zone:  { type: 'integer', description: '1=top of page, 10=bottom of page', minimum: 1, maximum: 10 },
+                x_zone:  { type: 'integer', description: '1=left margin, 10=right edge — place near the relevant working', minimum: 1, maximum: 10 },
                 symbol:  { type: 'string', enum: ['tick', 'cross'] },
                 comment: { type: 'string', description: 'Reason for cross, max 8 words. Empty string for ticks.' },
               },
-              required: ['page', 'y_zone', 'symbol'],
+              required: ['page', 'y_zone', 'x_zone', 'symbol'],
             },
           },
         },
