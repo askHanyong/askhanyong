@@ -610,6 +610,8 @@ td{padding:10px 12px;vertical-align:top}
         </div>
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px">
           <button class="btn-primary" id="btnMarkBulkAssign" onclick="doBulkAssignMark()" style="max-width:220px">Mark All Scripts</button>
+          <button id="btnBulkRetry" onclick="retryBulkErrors()" class="btn-sm"
+            style="display:none;color:var(--red);border-color:var(--red)">↺ Retry Failed</button>
         </div>
         <div id="aBulkProgressText" style="display:none;font-size:13px;color:var(--text-mid);margin:10px 0 4px"></div>
         <div class="progress-bar-wrap" id="aBulkProgressWrap" style="display:none">
@@ -1820,7 +1822,9 @@ async function doBulkAssignMark() {
   const progWrap = document.getElementById('aBulkProgressWrap');
   const progBar  = document.getElementById('aBulkProgressBar');
   const progText = document.getElementById('aBulkProgressText');
+  const retryBtn = document.getElementById('btnBulkRetry');
   btn.disabled = true;
+  if (retryBtn) retryBtn.style.display = 'none';
   progWrap.style.display = '';
   progText.style.display = '';
   document.getElementById('aBulkReviewReady').style.display = 'none';
@@ -1831,40 +1835,68 @@ async function doBulkAssignMark() {
   for (let i = 0; i < bulkAssignQueue.length; i++) {
     const item = bulkAssignQueue[i];
     if (item.status === 'done') { done++; continue; }
-    item.status = 'marking';
-    renderBulkAssignQueue();
-    progText.textContent = `Marking ${done+1} of ${total}: ${item.name}…`;
-    progBar.style.width  = `${Math.round(done/total*100)}%`;
 
-    try {
-      if (!item.b64) item.b64 = await readFileAsB64(item.file);
-      const res = await fetch('/api/assignment-mark', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token: teacherToken, assignmentId: selectedAssignment.id,
-          studentName: item.name, studentPdf: item.b64,
-        }),
-      });
-      if (!res.ok) {
-        const d = await res.json().catch(()=>({}));
-        item.status = 'error'; item.error = d.error || `HTTP ${res.status}`;
-      } else {
-        const data = await res.json();
-        item.result = data.result || data;
-        item.status = 'done';
+    // Auto-retry transient errors (502/503/529) up to 2 times with backoff
+    let lastError = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) {
+        const wait = attempt * 3000;
+        progText.textContent = `Retry ${attempt}/2 for ${item.name} (waiting ${wait/1000}s)…`;
+        await new Promise(r => setTimeout(r, wait));
       }
-    } catch(e) { item.status = 'error'; item.error = e.message; }
+      item.status = 'marking';
+      renderBulkAssignQueue();
+      progText.textContent = `Marking ${done+1} of ${total}: ${item.name}${attempt > 0 ? ` (retry ${attempt})` : ''}…`;
+      progBar.style.width  = `${Math.round(done/total*100)}%`;
+
+      try {
+        if (!item.b64) item.b64 = await readFileAsB64(item.file);
+        const res = await fetch('/api/assignment-mark', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token: teacherToken, assignmentId: selectedAssignment.id,
+            studentName: item.name, studentPdf: item.b64,
+          }),
+        });
+        if (!res.ok) {
+          const d = await res.json().catch(()=>({}));
+          lastError = d.error || `HTTP ${res.status}`;
+          // Retry on transient server errors
+          if ([502, 503, 529].includes(res.status) && attempt < 2) continue;
+          item.status = 'error'; item.error = lastError;
+          break;
+        } else {
+          const data = await res.json();
+          item.result = data.result || data;
+          item.status = 'done';
+          lastError   = null;
+          break;
+        }
+      } catch(e) {
+        lastError = e.message;
+        if (attempt < 2) continue;
+        item.status = 'error'; item.error = lastError;
+      }
+    }
+
     done++;
     renderBulkAssignQueue();
   }
 
   progBar.style.width  = '100%';
-  progText.textContent = `Complete — ${bulkAssignQueue.filter(it=>it.status==='done').length} of ${total} marked.`;
+  const doneCount  = bulkAssignQueue.filter(it=>it.status==='done').length;
+  const errorCount = bulkAssignQueue.filter(it=>it.status==='error').length;
+  progText.textContent = `Complete — ${doneCount} of ${total} marked.${errorCount ? ` ${errorCount} failed.` : ''}`;
   btn.disabled = false;
   bulkAssignRunning = false;
-  if (bulkAssignQueue.some(it => it.status === 'done')) {
-    document.getElementById('aBulkReviewReady').style.display = '';
-  }
+
+  if (errorCount > 0 && retryBtn) retryBtn.style.display = '';
+  if (doneCount > 0) document.getElementById('aBulkReviewReady').style.display = '';
+}
+
+function retryBulkErrors() {
+  bulkAssignQueue.forEach(it => { if (it.status === 'error') it.status = 'pending'; });
+  doBulkAssignMark();
 }
 
 // Bulk assign drag-and-drop
