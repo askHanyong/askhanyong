@@ -131,6 +131,22 @@ td{padding:10px 12px;vertical-align:top}
 .bulk-score{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--navy)}
 .bulk-progress-text{font-size:13px;color:var(--text-mid);margin:10px 0 4px}
 @media(max-width:600px){.form-row{grid-template-columns:1fr}.auth-card{padding:28px 20px}.screen{padding:72px 16px 40px}}
+/* ── Dashboard ── */
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:640px){.dash-stats{grid-template-columns:1fr 1fr}}
+.stat-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.stat-val{font-size:26px;font-weight:800;font-family:'DM Mono',monospace;color:var(--navy);line-height:1}
+.stat-lbl{font-size:11px;font-weight:600;color:var(--text-soft);text-transform:uppercase;letter-spacing:.3px;margin-top:4px}
+.pct-pill{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:2px 9px;border-radius:10px;white-space:nowrap}
+.pct-green{background:#f0fdf4;color:#059669;border:1px solid #bbf7d0}
+.pct-amber{background:#fefce8;color:#d97706;border:1px solid #fde68a}
+.pct-red{background:#fef2f2;color:var(--red);border:1px solid #fecaca}
+.dash-row{cursor:pointer;transition:background .1s}
+.dash-row:hover{background:#faf9f7}
+.dash-row.open{background:var(--gold-pale)}
+.dash-detail-inner{padding:8px 16px 12px}
+.dash-detail-inner table{margin:0;font-size:12px}
+.dash-detail-inner thead th{background:var(--bg-mid);color:var(--text-mid);font-size:11px}
 </style>
 </head>
 <body>
@@ -182,6 +198,7 @@ td{padding:10px 12px;vertical-align:top}
   <div class="section-tabs">
     <button class="section-tab active" id="sTabIB"     onclick="setSection('ib')">IB Papers</button>
     <button class="section-tab"        id="sTabAssign" onclick="setSection('assign')">Assignments</button>
+    <button class="section-tab"        id="sTabDash"   onclick="setSection('dash')">📊 Dashboard</button>
   </div>
 
   <!-- ════════════════════════════════════════════════════
@@ -464,6 +481,49 @@ td{padding:10px 12px;vertical-align:top}
 
   </div><!-- /assignSection -->
 
+  <!-- ════════════════════════════════════════════════════
+       DASHBOARD SECTION
+  ═════════════════════════════════════════════════════ -->
+  <div id="dashSection" style="display:none">
+
+    <!-- Filter bar -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <select id="dashFilter" class="struct-input" style="max-width:320px" onchange="applyDashFilter()">
+        <option value="">All assignments &amp; exams</option>
+      </select>
+      <button class="btn-sm" onclick="loadDashboard()">↺ Refresh</button>
+      <button class="btn-sm" id="btnExportDash" onclick="exportDashCSV()" style="display:none">⬇ Export CSV</button>
+    </div>
+
+    <!-- Stats row -->
+    <div class="dash-stats" id="dashStats" style="display:none">
+      <div class="stat-card"><div class="stat-val" id="dStatCount">—</div><div class="stat-lbl">Students marked</div></div>
+      <div class="stat-card"><div class="stat-val" id="dStatAvg">—</div><div class="stat-lbl">Class average</div></div>
+      <div class="stat-card"><div class="stat-val" id="dStatHigh">—</div><div class="stat-lbl">Highest score</div></div>
+      <div class="stat-card"><div class="stat-val" id="dStatLow">—</div><div class="stat-lbl">Lowest score</div></div>
+    </div>
+
+    <!-- Results table -->
+    <div id="dashTableWrap" class="card" style="padding:0;overflow:hidden;display:none">
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Assignment / Exam</th>
+            <th style="width:110px">Score</th>
+            <th style="width:72px">%</th>
+            <th style="width:90px">Date</th>
+            <th style="width:72px">Report</th>
+          </tr>
+        </thead>
+        <tbody id="dashBody"></tbody>
+      </table>
+    </div>
+
+    <div id="dashMsg" style="font-size:13px;color:var(--text-soft);padding:24px 0;text-align:center">Loading…</div>
+
+  </div><!-- /dashSection -->
+
 </div>
 
 <script>
@@ -494,14 +554,17 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 
-// ── Top-level section switching (IB / Assignments) ────────────────────────
+// ── Top-level section switching (IB / Assignments / Dashboard) ───────────
 function setSection(section) {
   document.getElementById('ibSection').style.display     = section === 'ib'     ? '' : 'none';
   document.getElementById('assignSection').style.display = section === 'assign' ? '' : 'none';
+  document.getElementById('dashSection').style.display   = section === 'dash'   ? '' : 'none';
   document.getElementById('sTabIB').classList.toggle('active',     section === 'ib');
   document.getElementById('sTabAssign').classList.toggle('active', section === 'assign');
+  document.getElementById('sTabDash').classList.toggle('active',   section === 'dash');
   if (section === 'assign') loadAssignments();
   if (section === 'ib')     loadExams();
+  if (section === 'dash')   loadDashboard();
 }
 
 // ── Load available IB exams ───────────────────────────────────────────────
@@ -1552,6 +1615,194 @@ document.getElementById('regCode').addEventListener('keydown', e => {
 });
 
 document.addEventListener('DOMContentLoaded', init);
+
+// ════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════════════════════════════════
+let allMarkings   = [];
+let markingLookup = {};
+let dashFiltered  = [];
+
+async function loadDashboard() {
+  const msgEl = document.getElementById('dashMsg');
+  msgEl.textContent = 'Loading…';
+  msgEl.style.display = '';
+  document.getElementById('dashStats').style.display    = 'none';
+  document.getElementById('dashTableWrap').style.display = 'none';
+  document.getElementById('btnExportDash').style.display = 'none';
+
+  try {
+    const res  = await fetch('/api/markings-list', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: teacherToken }),
+    });
+    const data = await res.json();
+    if (!res.ok) { msgEl.textContent = data.error || 'Failed to load markings.'; return; }
+
+    allMarkings   = data.markings || [];
+    markingLookup = data.lookup   || {};
+
+    // Populate filter dropdown
+    const filter  = document.getElementById('dashFilter');
+    const seen    = new Set();
+    filter.innerHTML = '<option value="">All assignments &amp; exams</option>';
+    allMarkings.forEach(m => {
+      if (seen.has(m.exam_id)) return;
+      seen.add(m.exam_id);
+      const info = markingLookup[m.exam_id] || {};
+      const opt  = document.createElement('option');
+      opt.value  = m.exam_id;
+      opt.text   = info.name || m.exam_id;
+      filter.appendChild(opt);
+    });
+
+    dashFiltered = [...allMarkings];
+    renderDashboard();
+  } catch (e) {
+    msgEl.textContent = 'Network error: ' + e.message;
+  }
+}
+
+function applyDashFilter() {
+  const examId = document.getElementById('dashFilter').value;
+  dashFiltered  = examId ? allMarkings.filter(m => m.exam_id === examId) : [...allMarkings];
+  renderDashboard();
+}
+
+function pctPill(pct) {
+  if (pct === null) return '—';
+  const cls = pct >= 70 ? 'pct-green' : pct >= 40 ? 'pct-amber' : 'pct-red';
+  return `<span class="pct-pill ${cls}">${pct}%</span>`;
+}
+
+function renderDashboard() {
+  const msgEl = document.getElementById('dashMsg');
+  if (!dashFiltered.length) {
+    document.getElementById('dashStats').style.display     = 'none';
+    document.getElementById('dashTableWrap').style.display  = 'none';
+    document.getElementById('btnExportDash').style.display  = 'none';
+    msgEl.textContent  = allMarkings.length
+      ? 'No results for this filter.'
+      : 'No markings yet. Mark scripts to see results here.';
+    msgEl.style.display = '';
+    return;
+  }
+  msgEl.style.display = 'none';
+  document.getElementById('btnExportDash').style.display = '';
+
+  // Compute pct per marking
+  const enriched = dashFiltered.map(m => {
+    const info  = markingLookup[m.exam_id] || {};
+    const total = info.totalMarks || null;
+    const pct   = total ? Math.round(m.final_score / total * 100) : null;
+    return { ...m, totalMarks: total, assignName: info.name || m.exam_id, pct };
+  });
+
+  // Stats
+  const pcts  = enriched.filter(m => m.pct !== null).map(m => m.pct);
+  const avg   = pcts.length ? Math.round(pcts.reduce((s, p) => s + p, 0) / pcts.length) : null;
+  const high  = pcts.length ? Math.max(...pcts) : null;
+  const low   = pcts.length ? Math.min(...pcts) : null;
+
+  document.getElementById('dStatCount').textContent = enriched.length;
+  document.getElementById('dStatAvg').textContent   = avg  !== null ? avg  + '%' : '—';
+  document.getElementById('dStatHigh').textContent  = high !== null ? high + '%' : '—';
+  document.getElementById('dStatLow').textContent   = low  !== null ? low  + '%' : '—';
+  document.getElementById('dashStats').style.display = '';
+
+  // Table
+  const tbody = document.getElementById('dashBody');
+  tbody.innerHTML = '';
+  enriched.forEach(m => {
+    const scoreStr  = m.totalMarks ? `${m.final_score} / ${m.totalMarks}` : `${m.final_score}`;
+    const dateStr   = new Date(m.created_at).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: '2-digit' });
+    const reportHtml = m.report_token
+      ? `<a href="/report?t=${m.report_token}" target="_blank"
+             style="font-size:12px;font-weight:600;color:var(--navy);text-decoration:none">View ↗</a>`
+      : '<span style="color:var(--text-soft);font-size:12px">—</span>';
+
+    const tr = document.createElement('tr');
+    tr.className  = 'dash-row';
+    tr.dataset.id = m.id;
+    tr.onclick    = () => toggleDashRow(m.id, m.question_marks || []);
+    tr.innerHTML  = `
+      <td style="font-weight:600">${escHtml(m.student_name)}</td>
+      <td style="font-size:12px;color:var(--text-mid);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+          title="${escHtml(m.assignName)}">${escHtml(m.assignName)}</td>
+      <td class="marks-cell">${scoreStr}</td>
+      <td>${pctPill(m.pct)}</td>
+      <td style="font-size:12px;color:var(--text-soft)">${dateStr}</td>
+      <td onclick="event.stopPropagation()">${reportHtml}</td>`;
+    tbody.appendChild(tr);
+
+    // Hidden detail row
+    const det = document.createElement('tr');
+    det.id    = `dd-${m.id}`;
+    det.style.display = 'none';
+    det.innerHTML = `<td colspan="6" style="padding:0"><div class="dash-detail-inner" id="ddi-${m.id}"></div></td>`;
+    tbody.appendChild(det);
+  });
+
+  document.getElementById('dashTableWrap').style.display = '';
+}
+
+function toggleDashRow(id, questionMarks) {
+  const detRow  = document.getElementById(`dd-${id}`);
+  const mainRow = document.querySelector(`tr[data-id="${id}"]`);
+  if (!detRow) return;
+
+  const isOpen = detRow.style.display !== 'none';
+  detRow.style.display = isOpen ? 'none' : '';
+  mainRow?.classList.toggle('open', !isOpen);
+  if (isOpen) return;
+
+  const inner = document.getElementById(`ddi-${id}`);
+  if (!questionMarks.length) {
+    inner.innerHTML = '<p style="padding:10px;font-size:12px;color:var(--text-soft)">No question breakdown available.</p>';
+    return;
+  }
+  const rows = questionMarks.map(q => {
+    const deltaHtml = q.delta
+      ? ` <span style="font-size:10px;color:${q.delta > 0 ? 'var(--green)' : 'var(--red)'}">(${q.delta > 0 ? '+' : ''}${q.delta})</span>`
+      : '';
+    return `<tr>
+      <td class="q-label">${escHtml(String(q.q ?? ''))}</td>
+      <td style="color:var(--text-mid)">${escHtml(String(q.p ?? ''))}</td>
+      <td style="font-family:'DM Mono',monospace">${q.ma ?? '—'}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--text-mid)">${q.ai ?? '—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--navy)">${q.final ?? '—'}${deltaHtml}</td>
+      <td style="color:var(--text-soft);font-size:11px;max-width:280px">${escHtml(String(q.notes ?? ''))}</td>
+    </tr>`;
+  }).join('');
+  inner.innerHTML = `<table>
+    <thead><tr>
+      <th>Q</th><th>Part</th><th>Available</th><th>AI Mark</th><th>Final</th><th>Notes</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function exportDashCSV() {
+  if (!dashFiltered.length) return;
+  const rows = [['Student', 'Assignment / Exam', 'Final Score', 'Total Marks', '%', 'Date', 'Report Link']];
+  dashFiltered.forEach(m => {
+    const info  = markingLookup[m.exam_id] || {};
+    const pct   = info.totalMarks ? Math.round(m.final_score / info.totalMarks * 100) + '%' : '';
+    const date  = new Date(m.created_at).toLocaleDateString('en-SG');
+    const link  = m.report_token ? `${location.origin}/report?t=${m.report_token}` : '';
+    rows.push([m.student_name, info.name || m.exam_id, m.final_score, info.totalMarks ?? '', pct, date, link]);
+  });
+  const csv  = rows.map(r => r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'class_results.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 </script>
 </body>
 </html>
