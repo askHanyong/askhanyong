@@ -78,7 +78,7 @@ export default async (request) => {
     // Fetch all three in parallel
     const [markingsRes, assignmentsRes, examsRes] = await Promise.all([
       fetch(
-        `${supabaseUrl}/rest/v1/markings?marked_by=eq.${encodeURIComponent(email)}&order=created_at.desc&limit=200&select=id,exam_id,student_name,ai_score,final_score,question_marks,annotations,report_token,created_at`,
+        `${supabaseUrl}/rest/v1/markings?marked_by=eq.${encodeURIComponent(email)}&order=created_at.desc&limit=200&select=id,exam_id,student_name,ai_score,final_score,question_marks,annotations,class_label,script_path,report_token,created_at`,
         { headers: sbHeaders },
       ),
       fetch(

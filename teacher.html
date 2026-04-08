@@ -149,21 +149,38 @@ td{padding:10px 12px;vertical-align:top}
 .dash-detail-inner thead th{background:var(--bg-mid);color:var(--text-mid);font-size:11px}
 /* Annotation viewer */
 .annot-viewer{margin-top:20px}
-.annot-viewer-title{font-size:12px;font-weight:700;color:var(--text-mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
-.annot-page-wrap{position:relative;display:inline-block;margin-bottom:16px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow)}
+.annot-viewer-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.annot-viewer-title{font-size:12px;font-weight:700;color:var(--text-mid);letter-spacing:.5px;text-transform:uppercase}
+.annot-toolbar{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.annot-tool-btn{padding:4px 10px;border:1.5px solid var(--border);border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--text);transition:background .15s,color .15s}
+.annot-tool-btn:hover{background:var(--bg-mid)}
+.annot-tool-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.annot-page-wrap{position:relative;display:block;margin-bottom:20px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow)}
 .annot-page-wrap canvas{display:block;max-width:100%}
-.annot-symbol{position:absolute;left:6%;transform:translateY(-50%);font-size:22px;line-height:1;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.annot-page-wrap.mode-tick,.annot-page-wrap.mode-cross,.annot-page-wrap.mode-note{cursor:crosshair}
+.annot-page-wrap.mode-delete{cursor:default}
+.annot-symbol{position:absolute;transform:translate(-50%,-50%);font-size:22px;line-height:1;text-shadow:0 1px 3px rgba(0,0,0,.25);cursor:grab;user-select:none}
+.annot-symbol:active{cursor:grabbing}
 .annot-symbol.tick{color:#059669}
 .annot-symbol.cross{color:#dc2626}
-.annot-comment{position:absolute;left:calc(6% + 28px);transform:translateY(-50%);font-size:10px;font-weight:600;color:#dc2626;background:rgba(255,255,255,.92);border:1px solid #fca5a5;border-radius:4px;padding:1px 5px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.annot-page-wrap.mode-delete .annot-symbol{cursor:pointer;opacity:.8}
+.annot-page-wrap.mode-delete .annot-symbol:hover{opacity:1;filter:brightness(1.2)}
+.annot-comment{position:absolute;transform:translateY(-50%);font-size:10px;font-weight:600;color:#dc2626;background:rgba(255,255,255,.93);border:1px solid #fca5a5;border-radius:4px;padding:2px 6px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.annot-note{position:absolute;transform:translate(-50%,-50%);font-size:10px;font-weight:600;color:#1d4ed8;background:rgba(219,234,254,.95);border:1.5px solid #93c5fd;border-radius:5px;padding:3px 8px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab;user-select:none}
+.annot-note:active{cursor:grabbing}
+.annot-page-wrap.mode-delete .annot-note{cursor:pointer}
+.annot-page-wrap.mode-delete .annot-note:hover{opacity:.7}
 /* Annotation badges in Dashboard */
 .annot-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;margin:2px 3px 2px 0}
 .annot-badge.tick{background:#d1fae5;color:#065f46}
 .annot-badge.cross{background:#fee2e2;color:#991b1b}
+.annot-badge.note{background:#dbeafe;color:#1d4ed8}
 </style>
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>if(typeof pdfjsLib!=='undefined'){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <body>
 <nav>
   <a class="nav-logo" href="/teacher">
@@ -448,9 +465,13 @@ td{padding:10px 12px;vertical-align:top}
           <h3 id="aDropLabel">Drop PDF here or click to browse</h3>
           <p>Student's handwritten answer script · PDF only</p>
         </div>
-        <div class="field" style="margin:0">
+        <div class="field" style="margin:0 0 10px">
           <label>STUDENT NAME / ID</label>
           <input id="aStudentName" type="text" placeholder="e.g. Student 01 or Jane Smith">
+        </div>
+        <div class="field" style="margin:0">
+          <label>CLASS / GROUP <span style="font-weight:400;color:var(--text-soft)">(optional)</span></label>
+          <input id="aClassLabel" type="text" placeholder="e.g. 5A, IB Year 1, Class B" maxlength="60">
         </div>
       </div>
 
@@ -488,7 +509,22 @@ td{padding:10px 12px;vertical-align:top}
 
         <!-- Annotation viewer: rendered after marking -->
         <div id="aAnnotViewer" class="annot-viewer" style="display:none">
-          <div class="annot-viewer-title">Annotated Script</div>
+          <div class="annot-viewer-header">
+            <div class="annot-viewer-title">Annotated Script</div>
+            <div class="annot-toolbar">
+              <button id="aModeView"   class="annot-tool-btn active"  onclick="setAnnotMode('view')">👁 View</button>
+              <button id="aModeTick"   class="annot-tool-btn"         onclick="setAnnotMode('tick')">✓ Add Tick</button>
+              <button id="aModeCross"  class="annot-tool-btn"         onclick="setAnnotMode('cross')">✗ Add Cross</button>
+              <button id="aModeNote"   class="annot-tool-btn"         onclick="setAnnotMode('note')">💬 Add Note</button>
+              <button id="aModeDelete" class="annot-tool-btn"         onclick="setAnnotMode('delete')">🗑 Delete</button>
+              <button                  class="annot-tool-btn"         onclick="downloadAnnotatedPdf()"
+                style="margin-left:4px;background:var(--navy);color:#fff;border-color:var(--navy)">⬇ Download PDF</button>
+            </div>
+          </div>
+          <div id="aAnnotHint" style="font-size:11px;color:var(--text-soft);margin-bottom:10px">
+            Click <strong>Add Tick</strong> or <strong>Add Cross</strong> then click anywhere on the page to annotate.
+            <strong>Delete</strong> mode: click a symbol to remove it.
+          </div>
           <div id="aAnnotPages"></div>
         </div>
 
@@ -508,13 +544,19 @@ td{padding:10px 12px;vertical-align:top}
   <div id="dashSection" style="display:none">
 
     <!-- Filter bar -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-      <select id="dashFilter" class="struct-input" style="max-width:320px" onchange="applyDashFilter()">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+      <select id="dashFilter" class="struct-input" style="max-width:280px" onchange="applyDashFilter()">
         <option value="">All assignments &amp; exams</option>
       </select>
+      <select id="dashClassFilter" class="struct-input" style="max-width:200px" onchange="applyDashFilter()">
+        <option value="">All classes</option>
+      </select>
       <button class="btn-sm" onclick="loadDashboard()">↺ Refresh</button>
-      <button class="btn-sm" id="btnExportDash" onclick="exportDashCSV()" style="display:none">⬇ Export CSV</button>
+      <button class="btn-sm" id="btnExportDash"    onclick="exportDashCSV()"       style="display:none">⬇ CSV</button>
+      <button class="btn-sm" id="btnDlAllPdfs"     onclick="downloadAllPdfs()"     style="display:none">⬇ All PDFs</button>
+      <button class="btn-sm" id="btnDlAllZip"      onclick="downloadAllPdfsZip()"  style="display:none;background:var(--navy);color:#fff;border-color:var(--navy)">⬇ ZIP All</button>
     </div>
+    <div id="dashDlProgress" style="display:none;font-size:12px;color:var(--text-mid);margin-bottom:12px;padding:8px 12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px"></div>
 
     <!-- Stats row -->
     <div class="dash-stats" id="dashStats" style="display:none">
@@ -531,10 +573,12 @@ td{padding:10px 12px;vertical-align:top}
           <tr>
             <th>Student</th>
             <th>Assignment / Exam</th>
+            <th style="width:80px">Class</th>
             <th style="width:110px">Score</th>
             <th style="width:72px">%</th>
             <th style="width:90px">Date</th>
-            <th style="width:72px">Report</th>
+            <th style="width:60px">Report</th>
+            <th style="width:60px">PDF</th>
           </tr>
         </thead>
         <tbody id="dashBody"></tbody>
@@ -942,10 +986,11 @@ function exportAssignCSV() {
 
 async function saveAssignMarking() {
   if (!assignLastResult || !selectedAssignment) return;
-  const btn    = document.getElementById('btnAssignSave');
-  const msgEl  = document.getElementById('aAssignSaveMsg');
-  const name   = document.getElementById('aResultName').textContent;
-  msgEl.className = 'msg'; msgEl.textContent = '';
+  const btn        = document.getElementById('btnAssignSave');
+  const msgEl      = document.getElementById('aAssignSaveMsg');
+  const name       = document.getElementById('aResultName').textContent;
+  const classLabel = document.getElementById('aClassLabel')?.value.trim() || '';
+  msgEl.className  = 'msg'; msgEl.textContent = '';
 
   const inputs    = Array.from(document.querySelectorAll('.assign-override'));
   const questions = assignLastResult.result?.questions || [];
@@ -970,7 +1015,8 @@ async function saveAssignMarking() {
         token: teacherToken, studentName: name,
         aiScore: aiTotal, finalScore: finalTotal, questionMarks,
         examId: selectedAssignment.id,
-        annotations: assignLastResult?.annotations || [],
+        annotations: currentAnnotations,
+        ...(classLabel ? { classLabel } : {}),
       }),
     });
     const data = await res.json();
@@ -985,6 +1031,11 @@ async function saveAssignMarking() {
             style="margin-left:8px;padding:2px 8px;border:1px solid var(--green);border-radius:5px;background:#f0fdf4;color:var(--green);font-size:11px;font-weight:600;cursor:pointer">Copy link</button>`;
       }
       msgEl.innerHTML = saveText; msgEl.className = 'msg ok';
+
+      // Auto-upload the student PDF for Dashboard download
+      if (data.id && assignPdfB64) {
+        _uploadScriptPdf(data.id, assignPdfB64, msgEl);
+      }
     }
   } catch (e) {
     msgEl.textContent = 'Network error: ' + e.message; msgEl.className = 'msg err';
@@ -992,9 +1043,27 @@ async function saveAssignMarking() {
   } finally { btn.disabled = false; }
 }
 
+async function _uploadScriptPdf(markingId, pdfB64, msgEl) {
+  try {
+    const res = await fetch('/api/script-store', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: teacherToken, markingId, scriptPdfB64: pdfB64 }),
+    });
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      console.warn('Script upload failed:', d.error || res.status);
+      if (msgEl) msgEl.innerHTML += ' <span style="color:var(--text-soft);font-size:11px">(PDF not stored — re-mark to enable dashboard download)</span>';
+    }
+    // Success is silent — the marking is already saved
+  } catch (e) {
+    console.warn('Script upload error:', e.message);
+  }
+}
+
 function resetAssignMark() {
   assignPdfB64 = null; assignLastResult = null;
   document.getElementById('aStudentName').value = '';
+  const aClassLabel = document.getElementById('aClassLabel'); if (aClassLabel) aClassLabel.value = '';
   document.getElementById('aDropLabel').textContent = 'Drop PDF here or click to browse';
   document.getElementById('aDropZone').style.borderColor = '';
   document.getElementById('aPdfInput').value = '';
@@ -1005,83 +1074,298 @@ function resetAssignMark() {
   document.getElementById('aScoreDisplay').textContent    = '0';
   const viewerEl = document.getElementById('aAnnotViewer');
   if (viewerEl) { viewerEl.style.display = 'none'; document.getElementById('aAnnotPages').innerHTML = ''; }
+  annotPdfDoc = null; currentAnnotations = []; annotMode = 'view';
 }
 
-// ── Annotation viewer ─────────────────────────────────────────────────────
+// ── Annotation viewer (interactive) ──────────────────────────────────────
+let annotMode        = 'view';   // 'view' | 'tick' | 'cross' | 'note' | 'delete'
+let annotPdfDoc      = null;     // pdfjsLib document
+let currentAnnotations = [];     // mutable annotation list
+
 async function renderAnnotationViewer(annotations, pdfB64) {
   const viewer   = document.getElementById('aAnnotViewer');
   const pagesDiv = document.getElementById('aAnnotPages');
   if (!viewer || !pagesDiv) return;
-  viewer.style.display = 'none';
-  pagesDiv.innerHTML   = '';
+  pagesDiv.innerHTML = '';
+  currentAnnotations = Array.isArray(annotations) ? [...annotations] : [];
 
   if (!pdfB64) return;
-  if (!annotations || !annotations.length) {
-    viewer.style.display = '';
-    pagesDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:4px 0">No annotations returned by AI for this script.</p>';
-    return;
-  }
-  if (typeof pdfjsLib === 'undefined') {
-    viewer.style.display = '';
-    pagesDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:4px 0">PDF viewer unavailable (PDF.js not loaded).</p>';
-    return;
-  }
+  viewer.style.display = '';
+  setAnnotMode('view');
 
-  // Group annotations by page
-  const byPage = {};
-  for (const a of annotations) {
-    const pg = a.page || 1;
-    if (!byPage[pg]) byPage[pg] = [];
-    byPage[pg].push(a);
+  if (typeof pdfjsLib === 'undefined') {
+    pagesDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft)">PDF viewer unavailable (PDF.js not loaded).</p>';
+    return;
   }
-  const pages = Object.keys(byPage).map(Number).sort((a, b) => a - b);
 
   try {
     const pdfData = atob(pdfB64);
     const uint8   = new Uint8Array(pdfData.length);
     for (let i = 0; i < pdfData.length; i++) uint8[i] = pdfData.charCodeAt(i);
-    const pdfDoc  = await pdfjsLib.getDocument({ data: uint8 }).promise;
+    annotPdfDoc = await pdfjsLib.getDocument({ data: uint8 }).promise;
 
-    for (const pg of pages) {
-      const page     = await pdfDoc.getPage(pg);
-      const viewport = page.getViewport({ scale: 1.4 });
+    for (let pg = 1; pg <= annotPdfDoc.numPages; pg++) {
+      await _renderAnnotPage(pg);
+    }
+  } catch (err) {
+    console.warn('Annotation viewer error:', err);
+    pagesDiv.innerHTML += '<p style="font-size:12px;color:var(--red)">Error rendering PDF: ' + escHtml(err.message) + '</p>';
+  }
+}
+
+async function _renderAnnotPage(pg) {
+  const pagesDiv = document.getElementById('aAnnotPages');
+
+  // Remove existing wrap for this page if re-rendering
+  const existing = document.getElementById(`ap-${pg}`);
+  if (existing) existing.remove();
+  const existingLabel = document.getElementById(`apl-${pg}`);
+  if (existingLabel) existingLabel.remove();
+
+  const page     = await annotPdfDoc.getPage(pg);
+  const viewport = page.getViewport({ scale: 1.4 });
+  const canvas   = document.createElement('canvas');
+  canvas.width   = viewport.width;
+  canvas.height  = viewport.height;
+  await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+
+  const wrap = document.createElement('div');
+  wrap.className   = 'annot-page-wrap';
+  wrap.id          = `ap-${pg}`;
+  wrap.dataset.page = String(pg);
+  wrap.style.width = viewport.width + 'px';
+  wrap.appendChild(canvas);
+
+  // Click handler for placing new annotations
+  wrap.addEventListener('click', (e) => {
+    if (annotMode === 'view' || annotMode === 'delete') return;
+    if (e.target !== canvas) return; // ignore clicks on symbols/notes
+    const rect = canvas.getBoundingClientRect();
+    const xP = (e.clientX - rect.left) / rect.width * 100;
+    const yP = (e.clientY - rect.top)  / rect.height * 100;
+    const x_zone = Math.max(1, Math.min(10, Math.round(xP / 100 * 9 + 1)));
+    const y_zone = Math.max(1, Math.min(10, Math.round(yP / 100 * 9 + 1)));
+    let comment = '';
+    if (annotMode === 'cross' || annotMode === 'note') {
+      const label = annotMode === 'note' ? 'Note text:' : 'Comment (optional, max 8 words):';
+      const raw = prompt(label);
+      if (raw === null) return;           // Cancel → don't place annotation
+      comment = raw.trim().split(/\s+/).slice(0, 12).join(' ');
+      if (annotMode === 'note' && !comment) return;  // Note requires text
+    }
+    currentAnnotations.push({ page: pg, x_zone, y_zone, _xPct: xP, _yPct: yP, symbol: annotMode, comment });
+    _renderAnnotPage(pg);
+  });
+
+  // Render annotation symbols for this page
+  const pageAnnots = currentAnnotations.filter(a => (a.page || 1) === pg);
+  pageAnnots.forEach((a) => {
+    const globalIdx = currentAnnotations.indexOf(a);
+    // Use precise _xPct/_yPct if available (from drag or manual placement), else compute from zones
+    const xPct = a._xPct !== undefined ? a._xPct : ((a.x_zone || 1) - 1) / 9 * 100;
+    const yPct = a._yPct !== undefined ? a._yPct : ((a.y_zone  - 1) / 9)  * 100;
+
+    const deleteHandler = (e) => {
+      e.stopPropagation();
+      if (annotMode !== 'delete') return;
+      currentAnnotations.splice(globalIdx, 1);
+      _renderAnnotPage(pg);
+    };
+
+    if (a.symbol === 'note') {
+      // Note: comment bubble only, no tick/cross symbol
+      const bubble = document.createElement('div');
+      bubble.className    = 'annot-note';
+      bubble.style.left   = xPct + '%';
+      bubble.style.top    = yPct + '%';
+      bubble.textContent  = a.comment || '📝';
+      bubble.dataset.idx  = globalIdx;
+      bubble.addEventListener('click', deleteHandler);
+      _makeDraggable(bubble, globalIdx, wrap, pg);
+      wrap.appendChild(bubble);
+    } else {
+      const sym = document.createElement('div');
+      sym.className   = `annot-symbol ${a.symbol}`;
+      sym.style.left  = xPct + '%';
+      sym.style.top   = yPct + '%';
+      sym.textContent = a.symbol === 'tick' ? '✓' : '✗';
+      sym.dataset.idx = globalIdx;
+      sym.addEventListener('click', deleteHandler);
+      _makeDraggable(sym, globalIdx, wrap, pg);
+      wrap.appendChild(sym);
+
+      if (a.comment) {
+        const comm = document.createElement('div');
+        comm.className       = 'annot-comment';
+        comm.style.left      = `calc(${xPct}% + 20px)`;
+        comm.style.top       = yPct + '%';
+        comm.textContent     = a.comment;
+        comm.dataset.commIdx = globalIdx;
+        wrap.appendChild(comm);
+      }
+    }
+  });
+
+  // Apply current mode cursor class
+  wrap.classList.toggle('mode-tick',   annotMode === 'tick');
+  wrap.classList.toggle('mode-cross',  annotMode === 'cross');
+  wrap.classList.toggle('mode-delete', annotMode === 'delete');
+
+  const label = document.createElement('div');
+  label.id = `apl-${pg}`;
+  label.style.cssText = 'font-size:11px;color:var(--text-soft);font-weight:600;margin-bottom:4px';
+  label.textContent = `Page ${pg}`;
+  pagesDiv.appendChild(label);
+  pagesDiv.appendChild(wrap);
+}
+
+function setAnnotMode(mode) {
+  annotMode = mode;
+  ['view', 'tick', 'cross', 'note', 'delete'].forEach(m => {
+    const btn = document.getElementById('aMode' + m.charAt(0).toUpperCase() + m.slice(1));
+    if (btn) btn.classList.toggle('active', m === mode);
+  });
+  // Update cursor class on all page wraps
+  document.querySelectorAll('.annot-page-wrap').forEach(wrap => {
+    wrap.classList.toggle('mode-tick',   mode === 'tick');
+    wrap.classList.toggle('mode-cross',  mode === 'cross');
+    wrap.classList.toggle('mode-note',   mode === 'note');
+    wrap.classList.toggle('mode-delete', mode === 'delete');
+  });
+  const hint = document.getElementById('aAnnotHint');
+  if (hint) hint.style.display = mode === 'view' ? 'none' : '';
+}
+
+// ── Drag-to-reposition annotations ───────────────────────────────────────
+function _makeDraggable(el, annotIdx, wrap, pg) {
+  let startX, startY, startLeft, startTop, hasDragged;
+
+  el.addEventListener('mousedown', (e) => {
+    if (annotMode !== 'view') return;  // only drag in view mode
+    e.preventDefault();
+    e.stopPropagation();
+    hasDragged = false;
+    startX    = e.clientX;
+    startY    = e.clientY;
+    startLeft = parseFloat(el.style.left)  || 0;
+    startTop  = parseFloat(el.style.top)   || 0;
+    el.style.zIndex = '20';
+    el.style.cursor = 'grabbing';
+
+    const onMove = (ev) => {
+      const rect = wrap.getBoundingClientRect();
+      const dxPct = (ev.clientX - startX) / rect.width  * 100;
+      const dyPct = (ev.clientY - startY) / rect.height * 100;
+      if (!hasDragged && (Math.abs(dxPct) > 0.8 || Math.abs(dyPct) > 0.8)) hasDragged = true;
+      if (!hasDragged) return;
+      const newL = Math.max(2, Math.min(98, startLeft + dxPct));
+      const newT = Math.max(2, Math.min(98, startTop  + dyPct));
+      el.style.left = newL + '%';
+      el.style.top  = newT + '%';
+      // Move attached comment bubble
+      const comm = wrap.querySelector(`.annot-comment[data-comm-idx="${annotIdx}"]`);
+      if (comm) { comm.style.left = `calc(${newL}% + 20px)`; comm.style.top = newT + '%'; }
+    };
+
+    const onUp = (ev) => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      el.style.zIndex = '';
+      el.style.cursor = '';
+      if (hasDragged) {
+        const rect  = wrap.getBoundingClientRect();
+        const finalL = Math.max(2, Math.min(98, startLeft + (ev.clientX - startX) / rect.width  * 100));
+        const finalT = Math.max(2, Math.min(98, startTop  + (ev.clientY - startY) / rect.height * 100));
+        // Store precise pct + approximate zone
+        currentAnnotations[annotIdx]._xPct  = finalL;
+        currentAnnotations[annotIdx]._yPct  = finalT;
+        currentAnnotations[annotIdx].x_zone = Math.max(1, Math.min(10, Math.round(finalL / 100 * 9 + 1)));
+        currentAnnotations[annotIdx].y_zone = Math.max(1, Math.min(10, Math.round(finalT / 100 * 9 + 1)));
+        _renderAnnotPage(pg);
+      }
+    };
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+async function downloadAnnotatedPdf() {
+  if (!annotPdfDoc) { alert('No annotated PDF to download. Mark a script first.'); return; }
+  const jspdfLib = window.jspdf;
+  if (!jspdfLib) { alert('PDF export library not loaded. Please refresh and try again.'); return; }
+
+  const btn = event?.currentTarget;
+  if (btn) { btn.textContent = '⏳ Generating…'; btn.disabled = true; }
+
+  try {
+    const { jsPDF } = jspdfLib;
+    let pdf = null;
+
+    for (let pg = 1; pg <= annotPdfDoc.numPages; pg++) {
+      const page     = await annotPdfDoc.getPage(pg);
+      const viewport = page.getViewport({ scale: 2 }); // higher res for export
       const canvas   = document.createElement('canvas');
       canvas.width   = viewport.width;
       canvas.height  = viewport.height;
-      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
 
-      const wrap = document.createElement('div');
-      wrap.className = 'annot-page-wrap';
-      wrap.style.width = viewport.width + 'px';
-      wrap.appendChild(canvas);
-
-      for (const a of byPage[pg]) {
-        const yPct   = ((a.y_zone - 1) / 9) * 100;
-        const symbol = document.createElement('div');
-        symbol.className  = `annot-symbol ${a.symbol}`;
-        symbol.style.top  = yPct + '%';
-        symbol.textContent = a.symbol === 'tick' ? '✓' : '✗';
-        wrap.appendChild(symbol);
-
-        if (a.symbol === 'cross' && a.comment) {
-          const comm = document.createElement('div');
-          comm.className  = 'annot-comment';
-          comm.style.top  = yPct + '%';
-          comm.textContent = a.comment;
-          wrap.appendChild(comm);
+      // Draw annotations on the canvas
+      const pageAnnots = currentAnnotations.filter(a => (a.page || 1) === pg);
+      for (const a of pageAnnots) {
+        const xFrac = a._xPct !== undefined ? a._xPct / 100 : ((a.x_zone || 1) - 1) / 9;
+        const yFrac = a._yPct !== undefined ? a._yPct / 100 : ((a.y_zone - 1) / 9);
+        const x = xFrac * canvas.width;
+        const y = yFrac * canvas.height;
+        ctx.shadowColor = 'rgba(0,0,0,.2)'; ctx.shadowBlur = 4;
+        if (a.symbol === 'note') {
+          if (a.comment) {
+            ctx.font = '22px Arial';
+            const metrics = ctx.measureText(a.comment);
+            const bw = metrics.width + 12, bh = 30;
+            ctx.fillStyle = 'rgba(219,234,254,.93)';
+            ctx.fillRect(x - bw / 2, y - bh / 2, bw, bh);
+            ctx.strokeStyle = '#93c5fd'; ctx.lineWidth = 2;
+            ctx.strokeRect(x - bw / 2, y - bh / 2, bw, bh);
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#1d4ed8';
+            ctx.fillText(a.comment, x - bw / 2 + 6, y + 8);
+          }
+        } else {
+          ctx.font = 'bold 40px Arial';
+          ctx.fillStyle = a.symbol === 'tick' ? '#059669' : '#dc2626';
+          ctx.fillText(a.symbol === 'tick' ? '✓' : '✗', x - 20, y + 14);
+          ctx.shadowBlur = 0;
+          if (a.comment) {
+            ctx.font = '22px Arial';
+            const metrics = ctx.measureText(a.comment);
+            ctx.fillStyle = 'rgba(255,255,255,.9)';
+            ctx.fillRect(x + 24, y - 20, metrics.width + 10, 28);
+            ctx.fillStyle = a.symbol === 'tick' ? '#059669' : '#dc2626';
+            ctx.fillText(a.comment, x + 29, y + 3);
+          }
         }
+        ctx.shadowBlur = 0;
       }
 
-      const label = document.createElement('div');
-      label.style.cssText = 'font-size:11px;color:var(--text-soft);font-weight:600;margin-bottom:4px';
-      label.textContent = `Page ${pg}`;
-      pagesDiv.appendChild(label);
-      pagesDiv.appendChild(wrap);
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      const ptW = viewport.width  * 0.75; // px → pt
+      const ptH = viewport.height * 0.75;
+      if (pg === 1) {
+        pdf = new jsPDF({ orientation: ptW > ptH ? 'l' : 'p', unit: 'pt', format: [ptW, ptH] });
+      } else {
+        pdf.addPage([ptW, ptH], ptW > ptH ? 'l' : 'p');
+      }
+      pdf.addImage(imgData, 'JPEG', 0, 0, ptW, ptH);
     }
 
-    viewer.style.display = '';
+    const name = (document.getElementById('aResultName')?.textContent || 'student').replace(/\s+/g, '_');
+    pdf.save(`${name}_annotated.pdf`);
   } catch (err) {
-    console.warn('Annotation viewer error:', err);
+    alert('Download failed: ' + err.message);
+  } finally {
+    if (btn) { btn.textContent = '⬇ Download PDF'; btn.disabled = false; }
   }
 }
 
@@ -1730,9 +2014,11 @@ async function loadDashboard() {
   const msgEl = document.getElementById('dashMsg');
   msgEl.textContent = 'Loading…';
   msgEl.style.display = '';
-  document.getElementById('dashStats').style.display    = 'none';
-  document.getElementById('dashTableWrap').style.display = 'none';
-  document.getElementById('btnExportDash').style.display = 'none';
+  document.getElementById('dashStats').style.display     = 'none';
+  document.getElementById('dashTableWrap').style.display  = 'none';
+  document.getElementById('btnExportDash').style.display  = 'none';
+  document.getElementById('btnDlAllPdfs').style.display   = 'none';
+  document.getElementById('btnDlAllZip').style.display    = 'none';
 
   try {
     const res  = await fetch('/api/markings-list', {
@@ -1745,18 +2031,31 @@ async function loadDashboard() {
     allMarkings   = data.markings || [];
     markingLookup = data.lookup   || {};
 
-    // Populate filter dropdown
-    const filter  = document.getElementById('dashFilter');
-    const seen    = new Set();
+    // Populate assignment filter
+    const filter   = document.getElementById('dashFilter');
+    const seenExam = new Set();
     filter.innerHTML = '<option value="">All assignments &amp; exams</option>';
     allMarkings.forEach(m => {
-      if (seen.has(m.exam_id)) return;
-      seen.add(m.exam_id);
+      if (seenExam.has(m.exam_id)) return;
+      seenExam.add(m.exam_id);
       const info = markingLookup[m.exam_id] || {};
       const opt  = document.createElement('option');
       opt.value  = m.exam_id;
       opt.text   = info.name || m.exam_id;
       filter.appendChild(opt);
+    });
+
+    // Populate class filter
+    const classFilter  = document.getElementById('dashClassFilter');
+    const seenClass    = new Set();
+    classFilter.innerHTML = '<option value="">All classes</option>';
+    allMarkings.forEach(m => {
+      if (!m.class_label || seenClass.has(m.class_label)) return;
+      seenClass.add(m.class_label);
+      const opt = document.createElement('option');
+      opt.value = m.class_label;
+      opt.text  = m.class_label;
+      classFilter.appendChild(opt);
     });
 
     dashFiltered = [...allMarkings];
@@ -1767,8 +2066,12 @@ async function loadDashboard() {
 }
 
 function applyDashFilter() {
-  const examId = document.getElementById('dashFilter').value;
-  dashFiltered  = examId ? allMarkings.filter(m => m.exam_id === examId) : [...allMarkings];
+  const examId     = document.getElementById('dashFilter').value;
+  const classLabel = document.getElementById('dashClassFilter').value;
+  dashFiltered = allMarkings.filter(m =>
+    (!examId     || m.exam_id     === examId) &&
+    (!classLabel || m.class_label === classLabel)
+  );
   renderDashboard();
 }
 
@@ -1784,6 +2087,8 @@ function renderDashboard() {
     document.getElementById('dashStats').style.display     = 'none';
     document.getElementById('dashTableWrap').style.display  = 'none';
     document.getElementById('btnExportDash').style.display  = 'none';
+    document.getElementById('btnDlAllPdfs').style.display   = 'none';
+    document.getElementById('btnDlAllZip').style.display    = 'none';
     msgEl.textContent  = allMarkings.length
       ? 'No results for this filter.'
       : 'No markings yet. Mark scripts to see results here.';
@@ -1792,6 +2097,11 @@ function renderDashboard() {
   }
   msgEl.style.display = 'none';
   document.getElementById('btnExportDash').style.display = '';
+
+  // Show bulk PDF buttons only when at least one filtered marking has a stored script
+  const hasPdfs = dashFiltered.some(m => m.script_path);
+  document.getElementById('btnDlAllPdfs').style.display = hasPdfs ? '' : 'none';
+  document.getElementById('btnDlAllZip').style.display  = hasPdfs ? '' : 'none';
 
   // Compute pct per marking
   const enriched = dashFiltered.map(m => {
@@ -1824,6 +2134,15 @@ function renderDashboard() {
              style="font-size:12px;font-weight:600;color:var(--navy);text-decoration:none">View ↗</a>`
       : '<span style="color:var(--text-soft);font-size:12px">—</span>';
 
+    const classHtml = m.class_label
+      ? `<span style="font-size:12px;font-weight:600;color:var(--text-mid)">${escHtml(m.class_label)}</span>`
+      : '<span style="color:var(--text-soft);font-size:12px">—</span>';
+    const safeName  = escHtml(m.student_name).replace(/'/g, '&#39;');
+    const pdfHtml   = m.script_path
+      ? `<button onclick="event.stopPropagation();downloadDashPdf('${m.id}','${safeName}');this.disabled=true;this.textContent='⏳'"
+             style="font-size:11px;font-weight:600;color:var(--navy);background:#fff;border:1.5px solid var(--border);border-radius:5px;padding:2px 8px;cursor:pointer">⬇ PDF</button>`
+      : '<span style="color:var(--text-soft);font-size:12px">—</span>';
+
     const tr = document.createElement('tr');
     tr.className  = 'dash-row';
     tr.dataset.id = m.id;
@@ -1832,17 +2151,19 @@ function renderDashboard() {
       <td style="font-weight:600">${escHtml(m.student_name)}</td>
       <td style="font-size:12px;color:var(--text-mid);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
           title="${escHtml(m.assignName)}">${escHtml(m.assignName)}</td>
+      <td>${classHtml}</td>
       <td class="marks-cell">${scoreStr}</td>
       <td>${pctPill(m.pct)}</td>
       <td style="font-size:12px;color:var(--text-soft)">${dateStr}</td>
-      <td onclick="event.stopPropagation()">${reportHtml}</td>`;
+      <td onclick="event.stopPropagation()">${reportHtml}</td>
+      <td onclick="event.stopPropagation()">${pdfHtml}</td>`;
     tbody.appendChild(tr);
 
     // Hidden detail row
     const det = document.createElement('tr');
     det.id    = `dd-${m.id}`;
     det.style.display = 'none';
-    det.innerHTML = `<td colspan="6" style="padding:0"><div class="dash-detail-inner" id="ddi-${m.id}"></div></td>`;
+    det.innerHTML = `<td colspan="8" style="padding:0"><div class="dash-detail-inner" id="ddi-${m.id}"></div></td>`;
     tbody.appendChild(det);
   });
 
@@ -1889,9 +2210,10 @@ function toggleDashRow(id, questionMarks, annotations) {
   // Annotation badges
   if (annotations && annotations.length) {
     const badges = annotations.map(a => {
-      const icon    = a.symbol === 'tick' ? '✓' : '✗';
+      const icon    = a.symbol === 'tick' ? '✓' : a.symbol === 'note' ? '💬' : '✗';
+      const cls     = a.symbol === 'note' ? 'note' : a.symbol;
       const comment = a.comment ? ` — ${escHtml(a.comment)}` : '';
-      return `<span class="annot-badge ${a.symbol}">${icon} p${a.page}${comment}</span>`;
+      return `<span class="annot-badge ${cls}">${icon} p${a.page}${comment}</span>`;
     }).join('');
     html += `<div style="padding:8px 0 4px">
       <div style="font-size:10px;font-weight:700;color:var(--text-mid);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px">Annotations</div>
@@ -1904,13 +2226,13 @@ function toggleDashRow(id, questionMarks, annotations) {
 
 function exportDashCSV() {
   if (!dashFiltered.length) return;
-  const rows = [['Student', 'Assignment / Exam', 'Final Score', 'Total Marks', '%', 'Date', 'Report Link']];
+  const rows = [['Student', 'Class', 'Assignment / Exam', 'Final Score', 'Total Marks', '%', 'Date', 'Report Link']];
   dashFiltered.forEach(m => {
     const info  = markingLookup[m.exam_id] || {};
     const pct   = info.totalMarks ? Math.round(m.final_score / info.totalMarks * 100) + '%' : '';
     const date  = new Date(m.created_at).toLocaleDateString('en-SG');
     const link  = m.report_token ? `${location.origin}/report?t=${m.report_token}` : '';
-    rows.push([m.student_name, info.name || m.exam_id, m.final_score, info.totalMarks ?? '', pct, date, link]);
+    rows.push([m.student_name, m.class_label || '', info.name || m.exam_id, m.final_score, info.totalMarks ?? '', pct, date, link]);
   });
   const csv  = rows.map(r => r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
@@ -1922,6 +2244,188 @@ function exportDashCSV() {
 
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Shared: render a pdfB64 + annotations array → jsPDF arraybuffer ──────
+async function _renderAnnotatedPdfBytes(pdfB64, annotations) {
+  const { jsPDF } = window.jspdf;
+  const pdfData = atob(pdfB64);
+  const uint8   = new Uint8Array(pdfData.length);
+  for (let i = 0; i < pdfData.length; i++) uint8[i] = pdfData.charCodeAt(i);
+  const doc = await pdfjsLib.getDocument({ data: uint8 }).promise;
+  let pdf = null;
+  for (let pg = 1; pg <= doc.numPages; pg++) {
+    const page     = await doc.getPage(pg);
+    const viewport = page.getViewport({ scale: 2 });
+    const canvas   = document.createElement('canvas');
+    canvas.width   = viewport.width;
+    canvas.height  = viewport.height;
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    const pageAnnots = (annotations || []).filter(a => (a.page || 1) === pg);
+    for (const a of pageAnnots) {
+      const xFrac = a._xPct !== undefined ? a._xPct / 100 : ((a.x_zone || 1) - 1) / 9;
+      const yFrac = a._yPct !== undefined ? a._yPct / 100 : ((a.y_zone  - 1) / 9);
+      const x = xFrac * canvas.width;
+      const y = yFrac * canvas.height;
+      ctx.shadowColor = 'rgba(0,0,0,.2)'; ctx.shadowBlur = 4;
+      if (a.symbol === 'note') {
+        if (a.comment) {
+          ctx.font = '22px Arial';
+          const metrics = ctx.measureText(a.comment);
+          const bw = metrics.width + 12, bh = 30;
+          ctx.fillStyle = 'rgba(219,234,254,.93)';
+          ctx.fillRect(x - bw / 2, y - bh / 2, bw, bh);
+          ctx.strokeStyle = '#93c5fd'; ctx.lineWidth = 2;
+          ctx.strokeRect(x - bw / 2, y - bh / 2, bw, bh);
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#1d4ed8';
+          ctx.fillText(a.comment, x - bw / 2 + 6, y + 8);
+        }
+      } else {
+        ctx.font = 'bold 40px Arial';
+        ctx.fillStyle = a.symbol === 'tick' ? '#059669' : '#dc2626';
+        ctx.fillText(a.symbol === 'tick' ? '✓' : '✗', x - 20, y + 14);
+        ctx.shadowBlur = 0;
+        if (a.comment) {
+          ctx.font = '22px Arial';
+          const metrics = ctx.measureText(a.comment);
+          ctx.fillStyle = 'rgba(255,255,255,.9)';
+          ctx.fillRect(x + 24, y - 20, metrics.width + 10, 28);
+          ctx.fillStyle = a.symbol === 'tick' ? '#059669' : '#dc2626';
+          ctx.fillText(a.comment, x + 29, y + 3);
+        }
+      }
+      ctx.shadowBlur = 0;
+    }
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+    const ptW = viewport.width  * 0.75;
+    const ptH = viewport.height * 0.75;
+    if (pg === 1) {
+      pdf = new jsPDF({ orientation: ptW > ptH ? 'l' : 'p', unit: 'pt', format: [ptW, ptH] });
+    } else {
+      pdf.addPage([ptW, ptH], ptW > ptH ? 'l' : 'p');
+    }
+    pdf.addImage(imgData, 'JPEG', 0, 0, ptW, ptH);
+  }
+  return pdf.output('arraybuffer');
+}
+
+// ── Dashboard: download individual annotated PDF ──────────────────────────
+async function downloadDashPdf(markingId, studentName) {
+  if (!window.jspdf || typeof pdfjsLib === 'undefined') {
+    alert('PDF libraries not loaded. Please refresh and try again.'); return;
+  }
+  const progressEl = document.getElementById('dashDlProgress');
+  progressEl.textContent = `Fetching PDF for ${studentName}…`;
+  progressEl.style.display = '';
+  try {
+    const res = await fetch('/api/script-fetch', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: teacherToken, markingId }),
+    });
+    const data = await res.json();
+    if (!res.ok) { alert('Fetch failed: ' + (data.error || res.status)); progressEl.style.display = 'none'; return; }
+    progressEl.textContent = `Rendering annotated PDF for ${studentName}…`;
+    const bytes = await _renderAnnotatedPdfBytes(data.scriptPdfB64, data.annotations || []);
+    const blob  = new Blob([bytes], { type: 'application/pdf' });
+    const url   = URL.createObjectURL(blob);
+    const a     = document.createElement('a');
+    a.href      = url;
+    a.download  = `${studentName.replace(/\s+/g,'_')}_annotated.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+    progressEl.textContent = `Downloaded: ${studentName}`;
+    setTimeout(() => { progressEl.style.display = 'none'; }, 3000);
+  } catch (err) {
+    alert('Download error: ' + err.message);
+    progressEl.style.display = 'none';
+  }
+}
+
+// ── Dashboard: download all filtered PDFs individually ────────────────────
+async function downloadAllPdfs() {
+  const withPdfs = dashFiltered.filter(m => m.script_path);
+  if (!withPdfs.length) { alert('No PDFs available for the current filter.'); return; }
+  if (!window.jspdf || typeof pdfjsLib === 'undefined') {
+    alert('PDF libraries not loaded. Please refresh and try again.'); return;
+  }
+  const progressEl = document.getElementById('dashDlProgress');
+  const btn        = document.getElementById('btnDlAllPdfs');
+  btn.disabled     = true;
+  progressEl.style.display = '';
+  for (let i = 0; i < withPdfs.length; i++) {
+    const m = withPdfs[i];
+    progressEl.textContent = `Downloading ${i + 1} of ${withPdfs.length}: ${m.student_name}…`;
+    try {
+      const res = await fetch('/api/script-fetch', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: teacherToken, markingId: m.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) { console.warn('Fetch failed for', m.student_name, data.error); continue; }
+      const bytes = await _renderAnnotatedPdfBytes(data.scriptPdfB64, data.annotations || []);
+      const blob  = new Blob([bytes], { type: 'application/pdf' });
+      const url   = URL.createObjectURL(blob);
+      const a     = document.createElement('a');
+      a.href      = url;
+      a.download  = `${m.student_name.replace(/\s+/g,'_')}_annotated.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      await new Promise(r => setTimeout(r, 500)); // brief pause between downloads
+    } catch (err) {
+      console.warn('Download error for', m.student_name, err.message);
+    }
+  }
+  progressEl.textContent = `Done — ${withPdfs.length} PDFs downloaded.`;
+  btn.disabled = false;
+  setTimeout(() => { progressEl.style.display = 'none'; }, 4000);
+}
+
+// ── Dashboard: download all filtered PDFs as a single ZIP ─────────────────
+async function downloadAllPdfsZip() {
+  const withPdfs = dashFiltered.filter(m => m.script_path);
+  if (!withPdfs.length) { alert('No PDFs available for the current filter.'); return; }
+  if (!window.jspdf || typeof pdfjsLib === 'undefined') {
+    alert('PDF libraries not loaded. Please refresh and try again.'); return;
+  }
+  if (typeof JSZip === 'undefined') { alert('JSZip not loaded. Please refresh and try again.'); return; }
+  const progressEl = document.getElementById('dashDlProgress');
+  const btn        = document.getElementById('btnDlAllZip');
+  btn.disabled     = true;
+  progressEl.style.display = '';
+  const zip  = new JSZip();
+  let added  = 0;
+  for (let i = 0; i < withPdfs.length; i++) {
+    const m = withPdfs[i];
+    progressEl.textContent = `Building ZIP ${i + 1}/${withPdfs.length}: ${m.student_name}…`;
+    try {
+      const res = await fetch('/api/script-fetch', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: teacherToken, markingId: m.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) { console.warn('Fetch failed for', m.student_name, data.error); continue; }
+      const bytes    = await _renderAnnotatedPdfBytes(data.scriptPdfB64, data.annotations || []);
+      const filename = `${m.student_name.replace(/\s+/g,'_')}_annotated.pdf`;
+      zip.file(filename, bytes);
+      added++;
+    } catch (err) {
+      console.warn('Error for', m.student_name, err.message);
+    }
+  }
+  if (!added) { alert('No PDFs could be generated.'); btn.disabled = false; progressEl.style.display = 'none'; return; }
+  progressEl.textContent = 'Compressing ZIP…';
+  const content = await zip.generateAsync({ type: 'blob' });
+  const url     = URL.createObjectURL(content);
+  const a       = document.createElement('a');
+  a.href        = url;
+  a.download    = 'annotated_scripts.zip';
+  a.click();
+  URL.revokeObjectURL(url);
+  progressEl.textContent = `ZIP downloaded — ${added} file${added !== 1 ? 's' : ''}.`;
+  btn.disabled = false;
+  setTimeout(() => { progressEl.style.display = 'none'; }, 4000);
 }
 </script>
 </body>
