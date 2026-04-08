@@ -22,6 +22,8 @@ const PARAM_TO_HEADER = {
   solutionUrl:    'Solution URL',
   questionText:   'Question Text',
   markscheme:     'Markscheme',
+  goldAnswer:     'Gold Answer',
+  keySteps:       'Key Steps',
 };
 
 // Admin secret — stored in Script Properties (File → Project Properties → Script Properties)
@@ -55,10 +57,80 @@ function doGet(e) {
   if (action === 'getScriptReviewQueue')    return getScriptReviewQueue(e.parameter);
   if (action === 'getScriptMarkingAccuracy') return getScriptMarkingAccuracy(e.parameter);
   if (action === 'getPaperStructure')       return getPaperStructure(e.parameter.prefix || '');
+  if (action === 'getRecords')              return getRecords(e.parameter);
+
+  // Default (no action): return question records for the app
+  return getRecords(e.parameter);
+}
+
+// ── Return all final questions for the app (Browse Bank + Mock Paper) ──
+function getRecords(params) {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('Questions');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ records: [] }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const rows    = sheet.getDataRange().getValues();
+  const headers = rows[0];
+  const col     = (name) => headers.indexOf(name);
+
+  const iId         = col('Question ID');
+  const iLevel      = col('Level');
+  const iPaper      = col('Paper');
+  const iYear       = col('Year');
+  const iSession    = col('Session');
+  const iTZ         = col('Time Zone');
+  const iTopic      = col('Topic');
+  const iSubtopic   = col('Subtopic');
+  const iMarks      = col('Marks');
+  const iDiff       = col('Difficulty');
+  const iStatus     = col('Status');
+  const iHAN        = col('HAN Explanation');
+  const iMistakes   = col('Common Mistakes');
+  const iExaminer   = col('Examiner Note');
+  const iSolution   = col('Solution URL');
+  const iQText      = col('Question Text');
+  const iMarkscheme = col('Markscheme');
+  const iGold       = col('Gold Answer');
+  const iKeySteps   = col('Key Steps');
+
+  const records = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r[iId]) continue;
+    // Only serve rows marked final
+    const status = iStatus >= 0 ? String(r[iStatus] || '').trim().toLowerCase() : '';
+    if (iStatus >= 0 && status && status !== 'final') continue;
+
+    records.push({
+      'Question ID':    String(r[iId]          || ''),
+      'Level':          String(r[iLevel]        || ''),
+      'Paper':          String(r[iPaper]        || ''),
+      'Year':           String(r[iYear]         || ''),
+      'Session':        String(r[iSession]      || ''),
+      'Time Zone':      String(r[iTZ]           || ''),
+      'Topic':          String(r[iTopic]        || ''),
+      'Subtopic':       String(r[iSubtopic]     || ''),
+      'Marks':          String(r[iMarks]        || ''),
+      'Difficulty':     String(r[iDiff]         || ''),
+      'Status':         String(r[iStatus]       || ''),
+      'HAN Explanation': iHAN        >= 0 ? String(r[iHAN]        || '') : '',
+      'Common Mistakes': iMistakes   >= 0 ? String(r[iMistakes]   || '') : '',
+      'Examiner Note':   iExaminer   >= 0 ? String(r[iExaminer]   || '') : '',
+      'Solution URL':    iSolution   >= 0 ? String(r[iSolution]   || '') : '',
+      'Question Text':   iQText      >= 0 ? String(r[iQText]      || '') : '',
+      'Markscheme':      iMarkscheme >= 0 ? String(r[iMarkscheme] || '') : '',
+      'Gold Answer':     iGold       >= 0 ? String(r[iGold]       || '') : '',
+      'Key Steps':       iKeySteps   >= 0 ? String(r[iKeySteps]   || '') : '',
+    });
+  }
 
   return ContentService
-    .createTextOutput('HAN Admin GAS — OK')
-    .setMimeType(ContentService.MimeType.TEXT);
+    .createTextOutput(JSON.stringify({ records }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 // Progress data sent as JSON body — only save needs POST due to data size

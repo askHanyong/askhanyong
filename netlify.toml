@@ -71,12 +71,40 @@
   function = "claude"
 
 [[edge_functions]]
+  path = "/api/teacher-auth"
+  function = "teacher-auth"
+
+[[edge_functions]]
   path = "/api/teacher-mark"
   function = "teacher-mark"
 
 [[edge_functions]]
   path = "/api/teacher-save"
   function = "teacher-save"
+
+[[edge_functions]]
+  path = "/api/assignment-create"
+  function = "assignment-create"
+
+[[edge_functions]]
+  path = "/api/assignment-list"
+  function = "assignment-list"
+
+[[edge_functions]]
+  path = "/api/assignment-mark"
+  function = "assignment-mark"
+
+[[edge_functions]]
+  path = "/api/exam-list"
+  function = "exam-list"
+
+[[edge_functions]]
+  path = "/api/student-report"
+  function = "student-report"
+
+[[edge_functions]]
+  path = "/api/markings-list"
+  function = "markings-list"
 
 
 [[redirects]]
@@ -130,5 +158,12 @@
 [[redirects]]
   from = "/teacher"
   to = "/teacher.html"
+  status = 200
+  force = true
+
+# /report serves student marking reports (public, token-gated)
+[[redirects]]
+  from = "/report"
+  to = "/report.html"
   status = 200
   force = true

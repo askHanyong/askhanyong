@@ -1,14 +1,15 @@
 // ════════════════════════════════════════════════════════════════
-// Teacher Save — Netlify Edge Function (Deno runtime)
-// Stores a verified marking record in Supabase for future
-// calibration and fine-tuning (Phase 1 learning pipeline).
+// Markings List — Netlify Edge Function (Deno runtime)
+// Returns all saved markings for the logged-in teacher, plus a
+// lookup table of exam/assignment names and total marks.
 //
-// POST /api/teacher-save
-// Body: { token, studentName, aiScore, finalScore, questionMarks }
-// questionMarks: [{ q, p, ma, ai, final, delta, notes }, ...]
+// POST /api/markings-list
+// Body: { token }
+// Returns: { markings, lookup }
+//   markings: most recent 200, ordered by created_at desc
+//   lookup:   { [examId]: { name, totalMarks, type } }
 // ════════════════════════════════════════════════════════════════
 
-// ── Teacher token verification (same as teacher-mark.js) ─────────
 async function verifyTeacherToken(token, secret) {
   try {
     if (!token || !secret) return null;
@@ -36,23 +37,20 @@ async function verifyTeacherToken(token, secret) {
 
     const decoded = atob(emailB64);
     if (!decoded.startsWith('T:')) return null;
-    return decoded.slice(2); // email address
+    return decoded.slice(2);
   } catch { return null; }
 }
 
-// ── Edge function entry point ─────────────────────────────────────
 export default async (request) => {
   const CORS = {
     'Access-Control-Allow-Origin':  '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
   };
-
   const jsonErr = (status, msg) => new Response(
     JSON.stringify({ error: msg }),
     { status, headers: { ...CORS, 'Content-Type': 'application/json' } },
   );
-
   const jsonOk = (data) => new Response(
     JSON.stringify(data),
     { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } },
@@ -72,50 +70,57 @@ export default async (request) => {
     try { body = await request.json(); }
     catch { return jsonErr(400, 'Invalid JSON'); }
 
-    const { token, studentName, aiScore, finalScore, questionMarks, examId } = body;
-
-    if (!token)         return jsonErr(401, 'token required');
-    if (!studentName)   return jsonErr(400, 'studentName required');
-    if (finalScore === undefined || finalScore === null) return jsonErr(400, 'finalScore required');
-    if (!Array.isArray(questionMarks) || questionMarks.length === 0) return jsonErr(400, 'questionMarks required');
-
-    const email = await verifyTeacherToken(token, sessionSecret);
+    const email = await verifyTeacherToken(body.token, sessionSecret);
     if (!email) return jsonErr(401, 'Invalid or expired teacher session');
 
-    // Insert into Supabase via REST API
-    const insertRes = await fetch(`${supabaseUrl}/rest/v1/markings`, {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'apikey':        supabaseKey,
-        'Authorization': `Bearer ${supabaseKey}`,
-        'Prefer':        'return=representation',
-      },
-      body: JSON.stringify({
-        exam_id:        examId || 'MAA-HL-M24-P1-TZ1',
-        student_name:   studentName,
-        marked_by:      email,
-        ai_score:       typeof aiScore === 'number' ? aiScore : null,
-        final_score:    finalScore,
-        question_marks: questionMarks,
-      }),
-    });
+    const sbHeaders = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` };
 
-    if (!insertRes.ok) {
-      let errDetail = '';
-      try { const d = await insertRes.json(); errDetail = d.message || d.error || JSON.stringify(d); } catch {}
-      return jsonErr(insertRes.status, `Supabase error: ${errDetail}`);
+    // Fetch all three in parallel
+    const [markingsRes, assignmentsRes, examsRes] = await Promise.all([
+      fetch(
+        `${supabaseUrl}/rest/v1/markings?marked_by=eq.${encodeURIComponent(email)}&order=created_at.desc&limit=200&select=id,exam_id,student_name,ai_score,final_score,question_marks,report_token,created_at`,
+        { headers: sbHeaders },
+      ),
+      fetch(
+        `${supabaseUrl}/rest/v1/assignments?created_by=eq.${encodeURIComponent(email)}&select=id,name,type,subject,total_marks`,
+        { headers: sbHeaders },
+      ),
+      fetch(
+        `${supabaseUrl}/rest/v1/exams?select=id,label,total_marks`,
+        { headers: sbHeaders },
+      ),
+    ]);
+
+    const markings    = markingsRes.ok    ? await markingsRes.json()    : [];
+    const assignments = assignmentsRes.ok ? await assignmentsRes.json() : [];
+    const exams       = examsRes.ok       ? await examsRes.json()       : [];
+
+    // Build lookup: examId → { name, totalMarks, type }
+    const lookup = {
+      // Hardcoded known defaults
+      'MAA-HL-M24-P1-TZ1': { name: 'IB MAA HL May 2024 Paper 1 TZ1', totalMarks: 110, type: 'ib' },
+      'MAA-HL-M24-P2-TZ1': { name: 'IB MAA HL May 2024 Paper 2 TZ1', totalMarks: 110, type: 'ib' },
+    };
+
+    // Add from assignments table
+    for (const a of (Array.isArray(assignments) ? assignments : [])) {
+      if (a.id) lookup[a.id] = {
+        name:       a.name || 'Untitled Assignment',
+        totalMarks: a.total_marks || null,
+        type:       a.type || 'assignment',
+      };
     }
 
-    const rows = await insertRes.json();
-    const saved = Array.isArray(rows) ? rows[0] : rows;
+    // Add from exams table (overrides hardcoded if present)
+    for (const e of (Array.isArray(exams) ? exams : [])) {
+      if (e.id) lookup[e.id] = {
+        name:       e.label || e.id,
+        totalMarks: e.total_marks || null,
+        type:       'ib',
+      };
+    }
 
-    return jsonOk({
-      ok:           true,
-      id:           saved?.id ?? null,
-      report_token: saved?.report_token ?? null,
-      message:      'Marking saved successfully.',
-    });
+    return jsonOk({ markings: Array.isArray(markings) ? markings : [], lookup });
 
   } catch (err) {
     return new Response(
