@@ -597,7 +597,7 @@ td{padding:10px 12px;vertical-align:top}
           <input type="file" id="aBulkInput" accept=".pdf" multiple>
           <div class="upload-icon">📂</div>
           <h3 id="aBulkDropLabel">Drop multiple PDFs here or click to browse</h3>
-          <p>Select all student scripts at once · PDF only</p>
+          <p>Hold <strong>Ctrl</strong> (Windows) or <strong>⌘</strong> (Mac) to select multiple files · PDF only</p>
         </div>
       </div>
 
@@ -1869,20 +1869,17 @@ async function doBulkAssignMark() {
 
 // Bulk assign drag-and-drop
 (function() {
-  // Deferred to DOMContentLoaded to ensure elements exist
-  document.addEventListener('DOMContentLoaded', () => {
-    const zone  = document.getElementById('aBulkDropZone');
-    const input = document.getElementById('aBulkInput');
-    if (!zone || !input) return;
-    zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault(); zone.classList.remove('drag');
-      if (e.dataTransfer.files.length) handleBulkAssignFiles(e.dataTransfer.files);
-    });
-    zone.addEventListener('click', () => input.click());
-    input.addEventListener('change', () => { if (input.files.length) handleBulkAssignFiles(input.files); });
+  const zone  = document.getElementById('aBulkDropZone');
+  const input = document.getElementById('aBulkInput');
+  if (!zone || !input) return;
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag');
+    if (e.dataTransfer.files.length) handleBulkAssignFiles(e.dataTransfer.files);
   });
+  zone.addEventListener('click', () => input.click());
+  input.addEventListener('change', () => { if (input.files.length) handleBulkAssignFiles(input.files); });
 })();
 
 // Bulk drag-and-drop
