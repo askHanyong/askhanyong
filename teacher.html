@@ -702,9 +702,14 @@ td{padding:10px 12px;vertical-align:top}
 
           <div id="aBulkSaveSection" style="display:none;margin-top:20px;padding-top:16px;border-top:1.5px solid var(--border)">
             <p style="font-size:13px;color:var(--text-mid);margin-bottom:12px">All questions reviewed. Ready to save.</p>
-            <button id="btnSaveBulkAssign" onclick="saveAllBulkAssign(this,'aBulkSaveMsg')" class="btn-primary"
-              style="max-width:260px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save All &amp; Confirm</button>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <button id="btnSaveBulkAssign" onclick="saveAllBulkAssign(this,'aBulkSaveMsg')" class="btn-primary"
+                style="max-width:260px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save All &amp; Confirm</button>
+              <button id="btnDownloadAllAnnotated" onclick="downloadAllAnnotatedPDFs(this)" class="btn-primary"
+                style="max-width:260px;background:linear-gradient(135deg,#1e3a8a,#1d4ed8)">⬇ Download Annotated PDFs</button>
+            </div>
             <div id="aBulkSaveMsg" class="msg" style="margin-top:10px"></div>
+            <div id="aBulkDlMsg" class="msg" style="margin-top:6px"></div>
           </div>
         </div><!-- /LEFT -->
 
@@ -716,7 +721,12 @@ td{padding:10px 12px;vertical-align:top}
               <div id="scriptPanelName" style="font-size:13px;font-weight:700;color:var(--navy)"></div>
               <div style="font-size:11px;color:var(--text-soft);margin-top:1px">Student Script</div>
             </div>
-            <button onclick="closeScriptPanel()" style="padding:3px 9px;border:1.5px solid var(--border);border-radius:5px;background:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-mid)">✕</button>
+            <div style="display:flex;align-items:center;gap:6px">
+              <button id="btnScriptPanelDl" onclick="downloadCurrentScriptPDF(this)"
+                title="Download annotated PDF for this student"
+                style="padding:3px 10px;border:1.5px solid #1d4ed8;border-radius:5px;background:#eff6ff;cursor:pointer;font-size:12px;font-weight:600;color:#1d4ed8">⬇ PDF</button>
+              <button onclick="closeScriptPanel()" style="padding:3px 9px;border:1.5px solid var(--border);border-radius:5px;background:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-mid)">✕</button>
+            </div>
           </div>
           <!-- Row 1: General annotation modes -->
           <div id="annToolbar" style="display:flex;align-items:center;gap:5px;padding:7px 12px;border-bottom:1px solid var(--border);background:#fafafa;flex-shrink:0;flex-wrap:wrap">
@@ -3475,6 +3485,65 @@ function _annFromAIResult(item) {
     comment: a.comment ?? '',
     label:   '',
   }));
+}
+
+// ── Download annotated PDFs directly from in-memory state (bypasses Supabase) ──
+async function downloadAllAnnotatedPDFs(btn) {
+  if (!window.jspdf || typeof pdfjsLib === 'undefined') {
+    alert('PDF libraries not loaded. Please refresh and try again.'); return;
+  }
+  const items = bulkAssignQueue.filter(it => it.result && it.b64);
+  if (!items.length) { alert('No marked scripts with PDFs available.'); return; }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Rendering…'; }
+  const msgEl = document.getElementById('aBulkDlMsg');
+  if (msgEl) { msgEl.className = 'msg'; msgEl.textContent = ''; }
+  let done = 0;
+  try {
+    for (const item of items) {
+      if (btn) btn.textContent = `⏳ ${done + 1} / ${items.length}…`;
+      const anns  = item.annotations ?? _annFromAIResult(item);
+      const bytes = await _renderAnnotatedPdfBytes(item.b64, anns);
+      const blob  = new Blob([bytes], { type: 'application/pdf' });
+      const url   = URL.createObjectURL(blob);
+      const a     = document.createElement('a');
+      a.href      = url;
+      a.download  = `${(item.name || 'student').replace(/\s+/g,'_')}_annotated.pdf`;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      done++;
+    }
+    if (btn) { btn.disabled = false; btn.textContent = '⬇ Download Annotated PDFs'; }
+    if (msgEl) { msgEl.className = 'msg ok'; msgEl.textContent = `Downloaded ${done} annotated PDF${done !== 1 ? 's' : ''}.`; }
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = '⬇ Download Annotated PDFs'; }
+    if (msgEl) { msgEl.className = 'msg err'; msgEl.textContent = `Error: ${err.message}`; }
+  }
+}
+
+async function downloadCurrentScriptPDF(btn) {
+  if (!window.jspdf || typeof pdfjsLib === 'undefined') {
+    alert('PDF libraries not loaded. Please refresh and try again.'); return;
+  }
+  const item = bulkAssignQueue[scriptPanelStudentIdx];
+  if (!item || !item.b64) { alert('No PDF available for this student.'); return; }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+  try {
+    const anns  = item.annotations ?? _annFromAIResult(item);
+    const bytes = await _renderAnnotatedPdfBytes(item.b64, anns);
+    const blob  = new Blob([bytes], { type: 'application/pdf' });
+    const url   = URL.createObjectURL(blob);
+    const a     = document.createElement('a');
+    a.href      = url;
+    a.download  = `${(item.name || 'student').replace(/\s+/g,'_')}_annotated.pdf`;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (err) {
+    alert(`Download failed: ${err.message}`);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '⬇ PDF'; }
+  }
 }
 
 // IB mark colours (shared with toolbar)

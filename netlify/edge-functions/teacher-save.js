@@ -98,7 +98,7 @@ export default async (request) => {
         ai_score:       typeof aiScore === 'number' ? aiScore : null,
         final_score:    finalScore,
         question_marks: questionMarks,
-        ...(Array.isArray(annotations) && annotations.length > 0 ? { annotations } : {}),
+        annotations: Array.isArray(annotations) ? annotations : [],
         ...(classLabel ? { class_label: String(classLabel).trim().slice(0, 60) } : {}),
       }),
     });
