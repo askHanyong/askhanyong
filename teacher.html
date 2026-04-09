@@ -201,6 +201,24 @@ td{padding:10px 12px;vertical-align:top}
 .q-nav-pill.done:not(.active){border-color:#059669;color:#059669}
 .q-nav-pill.done:not(.active)::after{content:' ✓';font-size:10px}
 .q-nav-pill.active.done{background:#059669;border-color:#059669}
+/* Annotation mode toolbar */
+.ann-mode-btn{padding:4px 11px;border:1.5px solid var(--border);border-radius:6px;background:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:var(--text-mid);transition:all .12s;white-space:nowrap}
+.ann-mode-btn:hover{border-color:var(--navy);color:var(--navy)}
+.ann-mode-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ann-mode-btn.mode-tick.active{background:#16a34a;border-color:#16a34a}
+.ann-mode-btn.mode-cross.active{background:#dc2626;border-color:#dc2626}
+.ann-mode-btn.mode-delete.active{background:#7c3aed;border-color:#7c3aed}
+.ann-mode-btn.mode-note.active{background:#1d4ed8;border-color:#1d4ed8}
+/* Q review table — always-visible final input */
+.q-final-input{width:44px;padding:3px 5px;border:1.5px solid var(--border);border-radius:5px;font-family:'DM Mono',monospace;font-weight:700;font-size:13px;text-align:center;outline:none;background:#fff;color:var(--navy)}
+.q-final-input:focus{border-color:var(--navy);box-shadow:0 0 0 2px rgba(10,36,99,.1)}
+.q-final-input.changed{border-color:var(--gold);background:var(--gold-pale);color:#92400e}
+/* Student cell in Q review: name + stacked notes */
+.qr-student-name{font-weight:600;white-space:nowrap}
+.qr-student-notes{font-size:10.5px;color:var(--text-soft);font-style:italic;margin-top:2px;max-width:220px;line-height:1.35}
+/* Annotation chip on PDF — delete mode cursor */
+.ann-overlay.mode-delete .ann-chip{cursor:pointer}
+.ann-overlay.mode-delete .ann-chip:hover{box-shadow:0 0 0 3px #7c3aed,0 2px 6px rgba(0,0,0,.35);opacity:.85}
 </style>
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -686,16 +704,14 @@ td{padding:10px 12px;vertical-align:top}
             </div>
             <button onclick="closeScriptPanel()" style="padding:3px 9px;border:1.5px solid var(--border);border-radius:5px;background:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-mid)">✕</button>
           </div>
-          <!-- Annotation toolbar -->
-          <div id="annToolbar" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-bottom:1.5px solid var(--border);background:#fff;flex-shrink:0;flex-wrap:wrap">
-            <span style="font-size:11px;font-weight:600;color:var(--text-soft);margin-right:2px">Add:</span>
-            <button id="annBtnTick"  onclick="setAnnMode('tick')"
-              style="padding:3px 10px;border:1.5px solid #16a34a;border-radius:5px;background:#f0fdf4;font-size:12px;font-weight:700;cursor:pointer;color:#16a34a">✓ Tick</button>
-            <button id="annBtnCross" onclick="setAnnMode('cross')"
-              style="padding:3px 10px;border:1.5px solid #dc2626;border-radius:5px;background:#fef2f2;font-size:12px;font-weight:700;cursor:pointer;color:#dc2626">✗ Cross</button>
-            <button id="annBtnNote"  onclick="setAnnMode('note')"
-              style="padding:3px 10px;border:1.5px solid var(--border);border-radius:5px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--text-mid)">📝 Note</button>
-            <span id="annModeLabel" style="font-size:11px;color:var(--text-soft);margin-left:4px;display:none">— click on script to place</span>
+          <!-- Annotation toolbar — 5 modes -->
+          <div id="annToolbar" style="display:flex;align-items:center;gap:5px;padding:7px 12px;border-bottom:1.5px solid var(--border);background:#fafafa;flex-shrink:0;flex-wrap:wrap">
+            <button id="annMode-view"   class="ann-mode-btn mode-view active"   onclick="setAnnMode('view')">  👁 View</button>
+            <button id="annMode-tick"   class="ann-mode-btn mode-tick"          onclick="setAnnMode('tick')">  ✓ Tick</button>
+            <button id="annMode-cross"  class="ann-mode-btn mode-cross"         onclick="setAnnMode('cross')"> ✗ Cross</button>
+            <button id="annMode-delete" class="ann-mode-btn mode-delete"        onclick="setAnnMode('delete')">🗑 Delete</button>
+            <button id="annMode-note"   class="ann-mode-btn mode-note"          onclick="setAnnMode('note')">  📝 Note</button>
+            <span id="annModeHint" style="font-size:10px;color:var(--text-soft);margin-left:4px"></span>
           </div>
           <!-- PDF content -->
           <div id="scriptPanelContent" style="overflow-y:auto;flex:1;padding:12px"></div>
@@ -2686,6 +2702,7 @@ function startQReview() {
   if (!qKeys.length) { alert('No question data available.'); return; }
   currentQKeyIdx = 0;
   scriptPanelStudentIdx = -1;
+  annAddMode = 'view';
   document.getElementById('scriptSidePanel').style.display   = 'none';
   document.getElementById('assignBulkPane').style.display    = 'none';
   document.getElementById('assignQReviewPane').style.display = '';
@@ -2739,33 +2756,39 @@ function renderQReviewTable(qKey) {
   nextBtn.textContent = currentQKeyIdx < qKeys.length - 1 ? 'Next Q →' : 'Finish ✓';
   nextBtn.style.background = currentQKeyIdx < qKeys.length - 1 ? '' : 'linear-gradient(135deg,#064e3b,#065f46)';
 
+  // Update table header to match new column layout
+  const thead = document.querySelector('#qReviewBody')?.closest('table')?.querySelector('thead tr');
+  if (thead) thead.innerHTML = '<th>Student</th><th style="width:90px">AI</th><th style="width:120px">Final</th>';
+
   const tbody = document.getElementById('qReviewBody');
   tbody.innerHTML = '';
   qData.items.forEach((item, rowIdx) => {
     const tr = document.createElement('tr');
     tr.id = `qr-row-${rowIdx}`;
     if (item.aiMark === null) {
-      tr.innerHTML = `<td style="font-weight:600">${escHtml(item.studentName)}</td><td colspan="3" style="font-size:12px;color:var(--text-soft);font-style:italic">Not marked</td>`;
+      tr.innerHTML = `<td class="qr-student-name">${escHtml(item.studentName)}</td><td colspan="2" style="font-size:12px;color:var(--text-soft);font-style:italic">Not marked</td>`;
     } else {
-      const changed    = item.finalMark !== item.aiMark;
-      const hasScript  = !!bulkAssignQueue[item.studentIdx]?.b64;
+      const changed   = item.finalMark !== item.aiMark;
+      const hasScript = !!bulkAssignQueue[item.studentIdx]?.b64;
       tr.innerHTML = `
-        <td style="font-weight:600;white-space:nowrap">
-          ${escHtml(item.studentName)}
-          ${hasScript ? `<button id="qr-script-btn-${rowIdx}" onclick="openScriptPanel(${item.studentIdx},${rowIdx})"
-            style="margin-left:8px;padding:2px 8px;border:1.5px solid var(--border);border-radius:5px;
-                   background:#fff;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-mid);
-                   vertical-align:middle">👁 Script</button>` : ''}
+        <td>
+          <div class="qr-student-name">${escHtml(item.studentName)}${
+            hasScript ? ` <button id="qr-script-btn-${rowIdx}" onclick="openScriptPanel(${item.studentIdx},${rowIdx})"
+              style="margin-left:6px;padding:1px 7px;border:1.5px solid var(--border);border-radius:5px;
+                     background:#fff;font-size:10px;font-weight:600;cursor:pointer;color:var(--text-mid);
+                     vertical-align:middle">👁 Script</button>` : ''}</div>
+          ${item.notes ? `<div class="qr-student-notes">${escHtml(item.notes)}</div>` : ''}
         </td>
-        <td><span style="font-family:'DM Mono',monospace;font-weight:700">${item.aiMark}</span><span style="color:var(--text-soft)"> / ${qData.ma??'?'}</span></td>
-        <td style="font-size:11px;color:var(--text-soft);max-width:240px">${escHtml(item.notes)}</td>
-        <td class="override-cell" title="Click to edit" onclick="activateOverride(this)">
-          <span class="override-display${changed?' changed':''}">${item.finalMark}</span><span class="override-sep"> / </span><span class="override-avail">${qData.ma??'?'}</span>
-          <input type="number" class="override-input" min="0" style="display:none;width:48px"
-                 value="${item.finalMark}" data-original="${item.aiMark}"
-                 data-qkey="${qKey}" data-rowidx="${rowIdx}"
-                 oninput="onQOverride(this)" onblur="deactivateQOverride(this)"
+        <td style="white-space:nowrap">
+          <span style="font-family:'DM Mono',monospace;font-weight:700">${item.aiMark}</span><span style="color:var(--text-soft);font-size:12px"> / ${qData.ma??'?'}</span>
+        </td>
+        <td style="white-space:nowrap">
+          <input type="number" class="q-final-input${changed?' changed':''}" min="0" max="${qData.ma??99}"
+                 value="${item.finalMark}"
+                 data-qkey="${qKey}" data-rowidx="${rowIdx}" data-original="${item.aiMark}"
+                 oninput="onQOverride(this)"
                  onkeydown="if(event.key==='Enter')this.blur()">
+          <span style="color:var(--text-soft);font-size:12px"> / ${qData.ma??'?'}</span>
         </td>`;
     }
     tbody.appendChild(tr);
@@ -2789,29 +2812,39 @@ function renderQReviewTable(qKey) {
 
 // ── Script side panel & annotation system ────────────────────────────────────
 let scriptPanelStudentIdx = -1;
-let annAddMode = null;  // null | 'tick' | 'cross' | 'note'
-let annDragState = null;
+let annAddMode = 'view';  // 'view' | 'tick' | 'cross' | 'delete' | 'note'
+
+const ANN_HINTS = {
+  view:   '',
+  tick:   '— click script to place a tick',
+  cross:  '— click script to place a cross',
+  delete: '— click any mark to remove it',
+  note:   '— click script to place a note',
+};
 
 function setAnnMode(mode) {
-  annAddMode = annAddMode === mode ? null : mode;
-  const content = document.getElementById('scriptPanelContent');
-  content.style.cursor = annAddMode ? 'crosshair' : '';
-  ['Tick','Cross','Note'].forEach(n => {
-    const btn = document.getElementById(`annBtn${n}`);
-    if (!btn) return;
-    const active = annAddMode === n.toLowerCase();
-    btn.style.fontWeight = active ? '800' : '700';
-    btn.style.boxShadow  = active ? '0 0 0 2px currentColor' : '';
+  annAddMode = mode;
+  ['view','tick','cross','delete','note'].forEach(m => {
+    const btn = document.getElementById(`annMode-${m}`);
+    if (btn) btn.classList.toggle('active', m === mode);
   });
-  const lbl = document.getElementById('annModeLabel');
-  if (lbl) lbl.style.display = annAddMode ? '' : 'none';
+  const hint = document.getElementById('annModeHint');
+  if (hint) hint.textContent = ANN_HINTS[mode] ?? '';
+  // Update cursor and overlay mode class for all overlays
+  const content = document.getElementById('scriptPanelContent');
+  if (content) {
+    content.style.cursor = (mode === 'tick' || mode === 'cross' || mode === 'note') ? 'crosshair' : '';
+    document.querySelectorAll('.ann-overlay').forEach(ov => {
+      ov.classList.toggle('mode-delete', mode === 'delete');
+    });
+  }
 }
 
 function closeScriptPanel() {
   const panel = document.getElementById('scriptSidePanel');
   panel.style.display = 'none';
-  annAddMode = null;
-  setAnnMode(null);
+  annAddMode = 'view';
+  setAnnMode('view');
   document.querySelectorAll('[id^="qr-script-btn-"]').forEach(b => {
     b.textContent = '👁 Script';
     b.style.background = '#fff';
@@ -2965,6 +2998,7 @@ function placeAnnotationEl(overlay, ann, studentIdx) {
   const isNote  = ann.symbol === 'note';
   const bg      = isTick ? '#16a34a' : isNote ? '#1d4ed8' : '#dc2626';
   const el      = document.createElement('div');
+  el.className  = 'ann-chip';
   el.dataset.annId = ann.id;
   el.style.cssText = `
     position:absolute;left:${ann.x}%;top:${ann.y}%;
@@ -2974,87 +3008,89 @@ function placeAnnotationEl(overlay, ann, studentIdx) {
     font-size:15px;font-weight:700;line-height:28px;text-align:center;
     cursor:grab;user-select:none;z-index:20;
     box-shadow:0 2px 6px rgba(0,0,0,.35);
-    pointer-events:auto;
+    pointer-events:auto;transition:box-shadow .1s,opacity .1s;
   `;
   el.textContent = isTick ? '✓' : isNote ? '✎' : '✗';
-  el.title = ann.comment || '';
 
   if (ann.comment) {
     const bubble = document.createElement('div');
     bubble.style.cssText = `
-      position:absolute;left:50%;bottom:calc(100% + 4px);
+      position:absolute;left:50%;bottom:calc(100% + 5px);
       transform:translateX(-50%);
-      background:rgba(30,30,30,.9);color:#fff;
-      font-size:10px;font-weight:500;padding:3px 7px;
+      background:rgba(20,20,20,.88);color:#fff;
+      font-size:10px;font-weight:500;padding:3px 8px;
       border-radius:4px;white-space:nowrap;pointer-events:none;
-      opacity:0;transition:opacity .15s;z-index:30;
+      opacity:0;transition:opacity .15s;z-index:30;max-width:180px;
+      overflow:hidden;text-overflow:ellipsis;
     `;
     bubble.textContent = ann.comment;
     el.appendChild(bubble);
     el.addEventListener('mouseenter', () => { bubble.style.opacity = '1'; });
     el.addEventListener('mouseleave', () => { bubble.style.opacity = '0'; });
+    el.title = ann.comment;
   }
 
-  // Delete on right-click
-  el.addEventListener('contextmenu', e => {
-    e.preventDefault();
-    deleteAnnotation(studentIdx, ann.id);
-  });
+  // Click handler — delete mode or drag mode
+  el.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    if (annAddMode === 'delete') {
+      e.stopPropagation();
+      deleteAnnotation(studentIdx, ann.id);
+      return;
+    }
+    // Drag mode (view/other)
+    e.stopPropagation();
+    let dragging = false, moved = false;
+    let startX = e.clientX, startY = e.clientY;
+    let origX = ann.x, origY = ann.y;
+    el.setPointerCapture(e.pointerId);
+    el.style.cursor = 'grabbing';
 
-  // Drag
-  makeAnnotationDraggable(el, ann, studentIdx, overlay);
+    const onMove = ev => {
+      const rect = overlay.getBoundingClientRect();
+      const dx = (ev.clientX - startX) / rect.width  * 100;
+      const dy = (ev.clientY - startY) / rect.height * 100;
+      if (!moved && (Math.abs(dx) > .5 || Math.abs(dy) > .5)) moved = true;
+      if (!moved) return;
+      ann.x = Math.max(0, Math.min(100, origX + dx));
+      ann.y = Math.max(0, Math.min(100, origY + dy));
+      el.style.left = `${ann.x}%`;
+      el.style.top  = `${ann.y}%`;
+    };
+    const onUp = ev => {
+      el.style.cursor = 'grab';
+      el.releasePointerCapture(ev.pointerId);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerup', onUp);
+    };
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerup', onUp);
+  });
 
   overlay.appendChild(el);
 }
 
-function makeAnnotationDraggable(el, ann, studentIdx, overlay) {
-  let dragging = false, startX, startY, origX, origY;
-
-  el.addEventListener('pointerdown', e => {
-    if (e.button !== 0) return;
-    e.stopPropagation();
-    dragging = true;
-    el.setPointerCapture(e.pointerId);
-    el.style.cursor = 'grabbing';
-    const rect = overlay.getBoundingClientRect();
-    startX = e.clientX; startY = e.clientY;
-    origX = ann.x; origY = ann.y;
-  });
-
-  el.addEventListener('pointermove', e => {
-    if (!dragging) return;
-    const rect = overlay.getBoundingClientRect();
-    const dx = (e.clientX - startX) / rect.width  * 100;
-    const dy = (e.clientY - startY) / rect.height * 100;
-    ann.x = Math.max(0, Math.min(100, origX + dx));
-    ann.y = Math.max(0, Math.min(100, origY + dy));
-    el.style.left = `${ann.x}%`;
-    el.style.top  = `${ann.y}%`;
-  });
-
-  el.addEventListener('pointerup', e => {
-    if (!dragging) return;
-    dragging = false;
-    el.style.cursor = 'grab';
-    el.releasePointerCapture(e.pointerId);
-  });
-}
-
 function onAnnotationOverlayClick(e, studentIdx, page) {
-  if (!annAddMode) return;
-  if (e.target.dataset.annId) return; // clicked an existing annotation
+  // Only handle canvas-level clicks (not clicks on existing chips)
+  if (e.target.dataset.annId || e.target.closest?.('.ann-chip')) return;
+  if (annAddMode === 'view' || annAddMode === 'delete') return;
+
   const overlay = e.currentTarget;
   const rect    = overlay.getBoundingClientRect();
   const x = (e.clientX - rect.left) / rect.width  * 100;
   const y = (e.clientY - rect.top)  / rect.height * 100;
 
-  if (annAddMode === 'note') {
-    const text = prompt('Annotation note:');
-    if (!text) return;
-    addAnnotation(studentIdx, page, x, y, 'note', text);
-  } else {
-    const comment = annAddMode === 'cross' ? (prompt('Reason for cross (optional):') ?? '') : '';
-    addAnnotation(studentIdx, page, x, y, annAddMode, comment);
+  if (annAddMode === 'cross') {
+    const raw = prompt('Reason for cross (max 8 words, or leave blank):');
+    if (raw === null) return; // cancelled
+    const comment = raw.trim().split(/\s+/).slice(0, 8).join(' ');
+    addAnnotation(studentIdx, page, x, y, 'cross', comment);
+  } else if (annAddMode === 'note') {
+    const text = prompt('Note text:');
+    if (!text?.trim()) return;
+    addAnnotation(studentIdx, page, x, y, 'note', text.trim());
+  } else if (annAddMode === 'tick') {
+    addAnnotation(studentIdx, page, x, y, 'tick', '');
   }
 }
 
@@ -3082,16 +3118,8 @@ function onQOverride(input) {
   const rowIdx = parseInt(input.dataset.rowidx, 10);
   if (!isNaN(v) && questionIndex[qKey]) {
     questionIndex[qKey].items[rowIdx].finalMark = v;
-    const disp = input.parentElement?.querySelector('.override-display');
-    if (disp) { disp.textContent = v; disp.classList.toggle('changed', v !== parseInt(input.dataset.original,10)); }
+    input.classList.toggle('changed', v !== parseInt(input.dataset.original, 10));
   }
-}
-
-function deactivateQOverride(input) {
-  input.parentElement.classList.remove('editing');
-  const disp = input.parentElement.querySelector('.override-display');
-  const v    = parseInt(input.value, 10);
-  if (disp && !isNaN(v)) { disp.textContent = v; disp.classList.toggle('changed', v !== parseInt(input.dataset.original,10)); }
 }
 
 function acceptAllForQ() {
@@ -3100,10 +3128,8 @@ function acceptAllForQ() {
   qData.items.forEach((item, rowIdx) => {
     item.finalMark = item.aiMark;
     item.reviewed  = true;
-    const disp = document.querySelector(`#qr-row-${rowIdx} .override-display`);
-    const inp  = document.querySelector(`#qr-row-${rowIdx} .override-input`);
-    if (disp) { disp.textContent = item.finalMark ?? ''; disp.classList.remove('changed'); }
-    if (inp)  inp.value = item.finalMark ?? '';
+    const inp = document.querySelector(`#qr-row-${rowIdx} .q-final-input`);
+    if (inp) { inp.value = item.finalMark ?? ''; inp.classList.remove('changed'); }
   });
   renderQNav();
 }
