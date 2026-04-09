@@ -317,6 +317,9 @@ export default async (request) => {
 
   if (!anthropicRes.ok) {
     const errText = await anthropicRes.text();
+    if (errText.includes('prompt is too long') || errText.includes('too many tokens')) {
+      return jsonErr(413, 'Script PDF is too large for AI marking. Reduce file size or use fewer pages.');
+    }
     return jsonErr(502, `Anthropic ${anthropicRes.status}: ${errText}`);
   }
 
@@ -354,7 +357,12 @@ export default async (request) => {
     }
   }
 
-  if (streamErr) return jsonErr(502, `Anthropic error: ${streamErr}`);
+  if (streamErr) {
+    if (streamErr.includes('prompt is too long') || streamErr.includes('too many tokens')) {
+      return jsonErr(413, 'Script PDF is too large for AI marking. Reduce file size or use fewer pages.');
+    }
+    return jsonErr(502, `Anthropic error: ${streamErr}`);
+  }
 
   if (!jsonStr) {
     return jsonErr(502, `No tool call received from model (stop_reason: ${stopReason ?? 'unknown'})`);
