@@ -3429,7 +3429,8 @@ async function saveAllBulkAssign(btn, msgElId) {
           token: teacherToken, studentName: item.name,
           aiScore: aiTotal, finalScore: finalTotal, questionMarks,
           examId: selectedAssignment?.id,
-          annotations: [],
+          // Use teacher-edited annotations if panel was opened; otherwise seed from AI result
+          annotations: item.annotations ?? _annFromAIResult(item),
           ...(classLabel ? { classLabel } : {}),
         }),
       });
@@ -3463,6 +3464,27 @@ function classColorIdx(label) {
   return h % 6;
 }
 
+// ── Convert AI result annotations (x_zone/y_zone) to our x/y (0-100%) format ──
+function _annFromAIResult(item) {
+  return (item.result?.annotations ?? []).map((a, i) => ({
+    id:      `ai-${i}`,
+    page:    a.page ?? 1,
+    x:       ((a.x_zone ?? 8) - 0.5) / 10 * 100,
+    y:       ((a.y_zone ?? 5) - 0.5) / 10 * 100,
+    symbol:  a.symbol ?? 'tick',
+    comment: a.comment ?? '',
+    label:   '',
+  }));
+}
+
+// IB mark colours (shared with toolbar)
+const IB_PDF_COLORS = { M:'#16a34a', A:'#1d4ed8', R:'#7c3aed', FT:'#d97706', AG:'#475569' };
+function _ibType(label) {
+  if (label === 'FT') return 'FT';
+  if (label === 'AG') return 'AG';
+  return label?.[0] ?? 'M';
+}
+
 // ── Shared: render a pdfB64 + annotations array → jsPDF arraybuffer ──────
 async function _renderAnnotatedPdfBytes(pdfB64, annotations) {
   const { jsPDF } = window.jspdf;
@@ -3479,38 +3501,74 @@ async function _renderAnnotatedPdfBytes(pdfB64, annotations) {
     canvas.height  = viewport.height;
     const ctx = canvas.getContext('2d');
     await page.render({ canvasContext: ctx, viewport }).promise;
-    const pageAnnots = (annotations || []).filter(a => (a.page || 1) === pg);
+    const pageAnnots = (annotations || []).filter(a => (a.page ?? 1) === pg);
     for (const a of pageAnnots) {
-      const xFrac = a._xPct !== undefined ? a._xPct / 100 : ((a.x_zone || 1) - 1) / 9;
-      const yFrac = a._yPct !== undefined ? a._yPct / 100 : ((a.y_zone  - 1) / 9);
+      // Support both storage formats:
+      //   new: a.x / a.y  (0–100 %)
+      //   old: a.x_zone / a.y_zone  (1–10 grid)  or  a._xPct/_yPct (legacy)
+      const xFrac = a.x  !== undefined ? a.x  / 100
+                  : a._xPct !== undefined ? a._xPct / 100
+                  : ((a.x_zone ?? 5) - 0.5) / 10;
+      const yFrac = a.y  !== undefined ? a.y  / 100
+                  : a._yPct !== undefined ? a._yPct / 100
+                  : ((a.y_zone ?? 5) - 0.5) / 10;
       const x = xFrac * canvas.width;
       const y = yFrac * canvas.height;
-      ctx.shadowColor = 'rgba(0,0,0,.2)'; ctx.shadowBlur = 4;
-      if (a.symbol === 'note') {
-        if (a.comment) {
+      ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = 5;
+
+      if (a.symbol === 'ibmark') {
+        // IB badge: coloured rounded rectangle with label text
+        const label = a.label || a.comment || '?';
+        const type  = _ibType(label);
+        const bg    = IB_PDF_COLORS[type] ?? '#475569';
+        ctx.font = 'bold 28px "DM Mono", monospace, Arial';
+        const tw  = ctx.measureText(label).width;
+        const bw  = tw + 20, bh = 34;
+        const bx  = x - bw / 2, by = y - bh / 2;
+        // Rounded rect (manual)
+        const r = 6;
+        ctx.fillStyle = bg;
+        ctx.beginPath();
+        ctx.moveTo(bx + r, by);
+        ctx.lineTo(bx + bw - r, by);         ctx.arcTo(bx + bw, by,      bx + bw, by + r,      r);
+        ctx.lineTo(bx + bw, by + bh - r);    ctx.arcTo(bx + bw, by + bh, bx + bw - r, by + bh, r);
+        ctx.lineTo(bx + r, by + bh);         ctx.arcTo(bx,      by + bh, bx,      by + bh - r, r);
+        ctx.lineTo(bx, by + r);              ctx.arcTo(bx,      by,      bx + r,  by,           r);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#fff';
+        ctx.fillText(label, bx + 10, by + bh - 8);
+
+      } else if (a.symbol === 'note') {
+        const text = a.comment || a.label || '';
+        if (text) {
           ctx.font = '22px Arial';
-          const metrics = ctx.measureText(a.comment);
-          const bw = metrics.width + 12, bh = 30;
+          const metrics = ctx.measureText(text);
+          const bw = metrics.width + 14, bh = 30;
           ctx.fillStyle = 'rgba(219,234,254,.93)';
           ctx.fillRect(x - bw / 2, y - bh / 2, bw, bh);
           ctx.strokeStyle = '#93c5fd'; ctx.lineWidth = 2;
           ctx.strokeRect(x - bw / 2, y - bh / 2, bw, bh);
           ctx.shadowBlur = 0;
           ctx.fillStyle = '#1d4ed8';
-          ctx.fillText(a.comment, x - bw / 2 + 6, y + 8);
+          ctx.fillText(text, x - bw / 2 + 7, y + 8);
         }
       } else {
-        ctx.font = 'bold 40px Arial';
-        ctx.fillStyle = a.symbol === 'tick' ? '#059669' : '#dc2626';
-        ctx.fillText(a.symbol === 'tick' ? '✓' : '✗', x - 20, y + 14);
+        // tick or cross — large symbol
+        const isTick = a.symbol === 'tick';
+        ctx.font = 'bold 44px Arial';
+        ctx.fillStyle = isTick ? '#059669' : '#dc2626';
+        ctx.fillText(isTick ? '✓' : '✗', x - 22, y + 15);
         ctx.shadowBlur = 0;
-        if (a.comment) {
-          ctx.font = '22px Arial';
-          const metrics = ctx.measureText(a.comment);
-          ctx.fillStyle = 'rgba(255,255,255,.9)';
-          ctx.fillRect(x + 24, y - 20, metrics.width + 10, 28);
-          ctx.fillStyle = a.symbol === 'tick' ? '#059669' : '#dc2626';
-          ctx.fillText(a.comment, x + 29, y + 3);
+        const comment = a.comment || '';
+        if (comment) {
+          ctx.font = '20px Arial';
+          const metrics = ctx.measureText(comment);
+          ctx.fillStyle = 'rgba(255,255,255,.92)';
+          ctx.fillRect(x + 26, y - 20, metrics.width + 10, 26);
+          ctx.fillStyle = isTick ? '#059669' : '#dc2626';
+          ctx.fillText(comment, x + 31, y + 1);
         }
       }
       ctx.shadowBlur = 0;
