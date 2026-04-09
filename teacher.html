@@ -677,7 +677,8 @@ td{padding:10px 12px;vertical-align:top}
         </div><!-- /LEFT -->
 
         <!-- RIGHT: sticky script viewer (hidden until a Script button is clicked) -->
-        <div id="scriptSidePanel" style="display:none;width:420px;flex-shrink:0;position:sticky;top:80px;max-height:calc(100vh - 100px);overflow:hidden;border:1.5px solid var(--border);border-radius:var(--radius);background:#faf9f7;box-shadow:0 4px 16px rgba(0,0,0,.08)">
+        <div id="scriptSidePanel" style="display:none;width:580px;flex-shrink:0;position:sticky;top:80px;max-height:calc(100vh - 100px);overflow:hidden;border:1.5px solid var(--border);border-radius:var(--radius);background:#faf9f7;box-shadow:0 4px 16px rgba(0,0,0,.08);display:none;flex-direction:column">
+          <!-- Header -->
           <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1.5px solid var(--border);background:#fff;flex-shrink:0">
             <div>
               <div id="scriptPanelName" style="font-size:13px;font-weight:700;color:var(--navy)"></div>
@@ -685,7 +686,19 @@ td{padding:10px 12px;vertical-align:top}
             </div>
             <button onclick="closeScriptPanel()" style="padding:3px 9px;border:1.5px solid var(--border);border-radius:5px;background:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-mid)">✕</button>
           </div>
-          <div id="scriptPanelContent" style="overflow-y:auto;max-height:calc(100vh - 160px);padding:12px"></div>
+          <!-- Annotation toolbar -->
+          <div id="annToolbar" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-bottom:1.5px solid var(--border);background:#fff;flex-shrink:0;flex-wrap:wrap">
+            <span style="font-size:11px;font-weight:600;color:var(--text-soft);margin-right:2px">Add:</span>
+            <button id="annBtnTick"  onclick="setAnnMode('tick')"
+              style="padding:3px 10px;border:1.5px solid #16a34a;border-radius:5px;background:#f0fdf4;font-size:12px;font-weight:700;cursor:pointer;color:#16a34a">✓ Tick</button>
+            <button id="annBtnCross" onclick="setAnnMode('cross')"
+              style="padding:3px 10px;border:1.5px solid #dc2626;border-radius:5px;background:#fef2f2;font-size:12px;font-weight:700;cursor:pointer;color:#dc2626">✗ Cross</button>
+            <button id="annBtnNote"  onclick="setAnnMode('note')"
+              style="padding:3px 10px;border:1.5px solid var(--border);border-radius:5px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--text-mid)">📝 Note</button>
+            <span id="annModeLabel" style="font-size:11px;color:var(--text-soft);margin-left:4px;display:none">— click on script to place</span>
+          </div>
+          <!-- PDF content -->
+          <div id="scriptPanelContent" style="overflow-y:auto;flex:1;padding:12px"></div>
         </div><!-- /RIGHT -->
 
       </div><!-- /two-column -->
@@ -2662,7 +2675,7 @@ function buildQuestionIndex() {
         const key  = part ? `${qNum}_${part}` : qNum;
         if (!questionIndex[key]) return;
         const ai = p.mi ?? p.marks_awarded ?? 0;
-        questionIndex[key].items.push({ studentIdx, studentName: item.name, aiMark: ai, finalMark: ai, notes: p.n ?? p.notes ?? '', reviewed: false });
+        questionIndex[key].items.push({ studentIdx, studentName: item.name, aiMark: ai, finalMark: ai, notes: p.n ?? p.notes ?? '', pg: p.pg ?? p.page ?? 1, reviewed: false });
       });
     });
   });
@@ -2698,7 +2711,7 @@ function renderQNav() {
     const btn    = document.createElement('button');
     btn.className = 'q-nav-pill' + (idx === currentQKeyIdx ? ' active' : '') + (isDone ? ' done' : '');
     btn.textContent = qData.label;
-    btn.onclick = () => { markCurrentQReviewed(); currentQKeyIdx = idx; renderQNav(); renderQReviewTable(qKeys[idx]); };
+    btn.onclick = () => { markCurrentQReviewed(); currentQKeyIdx = idx; renderQNav(); renderQReviewTable(qKeys[idx]); scrollScriptPanelToQuestion(qKeys[idx]); };
     bar.appendChild(btn);
   });
   // Show save section when all questions reviewed
@@ -2774,12 +2787,31 @@ function renderQReviewTable(qKey) {
   }
 }
 
-// Script side panel — studentIdx currently shown in the panel (-1 = none)
+// ── Script side panel & annotation system ────────────────────────────────────
 let scriptPanelStudentIdx = -1;
+let annAddMode = null;  // null | 'tick' | 'cross' | 'note'
+let annDragState = null;
+
+function setAnnMode(mode) {
+  annAddMode = annAddMode === mode ? null : mode;
+  const content = document.getElementById('scriptPanelContent');
+  content.style.cursor = annAddMode ? 'crosshair' : '';
+  ['Tick','Cross','Note'].forEach(n => {
+    const btn = document.getElementById(`annBtn${n}`);
+    if (!btn) return;
+    const active = annAddMode === n.toLowerCase();
+    btn.style.fontWeight = active ? '800' : '700';
+    btn.style.boxShadow  = active ? '0 0 0 2px currentColor' : '';
+  });
+  const lbl = document.getElementById('annModeLabel');
+  if (lbl) lbl.style.display = annAddMode ? '' : 'none';
+}
 
 function closeScriptPanel() {
-  document.getElementById('scriptSidePanel').style.display = 'none';
-  // Clear active highlight on all script buttons
+  const panel = document.getElementById('scriptSidePanel');
+  panel.style.display = 'none';
+  annAddMode = null;
+  setAnnMode(null);
   document.querySelectorAll('[id^="qr-script-btn-"]').forEach(b => {
     b.textContent = '👁 Script';
     b.style.background = '#fff';
@@ -2789,18 +2821,29 @@ function closeScriptPanel() {
   scriptPanelStudentIdx = -1;
 }
 
+// Auto-scroll side panel to the page for the given qKey
+function scrollScriptPanelToQuestion(qKey) {
+  if (scriptPanelStudentIdx < 0) return;
+  const qData = questionIndex[qKey];
+  if (!qData) return;
+  const item = qData.items.find(it => it.studentIdx === scriptPanelStudentIdx);
+  const pg = item?.pg ?? 1;
+  const pageEl = document.querySelector(`#scriptPanelContent [data-page="${pg}"]`);
+  if (pageEl) pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 async function openScriptPanel(studentIdx, rowIdx) {
   const panel   = document.getElementById('scriptSidePanel');
   const content = document.getElementById('scriptPanelContent');
   const nameEl  = document.getElementById('scriptPanelName');
 
-  // If same script already open, toggle it closed
+  // Toggle closed if same script is already showing
   if (scriptPanelStudentIdx === studentIdx && panel.style.display !== 'none') {
     closeScriptPanel();
     return;
   }
 
-  // Highlight the active button; reset others
+  // Highlight active button, reset others
   document.querySelectorAll('[id^="qr-script-btn-"]').forEach(b => {
     b.textContent = '👁 Script';
     b.style.background = '#fff';
@@ -2817,15 +2860,19 @@ async function openScriptPanel(studentIdx, rowIdx) {
 
   const item = bulkAssignQueue[studentIdx];
   nameEl.textContent = item?.name ?? 'Student';
-  panel.style.display = '';
+  panel.style.display = 'flex';
   scriptPanelStudentIdx = studentIdx;
 
   if (!item?.b64) {
     content.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:8px 0">Script not available.</p>';
     return;
   }
-  // Already rendered for this student — don't re-render
-  if (content.dataset.loaded === String(studentIdx)) return;
+
+  // Re-render only when switching student
+  if (content.dataset.loaded === String(studentIdx)) {
+    scrollScriptPanelToQuestion(qKeys[currentQKeyIdx]);
+    return;
+  }
 
   content.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:8px 0">Loading script…</p>';
   content.dataset.loaded = '';
@@ -2833,6 +2880,19 @@ async function openScriptPanel(studentIdx, rowIdx) {
   if (typeof pdfjsLib === 'undefined') {
     content.innerHTML = '<p style="font-size:12px;color:var(--red);padding:8px 0">PDF viewer unavailable. Please refresh.</p>';
     return;
+  }
+
+  // Seed annotations from AI result if not already stored
+  if (!item.annotations) {
+    const rawAnns = item.result?.annotations ?? [];
+    item.annotations = rawAnns.map((a, i) => ({
+      id:      `ai-${i}`,
+      page:    a.page ?? 1,
+      x:       ((a.x_zone ?? 8) - 0.5) / 10 * 100,
+      y:       ((a.y_zone ?? 5) - 0.5) / 10 * 100,
+      symbol:  a.symbol ?? 'tick',
+      comment: a.comment ?? '',
+    }));
   }
 
   try {
@@ -2844,24 +2904,176 @@ async function openScriptPanel(studentIdx, rowIdx) {
     content.innerHTML = '';
     for (let pg = 1; pg <= doc.numPages; pg++) {
       const page     = await doc.getPage(pg);
-      const viewport = page.getViewport({ scale: 1.4 });
+      const viewport = page.getViewport({ scale: 2.0 });
       const canvas   = document.createElement('canvas');
       canvas.width   = viewport.width;
       canvas.height  = viewport.height;
-      canvas.style.cssText = 'display:block;max-width:100%;height:auto;margin-bottom:10px;border:1px solid var(--border);border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.06)';
+      canvas.style.cssText = 'display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:6px 6px 0 0';
       await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-      if (doc.numPages > 1) {
-        const lbl = document.createElement('div');
-        lbl.style.cssText = 'font-size:10px;font-weight:600;color:var(--text-soft);letter-spacing:.3px;text-transform:uppercase;margin-bottom:4px';
-        lbl.textContent = `Page ${pg}`;
-        content.appendChild(lbl);
-      }
-      content.appendChild(canvas);
+
+      // Page wrapper: relative container for canvas + annotation overlay
+      const wrapper = document.createElement('div');
+      wrapper.dataset.page = pg;
+      wrapper.style.cssText = 'position:relative;margin-bottom:14px;border-radius:6px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.08)';
+
+      // Page label
+      const lbl = document.createElement('div');
+      lbl.style.cssText = 'font-size:10px;font-weight:600;color:var(--text-soft);letter-spacing:.4px;text-transform:uppercase;padding:4px 8px;background:#f3f4f6;border-bottom:1px solid var(--border)';
+      lbl.textContent = `Page ${pg}`;
+      wrapper.appendChild(lbl);
+      wrapper.appendChild(canvas);
+
+      // Annotation overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'ann-overlay';
+      overlay.dataset.page = pg;
+      overlay.dataset.sidx = studentIdx;
+      overlay.style.cssText = 'position:absolute;top:24px;left:0;right:0;bottom:0;pointer-events:none';
+      overlay.addEventListener('click', e => onAnnotationOverlayClick(e, studentIdx, pg));
+      wrapper.appendChild(overlay);
+
+      content.appendChild(wrapper);
     }
     content.dataset.loaded = String(studentIdx);
+    renderAnnotations(studentIdx);
+    scrollScriptPanelToQuestion(qKeys[currentQKeyIdx]);
   } catch(err) {
     content.innerHTML = `<p style="font-size:12px;color:var(--red);padding:8px 0">Error loading script: ${escHtml(err.message)}</p>`;
   }
+}
+
+// ── Annotation rendering ──────────────────────────────────────────────────────
+function renderAnnotations(studentIdx) {
+  const item = bulkAssignQueue[studentIdx];
+  if (!item?.annotations) return;
+
+  // Clear overlays for this student
+  document.querySelectorAll(`.ann-overlay[data-sidx="${studentIdx}"]`).forEach(ov => {
+    ov.innerHTML = '';
+    ov.style.pointerEvents = 'auto';
+  });
+
+  item.annotations.forEach(ann => {
+    const overlay = document.querySelector(`.ann-overlay[data-sidx="${studentIdx}"][data-page="${ann.page}"]`);
+    if (!overlay) return;
+    placeAnnotationEl(overlay, ann, studentIdx);
+  });
+}
+
+function placeAnnotationEl(overlay, ann, studentIdx) {
+  const isTick  = ann.symbol === 'tick';
+  const isNote  = ann.symbol === 'note';
+  const bg      = isTick ? '#16a34a' : isNote ? '#1d4ed8' : '#dc2626';
+  const el      = document.createElement('div');
+  el.dataset.annId = ann.id;
+  el.style.cssText = `
+    position:absolute;left:${ann.x}%;top:${ann.y}%;
+    transform:translate(-50%,-50%);
+    width:28px;height:28px;border-radius:50%;
+    background:${bg};color:#fff;
+    font-size:15px;font-weight:700;line-height:28px;text-align:center;
+    cursor:grab;user-select:none;z-index:20;
+    box-shadow:0 2px 6px rgba(0,0,0,.35);
+    pointer-events:auto;
+  `;
+  el.textContent = isTick ? '✓' : isNote ? '✎' : '✗';
+  el.title = ann.comment || '';
+
+  if (ann.comment) {
+    const bubble = document.createElement('div');
+    bubble.style.cssText = `
+      position:absolute;left:50%;bottom:calc(100% + 4px);
+      transform:translateX(-50%);
+      background:rgba(30,30,30,.9);color:#fff;
+      font-size:10px;font-weight:500;padding:3px 7px;
+      border-radius:4px;white-space:nowrap;pointer-events:none;
+      opacity:0;transition:opacity .15s;z-index:30;
+    `;
+    bubble.textContent = ann.comment;
+    el.appendChild(bubble);
+    el.addEventListener('mouseenter', () => { bubble.style.opacity = '1'; });
+    el.addEventListener('mouseleave', () => { bubble.style.opacity = '0'; });
+  }
+
+  // Delete on right-click
+  el.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    deleteAnnotation(studentIdx, ann.id);
+  });
+
+  // Drag
+  makeAnnotationDraggable(el, ann, studentIdx, overlay);
+
+  overlay.appendChild(el);
+}
+
+function makeAnnotationDraggable(el, ann, studentIdx, overlay) {
+  let dragging = false, startX, startY, origX, origY;
+
+  el.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    e.stopPropagation();
+    dragging = true;
+    el.setPointerCapture(e.pointerId);
+    el.style.cursor = 'grabbing';
+    const rect = overlay.getBoundingClientRect();
+    startX = e.clientX; startY = e.clientY;
+    origX = ann.x; origY = ann.y;
+  });
+
+  el.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const rect = overlay.getBoundingClientRect();
+    const dx = (e.clientX - startX) / rect.width  * 100;
+    const dy = (e.clientY - startY) / rect.height * 100;
+    ann.x = Math.max(0, Math.min(100, origX + dx));
+    ann.y = Math.max(0, Math.min(100, origY + dy));
+    el.style.left = `${ann.x}%`;
+    el.style.top  = `${ann.y}%`;
+  });
+
+  el.addEventListener('pointerup', e => {
+    if (!dragging) return;
+    dragging = false;
+    el.style.cursor = 'grab';
+    el.releasePointerCapture(e.pointerId);
+  });
+}
+
+function onAnnotationOverlayClick(e, studentIdx, page) {
+  if (!annAddMode) return;
+  if (e.target.dataset.annId) return; // clicked an existing annotation
+  const overlay = e.currentTarget;
+  const rect    = overlay.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width  * 100;
+  const y = (e.clientY - rect.top)  / rect.height * 100;
+
+  if (annAddMode === 'note') {
+    const text = prompt('Annotation note:');
+    if (!text) return;
+    addAnnotation(studentIdx, page, x, y, 'note', text);
+  } else {
+    const comment = annAddMode === 'cross' ? (prompt('Reason for cross (optional):') ?? '') : '';
+    addAnnotation(studentIdx, page, x, y, annAddMode, comment);
+  }
+}
+
+function addAnnotation(studentIdx, page, x, y, symbol, comment) {
+  const item = bulkAssignQueue[studentIdx];
+  if (!item) return;
+  if (!item.annotations) item.annotations = [];
+  const ann = { id: `t-${Date.now()}`, page, x, y, symbol, comment: comment ?? '' };
+  item.annotations.push(ann);
+
+  const overlay = document.querySelector(`.ann-overlay[data-sidx="${studentIdx}"][data-page="${page}"]`);
+  if (overlay) placeAnnotationEl(overlay, ann, studentIdx);
+}
+
+function deleteAnnotation(studentIdx, annId) {
+  const item = bulkAssignQueue[studentIdx];
+  if (!item?.annotations) return;
+  item.annotations = item.annotations.filter(a => a.id !== annId);
+  renderAnnotations(studentIdx);
 }
 
 function onQOverride(input) {
@@ -2904,6 +3116,7 @@ function navQuestion(delta) {
   currentQKeyIdx = next;
   renderQNav();
   renderQReviewTable(qKeys[currentQKeyIdx]);
+  scrollScriptPanelToQuestion(qKeys[currentQKeyIdx]);
 }
 
 async function saveAllBulkAssign(btn, msgElId) {
