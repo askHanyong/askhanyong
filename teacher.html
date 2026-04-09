@@ -1840,7 +1840,7 @@ async function doBulkAssignMark() {
     let lastError = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       if (attempt > 0) {
-        const wait = attempt * 3000;
+        const wait = attempt * 8000;   // 8s, 16s — give the server time to recover
         progText.textContent = `Retry ${attempt}/2 for ${item.name} (waiting ${wait/1000}s)…`;
         await new Promise(r => setTimeout(r, wait));
       }
@@ -1861,6 +1861,11 @@ async function doBulkAssignMark() {
         if (!res.ok) {
           const d = await res.json().catch(()=>({}));
           lastError = d.error || `HTTP ${res.status}`;
+          // 413 = prompt too large, not retryable
+          if (res.status === 413) {
+            item.status = 'error'; item.error = lastError;
+            break;
+          }
           // Retry on transient server errors
           if ([502, 503, 529].includes(res.status) && attempt < 2) continue;
           item.status = 'error'; item.error = lastError;

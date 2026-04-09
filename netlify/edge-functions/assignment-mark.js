@@ -304,29 +304,42 @@ export default async (request) => {
       },
     ];
 
-    // Call Anthropic with streaming
-    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key':         apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-beta':    'pdfs-2024-09-25',
-        'content-type':      'application/json',
-      },
-      body: JSON.stringify({
-        model:       'claude-sonnet-4-6',
-        max_tokens:  8000,
-        temperature: 0,
-        stream:      true,
-        system:      systemPrompt,
-        tools:       [markingTool],
-        tool_choice: { type: 'tool', name: 'submit_marks' },
-        messages:    [{ role: 'user', content }],
-      }),
+    // Call Anthropic with streaming — retry once on transient errors (429/500/529)
+    const anthropicPayload = JSON.stringify({
+      model:       'claude-sonnet-4-6',
+      max_tokens:  8000,
+      temperature: 0,
+      stream:      true,
+      system:      systemPrompt,
+      tools:       [markingTool],
+      tool_choice: { type: 'tool', name: 'submit_marks' },
+      messages:    [{ role: 'user', content }],
     });
+    const TRANSIENT = new Set([429, 500, 529]);
+    let anthropicRes;
+    for (let aAttempt = 0; aAttempt < 2; aAttempt++) {
+      if (aAttempt > 0) await new Promise(r => setTimeout(r, 3000));
+      anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key':         apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta':    'pdfs-2024-09-25',
+          'content-type':      'application/json',
+        },
+        body: anthropicPayload,
+      });
+      if (anthropicRes.ok) break;
+      if (!TRANSIENT.has(anthropicRes.status)) break;
+      // Drain body before retrying
+      await anthropicRes.body?.cancel().catch(() => {});
+    }
 
     if (!anthropicRes.ok) {
       const errText = await anthropicRes.text();
+      if (errText.includes('prompt is too long') || errText.includes('too many tokens')) {
+        return jsonErr(413, 'Script PDFs are too large for AI marking. Reduce file sizes or use fewer pages.');
+      }
       return jsonErr(502, `Anthropic ${anthropicRes.status}: ${errText}`);
     }
 
@@ -364,7 +377,12 @@ export default async (request) => {
       }
     }
 
-    if (streamErr) return jsonErr(502, `Anthropic error: ${streamErr}`);
+    if (streamErr) {
+      if (streamErr.includes('prompt is too long') || streamErr.includes('too many tokens')) {
+        return jsonErr(413, 'Script PDFs are too large for AI marking. Reduce file sizes or use fewer pages.');
+      }
+      return jsonErr(502, `Anthropic error: ${streamErr}`);
+    }
     if (!jsonStr)  return jsonErr(502, `No tool call received (stop_reason: ${stopReason ?? 'unknown'})`);
 
     let markResult;
