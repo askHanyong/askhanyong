@@ -636,39 +636,59 @@ td{padding:10px 12px;vertical-align:top}
         <div id="qReviewProgress" style="font-size:12px;font-weight:600;color:var(--text-mid)">0 / 0 questions reviewed</div>
       </div>
 
-      <div id="qNavBar" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px"></div>
+      <!-- Two-column layout: left = review, right = sticky script viewer -->
+      <div style="display:flex;align-items:flex-start;gap:20px">
 
-      <div class="card">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap">
-          <div>
-            <div id="qReviewTitle" style="font-size:16px;font-weight:700;color:var(--navy)">Question</div>
-            <div id="qReviewStats" style="font-size:12px;color:var(--text-soft);margin-top:3px"></div>
+        <!-- LEFT: Q nav + table + pagination -->
+        <div style="flex:1;min-width:0">
+          <div id="qNavBar" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px"></div>
+
+          <div class="card">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+              <div>
+                <div id="qReviewTitle" style="font-size:16px;font-weight:700;color:var(--navy)">Question</div>
+                <div id="qReviewStats" style="font-size:12px;color:var(--text-soft);margin-top:3px"></div>
+              </div>
+              <button onclick="acceptAllForQ()"
+                style="padding:6px 14px;background:var(--gold-pale);border:1.5px solid var(--gold);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;color:var(--navy);flex-shrink:0">
+                ✓ Accept all AI marks
+              </button>
+            </div>
+            <div style="border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+              <table>
+                <thead><tr><th>Student</th><th style="width:110px">AI Mark</th><th>Notes</th><th style="width:110px">Final</th></tr></thead>
+                <tbody id="qReviewBody"></tbody>
+              </table>
+            </div>
           </div>
-          <button onclick="acceptAllForQ()"
-            style="padding:6px 14px;background:var(--gold-pale);border:1.5px solid var(--gold);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;color:var(--navy);flex-shrink:0">
-            ✓ Accept all AI marks
-          </button>
-        </div>
-        <div style="border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
-          <table>
-            <thead><tr><th>Student</th><th style="width:110px">AI Mark</th><th>Notes</th><th style="width:110px">Final</th></tr></thead>
-            <tbody id="qReviewBody"></tbody>
-          </table>
-        </div>
-      </div>
 
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px">
-        <button id="btnQPrev" onclick="navQuestion(-1)" class="btn-sm">← Prev</button>
-        <div id="qNavCounter" style="font-size:13px;font-weight:600;color:var(--text-mid)"></div>
-        <button id="btnQNext" onclick="navQuestion(1)" class="btn-primary" style="max-width:140px">Next Q →</button>
-      </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px">
+            <button id="btnQPrev" onclick="navQuestion(-1)" class="btn-sm">← Prev</button>
+            <div id="qNavCounter" style="font-size:13px;font-weight:600;color:var(--text-mid)"></div>
+            <button id="btnQNext" onclick="navQuestion(1)" class="btn-primary" style="max-width:140px">Next Q →</button>
+          </div>
 
-      <div id="aBulkSaveSection" style="display:none;margin-top:20px;padding-top:16px;border-top:1.5px solid var(--border)">
-        <p style="font-size:13px;color:var(--text-mid);margin-bottom:12px">All questions reviewed. Ready to save.</p>
-        <button id="btnSaveBulkAssign" onclick="saveAllBulkAssign(this,'aBulkSaveMsg')" class="btn-primary"
-          style="max-width:260px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save All &amp; Confirm</button>
-        <div id="aBulkSaveMsg" class="msg" style="margin-top:10px"></div>
-      </div>
+          <div id="aBulkSaveSection" style="display:none;margin-top:20px;padding-top:16px;border-top:1.5px solid var(--border)">
+            <p style="font-size:13px;color:var(--text-mid);margin-bottom:12px">All questions reviewed. Ready to save.</p>
+            <button id="btnSaveBulkAssign" onclick="saveAllBulkAssign(this,'aBulkSaveMsg')" class="btn-primary"
+              style="max-width:260px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save All &amp; Confirm</button>
+            <div id="aBulkSaveMsg" class="msg" style="margin-top:10px"></div>
+          </div>
+        </div><!-- /LEFT -->
+
+        <!-- RIGHT: sticky script viewer (hidden until a Script button is clicked) -->
+        <div id="scriptSidePanel" style="display:none;width:420px;flex-shrink:0;position:sticky;top:80px;max-height:calc(100vh - 100px);overflow:hidden;border:1.5px solid var(--border);border-radius:var(--radius);background:#faf9f7;box-shadow:0 4px 16px rgba(0,0,0,.08)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1.5px solid var(--border);background:#fff;flex-shrink:0">
+            <div>
+              <div id="scriptPanelName" style="font-size:13px;font-weight:700;color:var(--navy)"></div>
+              <div style="font-size:11px;color:var(--text-soft);margin-top:1px">Student Script</div>
+            </div>
+            <button onclick="closeScriptPanel()" style="padding:3px 9px;border:1.5px solid var(--border);border-radius:5px;background:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-mid)">✕</button>
+          </div>
+          <div id="scriptPanelContent" style="overflow-y:auto;max-height:calc(100vh - 160px);padding:12px"></div>
+        </div><!-- /RIGHT -->
+
+      </div><!-- /two-column -->
     </div><!-- /assignQReviewPane -->
 
   </div><!-- /assignSection -->
@@ -2652,6 +2672,8 @@ function startQReview() {
   buildQuestionIndex();
   if (!qKeys.length) { alert('No question data available.'); return; }
   currentQKeyIdx = 0;
+  scriptPanelStudentIdx = -1;
+  document.getElementById('scriptSidePanel').style.display   = 'none';
   document.getElementById('assignBulkPane').style.display    = 'none';
   document.getElementById('assignQReviewPane').style.display = '';
   renderQNav();
@@ -2659,6 +2681,8 @@ function startQReview() {
 }
 
 function exitQReview() {
+  scriptPanelStudentIdx = -1;
+  document.getElementById('scriptSidePanel').style.display   = 'none';
   document.getElementById('assignQReviewPane').style.display = 'none';
   document.getElementById('assignBulkPane').style.display    = '';
 }
@@ -2715,7 +2739,7 @@ function renderQReviewTable(qKey) {
       tr.innerHTML = `
         <td style="font-weight:600;white-space:nowrap">
           ${escHtml(item.studentName)}
-          ${hasScript ? `<button id="qr-script-btn-${rowIdx}" onclick="toggleStudentScript(${item.studentIdx},${rowIdx})"
+          ${hasScript ? `<button id="qr-script-btn-${rowIdx}" onclick="openScriptPanel(${item.studentIdx},${rowIdx})"
             style="margin-left:8px;padding:2px 8px;border:1.5px solid var(--border);border-radius:5px;
                    background:#fff;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-mid);
                    vertical-align:middle">👁 Script</button>` : ''}
@@ -2732,49 +2756,82 @@ function renderQReviewTable(qKey) {
         </td>`;
     }
     tbody.appendChild(tr);
-
-    // Inline script viewer row (collapsed by default)
-    const scriptRow = document.createElement('tr');
-    scriptRow.id    = `qr-script-row-${rowIdx}`;
-    scriptRow.style.display = 'none';
-    scriptRow.innerHTML = `
-      <td colspan="4" style="padding:0;border-top:none">
-        <div id="qr-script-view-${rowIdx}"
-          style="max-height:560px;overflow-y:auto;padding:12px 16px;background:#faf9f7;
-                 border-top:1px solid var(--border)"></div>
-      </td>`;
-    tbody.appendChild(scriptRow);
   });
+
+  // If the side panel is open, re-apply the "Viewing" state to the correct button
+  if (scriptPanelStudentIdx >= 0) {
+    qData.items.forEach((item, rowIdx) => {
+      if (item.studentIdx === scriptPanelStudentIdx) {
+        const btn = document.getElementById(`qr-script-btn-${rowIdx}`);
+        if (btn) {
+          btn.textContent = '👁 Viewing';
+          btn.style.background = 'var(--navy)';
+          btn.style.color = '#fff';
+          btn.style.borderColor = 'var(--navy)';
+        }
+      }
+    });
+  }
 }
 
-async function toggleStudentScript(studentIdx, rowIdx) {
-  const scriptRow = document.getElementById(`qr-script-row-${rowIdx}`);
-  const viewDiv   = document.getElementById(`qr-script-view-${rowIdx}`);
-  const btn       = document.getElementById(`qr-script-btn-${rowIdx}`);
-  if (!scriptRow) return;
+// Script side panel — studentIdx currently shown in the panel (-1 = none)
+let scriptPanelStudentIdx = -1;
 
-  const isOpen = scriptRow.style.display !== 'none';
-  if (isOpen) {
-    scriptRow.style.display = 'none';
-    if (btn) btn.textContent = '👁 Script';
+function closeScriptPanel() {
+  document.getElementById('scriptSidePanel').style.display = 'none';
+  // Clear active highlight on all script buttons
+  document.querySelectorAll('[id^="qr-script-btn-"]').forEach(b => {
+    b.textContent = '👁 Script';
+    b.style.background = '#fff';
+    b.style.color = 'var(--text-mid)';
+    b.style.borderColor = 'var(--border)';
+  });
+  scriptPanelStudentIdx = -1;
+}
+
+async function openScriptPanel(studentIdx, rowIdx) {
+  const panel   = document.getElementById('scriptSidePanel');
+  const content = document.getElementById('scriptPanelContent');
+  const nameEl  = document.getElementById('scriptPanelName');
+
+  // If same script already open, toggle it closed
+  if (scriptPanelStudentIdx === studentIdx && panel.style.display !== 'none') {
+    closeScriptPanel();
     return;
   }
-  scriptRow.style.display = '';
-  if (btn) btn.textContent = '✕ Close';
+
+  // Highlight the active button; reset others
+  document.querySelectorAll('[id^="qr-script-btn-"]').forEach(b => {
+    b.textContent = '👁 Script';
+    b.style.background = '#fff';
+    b.style.color = 'var(--text-mid)';
+    b.style.borderColor = 'var(--border)';
+  });
+  const activeBtn = document.getElementById(`qr-script-btn-${rowIdx}`);
+  if (activeBtn) {
+    activeBtn.textContent = '👁 Viewing';
+    activeBtn.style.background = 'var(--navy)';
+    activeBtn.style.color = '#fff';
+    activeBtn.style.borderColor = 'var(--navy)';
+  }
 
   const item = bulkAssignQueue[studentIdx];
+  nameEl.textContent = item?.name ?? 'Student';
+  panel.style.display = '';
+  scriptPanelStudentIdx = studentIdx;
+
   if (!item?.b64) {
-    viewDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:8px 0">Script not available.</p>';
+    content.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:8px 0">Script not available.</p>';
     return;
   }
   // Already rendered for this student — don't re-render
-  if (viewDiv.dataset.loaded === String(studentIdx)) return;
+  if (content.dataset.loaded === String(studentIdx)) return;
 
-  viewDiv.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:8px 0">Loading script…</p>';
-  viewDiv.dataset.loaded = '';
+  content.innerHTML = '<p style="font-size:12px;color:var(--text-soft);padding:8px 0">Loading script…</p>';
+  content.dataset.loaded = '';
 
   if (typeof pdfjsLib === 'undefined') {
-    viewDiv.innerHTML = '<p style="font-size:12px;color:var(--red);padding:8px 0">PDF viewer unavailable. Please refresh.</p>';
+    content.innerHTML = '<p style="font-size:12px;color:var(--red);padding:8px 0">PDF viewer unavailable. Please refresh.</p>';
     return;
   }
 
@@ -2784,10 +2841,10 @@ async function toggleStudentScript(studentIdx, rowIdx) {
     for (let i = 0; i < raw.length; i++) uint8[i] = raw.charCodeAt(i);
     const doc = await pdfjsLib.getDocument({ data: uint8 }).promise;
 
-    viewDiv.innerHTML = '';
+    content.innerHTML = '';
     for (let pg = 1; pg <= doc.numPages; pg++) {
       const page     = await doc.getPage(pg);
-      const viewport = page.getViewport({ scale: 1.3 });
+      const viewport = page.getViewport({ scale: 1.4 });
       const canvas   = document.createElement('canvas');
       canvas.width   = viewport.width;
       canvas.height  = viewport.height;
@@ -2797,13 +2854,13 @@ async function toggleStudentScript(studentIdx, rowIdx) {
         const lbl = document.createElement('div');
         lbl.style.cssText = 'font-size:10px;font-weight:600;color:var(--text-soft);letter-spacing:.3px;text-transform:uppercase;margin-bottom:4px';
         lbl.textContent = `Page ${pg}`;
-        viewDiv.appendChild(lbl);
+        content.appendChild(lbl);
       }
-      viewDiv.appendChild(canvas);
+      content.appendChild(canvas);
     }
-    viewDiv.dataset.loaded = String(studentIdx);
+    content.dataset.loaded = String(studentIdx);
   } catch(err) {
-    viewDiv.innerHTML = `<p style="font-size:12px;color:var(--red);padding:8px 0">Error loading script: ${escHtml(err.message)}</p>`;
+    content.innerHTML = `<p style="font-size:12px;color:var(--red);padding:8px 0">Error loading script: ${escHtml(err.message)}</p>`;
   }
 }
 
