@@ -715,6 +715,31 @@ td{padding:10px 12px;vertical-align:top}
           </div>
           <!-- PDF content -->
           <div id="scriptPanelContent" style="overflow-y:auto;flex:1;padding:12px"></div>
+          <!-- Mark adjustment footer — synced with left column -->
+          <div id="scriptPanelMarkBar" style="display:none;flex-shrink:0;border-top:1.5px solid var(--border);background:#fff;padding:10px 14px">
+            <div style="font-size:10px;font-weight:600;color:var(--text-soft);letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px">
+              Mark for <span id="spMarkQLabel" style="color:var(--navy)">—</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:12px;color:var(--text-soft)">AI: <span id="spMarkAI" style="font-family:'DM Mono',monospace;font-weight:700;color:var(--text-mid)">—</span></span>
+              <svg width="14" height="14" viewBox="0 0 14 14" style="flex-shrink:0;color:var(--text-soft)"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span style="font-size:12px;font-weight:600;color:var(--navy)">Final:</span>
+              <div style="display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:6px;overflow:hidden;background:#fff">
+                <button onclick="adjustScriptMark(-1)"
+                  style="padding:4px 10px;border:none;background:none;font-size:16px;font-weight:600;cursor:pointer;color:var(--text-mid);line-height:1;transition:background .1s"
+                  onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">−</button>
+                <input id="spMarkInput" type="number" min="0"
+                  style="width:44px;border:none;border-left:1.5px solid var(--border);border-right:1.5px solid var(--border);
+                         padding:4px 4px;font-family:'DM Mono',monospace;font-weight:700;font-size:15px;text-align:center;
+                         outline:none;background:#fff;color:var(--navy)"
+                  oninput="onScriptPanelMarkInput(this)">
+                <button onclick="adjustScriptMark(+1)"
+                  style="padding:4px 10px;border:none;background:none;font-size:16px;font-weight:600;cursor:pointer;color:var(--text-mid);line-height:1;transition:background .1s"
+                  onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">+</button>
+              </div>
+              <span id="spMarkAvail" style="font-size:12px;color:var(--text-soft)">/ ?</span>
+            </div>
+          </div>
         </div><!-- /RIGHT -->
 
       </div><!-- /two-column -->
@@ -2843,6 +2868,7 @@ function setAnnMode(mode) {
 function closeScriptPanel() {
   const panel = document.getElementById('scriptSidePanel');
   panel.style.display = 'none';
+  document.getElementById('scriptPanelMarkBar').style.display = 'none';
   annAddMode = 'view';
   setAnnMode('view');
   document.querySelectorAll('[id^="qr-script-btn-"]').forEach(b => {
@@ -2863,6 +2889,63 @@ function scrollScriptPanelToQuestion(qKey) {
   const pg = item?.pg ?? 1;
   const pageEl = document.querySelector(`#scriptPanelContent [data-page="${pg}"]`);
   if (pageEl) pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  updateScriptPanelMarkBar();
+}
+
+// ── Mark adjustment footer ────────────────────────────────────────────────────
+function updateScriptPanelMarkBar() {
+  const bar = document.getElementById('scriptPanelMarkBar');
+  if (!bar || scriptPanelStudentIdx < 0) { if (bar) bar.style.display = 'none'; return; }
+
+  const qKey  = qKeys[currentQKeyIdx];
+  const qData = questionIndex[qKey];
+  if (!qData) { bar.style.display = 'none'; return; }
+
+  const item = qData.items.find(it => it.studentIdx === scriptPanelStudentIdx);
+  if (!item || item.aiMark === null) { bar.style.display = 'none'; return; }
+
+  bar.style.display = '';
+  document.getElementById('spMarkQLabel').textContent = `Q ${qData.label}`;
+  document.getElementById('spMarkAI').textContent     = `${item.aiMark} / ${qData.ma ?? '?'}`;
+  document.getElementById('spMarkAvail').textContent  = `/ ${qData.ma ?? '?'}`;
+
+  const input = document.getElementById('spMarkInput');
+  input.value   = item.finalMark ?? item.aiMark;
+  input.max     = qData.ma ?? 99;
+  input.dataset.qkey   = qKey;
+  input.dataset.sidx   = scriptPanelStudentIdx;
+  // Highlight if changed from AI
+  input.style.color      = item.finalMark !== item.aiMark ? '#92400e' : 'var(--navy)';
+  input.style.background = item.finalMark !== item.aiMark ? 'var(--gold-pale)' : '#fff';
+}
+
+function onScriptPanelMarkInput(input) {
+  const v = parseInt(input.value, 10);
+  if (isNaN(v)) return;
+  const qKey = input.dataset.qkey;
+  const sidx = parseInt(input.dataset.sidx, 10);
+  if (!questionIndex[qKey]) return;
+  const item = questionIndex[qKey].items.find(it => it.studentIdx === sidx);
+  if (!item) return;
+  const clamped = Math.max(0, Math.min(questionIndex[qKey].ma ?? 999, v));
+  item.finalMark = clamped;
+  // Highlight changed state
+  const changed = clamped !== item.aiMark;
+  input.style.color      = changed ? '#92400e' : 'var(--navy)';
+  input.style.background = changed ? 'var(--gold-pale)' : '#fff';
+  // Sync left column input
+  const rowIdx = questionIndex[qKey].items.indexOf(item);
+  const leftInput = document.querySelector(`#qr-row-${rowIdx} .q-final-input`);
+  if (leftInput) { leftInput.value = clamped; leftInput.classList.toggle('changed', changed); }
+}
+
+function adjustScriptMark(delta) {
+  const input = document.getElementById('spMarkInput');
+  const cur   = parseInt(input.value, 10);
+  if (isNaN(cur)) return;
+  const max = parseInt(input.max, 10) || 999;
+  input.value = Math.max(0, Math.min(max, cur + delta));
+  onScriptPanelMarkInput(input);
 }
 
 async function openScriptPanel(studentIdx, rowIdx) {
