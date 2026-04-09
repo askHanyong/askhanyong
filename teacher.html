@@ -219,6 +219,20 @@ td{padding:10px 12px;vertical-align:top}
 /* Annotation chip on PDF — delete mode cursor */
 .ann-overlay.mode-delete .ann-chip{cursor:pointer}
 .ann-overlay.mode-delete .ann-chip:hover{box-shadow:0 0 0 3px #7c3aed,0 2px 6px rgba(0,0,0,.35);opacity:.85}
+/* IB mark toolbar — second row */
+.ib-mark-btn{padding:3px 8px;border:1.5px solid var(--border);border-radius:5px;background:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Mono',monospace;color:var(--text-mid);transition:all .12s;white-space:nowrap;line-height:1.4}
+.ib-mark-btn:hover{border-color:var(--navy);color:var(--navy)}
+.ib-mark-btn.active-M{background:#16a34a;color:#fff;border-color:#16a34a}
+.ib-mark-btn.active-A{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.ib-mark-btn.active-R{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.ib-mark-btn.active-FT{background:#d97706;color:#fff;border-color:#d97706}
+.ib-mark-btn.active-AG{background:#475569;color:#fff;border-color:#475569}
+.ib-letter-btn{padding:3px 7px;border:1.5px solid var(--border);border-radius:4px;background:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Mono',monospace;color:var(--text-mid);transition:all .12s;line-height:1.4}
+.ib-letter-btn.sel-M{background:#dcfce7;border-color:#16a34a;color:#16a34a}
+.ib-letter-btn.sel-A{background:#dbeafe;border-color:#1d4ed8;color:#1d4ed8}
+.ib-letter-btn.sel-R{background:#ede9fe;border-color:#7c3aed;color:#7c3aed}
+.ib-num-btn{padding:3px 6px;border:1.5px solid var(--border);border-radius:4px;background:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Mono',monospace;color:var(--text-mid);transition:all .12s;line-height:1.4;min-width:22px;text-align:center}
+.ib-num-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 </style>
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -704,14 +718,36 @@ td{padding:10px 12px;vertical-align:top}
             </div>
             <button onclick="closeScriptPanel()" style="padding:3px 9px;border:1.5px solid var(--border);border-radius:5px;background:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-mid)">✕</button>
           </div>
-          <!-- Annotation toolbar — 5 modes -->
-          <div id="annToolbar" style="display:flex;align-items:center;gap:5px;padding:7px 12px;border-bottom:1.5px solid var(--border);background:#fafafa;flex-shrink:0;flex-wrap:wrap">
-            <button id="annMode-view"   class="ann-mode-btn mode-view active"   onclick="setAnnMode('view')">  👁 View</button>
-            <button id="annMode-tick"   class="ann-mode-btn mode-tick"          onclick="setAnnMode('tick')">  ✓ Tick</button>
-            <button id="annMode-cross"  class="ann-mode-btn mode-cross"         onclick="setAnnMode('cross')"> ✗ Cross</button>
+          <!-- Row 1: General annotation modes -->
+          <div id="annToolbar" style="display:flex;align-items:center;gap:5px;padding:7px 12px;border-bottom:1px solid var(--border);background:#fafafa;flex-shrink:0;flex-wrap:wrap">
+            <button id="annMode-view"   class="ann-mode-btn mode-view active"   onclick="setAnnMode('view')">👁 View</button>
+            <button id="annMode-tick"   class="ann-mode-btn mode-tick"          onclick="setAnnMode('tick')">✓ Tick</button>
+            <button id="annMode-cross"  class="ann-mode-btn mode-cross"         onclick="setAnnMode('cross')">✗ Cross</button>
             <button id="annMode-delete" class="ann-mode-btn mode-delete"        onclick="setAnnMode('delete')">🗑 Delete</button>
-            <button id="annMode-note"   class="ann-mode-btn mode-note"          onclick="setAnnMode('note')">  📝 Note</button>
+            <button id="annMode-note"   class="ann-mode-btn mode-note"          onclick="setAnnMode('note')">📝 Note</button>
             <span id="annModeHint" style="font-size:10px;color:var(--text-soft);margin-left:4px"></span>
+          </div>
+          <!-- Row 2: IB marking symbols -->
+          <div id="annIBToolbar" style="display:flex;align-items:center;gap:4px;padding:6px 12px;border-bottom:1.5px solid var(--border);background:#f5f5f5;flex-shrink:0;flex-wrap:wrap">
+            <span style="font-size:9px;font-weight:700;color:var(--text-soft);letter-spacing:.4px;text-transform:uppercase;margin-right:3px;white-space:nowrap">IB</span>
+            <button id="ibBtn-M1" class="ib-mark-btn" onclick="setIBMode('M1')">M1</button>
+            <button id="ibBtn-A1" class="ib-mark-btn" onclick="setIBMode('A1')">A1</button>
+            <button id="ibBtn-R1" class="ib-mark-btn" onclick="setIBMode('R1')">R1</button>
+            <button id="ibBtn-FT" class="ib-mark-btn" onclick="setIBMode('FT')">FT</button>
+            <button id="ibBtn-AG" class="ib-mark-btn" onclick="setIBMode('AG')">AG</button>
+            <div style="width:1px;height:18px;background:var(--border);margin:0 4px;flex-shrink:0"></div>
+            <!-- Custom: letter picker then number picker -->
+            <button id="ibLetter-M" class="ib-letter-btn" onclick="setIBLetter('M')">M</button>
+            <button id="ibLetter-A" class="ib-letter-btn" onclick="setIBLetter('A')">A</button>
+            <button id="ibLetter-R" class="ib-letter-btn" onclick="setIBLetter('R')">R</button>
+            <div style="width:1px;height:18px;background:var(--border);margin:0 3px;flex-shrink:0"></div>
+            <button id="ibNum-1" class="ib-num-btn" onclick="setIBNum(1)">1</button>
+            <button id="ibNum-2" class="ib-num-btn" onclick="setIBNum(2)">2</button>
+            <button id="ibNum-3" class="ib-num-btn" onclick="setIBNum(3)">3</button>
+            <button id="ibNum-4" class="ib-num-btn" onclick="setIBNum(4)">4</button>
+            <button id="ibNum-5" class="ib-num-btn" onclick="setIBNum(5)">5</button>
+            <button id="ibNum-6" class="ib-num-btn" onclick="setIBNum(6)">6</button>
+            <span id="ibCustomPreview" style="display:none;margin-left:4px;font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--navy)"></span>
           </div>
           <!-- PDF content -->
           <div id="scriptPanelContent" style="overflow-y:auto;flex:1;padding:12px"></div>
@@ -2837,38 +2873,139 @@ function renderQReviewTable(qKey) {
 
 // ── Script side panel & annotation system ────────────────────────────────────
 let scriptPanelStudentIdx = -1;
-let annAddMode = 'view';  // 'view' | 'tick' | 'cross' | 'delete' | 'note'
+let annAddMode   = 'view';   // 'view'|'tick'|'cross'|'delete'|'note'|'ibmark'
+let annIBLabel   = null;     // active IB label when annAddMode==='ibmark'
+let ibCustomLetter = null;   // 'M'|'A'|'R'
+let ibCustomNum    = null;   // 1-6
 
 const ANN_HINTS = {
   view:   '',
-  tick:   '— click script to place a tick',
-  cross:  '— click script to place a cross',
-  delete: '— click any mark to remove it',
-  note:   '— click script to place a note',
+  tick:   '— click to place',
+  cross:  '— click to place',
+  delete: '— click mark to remove',
+  note:   '— click to place',
 };
+
+// IB mark type → colour
+const IB_COLORS = { M:'#16a34a', A:'#1d4ed8', R:'#7c3aed', FT:'#d97706', AG:'#475569' };
+function ibLabelType(label) {
+  if (label === 'FT') return 'FT';
+  if (label === 'AG') return 'AG';
+  return label?.[0] ?? 'M';  // 'M','A','R'
+}
 
 function setAnnMode(mode) {
   annAddMode = mode;
+  // Clear IB state when switching to a general mode
+  if (mode !== 'ibmark') {
+    annIBLabel     = null;
+    ibCustomLetter = null;
+    ibCustomNum    = null;
+    clearIBButtons();
+  }
   ['view','tick','cross','delete','note'].forEach(m => {
     const btn = document.getElementById(`annMode-${m}`);
     if (btn) btn.classList.toggle('active', m === mode);
   });
   const hint = document.getElementById('annModeHint');
   if (hint) hint.textContent = ANN_HINTS[mode] ?? '';
-  // Update cursor and overlay mode class for all overlays
   const content = document.getElementById('scriptPanelContent');
   if (content) {
-    content.style.cursor = (mode === 'tick' || mode === 'cross' || mode === 'note') ? 'crosshair' : '';
+    content.style.cursor = (mode === 'tick' || mode === 'cross' || mode === 'note' || mode === 'ibmark') ? 'crosshair' : '';
     document.querySelectorAll('.ann-overlay').forEach(ov => {
       ov.classList.toggle('mode-delete', mode === 'delete');
     });
   }
 }
 
+// ── IB toolbar functions ──────────────────────────────────────────────────────
+function clearIBButtons() {
+  ['M1','A1','R1','FT','AG'].forEach(l => {
+    const b = document.getElementById(`ibBtn-${l}`);
+    if (b) b.className = 'ib-mark-btn';
+  });
+  ['M','A','R'].forEach(l => {
+    const b = document.getElementById(`ibLetter-${l}`);
+    if (b) b.className = 'ib-letter-btn';
+  });
+  for (let n = 1; n <= 6; n++) {
+    const b = document.getElementById(`ibNum-${n}`);
+    if (b) b.classList.remove('active');
+  }
+  const preview = document.getElementById('ibCustomPreview');
+  if (preview) preview.style.display = 'none';
+}
+
+function setIBMode(label) {
+  // Toggle off if already active
+  if (annAddMode === 'ibmark' && annIBLabel === label) {
+    annAddMode = 'view';
+    annIBLabel = null;
+    clearIBButtons();
+    setAnnMode('view');
+    return;
+  }
+  // Deactivate general mode buttons
+  ['view','tick','cross','delete','note'].forEach(m => {
+    const b = document.getElementById(`annMode-${m}`);
+    if (b) b.classList.remove('active');
+  });
+  const hint = document.getElementById('annModeHint');
+  if (hint) hint.textContent = `— click to place ${label}`;
+  annAddMode = 'ibmark';
+  annIBLabel = label;
+  // Update cursor
+  const content = document.getElementById('scriptPanelContent');
+  if (content) {
+    content.style.cursor = 'crosshair';
+    document.querySelectorAll('.ann-overlay').forEach(ov => ov.classList.remove('mode-delete'));
+  }
+  // Highlight the correct IB button
+  clearIBButtons();
+  const type = ibLabelType(label);
+  const presetBtn = document.getElementById(`ibBtn-${label}`);
+  if (presetBtn) presetBtn.classList.add(`active-${type}`);
+}
+
+function setIBLetter(letter) {
+  ibCustomLetter = ibCustomLetter === letter ? null : letter;
+  ['M','A','R'].forEach(l => {
+    const b = document.getElementById(`ibLetter-${l}`);
+    if (b) b.className = `ib-letter-btn${ibCustomLetter === l ? ' sel-'+l : ''}`;
+  });
+  _updateCustomIBPreview();
+}
+
+function setIBNum(n) {
+  ibCustomNum = ibCustomNum === n ? null : n;
+  for (let i = 1; i <= 6; i++) {
+    const b = document.getElementById(`ibNum-${i}`);
+    if (b) b.classList.toggle('active', ibCustomNum === i);
+  }
+  _updateCustomIBPreview();
+}
+
+function _updateCustomIBPreview() {
+  const preview = document.getElementById('ibCustomPreview');
+  if (!ibCustomLetter || !ibCustomNum) {
+    if (preview) preview.style.display = 'none';
+    return;
+  }
+  const label = ibCustomLetter + ibCustomNum;
+  if (preview) { preview.textContent = `→ ${label}`; preview.style.display = ''; }
+  // Clear preset highlights before setting IB mode
+  ['M1','A1','R1','FT','AG'].forEach(l => {
+    const b = document.getElementById(`ibBtn-${l}`);
+    if (b) b.className = 'ib-mark-btn';
+  });
+  setIBMode(label);
+}
+
 function closeScriptPanel() {
   const panel = document.getElementById('scriptSidePanel');
   panel.style.display = 'none';
   document.getElementById('scriptPanelMarkBar').style.display = 'none';
+  annIBLabel = null; ibCustomLetter = null; ibCustomNum = null;
   annAddMode = 'view';
   setAnnMode('view');
   document.querySelectorAll('[id^="qr-script-btn-"]').forEach(b => {
@@ -3077,23 +3214,43 @@ function renderAnnotations(studentIdx) {
 }
 
 function placeAnnotationEl(overlay, ann, studentIdx) {
-  const isTick  = ann.symbol === 'tick';
-  const isNote  = ann.symbol === 'note';
-  const bg      = isTick ? '#16a34a' : isNote ? '#1d4ed8' : '#dc2626';
-  const el      = document.createElement('div');
-  el.className  = 'ann-chip';
+  const el = document.createElement('div');
+  el.className = 'ann-chip';
   el.dataset.annId = ann.id;
-  el.style.cssText = `
-    position:absolute;left:${ann.x}%;top:${ann.y}%;
-    transform:translate(-50%,-50%);
-    width:28px;height:28px;border-radius:50%;
-    background:${bg};color:#fff;
-    font-size:15px;font-weight:700;line-height:28px;text-align:center;
-    cursor:grab;user-select:none;z-index:20;
-    box-shadow:0 2px 6px rgba(0,0,0,.35);
-    pointer-events:auto;transition:box-shadow .1s,opacity .1s;
-  `;
-  el.textContent = isTick ? '✓' : isNote ? '✎' : '✗';
+
+  if (ann.symbol === 'ibmark') {
+    // IB badge: rectangular pill with label
+    const label = ann.label ?? '?';
+    const type  = ibLabelType(label);
+    const bg    = IB_COLORS[type] ?? '#475569';
+    el.style.cssText = `
+      position:absolute;left:${ann.x}%;top:${ann.y}%;
+      transform:translate(-50%,-50%);
+      padding:2px 7px;border-radius:5px;
+      background:${bg};color:#fff;
+      font-family:'DM Mono',monospace;font-size:12px;font-weight:700;
+      cursor:grab;user-select:none;z-index:20;white-space:nowrap;
+      box-shadow:0 2px 5px rgba(0,0,0,.3);
+      pointer-events:auto;transition:box-shadow .1s,opacity .1s;
+    `;
+    el.textContent = label;
+  } else {
+    // Circle chip: tick / cross / note
+    const isTick = ann.symbol === 'tick';
+    const isNote = ann.symbol === 'note';
+    const bg     = isTick ? '#16a34a' : isNote ? '#1d4ed8' : '#dc2626';
+    el.style.cssText = `
+      position:absolute;left:${ann.x}%;top:${ann.y}%;
+      transform:translate(-50%,-50%);
+      width:28px;height:28px;border-radius:50%;
+      background:${bg};color:#fff;
+      font-size:15px;font-weight:700;line-height:28px;text-align:center;
+      cursor:grab;user-select:none;z-index:20;
+      box-shadow:0 2px 6px rgba(0,0,0,.35);
+      pointer-events:auto;transition:box-shadow .1s,opacity .1s;
+    `;
+    el.textContent = isTick ? '✓' : isNote ? '✎' : '✗';
+  }
 
   if (ann.comment) {
     const bubble = document.createElement('div');
@@ -3154,7 +3311,6 @@ function placeAnnotationEl(overlay, ann, studentIdx) {
 }
 
 function onAnnotationOverlayClick(e, studentIdx, page) {
-  // Only handle canvas-level clicks (not clicks on existing chips)
   if (e.target.dataset.annId || e.target.closest?.('.ann-chip')) return;
   if (annAddMode === 'view' || annAddMode === 'delete') return;
 
@@ -3165,23 +3321,24 @@ function onAnnotationOverlayClick(e, studentIdx, page) {
 
   if (annAddMode === 'cross') {
     const raw = prompt('Reason for cross (max 8 words, or leave blank):');
-    if (raw === null) return; // cancelled
-    const comment = raw.trim().split(/\s+/).slice(0, 8).join(' ');
-    addAnnotation(studentIdx, page, x, y, 'cross', comment);
+    if (raw === null) return;
+    addAnnotation(studentIdx, page, x, y, 'cross', raw.trim().split(/\s+/).slice(0, 8).join(' '));
   } else if (annAddMode === 'note') {
     const text = prompt('Note text:');
     if (!text?.trim()) return;
     addAnnotation(studentIdx, page, x, y, 'note', text.trim());
   } else if (annAddMode === 'tick') {
     addAnnotation(studentIdx, page, x, y, 'tick', '');
+  } else if (annAddMode === 'ibmark' && annIBLabel) {
+    addAnnotation(studentIdx, page, x, y, 'ibmark', '', annIBLabel);
   }
 }
 
-function addAnnotation(studentIdx, page, x, y, symbol, comment) {
+function addAnnotation(studentIdx, page, x, y, symbol, comment, label) {
   const item = bulkAssignQueue[studentIdx];
   if (!item) return;
   if (!item.annotations) item.annotations = [];
-  const ann = { id: `t-${Date.now()}`, page, x, y, symbol, comment: comment ?? '' };
+  const ann = { id: `t-${Date.now()}`, page, x, y, symbol, comment: comment ?? '', label: label ?? '' };
   item.annotations.push(ann);
 
   const overlay = document.querySelector(`.ann-overlay[data-sidx="${studentIdx}"][data-page="${page}"]`);
