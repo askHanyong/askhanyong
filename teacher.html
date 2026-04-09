@@ -1840,7 +1840,7 @@ async function doBulkAssignMark() {
     let lastError = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       if (attempt > 0) {
-        const wait = attempt * 3000;
+        const wait = attempt * 8000;   // 8s, 16s — give the server time to recover
         progText.textContent = `Retry ${attempt}/2 for ${item.name} (waiting ${wait/1000}s)…`;
         await new Promise(r => setTimeout(r, wait));
       }
