@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IA Helper — askHanyong</title>
+<meta name="description" content="IB Math IA guidance from topic exploration to submission. Built by an examiner who knows exactly what separates a 6 from a 7.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBmMWYzZCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMyIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjQzlBODRDIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7OozwvdGV4dD4KPC9zdmc+">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0e1c33; --blue:#1e3a8a; --blue-mid:#1d4ed8; --blue-light:#3b82f6;
+  --ice:#dbeafe; --ice-light:#eff6ff; --white:#ffffff; --bg:#f5f4f1; --bg-mid:#ece9e3;
+  --text:#111827; --text-mid:#4b5563; --text-soft:#9ca3af; --border:#e4e2dc;
+  --green:#059669; --gold:#f59e0b; --accent:#C9A84C; --red:#ef4444;
+  --radius:14px; --radius-sm:8px;
+  --shadow:0 1px 8px rgba(0,0,0,.07); --shadow-md:0 6px 28px rgba(0,0,0,.11);
+  --ca:#475569; --cb:#3b82f6; --cc:#8b5cf6; --cd:#d97706; --ce:#059669;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+/* ── NAV ── */
+.ia-nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(10,22,40,.96); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:space-between; padding:0 24px; height:60px; border-bottom:1px solid rgba(255,255,255,.08); }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-badge { width:34px; height:34px; border-radius:9px; border:1.5px solid var(--accent); background:rgba(201,168,76,.12); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:13px; font-weight:700; color:var(--accent); }
+.nav-brand { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:#fff; }
+.nav-ia-pill { font-size:11px; font-weight:600; color:var(--accent); background:rgba(201,168,76,.15); border:1px solid rgba(201,168,76,.3); border-radius:20px; padding:2px 10px; margin-left:4px; }
+.nav-right { display:flex; align-items:center; gap:12px; }
+.nav-user-info { font-size:12px; color:rgba(255,255,255,.6); }
+.nav-logout { font-size:11px; color:rgba(255,255,255,.45); cursor:pointer; padding:3px 10px; border:1px solid rgba(255,255,255,.15); border-radius:6px; background:none; transition:all .15s; }
+.nav-logout:hover { color:rgba(255,255,255,.8); border-color:rgba(255,255,255,.3); }
+.nav-upgrade { font-size:12px; font-weight:700; color:var(--navy); background:var(--accent); border:none; border-radius:20px; padding:5px 14px; cursor:pointer; }
+
+/* ── PAGE SHELL ── */
+.ia-page { padding-top:60px; min-height:100vh; }
+.hidden { display:none !important; }
+
+/* ── GATE (hero + login) ── */
+#iaGate { background:var(--navy); min-height:calc(100vh - 60px); display:flex; flex-direction:column; }
+.gate-hero { padding:72px 24px 48px; text-align:center; max-width:680px; margin:0 auto; }
+.gate-eyebrow { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+.gate-title { font-family:'Playfair Display',serif; font-size:clamp(30px,5vw,50px); color:#fff; line-height:1.2; margin-bottom:18px; }
+.gate-sub { font-size:15px; color:rgba(255,255,255,.65); line-height:1.75; margin-bottom:40px; }
+
+/* Feature pills */
+.gate-features { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:48px; }
+.gate-feat { display:flex; align-items:center; gap:7px; padding:7px 14px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); border-radius:20px; font-size:12px; color:rgba(255,255,255,.75); }
+.gate-feat-icon { font-size:14px; }
+
+/* Login box */
+.gate-login-outer { background:rgba(255,255,255,.04); border-top:1px solid rgba(255,255,255,.08); padding:40px 24px 60px; flex:1; }
+.gate-login-box { max-width:400px; margin:0 auto; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:var(--radius); padding:28px; }
+.gate-login-box h3 { font-size:15px; font-weight:600; color:#fff; margin-bottom:6px; }
+.gate-login-box p { font-size:12px; color:rgba(255,255,255,.45); margin-bottom:20px; line-height:1.6; }
+.gate-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.gate-input { width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.08); color:#fff; font-size:13px; font-family:Inter,sans-serif; outline:none; transition:border-color .15s; }
+.gate-input::placeholder { color:rgba(255,255,255,.3); }
+.gate-input:focus { border-color:var(--accent); }
+.gate-btn { width:100%; margin-top:4px; padding:12px; border-radius:var(--radius-sm); background:var(--accent); color:var(--navy); font-size:14px; font-weight:700; border:none; cursor:pointer; transition:opacity .15s; font-family:Inter,sans-serif; }
+.gate-btn:hover { opacity:.9; }
+.gate-note { font-size:11px; color:rgba(255,255,255,.3); text-align:center; margin-top:14px; line-height:1.6; }
+
+/* Value prop cards below login */
+.gate-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; max-width:760px; margin:32px auto 0; }
+.gate-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:20px; }
+.gate-card-icon { font-size:22px; margin-bottom:10px; }
+.gate-card h4 { font-size:13px; font-weight:600; color:#fff; margin-bottom:6px; }
+.gate-card p { font-size:12px; color:rgba(255,255,255,.45); line-height:1.6; }
+
+/* ── ONBOARDING ── */
+#iaOnboard { min-height:calc(100vh - 60px); display:flex; align-items:flex-start; justify-content:center; padding:48px 20px 80px; }
+.ob-wrap { width:100%; max-width:560px; }
+.ob-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:32px; box-shadow:var(--shadow-md); }
+.ob-bar { display:flex; gap:5px; margin-bottom:28px; }
+.ob-seg { height:4px; flex:1; border-radius:2px; background:var(--bg-mid); transition:background .3s; }
+.ob-seg.done { background:var(--accent); }
+.ob-seg.active { background:var(--blue-light); }
+.ob-step { display:none; }
+.ob-step.active { display:block; }
+.ob-eyebrow { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text-soft); margin-bottom:8px; }
+.ob-title { font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); margin-bottom:8px; }
+.ob-sub { font-size:13px; color:var(--text-mid); line-height:1.65; margin-bottom:22px; }
+
+/* Course grid */
+.ob-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.ob-opt { padding:14px 16px; border:2px solid var(--border); border-radius:var(--radius-sm); background:var(--white); cursor:pointer; text-align:left; transition:all .15s; }
+.ob-opt:hover { border-color:var(--blue-light); background:var(--ice-light); }
+.ob-opt.sel { border-color:var(--blue-mid); background:var(--ice-light); }
+.ob-opt-title { font-size:14px; font-weight:700; color:var(--navy); margin-bottom:3px; }
+.ob-opt-sub { font-size:11px; color:var(--text-soft); }
+
+/* Interest chips */
+.ob-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.ob-chip { padding:6px 14px; border:1.5px solid var(--border); border-radius:20px; font-size:12px; font-weight:500; color:var(--text-mid); cursor:pointer; transition:all .15s; background:var(--white); user-select:none; }
+.ob-chip:hover { border-color:var(--blue-light); color:var(--blue-mid); }
+.ob-chip.sel { border-color:var(--blue-mid); background:var(--ice-light); color:var(--blue-mid); font-weight:600; }
+.ob-text { width:100%; padding:9px 13px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; font-family:Inter,sans-serif; color:var(--text); outline:none; background:var(--white); transition:border-color .15s; margin-top:4px; }
+.ob-text:focus { border-color:var(--blue-light); }
+
+/* Topic radios */
+.ob-radios { display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+.ob-radio { display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; }
+.ob-radio:hover { border-color:var(--blue-light); }
+.ob-radio.sel { border-color:var(--blue-mid); background:var(--ice-light); }
+.ob-radio-dot { width:18px; height:18px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:border-color .15s; }
+.ob-radio.sel .ob-radio-dot { border-color:var(--blue-mid); }
+.ob-radio.sel .ob-radio-dot::after { content:''; width:8px; height:8px; background:var(--blue-mid); border-radius:50%; display:block; }
+.ob-radio-title { font-size:13px; font-weight:600; color:var(--navy); }
+.ob-radio-sub { font-size:11px; color:var(--text-soft); margin-top:1px; }
+
+/* Onboard buttons */
+.ob-next { width:100%; padding:13px; background:var(--navy); color:#fff; border:none; border-radius:var(--radius-sm); font-size:14px; font-weight:600; cursor:pointer; transition:opacity .15s; font-family:Inter,sans-serif; }
+.ob-next:hover { opacity:.88; }
+.ob-next:disabled { opacity:.35; cursor:not-allowed; }
+.ob-back { background:none; border:none; color:var(--text-soft); font-size:13px; cursor:pointer; margin-top:10px; padding:6px 0; }
+.ob-back:hover { color:var(--text-mid); }
+</style>
+</head>
+<body>
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="ia-nav">
+  <a class="nav-logo" href="/">
+    <div class="nav-badge">HAN</div>
+    <span class="nav-brand">askHanyong</span>
+    <span class="nav-ia-pill">IA Helper</span>
+  </a>
+  <div class="nav-right">
+    <span class="nav-user-info" id="navUserInfo"></span>
+    <button class="nav-upgrade hidden" id="navUpgradeBtn" onclick="showUpgrade()">Unlock Full Access</button>
+    <button class="nav-logout hidden" id="navLogoutBtn" onclick="handleLogout()">Sign out</button>
+  </div>
+</nav>
+
+<div class="ia-page">
+
+<!-- ══════════ GATE ══════════ -->
+<div id="iaGate">
+  <div class="gate-hero">
+    <div class="gate-eyebrow">IB Math Internal Assessment</div>
+    <h1 class="gate-title">Your IA supervisor,<br>built by an examiner.</h1>
+    <p class="gate-sub">Most tutors give surface-level IA advice. HAN's IA Helper is built by someone who has supervised, assessed, and moderated IB Math IAs for years — and knows exactly what separates a 6 from a 7.</p>
+    <div class="gate-features">
+      <div class="gate-feat"><span class="gate-feat-icon">🔍</span> Topic exploration</div>
+      <div class="gate-feat"><span class="gate-feat-icon">🎯</span> Question refinement</div>
+      <div class="gate-feat"><span class="gate-feat-icon">📐</span> Outline builder</div>
+      <div class="gate-feat"><span class="gate-feat-icon">✍️</span> Section feedback</div>
+      <div class="gate-feat"><span class="gate-feat-icon">✅</span> Criteria A–E scoring</div>
+    </div>
+  </div>
+
+  <div class="gate-login-outer">
+    <div class="gate-login-box">
+      <h3>Start your IA project</h3>
+      <p>Enter your name and email to save your progress. You can return anytime to continue from where you left off.</p>
+      <div class="gate-row">
+        <input class="gate-input" id="gateFirstName" type="text" placeholder="First name" autocomplete="given-name">
+        <input class="gate-input" id="gateLastName"  type="text" placeholder="Last name"  autocomplete="family-name">
+      </div>
+      <input class="gate-input" id="gateEmail" type="email" placeholder="School email address" autocomplete="email" style="margin-bottom:12px">
+      <button class="gate-btn" onclick="handleLogin()">Start my IA project →</button>
+      <p class="gate-note">Your work is saved locally in your browser. No password needed — just remember to use the same email each time.</p>
+    </div>
+
+    <div class="gate-cards">
+      <div class="gate-card">
+        <div class="gate-card-icon">📅</div>
+        <h4>6-month journey</h4>
+        <p>The IA takes months. Come back at each stage — topic, outline, drafts, final check — and pick up exactly where you left off.</p>
+      </div>
+      <div class="gate-card">
+        <div class="gate-card-icon">🎯</div>
+        <h4>Criteria A–E feedback</h4>
+        <p>Get specific feedback against each IB criterion. Not generic comments — exact quotes from your work with targeted improvements.</p>
+      </div>
+      <div class="gate-card">
+        <div class="gate-card-icon">📊</div>
+        <h4>Score tracking</h4>
+        <p>See your estimated score per criterion improve across drafts. Know exactly where your marks are coming from — and where they're being lost.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /iaGate -->
+
+<!-- ══════════ ONBOARDING ══════════ -->
+<div id="iaOnboard" class="hidden">
+  <div class="ob-wrap">
+    <div class="ob-card">
+      <div class="ob-bar">
+        <div class="ob-seg active" id="obSeg0"></div>
+        <div class="ob-seg"       id="obSeg1"></div>
+        <div class="ob-seg"       id="obSeg2"></div>
+      </div>
+
+      <!-- Step 0: Course -->
+      <div class="ob-step active" id="obStep0">
+        <div class="ob-eyebrow">Step 1 of 3</div>
+        <div class="ob-title">What are you studying?</div>
+        <p class="ob-sub">Your course and level determines the mathematical sophistication the examiner expects from your IA.</p>
+        <div class="ob-grid2" id="obCourseGrid">
+          <button class="ob-opt" data-val="AA" onclick="obSelect('course',this)">
+            <div class="ob-opt-title">Math AA</div>
+            <div class="ob-opt-sub">Analysis & Approaches</div>
+          </button>
+          <button class="ob-opt" data-val="AI" onclick="obSelect('course',this)">
+            <div class="ob-opt-title">Math AI</div>
+            <div class="ob-opt-sub">Applications & Interpretation</div>
+          </button>
+        </div>
+        <div class="ob-grid2" id="obLevelGrid">
+          <button class="ob-opt" data-val="HL" onclick="obSelect('level',this)">
+            <div class="ob-opt-title">Higher Level</div>
+            <div class="ob-opt-sub">HL — sophisticated math expected</div>
+          </button>
+          <button class="ob-opt" data-val="SL" onclick="obSelect('level',this)">
+            <div class="ob-opt-title">Standard Level</div>
+            <div class="ob-opt-sub">SL — thorough math expected</div>
+          </button>
+        </div>
+        <button class="ob-next" id="obNext0" onclick="obNext(0)" disabled>Continue →</button>
+      </div>
+
+      <!-- Step 1: Interests -->
+      <div class="ob-step" id="obStep1">
+        <div class="ob-eyebrow">Step 2 of 3</div>
+        <div class="ob-title">What are you interested in?</div>
+        <p class="ob-sub">Select everything that applies. The best IAs connect mathematics to something the student genuinely cares about.</p>
+        <div class="ob-chips" id="obInterestChips">
+          <div class="ob-chip" onclick="obToggleChip(this)">Sport &amp; movement</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Music &amp; sound</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Economics &amp; finance</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Architecture &amp; design</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Biology &amp; medicine</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Physics &amp; engineering</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Environmental science</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Psychology &amp; behaviour</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Gaming &amp; strategy</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Art &amp; photography</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Cryptography</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Astronomy &amp; space</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Language &amp; linguistics</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Food &amp; nutrition</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Transport &amp; logistics</div>
+          <div class="ob-chip" onclick="obToggleChip(this)">Philosophy &amp; logic</div>
+        </div>
+        <input class="ob-text" id="obInterestExtra" type="text" placeholder="Anything else? (e.g. chess, surfing, architecture…)">
+        <button class="ob-next" style="margin-top:16px" id="obNext1" onclick="obNext(1)" disabled>Continue →</button>
+        <button class="ob-back" onclick="obBack(1)">← Back</button>
+      </div>
+
+      <!-- Step 2: Topic status -->
+      <div class="ob-step" id="obStep2">
+        <div class="ob-eyebrow">Step 3 of 3</div>
+        <div class="ob-title">Where are you with your topic?</div>
+        <p class="ob-sub">Be honest — we'll guide you from wherever you are right now.</p>
+        <div class="ob-radios" id="obTopicRadios">
+          <div class="ob-radio" onclick="obSelectRadio(this,'none')">
+            <div class="ob-radio-dot"></div>
+            <div>
+              <div class="ob-radio-title">No idea yet</div>
+              <div class="ob-radio-sub">Start from scratch — help me explore topics</div>
+            </div>
+          </div>
+          <div class="ob-radio" onclick="obSelectRadio(this,'exploring')">
+            <div class="ob-radio-dot"></div>
+            <div>
+              <div class="ob-radio-title">I have some ideas</div>
+              <div class="ob-radio-sub">I know the rough area but need to define a question</div>
+            </div>
+          </div>
+          <div class="ob-radio" onclick="obSelectRadio(this,'decided')">
+            <div class="ob-radio-dot"></div>
+            <div>
+              <div class="ob-radio-title">I have a topic / question</div>
+              <div class="ob-radio-sub">Help me refine it and start building the IA</div>
+            </div>
+          </div>
+          <div class="ob-radio" onclick="obSelectRadio(this,'drafting')">
+            <div class="ob-radio-dot"></div>
+            <div>
+              <div class="ob-radio-title">I have a draft already</div>
+              <div class="ob-radio-sub">Check my draft against the criteria and tell me where I'm losing marks</div>
+            </div>
+          </div>
+        </div>
+        <button class="ob-next" id="obNext2" onclick="obFinish()" disabled>Create my project →</button>
+        <button class="ob-back" onclick="obBack(2)">← Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /iaOnboard -->
+
+<!-- ══════════ PROJECT HUB ══════════ -->
+<div id="iaHub" class="hidden">
+<style>
+/* ── HUB LAYOUT ── */
+.hub-wrap { max-width:860px; margin:0 auto; padding:32px 20px 80px; }
+.hub-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:10px; }
+.hub-course-badge { font-size:11px; font-weight:700; color:var(--blue-mid); background:var(--ice); border-radius:20px; padding:2px 10px; display:inline-block; margin-bottom:7px; }
+.hub-ia-title { font-family:'Playfair Display',serif; font-size:21px; color:var(--navy); margin-bottom:4px; }
+.hub-ia-question { font-size:13px; color:var(--text-mid); font-style:italic; line-height:1.5; max-width:540px; }
+.hub-meta { font-size:11px; color:var(--text-soft); text-align:right; }
+
+/* ── STAGE TRACKER ── */
+.stage-track { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; margin-bottom:16px; box-shadow:var(--shadow); }
+.section-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text-soft); margin-bottom:14px; }
+.stage-steps { display:flex; position:relative; }
+.stage-steps::before { content:''; position:absolute; top:16px; left:34px; right:34px; height:2px; background:var(--border); z-index:0; }
+.stage-step { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; position:relative; z-index:1; cursor:pointer; }
+.stage-dot { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; border:2px solid var(--border); background:var(--white); transition:all .2s; }
+.stage-step.s-done   .stage-dot { background:var(--green); border-color:var(--green); font-size:16px; }
+.stage-step.s-active .stage-dot { border-color:var(--blue-mid); background:var(--ice-light); box-shadow:0 0 0 4px rgba(59,130,246,.15); }
+.stage-step.s-locked .stage-dot { background:var(--bg-mid); opacity:.5; }
+.stage-name { font-size:10px; font-weight:600; text-align:center; color:var(--text-soft); letter-spacing:.3px; text-transform:uppercase; }
+.stage-step.s-active .stage-name { color:var(--blue-mid); }
+.stage-step.s-done   .stage-name { color:var(--green); }
+
+/* ── CRITERIA CARDS ── */
+.criteria-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:16px; }
+.crit-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; box-shadow:var(--shadow); }
+.crit-letter { font-size:11px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; margin-bottom:2px; }
+.crit-name-sm { font-size:10px; color:var(--text-mid); margin-bottom:9px; line-height:1.3; }
+.crit-dots { display:flex; gap:4px; flex-wrap:wrap; }
+.crit-dot { width:10px; height:10px; border-radius:50%; border:2px solid var(--border); background:var(--white); transition:all .25s; }
+.crit-dot.filled { background:currentColor; border-color:currentColor; }
+.crit-score-line { display:flex; align-items:baseline; gap:3px; margin-top:8px; }
+.crit-score-val { font-size:18px; font-weight:700; font-family:'DM Mono',monospace; }
+.crit-score-max { font-size:11px; color:var(--text-soft); }
+.crit-pending { font-size:10px; color:var(--text-soft); font-style:italic; margin-top:6px; }
+
+/* ── NEXT ACTION ── */
+.next-action { background:linear-gradient(135deg,#fffbeb,#fef3c7); border:1.5px solid #fde68a; border-radius:var(--radius); padding:18px 22px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+.next-eyebrow { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#92400e; margin-bottom:4px; }
+.next-msg { font-size:14px; font-weight:500; color:#78350f; line-height:1.5; }
+.next-btn { padding:10px 20px; background:#92400e; color:#fff; border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:opacity .15s; font-family:Inter,sans-serif; }
+.next-btn:hover { opacity:.88; }
+
+/* ── TOOLS GRID ── */
+.tools-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-bottom:16px; }
+.tool-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:15px; cursor:pointer; transition:all .15s; display:flex; align-items:flex-start; gap:11px; }
+.tool-card:hover:not(.tc-locked) { border-color:var(--blue-light); box-shadow:var(--shadow-md); transform:translateY(-1px); }
+.tool-card.tc-active { border-color:var(--blue-mid); background:var(--ice-light); }
+.tool-card.tc-locked { opacity:.5; cursor:not-allowed; }
+.tc-icon { font-size:20px; line-height:1; }
+.tc-name { font-size:13px; font-weight:600; color:var(--navy); margin-bottom:2px; }
+.tc-desc { font-size:11px; color:var(--text-soft); line-height:1.4; }
+.tc-free { font-size:9px; font-weight:700; color:var(--green); background:#dcfce7; border-radius:4px; padding:1px 5px; margin-left:3px; vertical-align:middle; }
+.tc-lock-icon { font-size:10px; color:var(--text-soft); }
+
+/* ── TOOL PANEL ── */
+.tool-panel { background:var(--white); border:1.5px solid var(--blue-mid); border-radius:var(--radius); margin-bottom:16px; overflow:hidden; box-shadow:var(--shadow-md); }
+.tp-header { background:var(--navy); padding:14px 22px; display:flex; align-items:center; justify-content:space-between; }
+.tp-crumb { font-size:12px; color:rgba(255,255,255,.5); }
+.tp-crumb span { color:rgba(255,255,255,.9); font-weight:500; }
+.tp-close { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.7); border-radius:var(--radius-sm); padding:4px 12px; font-size:12px; cursor:pointer; font-family:Inter,sans-serif; }
+.tp-close:hover { background:rgba(255,255,255,.18); color:#fff; }
+.tp-body { padding:26px; }
+.tp-title { font-family:'Playfair Display',serif; font-size:19px; color:var(--navy); margin-bottom:6px; }
+.tp-sub { font-size:13px; color:var(--text-mid); line-height:1.65; margin-bottom:22px; }
+.tp-label { font-size:12px; font-weight:600; color:var(--text-mid); margin-bottom:6px; display:block; }
+.tp-textarea { width:100%; border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px; font-family:Inter,sans-serif; font-size:13px; color:var(--text); background:var(--bg); resize:vertical; outline:none; transition:border-color .15s; }
+.tp-textarea:focus { border-color:var(--blue-light); background:var(--white); }
+.tp-btn-row { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; align-items:center; }
+.tp-ask { padding:11px 22px; background:var(--navy); color:#fff; border:none; border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:7px; font-family:Inter,sans-serif; transition:opacity .15s; }
+.tp-ask:hover { opacity:.88; } .tp-ask:disabled { opacity:.4; cursor:not-allowed; }
+.tp-save { padding:11px 20px; background:var(--white); color:var(--navy); border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer; font-family:Inter,sans-serif; transition:all .15s; }
+.tp-save:hover { border-color:var(--blue-light); background:var(--ice-light); }
+.tp-char-count { font-size:11px; color:var(--text-soft); margin-left:auto; }
+
+/* Section selector (Stage 4) */
+.section-pills { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.sec-pill { padding:5px 13px; border:1.5px solid var(--border); border-radius:20px; font-size:12px; font-weight:500; color:var(--text-mid); cursor:pointer; transition:all .15s; background:var(--white); }
+.sec-pill:hover { border-color:var(--blue-light); color:var(--blue-mid); }
+.sec-pill.sp-sel { border-color:var(--blue-mid); background:var(--ice-light); color:var(--blue-mid); font-weight:600; }
+
+/* ── AI RESPONSE ── */
+.tp-response { margin-top:22px; border-top:1px solid var(--border); padding-top:20px; display:none; }
+.tp-response.visible { display:block; }
+.tp-response-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text-soft); margin-bottom:14px; }
+.tp-response-body { font-size:13px; color:var(--text); line-height:1.8; }
+.tp-response-body h4 { font-size:13px; font-weight:700; color:var(--navy); margin:16px 0 6px; }
+.tp-response-body h4:first-child { margin-top:0; }
+.tp-response-body ul,ol { padding-left:18px; margin:6px 0; }
+.tp-response-body li { margin-bottom:5px; }
+.tp-response-body strong { color:var(--navy); }
+.tp-response-body em { color:var(--text-mid); }
+.tp-response-body hr { border:none; border-top:1px solid var(--border); margin:14px 0; }
+.tp-response-body p { margin-bottom:10px; }
+.tp-response-body p:last-child { margin-bottom:0; }
+
+/* Score breakdown (fullcheck) */
+.score-breakdown { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin:14px 0; }
+.score-crit { text-align:center; padding:14px 10px; border-radius:var(--radius-sm); border:1.5px solid var(--border); background:var(--white); }
+.score-crit-letter { font-size:11px; font-weight:800; letter-spacing:.5px; margin-bottom:4px; }
+.score-crit-val { font-size:22px; font-weight:700; font-family:'DM Mono',monospace; }
+.score-crit-max { font-size:11px; color:var(--text-soft); }
+.score-total-bar { background:var(--bg-mid); border-radius:var(--radius-sm); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; margin:10px 0 16px; }
+.score-total-lbl { font-size:13px; font-weight:600; color:var(--text-mid); }
+.score-total-val { font-size:26px; font-weight:700; font-family:'DM Mono',monospace; color:var(--navy); }
+
+/* Loading spinner */
+.spinner { display:inline-block; width:15px; height:15px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.tp-loading { display:flex; align-items:center; gap:8px; color:var(--text-soft); font-size:13px; padding:16px 0; }
+.tp-loading .sp2 { width:15px; height:15px; border:2px solid var(--border); border-top-color:var(--blue-light); border-radius:50%; animation:spin .7s linear infinite; }
+
+/* ── DRAFTS ── */
+.drafts-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; box-shadow:var(--shadow); }
+.drafts-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.draft-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+.draft-row:last-child { border-bottom:none; }
+.draft-row:hover .draft-title { color:var(--blue-mid); }
+.draft-icon { font-size:16px; }
+.draft-info { flex:1; }
+.draft-title { font-size:13px; font-weight:500; color:var(--text); transition:color .15s; }
+.draft-meta { font-size:11px; color:var(--text-soft); margin-top:1px; }
+.draft-score-tag { font-size:11px; font-family:'DM Mono',monospace; color:var(--text-mid); background:var(--bg-mid); padding:2px 8px; border-radius:4px; }
+.drafts-empty { font-size:13px; color:var(--text-soft); text-align:center; padding:20px 0; }
+
+/* ── UPGRADE MODAL ── */
+.modal-overlay { position:fixed; inset:0; background:rgba(14,28,51,.7); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; }
+.modal-box { background:var(--white); border-radius:var(--radius); max-width:440px; width:100%; padding:32px; box-shadow:0 20px 60px rgba(0,0,0,.25); position:relative; }
+.modal-close { position:absolute; top:14px; right:16px; background:none; border:none; font-size:20px; color:var(--text-soft); cursor:pointer; line-height:1; }
+.modal-close:hover { color:var(--text); }
+.modal-eyebrow { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#7c3aed; margin-bottom:8px; }
+.modal-title { font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); margin-bottom:10px; }
+.modal-sub { font-size:13px; color:var(--text-mid); line-height:1.65; margin-bottom:22px; }
+.modal-price { display:flex; align-items:baseline; gap:6px; margin-bottom:20px; }
+.modal-price-val { font-size:32px; font-weight:800; color:var(--navy); font-family:'DM Mono',monospace; }
+.modal-price-label { font-size:13px; color:var(--text-soft); }
+.modal-features { display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
+.modal-feat { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text); }
+.modal-feat-check { color:var(--green); font-size:15px; }
+.modal-cta { width:100%; padding:13px; background:#7c3aed; color:#fff; border:none; border-radius:var(--radius-sm); font-size:14px; font-weight:700; cursor:pointer; font-family:Inter,sans-serif; }
+.modal-note { font-size:11px; color:var(--text-soft); text-align:center; margin-top:12px; }
+
+@media (max-width:640px) {
+  .criteria-grid { grid-template-columns:repeat(3,1fr); }
+  .score-breakdown { grid-template-columns:repeat(3,1fr); }
+  .hub-wrap { padding:20px 14px 60px; }
+  .tp-body { padding:18px 16px; }
+  .stage-name { font-size:9px; }
+}
+</style>
+
+  <div class="hub-wrap">
+
+    <!-- Header -->
+    <div class="hub-header">
+      <div class="hub-title-area">
+        <div class="hub-course-badge" id="hubCourseBadge">Math AA HL</div>
+        <div class="hub-ia-title" id="hubTitle">My IB Math IA</div>
+        <div class="hub-ia-question" id="hubQuestion" style="display:none"></div>
+      </div>
+      <div class="hub-meta" id="hubMeta"></div>
+    </div>
+
+    <!-- Stage tracker -->
+    <div class="stage-track">
+      <div class="section-label">Your journey</div>
+      <div class="stage-steps">
+        <div class="stage-step s-active" id="stg0" onclick="openTool('topic')">
+          <div class="stage-dot">🔍</div>
+          <div class="stage-name">Explore</div>
+        </div>
+        <div class="stage-step s-locked" id="stg1" onclick="openTool('question')">
+          <div class="stage-dot">🎯</div>
+          <div class="stage-name">Define</div>
+        </div>
+        <div class="stage-step s-locked" id="stg2" onclick="openTool('outline')">
+          <div class="stage-dot">📐</div>
+          <div class="stage-name">Build</div>
+        </div>
+        <div class="stage-step s-locked" id="stg3" onclick="openTool('section')">
+          <div class="stage-dot">✍️</div>
+          <div class="stage-name">Write</div>
+        </div>
+        <div class="stage-step s-locked" id="stg4" onclick="openTool('fullcheck')">
+          <div class="stage-dot">✅</div>
+          <div class="stage-name">Polish</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Criteria score cards -->
+    <div class="criteria-grid">
+      <div class="crit-card">
+        <div class="crit-letter" style="color:var(--ca)">A</div>
+        <div class="crit-name-sm">Presentation</div>
+        <div class="crit-dots" id="cdotsA"></div>
+        <div class="crit-score-line" id="cscoreA"><div class="crit-pending">Not yet scored</div></div>
+      </div>
+      <div class="crit-card">
+        <div class="crit-letter" style="color:var(--cb)">B</div>
+        <div class="crit-name-sm">Math Communication</div>
+        <div class="crit-dots" id="cdotsB"></div>
+        <div class="crit-score-line" id="cscoreB"><div class="crit-pending">Not yet scored</div></div>
+      </div>
+      <div class="crit-card">
+        <div class="crit-letter" style="color:var(--cc)">C</div>
+        <div class="crit-name-sm">Personal Engagement</div>
+        <div class="crit-dots" id="cdotsC"></div>
+        <div class="crit-score-line" id="cscoreC"><div class="crit-pending">Not yet scored</div></div>
+      </div>
+      <div class="crit-card">
+        <div class="crit-letter" style="color:var(--cd)">D</div>
+        <div class="crit-name-sm">Reflection</div>
+        <div class="crit-dots" id="cdotsD"></div>
+        <div class="crit-score-line" id="cscoreD"><div class="crit-pending">Not yet scored</div></div>
+      </div>
+      <div class="crit-card">
+        <div class="crit-letter" style="color:var(--ce)">E</div>
+        <div class="crit-name-sm">Use of Mathematics</div>
+        <div class="crit-dots" id="cdotsE"></div>
+        <div class="crit-score-line" id="cscoreE"><div class="crit-pending">Not yet scored</div></div>
+      </div>
+    </div>
+
+    <!-- Next action banner -->
+    <div class="next-action" id="nextActionBanner">
+      <div>
+        <div class="next-eyebrow">↳ what to do now</div>
+        <div class="next-msg" id="nextActionMsg">Start by exploring topics that connect your interests to mathematics.</div>
+      </div>
+      <button class="next-btn" id="nextActionBtn" onclick="openTool('topic')">Open Topic Explorer →</button>
+    </div>
+
+    <!-- Tools -->
+    <div class="section-label" style="margin-bottom:10px">IA tools</div>
+    <div class="tools-grid">
+      <div class="tool-card" id="tc-topic" onclick="openTool('topic')">
+        <div class="tc-icon">🔍</div>
+        <div><div class="tc-name">Topic Explorer <span class="tc-free">FREE</span></div><div class="tc-desc">Find a topic with real mathematical depth</div></div>
+      </div>
+      <div class="tool-card" id="tc-question" onclick="openTool('question')">
+        <div class="tc-icon">🎯</div>
+        <div><div class="tc-name">Question Refiner</div><div class="tc-desc">Sharpen your research question</div></div>
+      </div>
+      <div class="tool-card" id="tc-outline" onclick="openTool('outline')">
+        <div class="tc-icon">📐</div>
+        <div><div class="tc-name">Outline Builder</div><div class="tc-desc">Structure your IA into clear stages</div></div>
+      </div>
+      <div class="tool-card" id="tc-section" onclick="openTool('section')">
+        <div class="tc-icon">✍️</div>
+        <div><div class="tc-name">Section Feedback</div><div class="tc-desc">Criteria-specific feedback on any section</div></div>
+      </div>
+      <div class="tool-card" id="tc-fullcheck" onclick="openTool('fullcheck')">
+        <div class="tc-icon">✅</div>
+        <div><div class="tc-name">Full Criteria Check</div><div class="tc-desc">Score all 5 criteria on your complete draft</div></div>
+      </div>
+    </div>
+
+    <!-- Tool panel (appears here when a tool is open) -->
+    <div id="iaTool" class="tool-panel hidden">
+      <div class="tp-header">
+        <div class="tp-crumb">IA Hub → <span id="tpCrumbName">Topic Explorer</span></div>
+        <button class="tp-close" onclick="closeTool()">✕ Close</button>
+      </div>
+      <div class="tp-body" id="tpBody">
+        <!-- Populated by JS per tool -->
+      </div>
+    </div>
+
+    <!-- Drafts / version history -->
+    <div class="drafts-card" id="draftsCard">
+      <div class="drafts-head">
+        <div class="section-label" style="margin-bottom:0">Version history</div>
+        <span style="font-size:11px;color:var(--text-soft)" id="draftsCount"></span>
+      </div>
+      <div id="draftsBody"><div class="drafts-empty">No saved sessions yet. Use a tool above and save your work.</div></div>
+    </div>
+
+  </div><!-- /hub-wrap -->
+</div><!-- /iaHub -->
+
+<!-- Upgrade modal -->
+<div class="modal-overlay hidden" id="upgradeModal" onclick="if(event.target===this)hideUpgrade()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="hideUpgrade()">×</button>
+    <div class="modal-eyebrow">IA Pass</div>
+    <div class="modal-title">Unlock your full IA journey</div>
+    <p class="modal-sub">The free tier gives you 3 topic ideas to get started. Upgrade to work through every stage — unlimited checks, version history, and full criteria scoring.</p>
+    <div class="modal-price">
+      <div class="modal-price-val">$59</div>
+      <div class="modal-price-label">SGD · one-time · valid 12 months</div>
+    </div>
+    <div class="modal-features">
+      <div class="modal-feat"><span class="modal-feat-check">✓</span> Unlimited topic, question &amp; outline sessions</div>
+      <div class="modal-feat"><span class="modal-feat-check">✓</span> Section-by-section criteria feedback</div>
+      <div class="modal-feat"><span class="modal-feat-check">✓</span> Full A–E score prediction with evidence</div>
+      <div class="modal-feat"><span class="modal-feat-check">✓</span> Version history — track your improvement</div>
+      <div class="modal-feat"><span class="modal-feat-check">✓</span> Works for AA &amp; AI, HL &amp; SL</div>
+    </div>
+    <button class="modal-cta" onclick="handleUpgrade()">Get IA Pass — $59 SGD</button>
+    <p class="modal-note">Prefer a school licence? Email han@askhanyong.com for class pricing.</p>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  IA Helper — client-side state & logic
+// ══════════════════════════════════════════════════════
+
+// ── Constants ──────────────────────────────────────────
+const CRIT_MAX   = { A:4, B:4, C:3, D:3, E:6 };
+const CRIT_COLOR = { A:'var(--ca)', B:'var(--cb)', C:'var(--cc)', D:'var(--cd)', E:'var(--ce)' };
+const TOOL_NAMES = { topic:'Topic Explorer', question:'Question Refiner', outline:'Outline Builder', section:'Section Feedback', fullcheck:'Full Criteria Check' };
+const TOOL_ICONS = { topic:'🔍', question:'🎯', outline:'📐', section:'✍️', fullcheck:'✅' };
+const STAGE_TOOL = ['topic','question','outline','section','fullcheck'];
+const FREE_TOOLS = new Set(['topic','question','outline']);  // gated: section, fullcheck
+
+const KEY_EMAIL   = 'ia_email';
+const KEY_NAME    = 'ia_name';
+const KEY_PREMIUM = 'ia_premium';
+const projKey = (email) => `ia_proj_${email.replace(/[^a-z0-9]/gi,'_').toLowerCase()}`;
+
+// ── Mutable state ──────────────────────────────────────
+let S = {
+  email: null,
+  name: null,
+  premium: false,
+  project: null,
+  activeTool: null,
+  obCourse: null,
+  obLevel: null,
+  obTopicStatus: null,
+  activeSection: 'Introduction',
+  freeUsed: 0,
+};
+
+// ── Persistence ────────────────────────────────────────
+function loadState() {
+  S.email   = localStorage.getItem(KEY_EMAIL);
+  S.name    = localStorage.getItem(KEY_NAME);
+  S.premium = localStorage.getItem(KEY_PREMIUM) === '1';
+  S.freeUsed = parseInt(localStorage.getItem('ia_free_used') || '0');
+  if (S.email) {
+    try { S.project = JSON.parse(localStorage.getItem(projKey(S.email)) || 'null'); }
+    catch { S.project = null; }
+  }
+}
+
+function saveProject() {
+  if (!S.email || !S.project) return;
+  S.project.updatedAt = Date.now();
+  localStorage.setItem(projKey(S.email), JSON.stringify(S.project));
+}
+
+function freshProject(course, level, interests, topicStatus) {
+  const stage = topicStatus === 'drafting' ? 4
+              : topicStatus === 'decided'   ? 2
+              : topicStatus === 'exploring' ? 1 : 0;
+  return {
+    id: Date.now().toString(),
+    title: 'My IB Math IA',
+    course, level, interests, topicStatus,
+    researchQuestion: '',
+    outline: '',
+    stage,
+    scores: { A:null, B:null, C:null, D:null, E:null },
+    notes: { topic:'', question:'', outline:'', sections:{} },
+    drafts: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
+}
+
+// ── View switching ──────────────────────────────────────
+function showView(v) {
+  document.getElementById('iaGate').classList.toggle('hidden',    v !== 'gate');
+  document.getElementById('iaOnboard').classList.toggle('hidden', v !== 'onboard');
+  document.getElementById('iaHub').classList.toggle('hidden',     v !== 'hub');
+}
+
+// ── AUTH ───────────────────────────────────────────────
+function handleLogin() {
+  const first = document.getElementById('gateFirstName').value.trim();
+  const last  = document.getElementById('gateLastName').value.trim();
+  const email = document.getElementById('gateEmail').value.trim().toLowerCase();
+  if (!first || !email || !email.includes('@')) {
+    alert('Please enter your first name and a valid email address.');
+    return;
+  }
+  S.email = email;
+  S.name  = first + (last ? ' ' + last : '');
+  localStorage.setItem(KEY_EMAIL, S.email);
+  localStorage.setItem(KEY_NAME, S.name);
+  loadState();
+  renderApp();
+}
+
+function handleLogout() {
+  if (!confirm('Sign out? Your project is saved — sign back in with the same email to continue.')) return;
+  S.email = null; S.name = null; S.project = null;
+  showView('gate');
+  updateNav();
+}
+
+// ── NAV ────────────────────────────────────────────────
+function updateNav() {
+  const infoEl   = document.getElementById('navUserInfo');
+  const logoutEl = document.getElementById('navLogoutBtn');
+  const upEl     = document.getElementById('navUpgradeBtn');
+  if (S.email) {
+    infoEl.textContent = S.name || S.email;
+    logoutEl.classList.remove('hidden');
+    upEl.classList.toggle('hidden', S.premium);
+  } else {
+    infoEl.textContent = '';
+    logoutEl.classList.add('hidden');
+    upEl.classList.add('hidden');
+  }
+}
+
+// ── ONBOARDING ─────────────────────────────────────────
+let obStep = 0;
+
+function obSelect(field, btn) {
+  const grid = field === 'course' ? 'obCourseGrid' : 'obLevelGrid';
+  document.querySelectorAll(`#${grid} .ob-opt`).forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  S['ob' + field.charAt(0).toUpperCase() + field.slice(1)] = btn.dataset.val;
+  checkObNext0();
+}
+
+function checkObNext0() {
+  document.getElementById('obNext0').disabled = !(S.obCourse && S.obLevel);
+}
+
+function obToggleChip(chip) {
+  chip.classList.toggle('sel');
+  const anySelected = document.querySelectorAll('#obInterestChips .ob-chip.sel').length > 0;
+  document.getElementById('obNext1').disabled = !anySelected;
+}
+
+function obSelectRadio(el, val) {
+  document.querySelectorAll('#obTopicRadios .ob-radio').forEach(r => r.classList.remove('sel'));
+  el.classList.add('sel');
+  S.obTopicStatus = val;
+  document.getElementById('obNext2').disabled = false;
+}
+
+function obNext(from) {
+  obGoto(from + 1);
+}
+
+function obBack(from) {
+  obGoto(from - 1);
+}
+
+function obGoto(step) {
+  document.querySelectorAll('.ob-step').forEach((s, i) => s.classList.toggle('active', i === step));
+  document.querySelectorAll('.ob-seg').forEach((s, i) => {
+    s.classList.toggle('done',   i < step);
+    s.classList.toggle('active', i === step);
+  });
+  obStep = step;
+}
+
+function obFinish() {
+  const chips   = [...document.querySelectorAll('#obInterestChips .ob-chip.sel')].map(c => c.textContent);
+  const extra   = document.getElementById('obInterestExtra').value.trim();
+  if (extra) chips.push(extra);
+  S.project = freshProject(S.obCourse, S.obLevel, chips, S.obTopicStatus);
+  saveProject();
+  showView('hub');
+  renderHub();
+}
+
+// ── HUB RENDERING ──────────────────────────────────────
+function renderApp() {
+  updateNav();
+  if (!S.email)   { showView('gate'); return; }
+  if (!S.project) { showView('onboard'); obGoto(0); S.obCourse=null; S.obLevel=null; S.obTopicStatus=null; return; }
+  showView('hub');
+  renderHub();
+}
+
+function renderHub() {
+  const p = S.project;
+  document.getElementById('hubCourseBadge').textContent = `Math ${p.course} ${p.level}`;
+  document.getElementById('hubTitle').textContent = p.title;
+  const qEl = document.getElementById('hubQuestion');
+  if (p.researchQuestion) { qEl.textContent = `"${p.researchQuestion}"`; qEl.style.display=''; }
+  else { qEl.style.display='none'; }
+  const upd = p.updatedAt ? new Date(p.updatedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+  document.getElementById('hubMeta').textContent = upd ? `Last updated ${upd}` : '';
+  renderStages();
+  renderCriteria();
+  renderNextAction();
+  renderDrafts();
+}
+
+function renderStages() {
+  const stage = S.project.stage || 0;
+  for (let i = 0; i < 5; i++) {
+    const el = document.getElementById('stg' + i);
+    el.className = 'stage-step ' + (i < stage ? 's-done' : i === stage ? 's-active' : 's-locked');
+    if (i < stage) el.querySelector('.stage-dot').textContent = '✓';
+    else {
+      const icons = ['🔍','🎯','📐','✍️','✅'];
+      el.querySelector('.stage-dot').textContent = icons[i];
+    }
+  }
+}
+
+function renderCriteria() {
+  const scores = S.project.scores || {};
+  Object.keys(CRIT_MAX).forEach(c => {
+    const max   = CRIT_MAX[c];
+    const score = scores[c];
+    const dotsEl  = document.getElementById('cdots' + c);
+    const scoreEl = document.getElementById('cscore' + c);
+    const color   = CRIT_COLOR[c];
+
+    dotsEl.innerHTML = '';
+    for (let i = 0; i < max; i++) {
+      const d = document.createElement('div');
+      d.className = 'crit-dot' + (score !== null && i < score ? ' filled' : '');
+      d.style.color = color;
+      dotsEl.appendChild(d);
+    }
+
+    if (score !== null) {
+      scoreEl.innerHTML = `<div class="crit-score-val" style="color:${color}">${score}</div><div class="crit-score-max">/ ${max}</div>`;
+    } else {
+      scoreEl.innerHTML = `<div class="crit-pending">Run Full Check</div>`;
+    }
+  });
+}
+
+function renderNextAction() {
+  const p   = S.project;
+  const msg = document.getElementById('nextActionMsg');
+  const btn = document.getElementById('nextActionBtn');
+  const s   = p.scores;
+
+  let text = '', tool = STAGE_TOOL[Math.min(p.stage, 4)], btnText = '';
+
+  if (p.stage === 0) {
+    text = 'Start by exploring topics that connect your interests to mathematics.';
+    btnText = 'Open Topic Explorer →';
+  } else if (p.stage === 1) {
+    text = 'You\'ve explored topics — now refine your research question until it\'s specific and mathematically rich.';
+    btnText = 'Refine Question →'; tool = 'question';
+  } else if (p.stage === 2) {
+    text = 'Great — now build your outline. Plan the mathematical stages before you start writing.';
+    btnText = 'Build Outline →'; tool = 'outline';
+  } else if (p.stage === 3 || p.stage === 4) {
+    // Give targeted criteria advice if scores exist
+    if (s && s.D !== null && s.D < 2) {
+      text = 'Your Reflection (D) is scoring low. Add genuine critical analysis of your model\'s assumptions — not what worked, but what could break.';
+      btnText = 'Improve Reflection →'; tool = 'section';
+    } else if (s && s.C !== null && s.C < 2) {
+      text = 'Personal Engagement (C) needs more evidence. Show the choices YOU made in the investigation — why this angle, this dataset, this extension.';
+      btnText = 'Improve Introduction →'; tool = 'section';
+    } else if (s && s.E !== null && s.E < 4) {
+      text = 'Your Use of Mathematics (E) could be stronger. Consider extending your investigation with a more sophisticated approach.';
+      btnText = 'Math Work Feedback →'; tool = 'section';
+    } else if (!s || s.A === null) {
+      text = 'Run the Full Criteria Check to see your estimated A–E scores and the 3 highest-leverage improvements.';
+      btnText = 'Run Full Check →'; tool = 'fullcheck';
+    } else {
+      const total = Object.values(s).reduce((a,b) => a + (b||0), 0);
+      text = `Current estimate: ${total}/20. Review the criteria feedback above to push your score higher.`;
+      btnText = 'Section Feedback →'; tool = 'section';
+    }
+  }
+
+  msg.textContent = text;
+  btn.textContent = btnText;
+  btn.onclick = () => openTool(tool);
+}
+
+function renderDrafts() {
+  const drafts = (S.project.drafts || []).slice().reverse();
+  const body   = document.getElementById('draftsBody');
+  const count  = document.getElementById('draftsCount');
+  count.textContent = drafts.length ? `${drafts.length} session${drafts.length>1?'s':''}` : '';
+  if (!drafts.length) { body.innerHTML = '<div class="drafts-empty">No saved sessions yet. Use a tool above and save your work.</div>'; return; }
+  body.innerHTML = drafts.map(d => {
+    const date  = new Date(d.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});
+    const score = d.scores && d.scores.TOTAL != null ? `${d.scores.TOTAL}/20` : '';
+    return `<div class="draft-row" onclick="loadDraft('${d.id}')">
+      <div class="draft-icon">${TOOL_ICONS[d.toolType]||'📄'}</div>
+      <div class="draft-info">
+        <div class="draft-title">${escHtml(d.summary||TOOL_NAMES[d.toolType]||'Session')}</div>
+        <div class="draft-meta">${TOOL_NAMES[d.toolType]} · ${date}</div>
+      </div>
+      ${score ? `<div class="draft-score-tag">${score}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function loadDraft(id) {
+  const d = (S.project.drafts || []).find(x => x.id === id);
+  if (!d) return;
+  openTool(d.toolType);
+  // Pre-fill textarea if content saved
+  setTimeout(() => {
+    const ta = document.getElementById('tpMainInput');
+    if (ta && d.inputContent) ta.value = d.inputContent;
+    if (d.response) showResponse(d.response, d.toolType, d.scores);
+  }, 50);
+}
+
+// ── TOOLS ──────────────────────────────────────────────
+const TOOL_CONFIGS = {
+  topic: {
+    title: 'Topic Explorer',
+    sub: 'Tell me about your interests, any subject areas that excite you, and what you\'ve studied in Maths so far. I\'ll suggest 3 topic ideas with research questions tailored to your course.',
+    label: 'What are you interested in, and what Maths topics have you enjoyed most?',
+    placeholder: 'e.g. I love basketball and play it every weekend. I also really enjoyed the calculus and statistics units in class. I\'m doing Math AA HL and I want a topic that\'s genuinely interesting, not one everyone does…',
+    rows: 5,
+    btnText: 'Generate topic ideas',
+  },
+  question: {
+    title: 'Question Refiner',
+    sub: 'Paste your current research question (even if it\'s rough). I\'ll check it against 4 criteria and give you an improved version.',
+    label: 'Your current research question or topic idea',
+    placeholder: 'e.g. "How does the spin of a basketball affect its trajectory?" or just "something to do with modelling COVID data"',
+    rows: 3,
+    btnText: 'Analyse my question',
+  },
+  outline: {
+    title: 'Outline Builder',
+    sub: 'Share your research question and a rough idea of what you plan to investigate. I\'ll structure it into a complete IA outline with section names, goals, and criteria mapping.',
+    label: 'Your research question + rough plan (even just a few notes)',
+    placeholder: 'Research question: "How does launch angle affect the range of a projectile in disc golf?"\n\nPlan: I want to model the trajectory, find the optimal angle, then account for air resistance somehow…',
+    rows: 6,
+    btnText: 'Build my outline',
+  },
+  section: {
+    title: 'Section Feedback',
+    sub: 'Select the section type, then paste your draft text. I\'ll give criteria-specific feedback — exactly what\'s working and what to fix.',
+    label: 'Your draft section',
+    placeholder: 'Paste the section you want feedback on here…',
+    rows: 10,
+    btnText: 'Get section feedback',
+    hasSection: true,
+  },
+  fullcheck: {
+    title: 'Full Criteria Check',
+    sub: 'Paste your complete IA draft. I\'ll estimate your score for each of the 5 criteria (A–E out of 20) with specific evidence and the 3 highest-leverage improvements.',
+    label: 'Your complete IA draft',
+    placeholder: 'Paste your full IA here (introduction through conclusion). The more complete it is, the better the feedback…',
+    rows: 14,
+    btnText: 'Score my IA',
+  },
+};
+
+function openTool(toolId) {
+  if (!TOOL_CONFIGS[toolId]) return;
+
+  // Gate premium tools
+  if (!S.premium && !FREE_TOOLS.has(toolId)) {
+    showUpgrade(); return;
+  }
+
+  S.activeTool = toolId;
+
+  // Highlight active tool card
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('tc-active'));
+  const tc = document.getElementById('tc-' + toolId);
+  if (tc) tc.classList.add('tc-active');
+
+  // Set breadcrumb
+  document.getElementById('tpCrumbName').textContent = TOOL_NAMES[toolId];
+
+  // Build tool body
+  const cfg  = TOOL_CONFIGS[toolId];
+  const prev = S.project?.notes?.[toolId === 'section' ? 'sections' : toolId] || '';
+  const prevText = typeof prev === 'string' ? prev : '';
+
+  let sectionHtml = '';
+  if (cfg.hasSection) {
+    const sections = ['Introduction','Background','Mathematical Work','Reflection','Conclusion'];
+    sectionHtml = `<div class="section-pills">${sections.map(s =>
+      `<div class="sec-pill${s===S.activeSection?' sp-sel':''}" onclick="selectSection(this,'${s}')">${s}</div>`
+    ).join('')}</div>`;
+  }
+
+  document.getElementById('tpBody').innerHTML = `
+    <div class="tp-title">${TOOL_ICONS[toolId]} ${cfg.title}</div>
+    <p class="tp-sub">${cfg.sub}</p>
+    ${sectionHtml}
+    <label class="tp-label" for="tpMainInput">${cfg.label}</label>
+    <textarea class="tp-textarea" id="tpMainInput" rows="${cfg.rows}"
+      placeholder="${cfg.placeholder}" oninput="updateCharCount()">${prevText}</textarea>
+    <div class="tp-btn-row">
+      <button class="tp-ask" id="tpAskBtn" onclick="runTool()">
+        <span id="tpAskLabel">${cfg.btnText}</span>
+      </button>
+      <button class="tp-save" onclick="saveToolContent()">Save draft</button>
+      <span class="tp-char-count" id="tpCharCount"></span>
+    </div>
+    <div class="tp-response" id="tpResponse">
+      <div class="tp-response-label">AI Feedback — <span id="tpResponseTool"></span></div>
+      <div class="tp-response-body" id="tpResponseBody"></div>
+    </div>`;
+
+  // Restore previous response if any
+  const lastDraft = (S.project?.drafts || []).filter(d => d.toolType === toolId).slice(-1)[0];
+  if (lastDraft?.response) showResponse(lastDraft.response, toolId, lastDraft.scores);
+
+  const toolEl = document.getElementById('iaTool');
+  toolEl.classList.remove('hidden');
+  toolEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function closeTool() {
+  document.getElementById('iaTool').classList.add('hidden');
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('tc-active'));
+  S.activeTool = null;
+}
+
+function selectSection(el, name) {
+  document.querySelectorAll('.sec-pill').forEach(p => p.classList.remove('sp-sel'));
+  el.classList.add('sp-sel');
+  S.activeSection = name;
+}
+
+function updateCharCount() {
+  const ta = document.getElementById('tpMainInput');
+  if (!ta) return;
+  const n = ta.value.length;
+  const el = document.getElementById('tpCharCount');
+  if (el) el.textContent = n > 0 ? `${n.toLocaleString()} chars` : '';
+}
+
+function saveToolContent() {
+  const ta = document.getElementById('tpMainInput');
+  if (!ta || !S.project) return;
+  const val = ta.value.trim();
+  if (!val) return;
+  const tool = S.activeTool;
+  if (tool === 'section') {
+    S.project.notes.sections = S.project.notes.sections || {};
+    S.project.notes.sections[S.activeSection] = val;
+  } else {
+    S.project.notes[tool] = val;
+    // Advance stage if relevant
+    if (tool === 'question' && val.length > 20) {
+      S.project.researchQuestion = val.split('\n')[0].slice(0,200);
+      S.project.stage = Math.max(S.project.stage, 2);
+    }
+    if (tool === 'outline' && val.length > 50) {
+      S.project.stage = Math.max(S.project.stage, 3);
+    }
+  }
+  if (tool === 'topic') S.project.stage = Math.max(S.project.stage, 1);
+  saveProject();
+  renderHub();
+  // brief visual confirmation
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Saved';
+  setTimeout(() => { btn.textContent = orig; }, 1500);
+}
+
+// ── AI CALLS ───────────────────────────────────────────
+async function runTool() {
+  const ta = document.getElementById('tpMainInput');
+  if (!ta) return;
+  const content = ta.value.trim();
+  if (!content || content.length < 15) { alert('Please write a bit more before asking for feedback.'); return; }
+
+  // Free-tier gate: only topic/question/outline free, section/fullcheck paid
+  if (!S.premium && !FREE_TOOLS.has(S.activeTool)) { showUpgrade(); return; }
+
+  const btn   = document.getElementById('tpAskBtn');
+  const label = document.getElementById('tpAskLabel');
+  btn.disabled = true;
+  label.innerHTML = '<span class="spinner"></span> Thinking…';
+
+  const p = S.project;
+  const context = [
+    p.researchQuestion ? `Research question: ${p.researchQuestion}` : '',
+    p.outline          ? `Outline: ${p.outline.slice(0,400)}` : '',
+  ].filter(Boolean).join('\n');
+
+  try {
+    const res  = await fetch('/api/ia-chat', {
+      method:  'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        toolType:    S.activeTool,
+        content,
+        course:      p.course,
+        level:       p.level,
+        context,
+        sectionType: S.activeTool === 'section' ? S.activeSection : undefined,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) { alert('Error: ' + (data.error || res.status)); return; }
+
+    showResponse(data.response, S.activeTool, data.scores);
+    saveDraft(S.activeTool, content, data.response, data.scores);
+    if (data.scores) updateScores(data.scores);
+
+  } catch (e) {
+    alert('Network error — please check your connection and try again.');
+  } finally {
+    btn.disabled = false;
+    label.textContent = TOOL_CONFIGS[S.activeTool]?.btnText || 'Get feedback';
+  }
+}
+
+function showResponse(text, toolType, scores) {
+  const el   = document.getElementById('tpResponse');
+  const body = document.getElementById('tpResponseBody');
+  const lbl  = document.getElementById('tpResponseTool');
+  if (!el || !body) return;
+
+  lbl.textContent = TOOL_NAMES[toolType] || toolType;
+
+  // If fullcheck with scores, show score breakdown first
+  let scoreHtml = '';
+  if (scores && toolType === 'fullcheck') {
+    const crits = ['A','B','C','D','E'];
+    const bars  = crits.map(c => {
+      const v = scores[c] ?? '?';
+      const m = CRIT_MAX[c];
+      const col = CRIT_COLOR[c];
+      return `<div class="score-crit">
+        <div class="score-crit-letter" style="color:${col}">${c}</div>
+        <div class="score-crit-val" style="color:${col}">${v}</div>
+        <div class="score-crit-max">/ ${m}</div>
+      </div>`;
+    }).join('');
+    const total = scores.TOTAL ?? Object.values(scores).reduce((a,b)=>a+(b||0),0);
+    scoreHtml = `<div class="score-breakdown">${bars}</div>
+    <div class="score-total-bar">
+      <div class="score-total-lbl">Estimated total</div>
+      <div class="score-total-val">${total} / 20</div>
+    </div>`;
+  }
+
+  // Strip the machine-readable scores block from display text
+  const displayText = text.replace(/---SCORES---[\s\S]*?---END SCORES---\n?/,'').trim();
+
+  body.innerHTML = scoreHtml + mdToHtml(displayText);
+  el.classList.add('visible');
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// Lightweight markdown → HTML renderer
+function mdToHtml(md) {
+  return md
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/^#{1,3} (.+)$/gm,'<h4>$1</h4>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, s => `<ul>${s}</ul>`)
+    .replace(/\n{2,}/g,'</p><p>')
+    .replace(/^(?!<[hulo])(.+)$/gm,'$1')
+    .replace(/^<\/p><p>(<[hulo])/gm,'$1')
+    .replace(/\n/g,' ')
+    .replace(/^(.)/,'<p>$1')
+    .replace(/(.)$/,'$1</p>');
+}
+
+// ── DRAFT HISTORY ──────────────────────────────────────
+function saveDraft(toolType, inputContent, response, scores) {
+  if (!S.project) return;
+  const draft = {
+    id: Date.now().toString(),
+    date: Date.now(),
+    toolType,
+    inputContent: inputContent.slice(0, 2000),
+    summary: inputContent.split('\n')[0].slice(0, 80),
+    response,
+    scores: scores || null,
+  };
+  S.project.drafts = S.project.drafts || [];
+  S.project.drafts.push(draft);
+  // Keep last 20
+  if (S.project.drafts.length > 20) S.project.drafts = S.project.drafts.slice(-20);
+  saveProject();
+  renderDrafts();
+}
+
+function updateScores(scores) {
+  if (!S.project) return;
+  ['A','B','C','D','E'].forEach(c => {
+    if (scores[c] != null) S.project.scores[c] = scores[c];
+  });
+  S.project.stage = Math.max(S.project.stage, 4);
+  saveProject();
+  renderCriteria();
+  renderStages();
+  renderNextAction();
+}
+
+// ── UPGRADE MODAL ──────────────────────────────────────
+function showUpgrade() { document.getElementById('upgradeModal').classList.remove('hidden'); }
+function hideUpgrade() { document.getElementById('upgradeModal').classList.add('hidden'); }
+
+function handleUpgrade() {
+  // Placeholder — payment not yet implemented
+  alert('Payment coming soon! Email han@askhanyong.com to get early access pricing for your school or class.');
+  hideUpgrade();
+}
+
+// ── INIT ───────────────────────────────────────────────
+loadState();
+renderApp();
+</script>
+</body>
+</html>

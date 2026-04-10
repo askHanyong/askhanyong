@@ -114,6 +114,10 @@
   path = "/api/script-fetch"
   function = "script-fetch"
 
+[[edge_functions]]
+  path = "/api/ia-chat"
+  function = "ia-chat"
+
 
 [[redirects]]
   from = "/api/*"
@@ -173,5 +177,12 @@
 [[redirects]]
   from = "/report"
   to = "/report.html"
+  status = 200
+  force = true
+
+# /ia serves the student IA Helper portal
+[[redirects]]
+  from = "/ia"
+  to = "/ia.html"
   status = 200
   force = true
