@@ -648,15 +648,19 @@ function loadState() {
 }
 
 async function verifyWithServer(email, name) {
+  const ctrl = new AbortController();
+  const tid  = setTimeout(() => ctrl.abort(), 8000); // 8s timeout
   try {
-    const res  = await fetch('/api/ia-verify', {
+    const res = await fetch('/api/ia-verify', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, name }),
+      body:    JSON.stringify({ email, name }),
+      signal:  ctrl.signal,
     });
+    clearTimeout(tid);
     if (!res.ok) return null;
     return await res.json(); // { premium, callsToday, callsLimit, callsRemaining, isNew }
-  } catch { return null; }
+  } catch { clearTimeout(tid); return null; }
 }
 
 function applyServerVerify(data) {
@@ -700,7 +704,7 @@ function showView(v) {
 }
 
 // ── AUTH ───────────────────────────────────────────────
-async function handleLogin() {
+function handleLogin() {
   const first = document.getElementById('gateFirstName').value.trim();
   const last  = document.getElementById('gateLastName').value.trim();
   const email = document.getElementById('gateEmail').value.trim().toLowerCase();
@@ -708,23 +712,12 @@ async function handleLogin() {
     alert('Please enter your first name and a valid email address.');
     return;
   }
-  const btn  = document.querySelector('.gate-btn');
-  const orig = btn.textContent;
-  btn.textContent = 'Checking…';
-  btn.disabled    = true;
-
   S.email = email;
   S.name  = first + (last ? ' ' + last : '');
   localStorage.setItem(KEY_EMAIL, S.email);
   localStorage.setItem(KEY_NAME, S.name);
   loadState();
-
-  const data = await verifyWithServer(S.email, S.name);
-  applyServerVerify(data);
-
-  btn.textContent = orig;
-  btn.disabled    = false;
-  renderApp();
+  renderApp(); // shows view immediately; premium verified in background
 }
 
 function handleLogout() {
@@ -806,18 +799,27 @@ function obFinish() {
 }
 
 // ── HUB RENDERING ──────────────────────────────────────
-async function renderApp() {
-  updateNav();
+function renderApp() {
   if (!S.email) { showView('gate'); return; }
 
-  // Re-verify premium on every page load (server is source of truth)
-  const data = await verifyWithServer(S.email, S.name);
-  applyServerVerify(data);
-  updateNav(); // refresh upgrade button visibility after server check
+  // Show the correct view immediately — don't block on server
+  if (!S.project) {
+    showView('onboard');
+    obGoto(0);
+    S.obCourse = null; S.obLevel = null; S.obTopicStatus = null;
+  } else {
+    showView('hub');
+    renderHub();
+  }
+  updateNav();
 
-  if (!S.project) { showView('onboard'); obGoto(0); S.obCourse=null; S.obLevel=null; S.obTopicStatus=null; return; }
-  showView('hub');
-  renderHub();
+  // Verify premium status in the background (non-blocking)
+  verifyWithServer(S.email, S.name).then(data => {
+    if (!data) return;
+    applyServerVerify(data);
+    updateNav();
+    if (S.project) renderCallsBadge();
+  }).catch(() => {});
 }
 
 function renderHub() {

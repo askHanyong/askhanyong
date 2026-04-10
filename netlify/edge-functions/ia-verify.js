@@ -64,30 +64,46 @@ export default async (request) => {
 
     const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 
+    // Helper: fetch with a 6-second abort so Supabase can't hang indefinitely
+    const sbFetch = (url, opts = {}) => {
+      const ctrl = new AbortController();
+      setTimeout(() => ctrl.abort(), 6000);
+      return fetch(url, { ...opts, signal: ctrl.signal });
+    };
+
     // ── Fetch existing user ──────────────────────────────
-    const selRes  = await fetch(
-      `${supabaseUrl}/rest/v1/ia_users?email=eq.${encodeURIComponent(email)}&select=*&limit=1`,
-      { headers: sbH },
-    );
-    const selRows = selRes.ok ? await selRes.json() : [];
+    let selRes, selRows;
+    try {
+      selRes  = await sbFetch(
+        `${supabaseUrl}/rest/v1/ia_users?email=eq.${encodeURIComponent(email)}&select=*&limit=1`,
+        { headers: sbH },
+      );
+      selRows = selRes.ok ? await selRes.json() : [];
+    } catch {
+      // Supabase unreachable — return safe defaults so login still works
+      return jsonOk({ premium: false, callsToday: 0, callsLimit: FREE_LIMIT, callsRemaining: FREE_LIMIT, isNew: false });
+    }
 
     let user;
     let isNew = false;
 
     if (selRows.length === 0) {
       // ── Create new user ────────────────────────────────
-      const insRes  = await fetch(`${supabaseUrl}/rest/v1/ia_users`, {
-        method:  'POST',
-        headers: { ...sbH, 'Prefer': 'return=representation' },
-        body: JSON.stringify({
-          email,
-          name:        name || null,
-          calls_today: 0,
-          calls_date:  today,
-          total_calls: 0,
-        }),
-      });
-      const insRows = insRes.ok ? await insRes.json() : [];
+      let insRes, insRows = [];
+      try {
+        insRes  = await sbFetch(`${supabaseUrl}/rest/v1/ia_users`, {
+          method:  'POST',
+          headers: { ...sbH, 'Prefer': 'return=representation' },
+          body: JSON.stringify({
+            email,
+            name:        name || null,
+            calls_today: 0,
+            calls_date:  today,
+            total_calls: 0,
+          }),
+        });
+        insRows = insRes.ok ? await insRes.json() : [];
+      } catch { /* table may not exist yet — fall through to safe defaults */ }
       user  = Array.isArray(insRows) ? insRows[0] : insRows;
       isNew = true;
 
@@ -100,19 +116,22 @@ export default async (request) => {
 
       // ── Reset daily counter if new day ─────────────────
       if (user.calls_date !== today) {
-        const patch = await fetch(
-          `${supabaseUrl}/rest/v1/ia_users?email=eq.${encodeURIComponent(email)}`,
-          {
-            method:  'PATCH',
-            headers: { ...sbH, 'Prefer': 'return=representation' },
-            body: JSON.stringify({
-              calls_today: 0,
-              calls_date:  today,
-              ...(name && !user.name ? { name } : {}),
-            }),
-          },
-        );
-        const pRows = patch.ok ? await patch.json() : [];
+        let pRows = [];
+        try {
+          const patch = await sbFetch(
+            `${supabaseUrl}/rest/v1/ia_users?email=eq.${encodeURIComponent(email)}`,
+            {
+              method:  'PATCH',
+              headers: { ...sbH, 'Prefer': 'return=representation' },
+              body: JSON.stringify({
+                calls_today: 0,
+                calls_date:  today,
+                ...(name && !user.name ? { name } : {}),
+              }),
+            },
+          );
+          pRows = patch.ok ? await patch.json() : [];
+        } catch { /* ignore patch failure — fall back to local reset */ }
         user = (Array.isArray(pRows) ? pRows[0] : pRows) || { ...user, calls_today: 0, calls_date: today };
       } else if (name && !user.name) {
         // Back-fill name if missing
