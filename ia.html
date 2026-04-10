@@ -529,7 +529,10 @@ body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(-
     </div>
 
     <!-- Tools -->
-    <div class="section-label" style="margin-bottom:10px">IA tools</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div class="section-label" style="margin-bottom:0">IA tools</div>
+      <div id="callsBadge" style="font-size:11px;color:var(--text-soft)"></div>
+    </div>
     <div class="tools-grid">
       <div class="tool-card" id="tc-topic" onclick="openTool('topic')">
         <div class="tc-icon">🔍</div>
@@ -622,25 +625,46 @@ let S = {
   email: null,
   name: null,
   premium: false,
+  callsToday: 0,
+  callsLimit: 15,
+  callsRemaining: 15,
   project: null,
   activeTool: null,
   obCourse: null,
   obLevel: null,
   obTopicStatus: null,
   activeSection: 'Introduction',
-  freeUsed: 0,
 };
 
 // ── Persistence ────────────────────────────────────────
 function loadState() {
-  S.email   = localStorage.getItem(KEY_EMAIL);
-  S.name    = localStorage.getItem(KEY_NAME);
-  S.premium = localStorage.getItem(KEY_PREMIUM) === '1';
-  S.freeUsed = parseInt(localStorage.getItem('ia_free_used') || '0');
+  S.email = localStorage.getItem(KEY_EMAIL);
+  S.name  = localStorage.getItem(KEY_NAME);
+  // Premium is always server-verified — never trust localStorage for this
   if (S.email) {
     try { S.project = JSON.parse(localStorage.getItem(projKey(S.email)) || 'null'); }
     catch { S.project = null; }
   }
+}
+
+async function verifyWithServer(email, name) {
+  try {
+    const res  = await fetch('/api/ia-verify', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name }),
+    });
+    if (!res.ok) return null;
+    return await res.json(); // { premium, callsToday, callsLimit, callsRemaining, isNew }
+  } catch { return null; }
+}
+
+function applyServerVerify(data) {
+  if (!data) return;
+  S.premium        = !!data.premium;
+  S.callsToday     = data.callsToday     ?? 0;
+  S.callsLimit     = data.callsLimit     ?? 15;
+  S.callsRemaining = data.callsRemaining ?? 15;
 }
 
 function saveProject() {
@@ -676,7 +700,7 @@ function showView(v) {
 }
 
 // ── AUTH ───────────────────────────────────────────────
-function handleLogin() {
+async function handleLogin() {
   const first = document.getElementById('gateFirstName').value.trim();
   const last  = document.getElementById('gateLastName').value.trim();
   const email = document.getElementById('gateEmail').value.trim().toLowerCase();
@@ -684,11 +708,22 @@ function handleLogin() {
     alert('Please enter your first name and a valid email address.');
     return;
   }
+  const btn  = document.querySelector('.gate-btn');
+  const orig = btn.textContent;
+  btn.textContent = 'Checking…';
+  btn.disabled    = true;
+
   S.email = email;
   S.name  = first + (last ? ' ' + last : '');
   localStorage.setItem(KEY_EMAIL, S.email);
   localStorage.setItem(KEY_NAME, S.name);
   loadState();
+
+  const data = await verifyWithServer(S.email, S.name);
+  applyServerVerify(data);
+
+  btn.textContent = orig;
+  btn.disabled    = false;
   renderApp();
 }
 
@@ -771,9 +806,15 @@ function obFinish() {
 }
 
 // ── HUB RENDERING ──────────────────────────────────────
-function renderApp() {
+async function renderApp() {
   updateNav();
-  if (!S.email)   { showView('gate'); return; }
+  if (!S.email) { showView('gate'); return; }
+
+  // Re-verify premium on every page load (server is source of truth)
+  const data = await verifyWithServer(S.email, S.name);
+  applyServerVerify(data);
+  updateNav(); // refresh upgrade button visibility after server check
+
   if (!S.project) { showView('onboard'); obGoto(0); S.obCourse=null; S.obLevel=null; S.obTopicStatus=null; return; }
   showView('hub');
   renderHub();
@@ -792,6 +833,20 @@ function renderHub() {
   renderCriteria();
   renderNextAction();
   renderDrafts();
+  renderCallsBadge();
+}
+
+function renderCallsBadge() {
+  const el = document.getElementById('callsBadge');
+  if (!el) return;
+  if (S.premium) {
+    el.innerHTML = '<span style="color:var(--green);font-weight:600">✓ IA Pass · Unlimited</span>';
+  } else {
+    const n   = S.callsRemaining ?? 15;
+    const col = n > 5 ? 'var(--text-soft)' : n > 0 ? 'var(--cd)' : 'var(--red)';
+    el.innerHTML = `<span style="color:${col}">${n} of ${S.callsLimit} free calls remaining today</span>`
+      + (n < 8 ? ` · <a href="#" onclick="showUpgrade();return false" style="color:var(--blue-mid);font-weight:600">Upgrade →</a>` : '');
+  }
 }
 
 function renderStages() {
@@ -1089,6 +1144,7 @@ async function runTool() {
       method:  'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify({
+        email:       S.email,
         toolType:    S.activeTool,
         content,
         course:      p.course,
@@ -1099,7 +1155,22 @@ async function runTool() {
     });
 
     const data = await res.json();
+
+    if (res.status === 429) {
+      // Rate limit hit
+      S.callsRemaining = 0;
+      renderCallsBadge();
+      showUpgrade();
+      return;
+    }
+
     if (!res.ok) { alert('Error: ' + (data.error || res.status)); return; }
+
+    // Update calls counter from server response
+    if (data.callsRemaining != null) {
+      S.callsRemaining = data.callsRemaining;
+      renderCallsBadge();
+    }
 
     showResponse(data.response, S.activeTool, data.scores);
     saveDraft(S.activeTool, content, data.response, data.scores);

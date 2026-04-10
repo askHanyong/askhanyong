@@ -118,6 +118,10 @@
   path = "/api/ia-chat"
   function = "ia-chat"
 
+[[edge_functions]]
+  path = "/api/ia-verify"
+  function = "ia-verify"
+
 
 [[redirects]]
   from = "/api/*"

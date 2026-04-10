@@ -447,10 +447,62 @@ export default async (request) => {
     try { body = await request.json(); }
     catch { return jsonErr(400, 'Invalid JSON'); }
 
-    const { toolType, content, course = 'AA', level = 'HL', context = '', sectionType = 'Math Work' } = body;
+    const { toolType, content, course = 'AA', level = 'HL', context = '', sectionType = 'Math Work', email: rawEmail = '' } = body;
 
     if (!toolType) return jsonErr(400, 'toolType required');
     if (!content || content.trim().length < 10) return jsonErr(400, 'content too short');
+
+    const email = rawEmail.trim().toLowerCase();
+    if (!email || !email.includes('@')) return jsonErr(400, 'email required');
+
+    // ── Supabase: verify user + rate limit ───────────────
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')?.replace(/\/$/, '');
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_KEY');
+    const FREE_LIMIT  = 15;
+
+    let user        = null;
+    let callsLimit  = FREE_LIMIT;
+
+    if (supabaseUrl && supabaseKey) {
+      const sbH   = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' };
+      const today = new Date().toISOString().slice(0, 10);
+
+      const selRes  = await fetch(
+        `${supabaseUrl}/rest/v1/ia_users?email=eq.${encodeURIComponent(email)}&select=*&limit=1`,
+        { headers: sbH },
+      );
+      const selRows = selRes.ok ? await selRes.json() : [];
+      user = selRows[0] ?? null;
+
+      if (!user) {
+        // Gracefully create on first call if ia-verify was somehow skipped
+        const ins = await fetch(`${supabaseUrl}/rest/v1/ia_users`, {
+          method:  'POST',
+          headers: { ...sbH, 'Prefer': 'return=representation' },
+          body: JSON.stringify({ email, calls_today: 0, calls_date: today }),
+        });
+        const insRows = ins.ok ? await ins.json() : [];
+        user = Array.isArray(insRows) ? insRows[0] : insRows;
+      }
+
+      if (user) {
+        // Reset counter if new day
+        if (user.calls_date !== today) {
+          user = { ...user, calls_today: 0, calls_date: today };
+          fetch(`${supabaseUrl}/rest/v1/ia_users?email=eq.${encodeURIComponent(email)}`,
+            { method: 'PATCH', headers: sbH, body: JSON.stringify({ calls_today: 0, calls_date: today }) });
+        }
+
+        callsLimit = user.premium ? 9999 : FREE_LIMIT;
+
+        if ((user.calls_today ?? 0) >= callsLimit) {
+          return new Response(
+            JSON.stringify({ error: 'Daily limit reached. Upgrade to IA Pass for unlimited access.', limitReached: true, callsRemaining: 0 }),
+            { status: 429, headers: { ...CORS, 'Content-Type': 'application/json' } },
+          );
+        }
+      }
+    }
 
     // Build system prompt
     let systemPrompt;
@@ -508,7 +560,21 @@ export default async (request) => {
       }
     }
 
-    return jsonOk({ response: text, scores });
+    // ── Increment call counter (fire-and-forget) ─────────
+    if (supabaseUrl && supabaseKey && user) {
+      const sbH = { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' };
+      fetch(`${supabaseUrl}/rest/v1/ia_users?email=eq.${encodeURIComponent(email)}`, {
+        method:  'PATCH',
+        headers: sbH,
+        body: JSON.stringify({
+          calls_today: (user.calls_today ?? 0) + 1,
+          total_calls: (user.total_calls ?? 0) + 1,
+        }),
+      });
+    }
+
+    const callsRemaining = user ? Math.max(0, callsLimit - ((user.calls_today ?? 0) + 1)) : null;
+    return jsonOk({ response: text, scores, callsRemaining });
 
   } catch (err) {
     return new Response(
