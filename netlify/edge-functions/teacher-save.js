@@ -1,10 +1,10 @@
 // ════════════════════════════════════════════════════════════════
 // Teacher Save — Netlify Edge Function (Deno runtime)
-// Stores a verified marking record in Supabase for future
-// calibration and fine-tuning (Phase 1 learning pipeline).
+// Stores or updates a verified marking record in Supabase.
 //
 // POST /api/teacher-save
-// Body: { token, studentName, aiScore, finalScore, questionMarks }
+// Body (insert): { token, studentName, aiScore, finalScore, questionMarks, examId, annotations, classLabel }
+// Body (update): { token, markingId, finalScore, questionMarks, annotations, classLabel }
 // questionMarks: [{ q, p, ma, ai, final, delta, notes }, ...]
 // ════════════════════════════════════════════════════════════════
 
@@ -72,25 +72,62 @@ export default async (request) => {
     try { body = await request.json(); }
     catch { return jsonErr(400, 'Invalid JSON'); }
 
-    const { token, studentName, aiScore, finalScore, questionMarks, examId, annotations, classLabel } = body;
+    const { token, studentName, aiScore, finalScore, questionMarks, examId, annotations, classLabel, markingId } = body;
 
-    if (!token)         return jsonErr(401, 'token required');
-    if (!studentName)   return jsonErr(400, 'studentName required');
+    if (!token) return jsonErr(401, 'token required');
     if (finalScore === undefined || finalScore === null) return jsonErr(400, 'finalScore required');
     if (!Array.isArray(questionMarks) || questionMarks.length === 0) return jsonErr(400, 'questionMarks required');
 
     const email = await verifyTeacherToken(token, sessionSecret);
     if (!email) return jsonErr(401, 'Invalid or expired teacher session');
 
-    // Insert into Supabase via REST API
+    const sbHeaders = {
+      'Content-Type':  'application/json',
+      'apikey':        supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`,
+    };
+
+    // ── UPDATE path (re-mark) ─────────────────────────────────────
+    if (markingId) {
+      // Verify the marking belongs to this teacher before patching
+      const checkRes = await fetch(
+        `${supabaseUrl}/rest/v1/markings?id=eq.${encodeURIComponent(markingId)}&marked_by=eq.${encodeURIComponent(email)}&select=id`,
+        { headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` } },
+      );
+      const checkRows = checkRes.ok ? await checkRes.json() : [];
+      if (!checkRows.length) return jsonErr(403, 'Marking not found or access denied');
+
+      const patchRes = await fetch(
+        `${supabaseUrl}/rest/v1/markings?id=eq.${encodeURIComponent(markingId)}&marked_by=eq.${encodeURIComponent(email)}`,
+        {
+          method: 'PATCH',
+          headers: { ...sbHeaders, 'Prefer': 'return=representation' },
+          body: JSON.stringify({
+            final_score:    finalScore,
+            question_marks: questionMarks,
+            annotations:    Array.isArray(annotations) ? annotations : [],
+            ...(classLabel ? { class_label: String(classLabel).trim().slice(0, 60) } : {}),
+          }),
+        },
+      );
+
+      if (!patchRes.ok) {
+        let errDetail = '';
+        try { const d = await patchRes.json(); errDetail = d.message || d.error || JSON.stringify(d); } catch {}
+        return jsonErr(patchRes.status, `Supabase error: ${errDetail}`);
+      }
+
+      const rows  = await patchRes.json();
+      const saved = Array.isArray(rows) ? rows[0] : rows;
+      return jsonOk({ ok: true, id: saved?.id ?? markingId, report_token: saved?.report_token ?? null, message: 'Marking updated successfully.' });
+    }
+
+    // ── INSERT path (new marking) ─────────────────────────────────
+    if (!studentName) return jsonErr(400, 'studentName required');
+
     const insertRes = await fetch(`${supabaseUrl}/rest/v1/markings`, {
       method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'apikey':        supabaseKey,
-        'Authorization': `Bearer ${supabaseKey}`,
-        'Prefer':        'return=representation',
-      },
+      headers: { ...sbHeaders, 'Prefer': 'return=representation' },
       body: JSON.stringify({
         exam_id:        examId || 'MAA-HL-M24-P1-TZ1',
         student_name:   studentName,
@@ -98,7 +135,7 @@ export default async (request) => {
         ai_score:       typeof aiScore === 'number' ? aiScore : null,
         final_score:    finalScore,
         question_marks: questionMarks,
-        annotations: Array.isArray(annotations) ? annotations : [],
+        annotations:    Array.isArray(annotations) ? annotations : [],
         ...(classLabel ? { class_label: String(classLabel).trim().slice(0, 60) } : {}),
       }),
     });
@@ -109,7 +146,7 @@ export default async (request) => {
       return jsonErr(insertRes.status, `Supabase error: ${errDetail}`);
     }
 
-    const rows = await insertRes.json();
+    const rows  = await insertRes.json();
     const saved = Array.isArray(rows) ? rows[0] : rows;
 
     return jsonOk({

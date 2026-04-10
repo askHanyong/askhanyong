@@ -285,6 +285,17 @@ td{padding:10px 12px;vertical-align:top}
   <h1 class="page-title">Teacher Marking Platform</h1>
   <p class="page-sub">Mark IB papers or homework assignments. The AI reads student scripts and awards marks against the official markscheme or your solution set.</p>
 
+  <!-- Autosave restore banner — shown when a Q-review checkpoint is found in localStorage -->
+  <div id="qReviewRestoreBanner" style="display:none;background:#fef9c3;border:1.5px solid #fde047;border-radius:10px;padding:12px 16px;margin-bottom:16px;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div style="font-size:13px;font-weight:500;color:#713f12">
+      ⏰ Unsaved marking in progress — <strong id="restoreAssignName"></strong> · <span id="restoreCount"></span> · saved <span id="restoreTime"></span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="restoreQReviewCheckpoint()" style="padding:4px 16px;background:#713f12;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer">↩ Restore</button>
+      <button onclick="dismissQReviewCheckpoint()" style="padding:4px 12px;background:none;border:1.5px solid #92400e;border-radius:6px;font-size:12px;font-weight:600;color:#92400e;cursor:pointer">Discard</button>
+    </div>
+  </div>
+
   <div class="section-tabs">
     <button class="section-tab active" id="sTabIB"     onclick="setSection('ib')">IB Papers</button>
     <button class="section-tab"        id="sTabAssign" onclick="setSection('assign')">Assignments</button>
@@ -835,6 +846,7 @@ td{padding:10px 12px;vertical-align:top}
             <th style="width:90px">Date</th>
             <th style="width:60px">Report</th>
             <th style="width:60px">PDF</th>
+            <th style="width:50px">Edit</th>
           </tr>
         </thead>
         <tbody id="dashBody"></tbody>
@@ -1351,7 +1363,7 @@ async function saveAssignMarking() {
   } finally { btn.disabled = false; }
 }
 
-async function _uploadScriptPdf(markingId, pdfB64, msgEl) {
+async function _uploadScriptPdf(markingId, pdfB64) {
   try {
     const res = await fetch('/api/script-store', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1360,11 +1372,12 @@ async function _uploadScriptPdf(markingId, pdfB64, msgEl) {
     if (!res.ok) {
       const d = await res.json().catch(() => ({}));
       console.warn('Script upload failed:', d.error || res.status);
-      if (msgEl) msgEl.innerHTML += ' <span style="color:var(--text-soft);font-size:11px">(PDF not stored — re-mark to enable dashboard download)</span>';
+      return false;
     }
-    // Success is silent — the marking is already saved
+    return true;
   } catch (e) {
     console.warn('Script upload error:', e.message);
+    return false;
   }
 }
 
@@ -2467,6 +2480,7 @@ async function init() {
       document.getElementById('navUser').textContent = savedName || data.email;
       document.getElementById('btnLogout').style.display = 'inline';
       showScreen('screenMark');
+      _checkQReviewCheckpoint();
     } else {
       localStorage.removeItem('teacherToken');
       localStorage.removeItem('teacherName');
@@ -2478,6 +2492,7 @@ async function init() {
     document.getElementById('navUser').textContent = savedName || '';
     document.getElementById('btnLogout').style.display = 'inline';
     showScreen('screenMark');
+    _checkQReviewCheckpoint();
   }
 }
 
@@ -2645,14 +2660,18 @@ function renderDashboard() {
       <td>${pctPill(m.pct)}</td>
       <td style="font-size:12px;color:var(--text-soft)">${dateStr}</td>
       <td onclick="event.stopPropagation()">${reportHtml}</td>
-      <td onclick="event.stopPropagation()">${pdfHtml}</td>`;
+      <td onclick="event.stopPropagation()">${pdfHtml}</td>
+      <td onclick="event.stopPropagation()">
+        <button onclick="loadMarkingForEdit('${m.id}')"
+          style="font-size:11px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:5px;padding:2px 8px;cursor:pointer">✏ Edit</button>
+      </td>`;
     tbody.appendChild(tr);
 
     // Hidden detail row
     const det = document.createElement('tr');
     det.id    = `dd-${m.id}`;
     det.style.display = 'none';
-    det.innerHTML = `<td colspan="9" style="padding:0"><div class="dash-detail-inner" id="ddi-${m.id}"></div></td>`;
+    det.innerHTML = `<td colspan="10" style="padding:0"><div class="dash-detail-inner" id="ddi-${m.id}"></div></td>`;
     tbody.appendChild(det);
   });
 
@@ -2768,6 +2787,93 @@ function buildQuestionIndex() {
   });
 }
 
+// ── Q-review autosave (localStorage checkpoint) ──────────────────────────
+let qReviewAutosaveTimer = null;
+let editingMarkingId     = null;   // set when editing a saved marking (P0.3)
+
+const _qrKey = () => `qr_chk_${(teacherToken || 'anon').slice(0, 20)}`;
+
+function _saveQReviewCheckpoint() {
+  try {
+    localStorage.setItem(_qrKey(), JSON.stringify({
+      savedAt:        Date.now(),
+      assignmentId:   selectedAssignment?.id   || null,
+      assignmentName: selectedAssignment?.name || null,
+      qKeys,
+      currentQKeyIdx,
+      questionIndex,
+      // strip b64 — PDFs are too large for localStorage (up to 10 MB)
+      students: bulkAssignQueue.map(({ name, status, result, annotations, error }) =>
+        ({ name, status, result, annotations: annotations || [], error })),
+    }));
+  } catch (e) { console.warn('Q-review autosave failed:', e.message); }
+}
+
+function _clearQReviewCheckpoint() {
+  try { localStorage.removeItem(_qrKey()); } catch {}
+}
+
+function _checkQReviewCheckpoint() {
+  try {
+    const raw = localStorage.getItem(_qrKey());
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (!data?.students?.length) { _clearQReviewCheckpoint(); return; }
+    const diff  = Math.round((Date.now() - data.savedAt) / 60000);
+    const ago   = diff < 1 ? 'just now' : diff < 60 ? `${diff}m ago` : `${Math.floor(diff/60)}h ${diff%60}m ago`;
+    const n     = data.students.length;
+    document.getElementById('restoreAssignName').textContent = data.assignmentName || data.assignmentId || 'Unknown assignment';
+    document.getElementById('restoreCount').textContent      = `${n} student${n !== 1 ? 's' : ''}`;
+    document.getElementById('restoreTime').textContent       = ago;
+    const banner = document.getElementById('qReviewRestoreBanner');
+    banner._checkpointData = data;
+    banner.style.display   = 'flex';
+  } catch { _clearQReviewCheckpoint(); }
+}
+
+function restoreQReviewCheckpoint() {
+  const banner = document.getElementById('qReviewRestoreBanner');
+  const data   = banner?._checkpointData;
+  if (!data) return;
+  banner.style.display = 'none';
+  // Reconstruct state (no b64 — teacher must re-open script panel to reload PDF)
+  selectedAssignment = { id: data.assignmentId, name: data.assignmentName };
+  bulkAssignQueue    = (data.students || []).map(s => ({
+    file: null, name: s.name, b64: null,
+    status: s.status, result: s.result,
+    annotations: s.annotations || [], error: s.error,
+  }));
+  qKeys          = data.qKeys          || [];
+  currentQKeyIdx = data.currentQKeyIdx || 0;
+  questionIndex  = data.questionIndex  || {};
+  if (!qKeys.length) { alert('Checkpoint data is incomplete. Cannot restore.'); return; }
+  setSection('assign');
+  setAssignTab('bulk');
+  document.getElementById('assignBulkPane').style.display    = 'none';
+  document.getElementById('assignQReviewPane').style.display = '';
+  document.getElementById('scriptSidePanel').style.display   = 'none';
+  scriptPanelStudentIdx = -1;
+  renderQNav();
+  renderQReviewTable(qKeys[currentQKeyIdx] || qKeys[0]);
+  // Resume autosave
+  _startAutosaveTimer();
+}
+
+function dismissQReviewCheckpoint() {
+  document.getElementById('qReviewRestoreBanner').style.display = 'none';
+  _clearQReviewCheckpoint();
+}
+
+function _startAutosaveTimer() {
+  _stopAutosaveTimer();
+  _saveQReviewCheckpoint(); // immediate save on entry
+  qReviewAutosaveTimer = setInterval(_saveQReviewCheckpoint, 30000);
+}
+
+function _stopAutosaveTimer() {
+  if (qReviewAutosaveTimer) { clearInterval(qReviewAutosaveTimer); qReviewAutosaveTimer = null; }
+}
+
 function startQReview() {
   buildQuestionIndex();
   if (!qKeys.length) { alert('No question data available.'); return; }
@@ -2779,9 +2885,12 @@ function startQReview() {
   document.getElementById('assignQReviewPane').style.display = '';
   renderQNav();
   renderQReviewTable(qKeys[0]);
+  _startAutosaveTimer();
 }
 
 function exitQReview() {
+  _stopAutosaveTimer();
+  editingMarkingId      = null;
   scriptPanelStudentIdx = -1;
   document.getElementById('scriptSidePanel').style.display   = 'none';
   document.getElementById('assignQReviewPane').style.display = 'none';
@@ -3401,13 +3510,15 @@ async function saveAllBulkAssign(btn, msgElId) {
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
   if (msgEl) { msgEl.className = 'msg'; msgEl.textContent = ''; }
 
+  const isEdit = !!editingMarkingId;
   const toSave = bulkAssignQueue.filter(it => it.result);
   let saved = 0, failed = 0;
+  const uploadTasks = [];   // { name, promise }
 
   for (let si = 0; si < toSave.length; si++) {
     const item       = toSave[si];
     const studentIdx = bulkAssignQueue.indexOf(item);
-    if (btn) btn.textContent = `Saving ${si+1} / ${toSave.length}…`;
+    if (btn) btn.textContent = isEdit ? 'Saving changes…' : `Saving ${si+1} / ${toSave.length}…`;
 
     const questionMarks = [];
     let aiTotal = 0, finalTotal = 0;
@@ -3433,32 +3544,52 @@ async function saveAllBulkAssign(btn, msgElId) {
     }
 
     try {
+      const annotations = item.annotations ?? _annFromAIResult(item);
+      const bodyObj = isEdit
+        ? { token: teacherToken, markingId: editingMarkingId, finalScore: finalTotal, questionMarks, annotations, ...(classLabel ? { classLabel } : {}) }
+        : { token: teacherToken, studentName: item.name, aiScore: aiTotal, finalScore: finalTotal, questionMarks, examId: selectedAssignment?.id, annotations, ...(classLabel ? { classLabel } : {}) };
+
       const res  = await fetch('/api/teacher-save', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token: teacherToken, studentName: item.name,
-          aiScore: aiTotal, finalScore: finalTotal, questionMarks,
-          examId: selectedAssignment?.id,
-          // Use teacher-edited annotations if panel was opened; otherwise seed from AI result
-          annotations: item.annotations ?? _annFromAIResult(item),
-          ...(classLabel ? { classLabel } : {}),
-        }),
+        body: JSON.stringify(bodyObj),
       });
       const data = await res.json().catch(()=>({}));
       if (res.ok) {
         saved++;
-        if (data.id && item.b64) _uploadScriptPdf(data.id, item.b64, null);
+        const markingId = isEdit ? editingMarkingId : data.id;
+        if (markingId && item.b64) {
+          uploadTasks.push({ name: item.name, promise: _uploadScriptPdf(markingId, item.b64) });
+        }
       } else { failed++; }
     } catch { failed++; }
   }
 
+  // Await all PDF uploads and report results
+  if (uploadTasks.length) {
+    if (btn) btn.textContent = `Uploading PDFs…`;
+    const uploadResults = await Promise.all(uploadTasks.map(t => t.promise));
+    const uploadFailed  = uploadResults.filter(r => r === false).length;
+    if (uploadFailed > 0 && msgEl) {
+      const failNames = uploadTasks.filter((_, i) => uploadResults[i] === false).map(t => t.name).join(', ');
+      const warnEl = document.createElement('div');
+      warnEl.className = 'msg';
+      warnEl.style.cssText = 'background:#fef9c3;border-color:#fde047;color:#713f12;margin-top:6px';
+      warnEl.textContent = `⚠ PDF upload failed for: ${failNames}. Dashboard download won't work for these — use the in-review "⬇ PDF" buttons instead.`;
+      msgEl.parentNode?.insertBefore(warnEl, msgEl.nextSibling);
+    }
+  }
+
+  _clearQReviewCheckpoint();
+  _stopAutosaveTimer();
+  editingMarkingId = null;
+
   if (btn) {
-    if (failed === 0) { btn.textContent = `✓ All ${saved} saved`; btn.disabled = true; }
+    if (failed === 0) { btn.textContent = isEdit ? '✓ Changes saved' : `✓ All ${saved} saved`; btn.disabled = true; }
     else              { btn.textContent = 'Retry Save'; btn.disabled = false; }
   }
   if (msgEl) {
     msgEl.textContent = failed === 0
-      ? `All ${saved} scripts saved successfully.`
+      ? (isEdit ? 'Marking updated successfully.' : `All ${saved} scripts saved successfully.`)
       : `Saved ${saved}, failed ${failed}. Please retry.`;
     msgEl.className = failed === 0 ? 'msg ok' : 'msg err';
   }
@@ -3472,6 +3603,66 @@ function classColorIdx(label) {
   let h = 0;
   for (let i = 0; i < label.length; i++) h = (h * 31 + label.charCodeAt(i)) & 0xffff;
   return h % 6;
+}
+
+// ── Re-mark: reconstruct a fake AI result from saved question_marks ─────────
+function _questionMarksToResult(questionMarks) {
+  const qMap = {}, qOrder = [];
+  (questionMarks || []).forEach(({ q, p, ma, final, ai, notes }) => {
+    const qk = String(q ?? '');
+    if (!qMap[qk]) { qMap[qk] = { q: qk, pts: [] }; qOrder.push(qk); }
+    qMap[qk].pts.push({ p: p ?? '', ma: ma ?? null, mi: final ?? ai ?? 0, n: notes ?? '' });
+  });
+  return { questions: qOrder.map(k => qMap[k]) };
+}
+
+async function loadMarkingForEdit(markingId) {
+  const m = allMarkings?.find(x => x.id === markingId);
+  if (!m) { alert('Marking not found — try refreshing the dashboard.'); return; }
+
+  const msgEl = document.getElementById('dashMsg');
+  if (msgEl) { msgEl.textContent = 'Loading marking for edit…'; msgEl.style.display = ''; }
+
+  editingMarkingId = markingId;
+
+  const result = _questionMarksToResult(m.question_marks || []);
+  const item   = {
+    file: null, name: m.student_name, b64: null,
+    status: 'done', result, error: null,
+    annotations: m.annotations || [],
+  };
+
+  // Try to fetch the stored script PDF (best-effort)
+  try {
+    const res = await fetch('/api/script-fetch', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: teacherToken, markingId }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.scriptPdfB64) item.b64 = data.scriptPdfB64;
+    }
+  } catch {}
+
+  if (msgEl) msgEl.style.display = 'none';
+
+  bulkAssignQueue    = [item];
+  selectedAssignment = assignments?.find(a => a.id === m.exam_id) || { id: m.exam_id, name: m.exam_id };
+
+  setSection('assign');
+  setAssignTab('bulk');
+  startQReview();
+
+  // Adjust save-section UI for edit mode
+  const saveSection = document.getElementById('aBulkSaveSection');
+  if (saveSection) {
+    const p = saveSection.querySelector('p');
+    if (p) { p.innerHTML = `Editing marking for <strong>${escHtml(m.student_name)}</strong>. Adjust marks then save.`; }
+    const saveBtn = document.getElementById('btnSaveBulkAssign');
+    if (saveBtn) saveBtn.textContent = '✓ Save Changes';
+  }
+  // Show save section immediately (only 1 student, already reviewed)
+  document.getElementById('aBulkSaveSection').style.display = '';
 }
 
 // ── Convert AI result annotations (x_zone/y_zone) to our x/y (0-100%) format ──

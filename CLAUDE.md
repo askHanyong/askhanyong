@@ -10,11 +10,11 @@ Development: `claude/fix-bulk-marking-issue-urUsg`
 
 ## Build Backlog
 
-### P0 — Fix Before Next Teacher Session (DO THESE FIRST)
+### P0 — Fix Before Next Teacher Session (DONE ✓)
 
-- [ ] **Autosave Q-review state to localStorage** — 30s checkpoint save of `bulkAssignQueue` + `questionIndex`. On next load, detect saved state and prompt teacher to restore. Prevents losing 20+ marked scripts on browser crash.
-- [ ] **Script upload confirmation** — `_uploadScriptPdf` fires and forgets silently. If it fails, dashboard download breaks with no warning. Show visible error in the save confirmation row per student.
-- [ ] **Re-mark / edit saved markings** — no way to correct a marking once saved. Load saved data back into Q-review, let teacher adjust, then PATCH to Supabase (update, not insert).
+- [x] **Autosave Q-review state to localStorage** — 30s checkpoint save of `bulkAssignQueue` + `questionIndex`. On next load, detect saved state and prompt teacher to restore. Prevents losing 20+ marked scripts on browser crash.
+- [x] **Script upload confirmation** — `_uploadScriptPdf` now awaited; failures surface per-student warning with names listed. In-review "⬇ PDF" button as fallback.
+- [x] **Re-mark / edit saved markings** — "✏ Edit" button on every dashboard row. Loads marking back into Q-review (fetches stored PDF from Supabase Storage). Saves via PATCH (update, not insert) in `teacher-save.js`.
 
 ### P1 — Core Workflow Completeness (DO AFTER P0)
 
