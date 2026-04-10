@@ -16,25 +16,27 @@ Development: `claude/fix-bulk-marking-issue-urUsg`
 - [x] **Script upload confirmation** — `_uploadScriptPdf` now awaited; failures surface per-student warning with names listed. In-review "⬇ PDF" button as fallback.
 - [x] **Re-mark / edit saved markings** — "✏ Edit" button on every dashboard row. Loads marking back into Q-review (fetches stored PDF from Supabase Storage). Saves via PATCH (update, not insert) in `teacher-save.js`.
 
-### P1 — Core Workflow Completeness (DO AFTER P0)
+### P1 — Core Workflow Completeness (DONE ✓)
 
-- [ ] **Keyboard shortcuts in Q-review** — `A` accept AI mark, `0–9` set mark, `→` next student, `←` prev student, `T` drop tick annotation, `X` drop cross annotation. Single biggest time-saver.
-- [ ] **Bulk report sharing** — at save time, generate all report tokens and produce a downloadable sheet (`Name, Score, Report URL`) for teacher to distribute via email/WhatsApp.
-- [ ] **Class management** — create named classes, assign students to a class. Replace free-text `class_label` field with a proper class selector tied to teacher account.
-- [ ] **Question-level score distribution** — in the dashboard, show a per-question bar chart across the class (e.g. Q3 average: 1.2/4). Identifies where the class struggled.
+- [x] **Keyboard shortcuts in Q-review** — `A` accept AI mark, `0–9` set mark, `→` next student, `←` prev student, `T` drop tick annotation, `X` drop cross annotation. Single biggest time-saver.
+- [x] **Bulk report sharing** — at save time, collect report tokens → downloadable CSV (`Name, Score, Report URL`). "⬇ Report Links" button appears after save.
+- [x] **Class management** — datalist-backed autocomplete input; class names sourced from existing markings. Class filter dropdown in dashboard.
+- [x] **Question-level score distribution** — per-question horizontal bar chart in dashboard (avg/max, green/amber/red by threshold).
 
-### P2 & P3 — KIV (remind teacher when asked "what's next to build")
+### P2 & P3 — Partially Built
 
-- Comment bank (`#` to search saved notes)
+- [x] **P2.8 Comment bank** — `#` trigger in notes textarea, floating dropdown, localStorage persistence, harvested on save.
+- [x] **P2.11 AI confidence highlighting** — `cf` field in tool schema; amber row + badge in Q-review for low-confidence marks.
+- [x] **P3.15 Tablet optimisation** — CSS media queries; script panel becomes bottom sheet at ≤1024px; touch-friendly buttons.
+- [x] **P3.17 AI accuracy self-improvement loop** — "📊 AI Accuracy" button in dashboard; per-question AI avg vs final avg chart with delta and accuracy %; downloadable CSV report.
+
+#### Still KIV (remind when asked "what's next to build"):
 - Anonymous marking toggle during Q-review
 - Structured rubric builder (replace solution PDF with explicit criteria)
-- AI confidence highlighting (amber-flag low-confidence question parts)
 - Student regrade request button on report page
 - Loading skeletons + toast notifications
 - Rubber-stamp cursors in annotation mode
-- Mobile/tablet simplified view
 - Multi-teacher / TA collaboration + moderation
-- AI accuracy self-improvement loop (monthly AI vs. final score delta report)
 
 ---
 
@@ -47,7 +49,7 @@ Development: `claude/fix-bulk-marking-issue-urUsg`
   - `doBulkAssignMark()` — bulk marking loop with client retry
   - `startQReview()` / `renderQReviewTable()` — Q-by-Q review
   - `saveAllBulkAssign()` — saves to Supabase + triggers PDF upload
-  - `_uploadScriptPdf()` — fire-and-forget PDF upload (P0 fix needed)
+  - `_uploadScriptPdf()` — awaited PDF upload; failures listed by student name
   - `_renderAnnotatedPdfBytes()` — renders annotated PDF from canvas
   - `downloadAllAnnotatedPDFs()` / `downloadCurrentScriptPDF()` — in-memory download (bypasses Supabase)
   - `openScriptPanel()` — opens sticky PDF side panel for a student

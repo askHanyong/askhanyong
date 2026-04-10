@@ -109,6 +109,7 @@ Use the submit_marks tool. For each question/part:
 - Keep notes to 5 words max; omit if full marks awarded
 - Be conservative — your first instinct is usually too generous
 - Set \`pg\` to the page number in the student script where that part's answer appears
+- Set \`cf\` (confidence) only when uncertain: 0.5 if working is illegible or ambiguous, 0.0 if you are guessing. Omit \`cf\` entirely when you are confident in the mark.
 
 ## ANNOTATIONS
 Also include an \`annotations\` array. For each region of the student script:
@@ -144,11 +145,12 @@ function buildMarkingTool(structure, totalMarks) {
                   items: {
                     type: 'object',
                     properties: {
-                      p:  { type: 'string', description: 'Part label e.g. (a), (b), or empty for whole question' },
+                      p:  { type: 'string',  description: 'Part label e.g. (a), (b), or empty for whole question' },
                       mi: { type: 'integer', description: 'Marks awarded' },
                       ma: { type: 'integer', description: 'Marks available' },
                       n:  { type: 'string',  description: 'Brief note (5 words max) — omit if full marks' },
                       pg: { type: 'integer', description: 'Page number in the student script where this part\'s answer appears (1-indexed)' },
+                      cf: { type: 'number',  description: 'Confidence in this mark: 1.0=certain, 0.5=uncertain (illegible/ambiguous working), 0.0=guess. Omit when fully confident.' },
                     },
                     required: ['mi', 'ma'],
                   },
@@ -206,6 +208,7 @@ function buildMarkingTool(structure, totalMarks) {
                     ma: { type: 'integer', description: 'Marks available' },
                     n:  { type: 'string',  description: 'Brief note (5 words max)' },
                     pg: { type: 'integer', description: 'Page number in the student script where this part\'s answer appears (1-indexed)' },
+                    cf: { type: 'number',  description: 'Confidence in this mark: 1.0=certain, 0.5=uncertain (illegible/ambiguous), 0.0=guess. Omit when confident.' },
                   },
                   required: ['mi', 'ma'],
                 },
