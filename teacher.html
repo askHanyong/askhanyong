@@ -212,6 +212,8 @@ td{padding:10px 12px;vertical-align:top}
 /* Q review table — always-visible final input */
 .q-final-input{width:44px;padding:3px 5px;border:1.5px solid var(--border);border-radius:5px;font-family:'DM Mono',monospace;font-weight:700;font-size:13px;text-align:center;outline:none;background:#fff;color:var(--navy)}
 .q-final-input:focus{border-color:var(--navy);box-shadow:0 0 0 2px rgba(10,36,99,.1)}
+/* Keyboard-focused row in Q-review */
+.kbd-focus{background:#eff6ff !important;outline:2px solid #3b82f6;outline-offset:-2px}
 .q-final-input.changed{border-color:var(--gold);background:var(--gold-pale);color:#92400e}
 /* Student cell in Q review: name + stacked notes */
 .qr-student-name{font-weight:600;white-space:nowrap}
@@ -545,7 +547,7 @@ td{padding:10px 12px;vertical-align:top}
         </div>
         <div class="field" style="margin:0">
           <label>CLASS / GROUP <span style="font-weight:400;color:var(--text-soft)">(optional)</span></label>
-          <input id="aClassLabel" type="text" placeholder="e.g. 5A, IB Year 1, Class B" maxlength="60">
+          <input id="aClassLabel" type="text" list="knownClassList" placeholder="Select or type class name" maxlength="60" autocomplete="off">
         </div>
       </div>
 
@@ -630,7 +632,8 @@ td{padding:10px 12px;vertical-align:top}
       <div class="card">
         <div class="field" style="margin:0">
           <label>CLASS / GROUP <span style="font-weight:400;color:var(--text-soft)">(optional)</span></label>
-          <input id="aBulkClassLabel" type="text" placeholder="e.g. 5A, IB Year 1, Class B" maxlength="60" style="max-width:320px">
+          <input id="aBulkClassLabel" type="text" list="knownClassList" placeholder="Select or type class name" maxlength="60" style="max-width:320px" autocomplete="off">
+          <datalist id="knownClassList"></datalist>
         </div>
       </div>
 
@@ -710,6 +713,15 @@ td{padding:10px 12px;vertical-align:top}
             <div id="qNavCounter" style="font-size:13px;font-weight:600;color:var(--text-mid)"></div>
             <button id="btnQNext" onclick="navQuestion(1)" class="btn-primary" style="max-width:140px">Next Q →</button>
           </div>
+          <div style="margin-top:8px;padding:6px 10px;background:#f8fafc;border:1px solid var(--border);border-radius:6px;font-size:10.5px;color:var(--text-soft);line-height:1.7">
+            <strong style="color:var(--text-mid)">Keyboard:</strong>
+            <kbd style="background:#e2e8f0;border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10px">↑↓</kbd> select student ·
+            <kbd style="background:#e2e8f0;border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10px">A</kbd> accept AI mark ·
+            <kbd style="background:#e2e8f0;border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10px">0–9</kbd> set mark ·
+            <kbd style="background:#e2e8f0;border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10px">←→</kbd> prev/next Q ·
+            <kbd style="background:#e2e8f0;border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10px">T</kbd> tick ·
+            <kbd style="background:#e2e8f0;border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10px">X</kbd> cross
+          </div>
 
           <div id="aBulkSaveSection" style="display:none;margin-top:20px;padding-top:16px;border-top:1.5px solid var(--border)">
             <p style="font-size:13px;color:var(--text-mid);margin-bottom:12px">All questions reviewed. Ready to save.</p>
@@ -718,6 +730,8 @@ td{padding:10px 12px;vertical-align:top}
                 style="max-width:260px;background:linear-gradient(135deg,#064e3b,#065f46)">✓ Save All &amp; Confirm</button>
               <button id="btnDownloadAllAnnotated" onclick="downloadAllAnnotatedPDFs(this)" class="btn-primary"
                 style="max-width:260px;background:linear-gradient(135deg,#1e3a8a,#1d4ed8)">⬇ Download Annotated PDFs</button>
+              <button id="btnDownloadReportLinks" onclick="downloadReportLinks()" class="btn-sm"
+                style="display:none">📋 Report Links CSV</button>
             </div>
             <div id="aBulkSaveMsg" class="msg" style="margin-top:10px"></div>
             <div id="aBulkDlMsg" class="msg" style="margin-top:6px"></div>
@@ -831,6 +845,9 @@ td{padding:10px 12px;vertical-align:top}
       <div class="stat-card"><div class="stat-val" id="dStatHigh">—</div><div class="stat-lbl">Highest score</div></div>
       <div class="stat-card"><div class="stat-val" id="dStatLow">—</div><div class="stat-lbl">Lowest score</div></div>
     </div>
+
+    <!-- Question score distribution chart -->
+    <div id="dashQChart" style="display:none;margin-bottom:14px"></div>
 
     <!-- Results table -->
     <div id="dashTableWrap" class="card" style="padding:0;overflow:hidden;display:none">
@@ -2562,10 +2579,68 @@ async function loadDashboard() {
     });
 
     dashFiltered = [...allMarkings];
+    _refreshClassDatalist();
     renderDashboard();
   } catch (e) {
     msgEl.textContent = 'Network error: ' + e.message;
   }
+}
+
+function _refreshClassDatalist() {
+  const dl = document.getElementById('knownClassList');
+  if (!dl) return;
+  const classes = [...new Set(allMarkings.map(m => m.class_label).filter(Boolean))].sort();
+  dl.innerHTML = classes.map(c => `<option value="${escHtml(c)}">`).join('');
+}
+
+// ── Dashboard: per-question score distribution ──────────────────────────
+function renderQChart() {
+  const el = document.getElementById('dashQChart');
+  if (!el) return;
+  if (!dashFiltered.length) { el.style.display = 'none'; return; }
+
+  // Aggregate question marks across all filtered markings (preserve order from first seen)
+  const qAgg = {};
+  const qOrder = [];
+  dashFiltered.forEach(m => {
+    (m.question_marks || []).forEach(({ q, p, ma, final }) => {
+      const label = p ? `Q${q}(${p})` : `Q${q}`;
+      if (!qAgg[label]) { qAgg[label] = { label, ma: null, finals: [] }; qOrder.push(label); }
+      if (typeof final === 'number') qAgg[label].finals.push(final);
+      if (ma != null && qAgg[label].ma == null) qAgg[label].ma = ma;
+    });
+  });
+
+  const entries = qOrder.map(k => qAgg[k]).filter(e => e.finals.length > 0);
+  if (!entries.length) { el.style.display = 'none'; return; }
+
+  const bars = entries.map(e => {
+    const avg  = e.finals.reduce((s, v) => s + v, 0) / e.finals.length;
+    const max  = e.ma ?? Math.max(...e.finals, 1);
+    const pct  = Math.round(avg / max * 100);
+    const col  = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
+    return `
+      <div style="display:flex;align-items:center;gap:8px;min-width:220px">
+        <div style="width:58px;font-size:10.5px;font-weight:700;color:var(--navy);font-family:'DM Mono',monospace;white-space:nowrap;text-align:right">${escHtml(e.label)}</div>
+        <div style="flex:1;background:#e2e8f0;border-radius:4px;height:12px;overflow:hidden;min-width:60px">
+          <div style="width:${pct}%;background:${col};height:100%;border-radius:4px;transition:width .4s ease"></div>
+        </div>
+        <div style="width:72px;font-size:10.5px;color:var(--text-mid);white-space:nowrap">
+          ${avg.toFixed(1)} / ${max} <span style="color:var(--text-soft)">(${pct}%)</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="card" style="padding:14px 18px">
+      <div style="font-size:10px;font-weight:700;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">
+        Question Breakdown — class averages
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px">
+        ${bars}
+      </div>
+    </div>`;
 }
 
 function applyDashFilter() {
@@ -2676,6 +2751,7 @@ function renderDashboard() {
   });
 
   document.getElementById('dashTableWrap').style.display = '';
+  renderQChart();
 }
 
 function toggleDashRow(id, questionMarks, annotations) {
@@ -2787,7 +2863,88 @@ function buildQuestionIndex() {
   });
 }
 
-// ── Q-review autosave (localStorage checkpoint) ──────────────────────────
+// ── Q-review keyboard shortcuts ───────────────────────────────────────────
+let qReviewFocusedRowIdx = 0;
+let _qrKeydownHandler    = null;   // reference so we can removeEventListener
+
+function _focusQReviewRow(idx) {
+  document.getElementById(`qr-row-${qReviewFocusedRowIdx}`)?.classList.remove('kbd-focus');
+  qReviewFocusedRowIdx = idx;
+  const el = document.getElementById(`qr-row-${idx}`);
+  el?.classList.add('kbd-focus');
+  el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function _acceptMarkForRow(rowIdx) {
+  const key  = qKeys[currentQKeyIdx];
+  const item = questionIndex[key]?.items[rowIdx];
+  if (!item || item.aiMark === null) return;
+  item.finalMark = item.aiMark;
+  item.reviewed  = true;
+  const inp = document.querySelector(`#qr-row-${rowIdx} .q-final-input`);
+  if (inp) { inp.value = item.aiMark; inp.classList.remove('changed'); }
+  _focusQReviewRow(Math.min(rowIdx + 1, (questionIndex[key]?.items.length ?? 1) - 1));
+}
+
+function _setMarkForRow(rowIdx, digit) {
+  const key   = qKeys[currentQKeyIdx];
+  const qData = questionIndex[key];
+  const item  = qData?.items[rowIdx];
+  if (!item || item.aiMark === null) return;
+  const val = Math.min(digit, qData.ma ?? 99);
+  item.finalMark = val;
+  item.reviewed  = true;
+  const inp = document.querySelector(`#qr-row-${rowIdx} .q-final-input`);
+  if (inp) { inp.value = val; inp.classList.toggle('changed', val !== item.aiMark); }
+  _focusQReviewRow(Math.min(rowIdx + 1, (qData.items.length ?? 1) - 1));
+}
+
+function _placeKbdAnnotation(rowIdx, symbol) {
+  const key  = qKeys[currentQKeyIdx];
+  const item = questionIndex[key]?.items[rowIdx];
+  if (!item) return;
+  // Place at center of current script page for this student
+  const page = item.pg ?? 1;
+  addAnnotation(item.studentIdx, page, 50, 50, symbol, '');
+  // Open script panel if not already open for this student
+  if (scriptPanelStudentIdx !== item.studentIdx) openScriptPanel(item.studentIdx, rowIdx);
+}
+
+function _handleQReviewKeyboard(e) {
+  if (document.getElementById('assignQReviewPane')?.style.display === 'none') return;
+  const inInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable;
+  const key     = qKeys[currentQKeyIdx];
+  const nRows   = questionIndex[key]?.items?.length ?? 0;
+
+  switch (e.key) {
+    case 'ArrowRight':
+      if (inInput) return;
+      e.preventDefault(); navQuestion(1); break;
+    case 'ArrowLeft':
+      if (inInput) return;
+      e.preventDefault(); navQuestion(-1); break;
+    case 'ArrowDown':
+      e.preventDefault(); _focusQReviewRow(Math.min(qReviewFocusedRowIdx + 1, nRows - 1)); break;
+    case 'ArrowUp':
+      e.preventDefault(); _focusQReviewRow(Math.max(qReviewFocusedRowIdx - 1, 0)); break;
+    case 'a': case 'A':
+      if (inInput) return;
+      e.preventDefault(); _acceptMarkForRow(qReviewFocusedRowIdx); break;
+    case 't': case 'T':
+      if (inInput) return;
+      e.preventDefault(); _placeKbdAnnotation(qReviewFocusedRowIdx, 'tick'); break;
+    case 'x': case 'X':
+      if (inInput) return;
+      e.preventDefault(); _placeKbdAnnotation(qReviewFocusedRowIdx, 'cross'); break;
+    default: {
+      if (inInput) return;
+      const digit = parseInt(e.key, 10);
+      if (!isNaN(digit)) { e.preventDefault(); _setMarkForRow(qReviewFocusedRowIdx, digit); }
+    }
+  }
+}
+
+// ── Q-review autosave (localStorage checkpoint) ───────────────────────────
 let qReviewAutosaveTimer = null;
 let editingMarkingId     = null;   // set when editing a saved marking (P0.3)
 
@@ -2877,7 +3034,8 @@ function _stopAutosaveTimer() {
 function startQReview() {
   buildQuestionIndex();
   if (!qKeys.length) { alert('No question data available.'); return; }
-  currentQKeyIdx = 0;
+  currentQKeyIdx        = 0;
+  qReviewFocusedRowIdx  = 0;
   scriptPanelStudentIdx = -1;
   annAddMode = 'view';
   document.getElementById('scriptSidePanel').style.display   = 'none';
@@ -2886,10 +3044,19 @@ function startQReview() {
   renderQNav();
   renderQReviewTable(qKeys[0]);
   _startAutosaveTimer();
+  // Keyboard shortcuts
+  if (!_qrKeydownHandler) {
+    _qrKeydownHandler = _handleQReviewKeyboard;
+    document.addEventListener('keydown', _qrKeydownHandler);
+  }
 }
 
 function exitQReview() {
   _stopAutosaveTimer();
+  if (_qrKeydownHandler) {
+    document.removeEventListener('keydown', _qrKeydownHandler);
+    _qrKeydownHandler = null;
+  }
   editingMarkingId      = null;
   scriptPanelStudentIdx = -1;
   document.getElementById('scriptSidePanel').style.display   = 'none';
@@ -2942,9 +3109,12 @@ function renderQReviewTable(qKey) {
 
   const tbody = document.getElementById('qReviewBody');
   tbody.innerHTML = '';
+  qReviewFocusedRowIdx = 0;
   qData.items.forEach((item, rowIdx) => {
     const tr = document.createElement('tr');
     tr.id = `qr-row-${rowIdx}`;
+    tr.style.cursor = 'default';
+    tr.addEventListener('click', () => _focusQReviewRow(rowIdx));
     if (item.aiMark === null) {
       tr.innerHTML = `<td class="qr-student-name">${escHtml(item.studentName)}</td><td colspan="2" style="font-size:12px;color:var(--text-soft);font-style:italic">Not marked</td>`;
     } else {
@@ -2973,6 +3143,9 @@ function renderQReviewTable(qKey) {
     }
     tbody.appendChild(tr);
   });
+
+  // Apply keyboard focus highlight to row 0
+  document.getElementById('qr-row-0')?.classList.add('kbd-focus');
 
   // If the side panel is open, re-apply the "Viewing" state to the correct button
   if (scriptPanelStudentIdx >= 0) {
@@ -3513,7 +3686,8 @@ async function saveAllBulkAssign(btn, msgElId) {
   const isEdit = !!editingMarkingId;
   const toSave = bulkAssignQueue.filter(it => it.result);
   let saved = 0, failed = 0;
-  const uploadTasks = [];   // { name, promise }
+  const uploadTasks  = [];   // { name, promise }
+  const savedReports = [];   // { name, finalScore, token } for report CSV
 
   for (let si = 0; si < toSave.length; si++) {
     const item       = toSave[si];
@@ -3560,6 +3734,9 @@ async function saveAllBulkAssign(btn, msgElId) {
         if (markingId && item.b64) {
           uploadTasks.push({ name: item.name, promise: _uploadScriptPdf(markingId, item.b64) });
         }
+        if (data.report_token) {
+          savedReports.push({ name: item.name, finalScore: finalTotal, token: data.report_token });
+        }
       } else { failed++; }
     } catch { failed++; }
   }
@@ -3593,6 +3770,34 @@ async function saveAllBulkAssign(btn, msgElId) {
       : `Saved ${saved}, failed ${failed}. Please retry.`;
     msgEl.className = failed === 0 ? 'msg ok' : 'msg err';
   }
+
+  // Show report links download button if any tokens were returned
+  if (savedReports.length) {
+    _pendingReportLinks = savedReports;
+    const dlBtn = document.getElementById('btnDownloadReportLinks');
+    if (dlBtn) dlBtn.style.display = '';
+  }
+}
+
+let _pendingReportLinks = [];
+
+function downloadReportLinks() {
+  const items = _pendingReportLinks;
+  if (!items.length) return;
+  const assignName = selectedAssignment?.name || selectedAssignment?.id || 'Exam';
+  const rows = [['Student Name', 'Final Score', 'Assignment', 'Report URL']];
+  items.forEach(({ name, finalScore, token }) => {
+    rows.push([name, finalScore, assignName, `${location.origin}/report?t=${token}`]);
+  });
+  const csv  = rows.map(r => r.map(c => `"${String(c ?? '').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `report_links_${assignName.replace(/\s+/g,'_')}.csv`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function escHtml(s) {
