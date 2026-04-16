@@ -1,8 +1,7 @@
 // ════════════════════════════════════════════════════════════════
 // Assignment Create — Netlify Edge Function (Deno runtime)
-// Creates a homework/test assignment: stores metadata in Supabase,
-// uploads solution PDF (and optional question paper PDF) to
-// Supabase Storage.
+// Creates a homework/test assignment after PDFs are uploaded
+// directly from browser via signed Supabase upload URLs.
 //
 // POST /api/assignment-create
 // Body: {
@@ -12,8 +11,9 @@
 //   subject,       // e.g. "IB Math MAA HL"
 //   totalMarks,    // integer
 //   structure,     // [{q:"1", label:"(a)", marks:3}, ...]  — optional
-//   solutionPdf,   // base64 string
-//   paperPdf,      // base64 string — optional
+//   assignmentId,  // optional slug-timestamp; server generates if missing
+//   solutionPath,  // required; e.g. "<assignmentId>/solution.pdf"
+//   paperPath,     // optional; e.g. "<assignmentId>/paper.pdf"
 // }
 // ════════════════════════════════════════════════════════════════
 
@@ -48,31 +48,6 @@ async function verifyTeacherToken(token, secret) {
   } catch { return null; }
 }
 
-// Upload a base64 PDF to Supabase Storage, return the storage path
-async function uploadPdf(supabaseUrl, supabaseKey, bucket, path, base64Data) {
-  // Convert base64 → binary
-  const binary = atob(base64Data);
-  const bytes  = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-
-  const res = await fetch(`${supabaseUrl}/storage/v1/object/${bucket}/${path}`, {
-    method: 'POST',
-    headers: {
-      'Authorization':  `Bearer ${supabaseKey}`,
-      'apikey':         supabaseKey,
-      'Content-Type':   'application/pdf',
-      'x-upsert':       'true',
-    },
-    body: bytes,
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Storage upload failed (${res.status}): ${errText}`);
-  }
-  return path;
-}
-
 export default async (request) => {
   const CORS = {
     'Access-Control-Allow-Origin':  '*',
@@ -102,39 +77,37 @@ export default async (request) => {
     try { body = await request.json(); }
     catch { return jsonErr(400, 'Invalid JSON'); }
 
-    const { token, name, type, subject, totalMarks, structure, solutionPdf, paperPdf } = body;
+    const {
+      token,
+      assignmentId: requestedAssignmentId,
+      name,
+      type,
+      subject,
+      totalMarks,
+      structure,
+      solutionPath,
+      paperPath,
+    } = body;
 
     if (!token)       return jsonErr(401, 'token required');
     if (!name)        return jsonErr(400, 'name required');
     if (!type)        return jsonErr(400, 'type required');
     if (!totalMarks)  return jsonErr(400, 'totalMarks required');
-    if (!solutionPdf) return jsonErr(400, 'solutionPdf required');
+    if (!solutionPath) return jsonErr(400, 'solutionPath required');
 
     const email = await verifyTeacherToken(token, sessionSecret);
     if (!email) return jsonErr(401, 'Invalid or expired teacher session');
 
-    // Generate a stable assignment ID slug from the name + timestamp
+    // Generate a stable assignment ID slug from the name + timestamp (or use provided ID)
     const slug    = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     const ts      = Date.now();
-    const assignId = `${slug}-${ts}`;
-
-    // Upload solution PDF to Supabase Storage
-    const solutionPath = await uploadPdf(
-      supabaseUrl, supabaseKey,
-      'assignments',
-      `${assignId}/solution.pdf`,
-      solutionPdf,
-    );
-
-    // Upload optional question paper
-    let paperPath = null;
-    if (paperPdf) {
-      paperPath = await uploadPdf(
-        supabaseUrl, supabaseKey,
-        'assignments',
-        `${assignId}/paper.pdf`,
-        paperPdf,
-      );
+    const assignId = requestedAssignmentId || `${slug}-${ts}`;
+    if (!/^[a-z0-9-]+$/.test(assignId)) return jsonErr(400, 'Invalid assignmentId');
+    if (solutionPath !== `${assignId}/solution.pdf`) {
+      return jsonErr(400, 'solutionPath must match assignmentId/solution.pdf');
+    }
+    if (paperPath && paperPath !== `${assignId}/paper.pdf`) {
+      return jsonErr(400, 'paperPath must match assignmentId/paper.pdf');
     }
 
     // Insert assignment record into Supabase
@@ -155,7 +128,7 @@ export default async (request) => {
         total_marks:   totalMarks,
         structure:     structure || null,
         solution_path: solutionPath,
-        paper_path:    paperPath,
+        paper_path:    paperPath || null,
       }),
     });
 

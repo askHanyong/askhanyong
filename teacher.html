@@ -967,14 +967,15 @@ let selectedExamId = 'MAA-HL-M24-P1-TZ1';
 // Assignment state
 let assignments        = [];   // loaded from Supabase
 let selectedAssignment = null; // currently selected assignment for marking
-let assignPdfB64       = null; // student PDF for assignment marking
-let assignSolutionB64  = null; // solution PDF being uploaded
-let assignPaperB64     = null; // question paper PDF being uploaded (optional)
+let assignPdfB64       = null; // student PDF (base64, local use for annotation/save only)
+let assignPdfFile      = null; // student PDF file for assignment marking upload
+let assignSolutionFile = null; // solution PDF being uploaded
+let assignPaperFile    = null; // question paper PDF being uploaded (optional)
 let assignLastResult   = null; // last assignment marking result
 let structRowCount     = 0;
 
 // Bulk assignment marking state
-let bulkAssignQueue   = [];   // [{file, name, b64, status, result, error}]
+let bulkAssignQueue   = [];   // [{file, name, b64, studentPath, status, result, error}]
 let bulkAssignRunning = false;
 // Q-by-Q review state
 let questionIndex  = {};   // { qKey: {label,qNum,part,ma,items:[...]} }
@@ -1169,26 +1170,52 @@ function readStructure() {
 // ── PDF upload handlers for Create form ───────────────────────────────────
 function handleSolutionFile(file) {
   if (!file) return;
+  if (file.type !== 'application/pdf') { alert('Please upload a PDF file.'); return; }
   const zone = document.getElementById('solutionZone');
-  const reader = new FileReader();
-  reader.onload = e => {
-    assignSolutionB64 = e.target.result.split(',')[1];
-    zone.textContent = `✓ ${file.name}`;
-    zone.classList.add('ok');
-  };
-  reader.readAsDataURL(file);
+  assignSolutionFile = file;
+  zone.textContent = `✓ ${file.name}`;
+  zone.classList.add('ok');
 }
 
 function handlePaperFile(file) {
   if (!file) return;
+  if (file.type !== 'application/pdf') { alert('Please upload a PDF file.'); return; }
   const zone = document.getElementById('paperZone');
-  const reader = new FileReader();
-  reader.onload = e => {
-    assignPaperB64 = e.target.result.split(',')[1];
-    zone.textContent = `✓ ${file.name}`;
-    zone.classList.add('ok');
-  };
-  reader.readAsDataURL(file);
+  assignPaperFile = file;
+  zone.textContent = `✓ ${file.name}`;
+  zone.classList.add('ok');
+}
+
+function slugifyAssignmentName(name) {
+  return (name || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+async function getAssignmentUploadUrl(assignmentId, filePath) {
+  const res = await fetch('/api/assignment-upload-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: teacherToken, assignmentId, filePath }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Could not create upload URL');
+  return data;
+}
+
+async function uploadAssignmentPdf(file, assignmentId, filePath) {
+  const { uploadUrl, path } = await getAssignmentUploadUrl(assignmentId, filePath);
+  const putRes = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/pdf' },
+    body: file,
+  });
+  if (!putRes.ok) {
+    const errTxt = await putRes.text().catch(() => '');
+    throw new Error(`Upload failed (${putRes.status}): ${errTxt || 'unknown error'}`);
+  }
+  return path;
 }
 
 // ── Create assignment ─────────────────────────────────────────────────────
@@ -1204,18 +1231,30 @@ async function createAssignment() {
 
   if (!name)            { msgEl.textContent = 'Assignment name required.';   msgEl.className = 'msg err'; return; }
   if (!totalMarks || totalMarks < 1) { msgEl.textContent = 'Total marks required.'; msgEl.className = 'msg err'; return; }
-  if (!assignSolutionB64)  { msgEl.textContent = 'Please upload a solution PDF.'; msgEl.className = 'msg err'; return; }
+  if (!assignSolutionFile) { msgEl.textContent = 'Please upload a solution PDF.'; msgEl.className = 'msg err'; return; }
 
   const structure = readStructure();
   btn.disabled = true; btn.textContent = 'Saving…';
 
   try {
+    const assignmentId = `${slugifyAssignmentName(name) || 'assignment'}-${Date.now()}`;
+    const solutionPath = await uploadAssignmentPdf(assignSolutionFile, assignmentId, `${assignmentId}/solution.pdf`);
+    const paperPath    = assignPaperFile
+      ? await uploadAssignmentPdf(assignPaperFile, assignmentId, `${assignmentId}/paper.pdf`)
+      : null;
+
     const res = await fetch('/api/assignment-create', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        token: teacherToken, name, type, subject, totalMarks, structure,
-        solutionPdf: assignSolutionB64,
-        paperPdf:    assignPaperB64 || undefined,
+        token: teacherToken,
+        assignmentId,
+        name,
+        type,
+        subject,
+        totalMarks,
+        structure,
+        solutionPath,
+        paperPath: paperPath || undefined,
       }),
     });
     const data = await res.json();
@@ -1226,7 +1265,9 @@ async function createAssignment() {
       document.getElementById('aName').value = '';
       document.getElementById('aTotalMarks').value = '';
       document.getElementById('structRows').innerHTML = '';
-      structRowCount = 0; assignSolutionB64 = null; assignPaperB64 = null;
+      structRowCount = 0; assignSolutionFile = null; assignPaperFile = null;
+      document.getElementById('solutionInput').value = '';
+      document.getElementById('paperInput').value = '';
       document.getElementById('solutionZone').textContent = 'Click to upload solution PDF';
       document.getElementById('solutionZone').classList.remove('ok');
       document.getElementById('paperZone').textContent = 'Click to upload question paper PDF (optional)';
@@ -1245,6 +1286,8 @@ async function createAssignment() {
 // ── Assignment marking ────────────────────────────────────────────────────
 function handleAssignFile(file) {
   if (!file) return;
+  if (file.type !== 'application/pdf') { alert('Please upload a PDF file.'); return; }
+  assignPdfFile = file;
   const reader = new FileReader();
   reader.onload = e => {
     assignPdfB64 = e.target.result.split(',')[1];
@@ -1256,7 +1299,7 @@ function handleAssignFile(file) {
 
 async function doAssignMark() {
   if (!selectedAssignment) { alert('Please select an assignment first.'); setAssignTab('list'); return; }
-  if (!assignPdfB64)        { alert('Please upload a student script.'); return; }
+  if (!assignPdfFile)       { alert('Please upload a student script.'); return; }
   const studentName = document.getElementById('aStudentName').value.trim() || 'Student';
 
   const progressArea = document.getElementById('aProgressArea');
@@ -1279,13 +1322,18 @@ async function doAssignMark() {
   }, 1000);
 
   try {
+    statusText.textContent = 'Uploading script…';
+    const markFilePath = `${selectedAssignment.id}/student-scripts/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.pdf`;
+    const studentPath = await uploadAssignmentPdf(assignPdfFile, selectedAssignment.id, markFilePath);
+    statusText.textContent = 'Sending to AI examiner…';
+
     const res = await fetch('/api/assignment-mark', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         token: teacherToken,
         assignmentId: selectedAssignment.id,
         studentName,
-        studentPdf: assignPdfB64,
+        studentPath,
       }),
     });
     clearInterval(ticker);
@@ -1307,7 +1355,7 @@ async function doAssignMark() {
       return;
     }
     statusText.textContent = 'Done! Rendering results…';
-    assignLastResult = { ...data, studentName };
+    assignLastResult = { ...data, studentName, studentPath };
     renderAssignResults(result, studentName, data.totalMarks);
     renderAnnotationViewer(data.annotations || [], assignPdfB64);
     setTimeout(() => {
@@ -1443,9 +1491,9 @@ async function saveAssignMarking() {
       }
       msgEl.innerHTML = saveText; msgEl.className = 'msg ok';
 
-      // Auto-upload the student PDF for Dashboard download
-      if (data.id && assignPdfB64) {
-        _uploadScriptPdf(data.id, assignPdfB64, msgEl);
+      // Link the existing uploaded script path for Dashboard download
+      if (data.id && assignLastResult?.studentPath) {
+        _uploadScriptPdf(data.id, assignLastResult.studentPath);
       }
       return; // keep disabled — don't reach finally re-enable
     }
@@ -1455,11 +1503,13 @@ async function saveAssignMarking() {
   } finally { btn.disabled = false; }
 }
 
-async function _uploadScriptPdf(markingId, pdfB64) {
+async function _uploadScriptPdf(markingId, scriptPath) {
   try {
+    if (!scriptPath) return false;
+    const body = { token: teacherToken, markingId, scriptPath };
     const res = await fetch('/api/script-store', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: teacherToken, markingId, scriptPdfB64: pdfB64 }),
+      body: JSON.stringify(body),
     });
     if (!res.ok) {
       const d = await res.json().catch(() => ({}));
@@ -1474,7 +1524,7 @@ async function _uploadScriptPdf(markingId, pdfB64) {
 }
 
 function resetAssignMark() {
-  assignPdfB64 = null; assignLastResult = null;
+  assignPdfB64 = null; assignPdfFile = null; assignLastResult = null;
   document.getElementById('aStudentName').value = '';
   const aClassLabel = document.getElementById('aClassLabel'); if (aClassLabel) aClassLabel.value = '';
   document.getElementById('aDropLabel').textContent = 'Drop PDF here or click to browse';
@@ -2000,7 +2050,7 @@ function handleBulkAssignFiles(files) {
   if (!pdfs.length) { alert('Please select PDF files.'); return; }
   bulkAssignQueue = pdfs.map(f => ({
     file: f, name: nameFromFilename(f.name),
-    b64: null, status: 'pending', result: null, error: null,
+    b64: null, studentPath: null, status: 'pending', result: null, error: null,
   }));
   document.getElementById('aBulkDropLabel').textContent = `✓ ${pdfs.length} file${pdfs.length > 1 ? 's' : ''} selected`;
   document.getElementById('aBulkDropZone').style.borderColor = 'var(--green)';
@@ -2075,12 +2125,16 @@ async function doBulkAssignMark() {
       progBar.style.width  = `${Math.round(done/total*100)}%`;
 
       try {
+        if (!item.studentPath) {
+          const filePath = `${selectedAssignment.id}/student-scripts/${Date.now()}-${Math.random().toString(36).slice(2, 10)}-${i + 1}.pdf`;
+          item.studentPath = await uploadAssignmentPdf(item.file, selectedAssignment.id, filePath);
+        }
         if (!item.b64) item.b64 = await readFileAsB64(item.file);
         const res = await fetch('/api/assignment-mark', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             token: teacherToken, assignmentId: selectedAssignment.id,
-            studentName: item.name, studentPdf: item.b64,
+            studentName: item.name, studentPath: item.studentPath,
           }),
         });
         if (!res.ok) {
@@ -4084,8 +4138,8 @@ async function saveAllBulkAssign(btn, msgElId) {
       if (res.ok) {
         saved++;
         const markingId = isEdit ? editingMarkingId : data.id;
-        if (markingId && item.b64) {
-          uploadTasks.push({ name: item.name, promise: _uploadScriptPdf(markingId, item.b64) });
+        if (markingId && item.studentPath) {
+          uploadTasks.push({ name: item.name, promise: _uploadScriptPdf(markingId, item.studentPath) });
         }
         if (data.report_token) {
           savedReports.push({ name: item.name, finalScore: finalTotal, token: data.report_token });

@@ -7,7 +7,7 @@
 //   - Sends solution PDF + student PDF to Anthropic for marking
 //
 // POST /api/assignment-mark
-// Body: { token, assignmentId, studentName, studentPdf }
+// Body: { token, assignmentId, studentName, studentPath }
 // ════════════════════════════════════════════════════════════════
 
 async function verifyTeacherToken(token, secret) {
@@ -265,12 +265,12 @@ export default async (request) => {
     try { body = await request.json(); }
     catch { return jsonErr(400, 'Invalid JSON'); }
 
-    const { token, assignmentId, studentName, studentPdf } = body;
+    const { token, assignmentId, studentName, studentPath } = body;
 
     if (!token)        return jsonErr(401, 'token required');
     if (!assignmentId) return jsonErr(400, 'assignmentId required');
     if (!studentName)  return jsonErr(400, 'studentName required');
-    if (!studentPdf)   return jsonErr(400, 'studentPdf required');
+    if (!studentPath)  return jsonErr(400, 'studentPath required');
 
     const email = await verifyTeacherToken(token, sessionSecret);
     if (!email) return jsonErr(401, 'Invalid or expired teacher session');
@@ -285,8 +285,13 @@ export default async (request) => {
     if (!asgRows.length) return jsonErr(404, 'Assignment not found');
     const assignment = asgRows[0];
 
+    if (!studentPath.startsWith(`${assignmentId}/student-scripts/`) || !studentPath.endsWith('.pdf')) {
+      return jsonErr(400, 'Invalid studentPath');
+    }
+
     // Fetch the solution PDF from Supabase Storage
     const solutionBase64 = await fetchPdfAsBase64(supabaseUrl, supabaseKey, assignment.solution_path);
+    const studentBase64  = await fetchPdfAsBase64(supabaseUrl, supabaseKey, studentPath);
 
     // Build dynamic system prompt and tool from assignment metadata
     const systemPrompt  = buildSystemPrompt(assignment);
@@ -305,7 +310,7 @@ export default async (request) => {
       },
       {
         type:  'document',
-        source: { type: 'base64', media_type: 'application/pdf', data: studentPdf },
+        source: { type: 'base64', media_type: 'application/pdf', data: studentBase64 },
         title: `Student Script: ${studentName}`,
       },
     ];

@@ -87,6 +87,10 @@
   function = "assignment-create"
 
 [[edge_functions]]
+  path = "/api/assignment-upload-url"
+  function = "assignment-upload-url"
+
+[[edge_functions]]
   path = "/api/assignment-list"
   function = "assignment-list"
 

@@ -4,7 +4,7 @@
 // the path in the markings row. Called after saving a marking.
 //
 // POST /api/script-store
-// Body: { token, markingId, scriptPdfB64 }
+// Body: { token, markingId, scriptPath }
 // Returns: { ok, storagePath }
 // ════════════════════════════════════════════════════════════════
 
@@ -59,10 +59,10 @@ export default async (request) => {
     let body;
     try { body = await request.json(); } catch { return jsonErr(400, 'Invalid JSON'); }
 
-    const { token, markingId, scriptPdfB64 } = body;
+    const { token, markingId, scriptPath } = body;
     if (!token)        return jsonErr(401, 'token required');
     if (!markingId)    return jsonErr(400, 'markingId required');
-    if (!scriptPdfB64) return jsonErr(400, 'scriptPdfB64 required');
+    if (!scriptPath)   return jsonErr(400, 'scriptPath required');
 
     const email = await verifyTeacherToken(token, sessionSecret);
     if (!email) return jsonErr(401, 'Invalid or expired teacher session');
@@ -76,29 +76,9 @@ export default async (request) => {
     const rows = checkRes.ok ? await checkRes.json() : [];
     if (!rows.length) return jsonErr(403, 'Marking not found or access denied');
 
-    // Decode base64 → binary
-    const pdfBinary = atob(scriptPdfB64);
-    const bytes     = new Uint8Array(pdfBinary.length);
-    for (let i = 0; i < pdfBinary.length; i++) bytes[i] = pdfBinary.charCodeAt(i);
-
-    // Upload to Supabase Storage (assignments bucket, scripts/ prefix)
-    const storagePath = `scripts/${markingId}.pdf`;
-    const uploadRes   = await fetch(
-      `${supabaseUrl}/storage/v1/object/assignments/${storagePath}`,
-      {
-        method:  'POST',
-        headers: {
-          'Authorization':  `Bearer ${supabaseKey}`,
-          'apikey':          supabaseKey,
-          'Content-Type':    'application/pdf',
-          'x-upsert':        'true',
-        },
-        body: bytes,
-      },
-    );
-    if (!uploadRes.ok) {
-      const errText = await uploadRes.text();
-      return jsonErr(502, `Storage upload failed (${uploadRes.status}): ${errText}`);
+    const storagePath = String(scriptPath).trim();
+    if (!storagePath.endsWith('.pdf') || storagePath.includes('..')) {
+      return jsonErr(400, 'Invalid scriptPath');
     }
 
     // Update marking.script_path
