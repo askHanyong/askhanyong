@@ -72,7 +72,7 @@ export default async (request) => {
     try { body = await request.json(); }
     catch { return jsonErr(400, 'Invalid JSON'); }
 
-    const { token, studentName, aiScore, finalScore, questionMarks, examId, annotations, classLabel, markingId } = body;
+    const { token, studentName, aiScore, finalScore, questionMarks, examId, annotations, classLabel, markingId, reviewed } = body;
 
     if (!token) return jsonErr(401, 'token required');
     if (finalScore === undefined || finalScore === null) return jsonErr(400, 'finalScore required');
@@ -106,6 +106,7 @@ export default async (request) => {
             final_score:    finalScore,
             question_marks: questionMarks,
             annotations:    Array.isArray(annotations) ? annotations : [],
+            ...(typeof reviewed === 'boolean' ? { reviewed } : {}),
             ...(classLabel ? { class_label: String(classLabel).trim().slice(0, 60) } : {}),
           }),
         },
@@ -136,6 +137,7 @@ export default async (request) => {
         final_score:    finalScore,
         question_marks: questionMarks,
         annotations:    Array.isArray(annotations) ? annotations : [],
+        ...(typeof reviewed === 'boolean' ? { reviewed } : {}),
         ...(classLabel ? { class_label: String(classLabel).trim().slice(0, 60) } : {}),
       }),
     });
