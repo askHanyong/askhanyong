@@ -1,0 +1,22 @@
+{
+  "name": "ib-math-ingest-paper",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "ingest": "tsx src/ingest.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.116.0",
+    "@supabase/supabase-js": "^2.112.3",
+    "dotenv": "^17.4.2",
+    "pdf-parse": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/pdf-parse": "^1.1.4",
+    "tsx": "^4.23.12",
+    "typescript": "^5.6.3"
+  }
+}
