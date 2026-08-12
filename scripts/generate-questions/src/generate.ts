@@ -113,21 +113,32 @@ export function runCheapChecks(q: GeneratedQuestionJson, spec: QuestionSpec): Ch
  * second attempt produced even if it still fails -- the caller decides what
  * to do with a still-failing result (skip expensive verification, flag it).
  */
+// Section B questions carry a full multi-part question_text, proposed_solution,
+// and marks_breakdown for 12-20 marks -- 8000 output tokens was cutting these
+// off mid-JSON on the pilot run (3/6 Section B calls truncated). Section A's
+// 3-6 mark single-skill questions never came close to 8000, so only Section B
+// needs the higher cap.
+const MAX_TOKENS_BY_SECTION: Record<QuestionSpec['section'], number> = {
+  A: 8000,
+  B: 16000,
+};
+
 export async function generateQuestion(
   spec: QuestionSpec,
   topic: TopicRow,
   secondaryCandidates: TopicRow[],
   refs: ReferencePart[]
 ): Promise<{ question: GeneratedQuestionJson; cheapChecks: CheapCheckResult; regenerated: boolean }> {
+  const maxTokens = MAX_TOKENS_BY_SECTION[spec.section];
   const firstPrompt = buildUserPrompt(spec, topic, secondaryCandidates, refs);
-  let question = await callForJson<GeneratedQuestionJson>(SYSTEM_PROMPT, firstPrompt);
+  let question = await callForJson<GeneratedQuestionJson>(SYSTEM_PROMPT, firstPrompt, maxTokens);
   let checks = runCheapChecks(question, spec);
   let regenerated = false;
 
   if (!checks.passed) {
     regenerated = true;
     const retryPrompt = buildUserPrompt(spec, topic, secondaryCandidates, refs, checks.notes.join('\n'));
-    question = await callForJson<GeneratedQuestionJson>(SYSTEM_PROMPT, retryPrompt);
+    question = await callForJson<GeneratedQuestionJson>(SYSTEM_PROMPT, retryPrompt, maxTokens);
     checks = runCheapChecks(question, spec);
   }
 
