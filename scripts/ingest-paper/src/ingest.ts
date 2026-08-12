@@ -76,8 +76,8 @@ async function main() {
   const paperSeg = await segmentPaper(args.paper);
   console.log(`  found ${paperSeg.questions.length} question(s).`);
 
-  console.log('Asking Claude to segment the markscheme...');
-  const msSeg = await segmentMarkscheme(args.markscheme);
+  console.log('Asking Claude to segment the markscheme (aligned to the confirmed paper structure)...');
+  const msSeg = await segmentMarkscheme(args.markscheme, paperSeg);
   console.log(`  found ${msSeg.questions.length} question(s).`);
 
   console.log('Reconciling paper parts against markscheme parts...');

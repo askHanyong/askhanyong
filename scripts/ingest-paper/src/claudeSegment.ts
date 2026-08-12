@@ -39,12 +39,21 @@ function extractJson<T>(text: string): T {
   }
 }
 
-async function callForJson<T>(system: string, doc: Anthropic.Messages.DocumentBlockParam, instruction: string): Promise<T> {
+async function callForJson<T>(
+  system: string,
+  doc: Anthropic.Messages.DocumentBlockParam,
+  instruction: string,
+  extraText?: string
+): Promise<T> {
+  const content: Anthropic.Messages.ContentBlockParam[] = [doc];
+  if (extraText) content.push({ type: 'text', text: extraText });
+  content.push({ type: 'text', text: instruction });
+
   const resp = await client.messages.create({
     model: env.claudeModel,
     max_tokens: 16000,
     system,
-    messages: [{ role: 'user', content: [doc, { type: 'text', text: instruction }] }],
+    messages: [{ role: 'user', content }],
   });
   const textBlock = resp.content.find((b): b is Anthropic.Messages.TextBlock => b.type === 'text');
   if (!textBlock) throw new Error('Claude returned no text content block.');
@@ -95,7 +104,7 @@ Return ONLY a single JSON object, no prose, no markdown fences, matching exactly
       "question_number": number,
       "parts": [
         {
-          "part_label": string,        // must reflect whether the QUESTION PAPER itself visually splits this question into labelled sub-parts -- NOT inferred from how the markscheme lays out its own working
+          "part_label": string,        // must exactly match one of the paper's confirmed part labels for this question (see the "confirmed paper structure" list you're given) -- never invented, merged, or split differently
           "markscheme_text": string,   // the full markscheme text for this part, verbatim
           "marks_breakdown": [ { "note": string, "desc": string } ]
             // one entry per mark note in order, e.g. {"note": "M1", "desc": "valid attempt to substitute"}, {"note": "A1", "desc": "correct value"}, {"note": "AG", "desc": "answer given"}
@@ -105,18 +114,33 @@ Return ONLY a single JSON object, no prose, no markdown fences, matching exactly
   ]
 }
 Critical rule on part_label:
-- A markscheme sometimes shows multiple marking lines, multiple METHODs, or visually separated chunks of working for what is a SINGLE undivided question on the paper (no "(a)", "(b)" printed on the question paper itself). In that case the WHOLE question's marking is still one part: use part_label "" for it, exactly as you would if there were no sub-parts. Do not invent a label like "a" just because the markscheme happens to have internally-separated working or multiple lines of marks -- only use lettered/roman-numeral labels ("a", "b", "b.i") when the question paper genuinely prints that sub-part label (e.g. an explicit "(a)" heading).
-- If you are unsure whether a question has real printed sub-parts, prefer "" (one part covering the whole question) over guessing a label.
+- You are given the CONFIRMED PAPER STRUCTURE below: the exact list of part labels the question paper uses for each question, already determined by segmenting the paper itself. Your job is to slot the markscheme's marking notes into that exact structure, not to re-derive part boundaries from how the markscheme happens to lay out its own working.
+- For each question, produce exactly one parts[] entry per label in its confirmed list, using those exact label strings, in that exact order.
+- If a question's confirmed list is a single empty string "", produce exactly one part with part_label "" covering that question's entire marking, even if the markscheme shows multiple METHODs or several marking lines for it -- multiple methods for one undivided question is not the same thing as sub-parts.
+- If the markscheme's marking for two confirmed labels (e.g. "c.i" and "c.ii") appears together without a clear visual split, split the marking text between them as best you can rather than merging them into one label that isn't in the confirmed list.
+- Do not add labels that aren't in the confirmed list, and do not omit any label that is in it.
 Other rules:
 - Preserve mathematical notation faithfully.
-- Include every question in the markscheme, in order.
+- Include every question in the confirmed paper structure, in order.
 - Do not include any text outside the JSON object.`;
 
-export async function segmentMarkscheme(markschemePdfPath: string): Promise<MarkschemeSegmentation> {
+function paperStructureSummary(paper: PaperSegmentation): string {
+  const lines = paper.questions.map((q) => {
+    const labels = q.parts.map((p) => (p.part_label === '' ? '""' : p.part_label));
+    return `Q${q.question_number}: ${labels.join(', ')}`;
+  });
+  return `CONFIRMED PAPER STRUCTURE (one line per question, exact part labels in order):\n${lines.join('\n')}`;
+}
+
+export async function segmentMarkscheme(
+  markschemePdfPath: string,
+  paperSeg: PaperSegmentation
+): Promise<MarkschemeSegmentation> {
   const doc = await pdfDocumentBlock(markschemePdfPath);
   return callForJson<MarkschemeSegmentation>(
     MARKSCHEME_SYSTEM_PROMPT,
     doc,
-    'Segment this IB Math markscheme. Respond with ONLY the JSON object described in the system prompt -- start your reply with { and end with }, no markdown code fences, no explanation before or after.'
+    'Segment this IB Math markscheme against the confirmed paper structure given above. Respond with ONLY the JSON object described in the system prompt -- start your reply with { and end with }, no markdown code fences, no explanation before or after.',
+    paperStructureSummary(paperSeg)
   );
 }
