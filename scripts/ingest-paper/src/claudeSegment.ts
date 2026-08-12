@@ -51,10 +51,16 @@ async function callForJson<T>(
 
   const resp = await client.messages.create({
     model: env.claudeModel,
-    max_tokens: 16000,
+    max_tokens: 32000,
     system,
     messages: [{ role: 'user', content }],
   });
+  if (resp.stop_reason === 'max_tokens') {
+    throw new Error(
+      `Claude's response was truncated (hit the 32000 output-token cap) before finishing the JSON -- ` +
+      `this paper/markscheme has more content than the budget allows. Raise max_tokens in callForJson() and retry.`
+    );
+  }
   const textBlock = resp.content.find((b): b is Anthropic.Messages.TextBlock => b.type === 'text');
   if (!textBlock) throw new Error('Claude returned no text content block.');
   return extractJson<T>(textBlock.text);
