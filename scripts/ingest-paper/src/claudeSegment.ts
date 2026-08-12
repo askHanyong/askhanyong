@@ -95,7 +95,7 @@ Return ONLY a single JSON object, no prose, no markdown fences, matching exactly
       "question_number": number,
       "parts": [
         {
-          "part_label": string,        // must use the SAME labelling convention the question paper would use (lowercase letters/roman numerals like "a", "b.i"), not the markscheme's own formatting quirks -- these need to exact-match the paper's parts later
+          "part_label": string,        // must reflect whether the QUESTION PAPER itself visually splits this question into labelled sub-parts -- NOT inferred from how the markscheme lays out its own working
           "markscheme_text": string,   // the full markscheme text for this part, verbatim
           "marks_breakdown": [ { "note": string, "desc": string } ]
             // one entry per mark note in order, e.g. {"note": "M1", "desc": "valid attempt to substitute"}, {"note": "A1", "desc": "correct value"}, {"note": "AG", "desc": "answer given"}
@@ -104,7 +104,10 @@ Return ONLY a single JSON object, no prose, no markdown fences, matching exactly
     }
   ]
 }
-Rules:
+Critical rule on part_label:
+- A markscheme sometimes shows multiple marking lines, multiple METHODs, or visually separated chunks of working for what is a SINGLE undivided question on the paper (no "(a)", "(b)" printed on the question paper itself). In that case the WHOLE question's marking is still one part: use part_label "" for it, exactly as you would if there were no sub-parts. Do not invent a label like "a" just because the markscheme happens to have internally-separated working or multiple lines of marks -- only use lettered/roman-numeral labels ("a", "b", "b.i") when the question paper genuinely prints that sub-part label (e.g. an explicit "(a)" heading).
+- If you are unsure whether a question has real printed sub-parts, prefer "" (one part covering the whole question) over guessing a label.
+Other rules:
 - Preserve mathematical notation faithfully.
 - Include every question in the markscheme, in order.
 - Do not include any text outside the JSON object.`;
