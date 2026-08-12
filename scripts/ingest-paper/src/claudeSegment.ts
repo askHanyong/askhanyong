@@ -72,6 +72,18 @@ async function callForJson<T>(
   return extractJson<T>(textBlock.text);
 }
 
+const MATH_NOTATION_RULES = [
+  'Math notation style -- follow exactly, plain text only, NEVER LaTeX commands:',
+  '- Never emit a backslash-prefixed LaTeX command: no \\frac, \\sqrt, \\left, \\right, \\begin, \\end, \\lim, \\int, \\times, or any other backslash+word token, and no {} used LaTeX-style for grouping exponents, subscripts, or fraction arguments.',
+  '- Exponents: base^exponent, with parentheses around the exponent whenever it is more than one character, e.g. x^2, e^(-0.5x), c^(3/2), (3+x^2)^(n+1). Never base^{exponent}.',
+  '- Fractions: a/b for simple cases; wrap multi-term numerator/denominator in parentheses, e.g. (e+6)/2, (2n-3)!/(n-2)!. Never \\frac{a}{b}.',
+  '- Square/nth roots: √(...), e.g. √(1+x), √((x^2+k)^3). Never \\sqrt{...}.',
+  '- Limits: lim(x->0) f(x), not \\lim_{x \\to 0} f(x).',
+  '- Vectors and matrices: write as a plain tuple, e.g. (0, 1, 2) for a column vector, or describe rows in words if a full matrix -- never \\begin{pmatrix}...\\end{pmatrix} or similar LaTeX environments.',
+  '- Unicode math symbols are fine and expected where the paper itself uses them (the root sign, pi, theta, integral and sum signs, inequality signs, arrows, set-membership and number-set symbols, multiplication/division signs, the degree sign, superscript/subscript digits).',
+  '- This applies to every text field you output (part_text, markscheme_text, desc), not just isolated formulas.',
+].join('\n');
+
 const PAPER_SYSTEM_PROMPT = `You segment IB Diploma Mathematics exam papers into questions and sub-parts.
 Return ONLY a single JSON object, no prose, no markdown fences, matching exactly this shape:
 {
@@ -94,10 +106,12 @@ Return ONLY a single JSON object, no prose, no markdown fences, matching exactly
   ]
 }
 Rules:
-- Preserve mathematical notation faithfully (e.g. x^2, \\frac{1}{2}, \\int, matrices as rows) -- do not simplify, solve, or paraphrase anything.
+- Preserve mathematical content faithfully -- do not simplify, solve, or paraphrase anything.
 - Question numbering and part labelling must match the paper exactly.
 - Include every question on the paper, in order.
-- Do not include any text outside the JSON object.`;
+- Do not include any text outside the JSON object.
+
+${MATH_NOTATION_RULES}`;
 
 export async function segmentPaper(paperPdfPath: string): Promise<PaperSegmentation> {
   const doc = await pdfDocumentBlock(paperPdfPath);
@@ -132,9 +146,11 @@ Critical rule on part_label:
 - If the markscheme's marking for two confirmed labels (e.g. "c.i" and "c.ii") appears together without a clear visual split, split the marking text between them as best you can rather than merging them into one label that isn't in the confirmed list.
 - Do not add labels that aren't in the confirmed list, and do not omit any label that is in it.
 Other rules:
-- Preserve mathematical notation faithfully.
+- Preserve mathematical content faithfully.
 - Include every question in the confirmed paper structure, in order.
-- Do not include any text outside the JSON object.`;
+- Do not include any text outside the JSON object.
+
+${MATH_NOTATION_RULES}`;
 
 function paperStructureSummary(paper: PaperSegmentation): string {
   const lines = paper.questions.map((q) => {
