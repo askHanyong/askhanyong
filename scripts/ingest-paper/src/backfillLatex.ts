@@ -13,7 +13,12 @@ import Anthropic from '@anthropic-ai/sdk';
 import { env } from './env.js';
 import { supabase } from './supabaseIngest.js';
 
-const client = new Anthropic({ apiKey: env.anthropicApiKey });
+// Default maxRetries (2) wasn't enough to ride out a sustained "Overloaded"
+// spike from the API during the first backfill run -- several papers failed
+// outright rather than retrying through it. The SDK's built-in retry already
+// backs off exponentially for retryable errors (429/5xx/overloaded); just
+// give it more attempts.
+const client = new Anthropic({ apiKey: env.anthropicApiKey, maxRetries: 6 });
 
 const LATEXIFY_RULES = `LaTeX conventions to use: \\frac{a}{b} for every fraction, \\sqrt{...} and \\sqrt[n]{...} for roots, x^{2} and x_{i} for exponents/subscripts -- braces REQUIRED whenever more than one character (x^{n+1}, not x^n+1), \\int \\sum \\lim_{x \\to 0} \\sin \\cos \\tan \\ln \\log \\pi \\theta \\alpha \\beta \\leq \\geq \\neq \\in \\mathbb{R} \\mathbb{Z} \\mathbb{C} \\times \\cdot \\div \\infty, \\begin{pmatrix}...\\end{pmatrix} (rows separated by \\\\, entries by &) for vectors/matrices.
 Inline math (embedded in a sentence): wrap in single dollar signs, $...$. Standalone/display equations (an equation on its own line, not mid-sentence): wrap in double dollar signs, $$...$$.
