@@ -43,7 +43,11 @@ true or false
 <REQUIRED, non-empty, precise description (dimensions/angles/labels/what's marked) when needs_diagram is true -- otherwise write (none)>
 @@@END@@@
 
-Every marker line must appear exactly once (except @@@MARK ...@@@, one per marks_breakdown entry, at least one required). Do not add any text before @@@SECTION@@@ or after @@@END@@@.`;
+Every marker line must appear exactly once (except @@@MARK ...@@@, one per marks_breakdown entry, at least one required). Do not add any text before @@@SECTION@@@ or after @@@END@@@.
+
+CRITICAL for @@@MARK <note> <marks>@@@ lines specifically: <note> must be ONLY a short IB mark code with no spaces and no description -- M1, A1, R1, AG, G1, or a combined code like M1A1 if one point genuinely covers both a method and answer mark. <marks> must be ONLY the integer point value. The description of what earns the mark goes on the line(s) AFTER the marker, never inside the marker line itself.
+Correct:   @@@MARK M1A1 2@@@ then on the next line: Correct method (Pythagorean form) leading to the modulus of z
+WRONG:     @@@MARK M1A1 modulus of z 2@@@ then: Correct method...   <- description leaked into the marker line itself, this breaks parsing`;
 
 const SYSTEM_PROMPT = `You write original IB Diploma Programme Mathematics: Analysis and Approaches (AA) exam-style questions.
 
@@ -248,8 +252,8 @@ export function runCheapChecks(q: GeneratedQuestionJson, spec: QuestionSpec): Ch
 // 3-6 mark single-skill questions never came close to 8000, so only Section B
 // needs the higher cap.
 const MAX_TOKENS_BY_SECTION: Record<QuestionSpec['section'], number> = {
-  A: 8000,
-  B: 16000,
+  A: 12000,
+  B: 24000,
 };
 
 export async function generateQuestion(
