@@ -9,7 +9,7 @@ Give the single concise final result(s) in final_answer, in the same style a mar
 
 const JUDGE_SYSTEM_PROMPT = `You judge whether two final answers to the same IB Math question are mathematically equivalent (same value/set, allowing different but equivalent forms, e.g. exact vs decimal, different but equal simplifications, reordered set elements).
 Return ONLY a single JSON object, no prose: { "equivalent": boolean, "reason": string }
-"reason" must be one short sentence.`;
+"reason" must be ONE short sentence, even if the question has many parts -- do not enumerate or compare part-by-part (e.g. "All parts match" or "Part (d)(ii) differs: ..." is enough, never a part-by-part breakdown). Set equivalent to false as a whole if even one part disagrees. Do not restate or quote the question or either answer back in full -- go straight to the verdict.`;
 
 export interface IndependentVerification {
   passed: boolean;
@@ -39,7 +39,7 @@ export async function verifyIndependently(q: GeneratedQuestionJson): Promise<Ind
   ].join('\n\n');
 
   try {
-    const verdict = await callForJson<{ equivalent: boolean; reason: string }>(JUDGE_SYSTEM_PROMPT, judgePrompt, 3000);
+    const verdict = await callForJson<{ equivalent: boolean; reason: string }>(JUDGE_SYSTEM_PROMPT, judgePrompt, 6000);
     return { passed: verdict.equivalent, independentAnswer: solve.final_answer, note: verdict.reason };
   } catch (err) {
     return {
