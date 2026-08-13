@@ -1,10 +1,11 @@
 import { callForJson, callForText } from './claudeClient.js';
 import type { GeneratedQuestionJson } from './types.js';
 
-const SOLVE_SYSTEM_PROMPT = `You are an expert IB Diploma Mathematics AA teacher. Solve the given exam question from scratch, showing full working.
+const SOLVE_SYSTEM_PROMPT = `You are an expert IB Diploma Mathematics AA teacher. Solve the given exam question from scratch.
 Return ONLY a single JSON object, no prose, no markdown fences:
 { "work": string, "final_answer": string }
-Give the single concise final result(s) in final_answer, in the same style a markscheme would (e.g. "k = 3", "z = 4(cos(pi/3) + i sin(pi/3))").`;
+"work" only needs to be BRIEF working notes (short bullet-style lines, key equations and substitutions only) -- this is purely to sanity-check your method, not a teaching write-up, so do not write full prose explanations or restate the question. For a multi-part question, one terse line per part is enough.
+Give the single concise final result(s) in final_answer, in the same style a markscheme would (e.g. "k = 3", "z = 4(cos(pi/3) + i sin(pi/3))"), covering every part.`;
 
 const JUDGE_SYSTEM_PROMPT = `You judge whether two final answers to the same IB Math question are mathematically equivalent (same value/set, allowing different but equivalent forms, e.g. exact vs decimal, different but equal simplifications, reordered set elements).
 Return ONLY a single JSON object, no prose: { "equivalent": boolean, "reason": string }
@@ -16,10 +17,19 @@ export interface IndependentVerification {
   note: string;
 }
 
+// Same failure mode as the main generation call (see generate.ts
+// MAX_TOKENS_BY_SECTION): "show full working" on a 12-20 mark multi-part
+// Section B question can itself run past 8000 tokens.
+const SOLVE_MAX_TOKENS_BY_SECTION: Record<GeneratedQuestionJson['section'], number> = {
+  A: 8000,
+  B: 24000,
+};
+
 export async function verifyIndependently(q: GeneratedQuestionJson): Promise<IndependentVerification> {
   const solve = await callForJson<{ work: string; final_answer: string }>(
     SOLVE_SYSTEM_PROMPT,
-    `QUESTION:\n${q.question_text}`
+    `QUESTION:\n${q.question_text}`,
+    SOLVE_MAX_TOKENS_BY_SECTION[q.section]
   );
 
   const judgePrompt = [
@@ -29,7 +39,7 @@ export async function verifyIndependently(q: GeneratedQuestionJson): Promise<Ind
   ].join('\n\n');
 
   try {
-    const verdict = await callForJson<{ equivalent: boolean; reason: string }>(JUDGE_SYSTEM_PROMPT, judgePrompt, 1000);
+    const verdict = await callForJson<{ equivalent: boolean; reason: string }>(JUDGE_SYSTEM_PROMPT, judgePrompt, 3000);
     return { passed: verdict.equivalent, independentAnswer: solve.final_answer, note: verdict.reason };
   } catch (err) {
     return {

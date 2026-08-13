@@ -20,18 +20,31 @@ export async function generateDiagram(diagramDescription: string, questionText: 
 
   try {
     const raw = await callForText(DIAGRAM_SYSTEM_PROMPT, userPrompt, 3000);
-    const svg = raw.replace(/^```(svg|xml|html)?\n?/i, '').replace(/```$/, '').trim();
 
-    const looksWellFormed = /^<svg[\s>]/i.test(svg) && /<\/svg>\s*$/i.test(svg);
+    // Extract from the first <svg to the last </svg> rather than assuming the
+    // response starts/ends exactly there -- tolerates stray preamble (a bare
+    // language tag, a leading comment) the same way callForJson's brace
+    // extraction tolerates prose around a JSON object.
+    const openIdx = raw.search(/<svg[\s>]/i);
+    const closeIdx = raw.toLowerCase().lastIndexOf('</svg>');
+    if (openIdx === -1 || closeIdx === -1 || closeIdx < openIdx) {
+      return {
+        attempted: true,
+        passed: false,
+        svg: raw.trim(),
+        note: `SVG failed structural check: no <svg>...</svg> element found in the response.`,
+      };
+    }
+    const svg = raw.slice(openIdx, closeIdx + '</svg>'.length).trim();
+
     const openTags = (svg.match(/<svg[\s>]/gi) ?? []).length;
     const closeTags = (svg.match(/<\/svg>/gi) ?? []).length;
-
-    if (!looksWellFormed || openTags !== 1 || closeTags !== 1) {
+    if (openTags !== 1 || closeTags !== 1) {
       return {
         attempted: true,
         passed: false,
         svg,
-        note: `SVG failed structural check (starts with <svg: ${/^<svg[\s>]/i.test(svg)}, ends with </svg>: ${/<\/svg>\s*$/i.test(svg)}, <svg> tags: ${openTags}, </svg> tags: ${closeTags}).`,
+        note: `SVG failed structural check (found ${openTags} <svg> tag(s) and ${closeTags} </svg> tag(s), expected exactly 1 of each -- likely nested or multiple diagrams in one response).`,
       };
     }
 
