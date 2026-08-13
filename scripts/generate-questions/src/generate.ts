@@ -1,34 +1,52 @@
-import { callForJson } from './claudeClient.js';
+import { callForDelimitedText } from './claudeClient.js';
 import { findInvalidCommandTerms } from './commandTerms.js';
-import type { GeneratedQuestionJson, QuestionSpec } from './types.js';
+import type { GeneratedQuestionJson, MarksBreakdownItem, QuestionSpec } from './types.js';
 import type { ReferencePart, TopicRow } from './db.js';
 
 const MATH_NOTATION_RULES = [
-  'Math notation style -- follow exactly, plain text only, NEVER LaTeX commands:',
-  '- Never emit a backslash-prefixed LaTeX command: no \\frac, \\sqrt, \\left, \\right, \\begin, \\end, \\lim, \\int, \\times, or any other backslash+word token, and no {} used LaTeX-style for grouping exponents, subscripts, or fraction arguments.',
-  '- Exponents: base^exponent, with parentheses around the exponent whenever it is more than one character, e.g. x^2, e^(-0.5x), c^(3/2). Never base^{exponent}.',
-  '- Fractions: a/b for simple cases; wrap multi-term numerator/denominator in parentheses, e.g. (e+6)/2. Never \\frac{a}{b}.',
-  '- Square/nth roots: √(...), e.g. √(1+x). Never \\sqrt{...}.',
-  '- Unicode math symbols are fine and expected (root sign, pi, theta, integral/sum signs, inequality signs, degree sign, superscript/subscript digits).',
+  'Math notation style -- follow exactly, matching the rest of the question bank:',
+  '- ALL mathematical notation must be valid LaTeX. Inline math (a symbol or expression sitting within a sentence): wrap in single dollar signs, e.g. "the function $f(x) = x^{2} + 3x - 4$ has roots". Standalone/display equations (an equation shown on its own line, not embedded mid-sentence): wrap in double dollar signs, e.g. $$\\int_{0}^{1} x^{2} \\, dx = \\frac{1}{3}$$.',
+  '- Use proper LaTeX commands, never plain-text approximations: \\frac{a}{b} for every fraction (never a/b), \\sqrt{...} and \\sqrt[n]{...} for roots (never √(...)), x^{2} and x_{i} for exponents/subscripts -- braces are REQUIRED whenever the exponent/subscript is more than one character (x^{n+1}, not x^n+1), \\int \\sum \\lim_{x \\to 0} \\sin \\cos \\tan \\ln \\log \\pi \\theta \\alpha \\beta \\leq \\geq \\neq \\in \\mathbb{R} \\mathbb{Z} \\mathbb{C} \\times \\cdot \\div \\infty, and \\begin{pmatrix} ... \\end{pmatrix} (rows separated by \\\\, entries by &) for vectors and matrices.',
+  '- Regular prose -- the words of the question itself -- stays plain text, NOT wrapped in math delimiters. Only the mathematical expressions go inside $...$ or $$...$$.',
+  '- This applies to question_text, proposed_solution, final_answer, and every marks_breakdown desc.',
+  '- Write every backslash literally, single, exactly as a LaTeX command needs it (\\frac, not \\\\frac) -- the output format below is plain text, not JSON, so no escaping of any kind is needed or wanted.',
 ].join('\n');
 
+const OUTPUT_FORMAT_SPEC = `Return your answer in this exact delimited plain-text format -- NOT JSON, no markdown fences, no prose outside the markers:
+
+@@@SECTION@@@
+A or B
+@@@DIFFICULTY@@@
+easy or medium or hard
+@@@LEVEL@@@
+SL or HL
+@@@CALCULATOR_ALLOWED@@@
+true or false
+@@@PRIMARY_TOPIC@@@
+<topic code>
+@@@SECONDARY_TOPICS@@@
+<comma-separated topic codes, or (none)>
+@@@QUESTION_TEXT@@@
+<the full question text, LaTeX included>
+@@@PROPOSED_SOLUTION@@@
+<full worked solution, LaTeX included>
+@@@FINAL_ANSWER@@@
+<the single concise final result(s), e.g. "$k = 3$" -- must be independently checkable>
+@@@COMMAND_TERMS@@@
+<comma-separated IB command terms that open a scored part, e.g. Find, Hence>
+@@@MARKS_BREAKDOWN@@@
+@@@MARK <note> <marks>@@@
+<desc for this mark, e.g. valid attempt to differentiate -- one block per mark note, e.g. @@@MARK M1 1@@@ then @@@MARK A1 1@@@>
+@@@NEEDS_DIAGRAM@@@
+true or false
+@@@DIAGRAM_DESCRIPTION@@@
+<REQUIRED, non-empty, precise description (dimensions/angles/labels/what's marked) when needs_diagram is true -- otherwise write (none)>
+@@@END@@@
+
+Every marker line must appear exactly once (except @@@MARK ...@@@, one per marks_breakdown entry, at least one required). Do not add any text before @@@SECTION@@@ or after @@@END@@@.`;
+
 const SYSTEM_PROMPT = `You write original IB Diploma Programme Mathematics: Analysis and Approaches (AA) exam-style questions.
-Return ONLY a single JSON object, no prose, no markdown fences, matching exactly this shape:
-{
-  "section": "A" | "B",
-  "difficulty": "easy" | "medium" | "hard",
-  "level": "SL" | "HL",
-  "calculator_allowed": boolean,
-  "primary_topic_code": string,
-  "secondary_topic_codes": string[],
-  "question_text": string,
-  "proposed_solution": string,
-  "final_answer": string,          // the single concise final result(s), e.g. "k = 3" or "z = 4(cos(pi/3) + i sin(pi/3))" -- must be independently checkable
-  "command_terms_used": string[],  // every IB command term that opens a scored part of the question, e.g. ["Find", "Hence"]
-  "marks_breakdown": [ { "note": string, "desc": string, "marks": number } ],  // one entry per mark note, e.g. {"note":"M1","desc":"valid attempt to differentiate","marks":1}
-  "needs_diagram": boolean,        // true if the question describes a physical construction, geometric figure, or graph that is materially harder to follow as text alone (e.g. "diagram not to scale" style content on a real paper) -- false for purely algebraic/computational questions
-  "diagram_description": string | null  // REQUIRED, non-empty, and precise (dimensions/angles/labels/what's marked) when needs_diagram is true; null when false
-}
+
 Rules:
 - This is an ORIGINAL question -- never copy, paraphrase closely, or reuse specific numbers/context from any reference material you are given. References are for FORMAT and TYPICAL MARK ALLOCATION only.
 - Section A questions are short and single-skill: one command term chain testing the primary topic directly, no blending of unrelated topics.
@@ -36,9 +54,10 @@ Rules:
 - marks_breakdown marks must sum to the total marks implied by the question's difficulty/section (Section A: 3-6 total; Section B: 12-20 total).
 - proposed_solution must show full working consistent with marks_breakdown, ending in a value that matches final_answer exactly.
 - calculator_allowed governs the correct SOLUTION PATH, not just a label: if false (non-calculator/Paper 1 style), every intermediate and final value must be exact and reachable by hand (clean factorisations, standard exact angles/logs, no numerical root-finding unless it reduces to something factorable) -- do not require a GDC anywhere. If true (calculator/Paper 2 style), numerical methods are expected and should be used where they are the natural approach (solving equations numerically, numerical integration, decimal answers given to a stated degree of accuracy e.g. "correct to 3 s.f.") -- do not force an unnecessary exact hand-derivation where a direct GDC step is the real exam technique. Calibrate difficulty RELATIVE to calculator_allowed: a step that is hard by hand (e.g. splitting a distance integral around sign changes and evaluating exactly in terms of e) can be a single easy GDC step once calculator_allowed is true -- do not keep the hand-derivation's difficulty rating once the calculator makes it trivial.
-- Do not include any text outside the JSON object.
 
-${MATH_NOTATION_RULES}`;
+${MATH_NOTATION_RULES}
+
+${OUTPUT_FORMAT_SPEC}`;
 
 function referenceSummary(topic: TopicRow, refs: ReferencePart[]): string {
   if (refs.length === 0) {
@@ -66,15 +85,109 @@ function buildUserPrompt(
     `calculator_allowed MUST be ${spec.calculatorAllowed} for this question -- ${spec.calculatorAllowed ? 'write it as a Paper 2 style question (numerical methods/decimal answers expected where natural)' : 'write it as a Paper 1 style question (everything must resolve exactly by hand, no GDC needed anywhere)'}.`,
     spec.section === 'B' && secondaryCandidates.length > 0
       ? `You may blend in 0-2 of these closely related topics if it makes for a natural multi-part question (use their exact codes in secondary_topic_codes if used, else leave empty): ${secondaryCandidates.map((t) => `${t.code} (${t.subtopic_name})`).join('; ')}.`
-      : `This is Section A: primary_topic_code must be ${topic.code} and secondary_topic_codes must be [].`,
+      : `This is Section A: primary_topic_code must be ${topic.code} and secondary_topic_codes must be (none).`,
     `Target total marks: ${spec.marksRange[0]}-${spec.marksRange[1]}.`,
     referenceSummary(topic, refs),
   ];
   if (regenerationFeedback) {
     parts.push(`\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION -- fix these issues and regenerate from scratch:\n${regenerationFeedback}`);
   }
-  parts.push('\nRespond with ONLY the JSON object described in the system prompt -- start with { and end with }.');
+  parts.push('\nRespond with ONLY the delimited-format answer described in the system prompt -- start with @@@SECTION@@@ and end with @@@END@@@.');
   return parts.join('\n\n');
+}
+
+// Explicit allowlist of top-level marker names -- deliberately excludes
+// "MARK" (the inner @@@MARK <note> <marks>@@@ sub-markers inside
+// MARKS_BREAKDOWN) so scanning for "the next top-level marker" doesn't
+// truncate the marks_breakdown block at its first entry.
+const TOP_LEVEL_MARKERS = [
+  'SECTION', 'DIFFICULTY', 'LEVEL', 'CALCULATOR_ALLOWED', 'PRIMARY_TOPIC',
+  'SECONDARY_TOPICS', 'QUESTION_TEXT', 'PROPOSED_SOLUTION', 'FINAL_ANSWER',
+  'COMMAND_TERMS', 'MARKS_BREAKDOWN', 'NEEDS_DIAGRAM', 'DIAGRAM_DESCRIPTION', 'END',
+].join('|');
+const NEXT_TOP_LEVEL_MARKER_RE = new RegExp(`\\r?\\n@@@(?:${TOP_LEVEL_MARKERS})@@@(?:\\r?\\n|$)`);
+
+function section(block: string, marker: string, required = true): string {
+  const re = new RegExp(`@@@${marker}@@@\\r?\\n`);
+  const m = re.exec(block);
+  if (!m) {
+    if (required) throw new Error(`Malformed generation response, missing @@@${marker}@@@ marker:\n${block.slice(0, 1500)}`);
+    return '';
+  }
+  const start = m.index + m[0].length;
+  // Value runs until the next top-level marker line or end of string.
+  const rest = block.slice(start);
+  const nextMarker = NEXT_TOP_LEVEL_MARKER_RE.exec(rest);
+  const value = nextMarker ? rest.slice(0, nextMarker.index) : rest;
+  return value.replace(/\r?\n+$/, '');
+}
+
+function splitCommaList(s: string): string[] {
+  const trimmed = s.trim();
+  if (trimmed === '' || /^\(none\)$/i.test(trimmed)) return [];
+  return trimmed.split(',').map((v) => v.trim()).filter(Boolean);
+}
+
+function parseMarksBreakdown(text: string): MarksBreakdownItem[] {
+  const markRe = /@@@MARK ([^\s@]+) (-?\d+(?:\.\d+)?)@@@\r?\n/g;
+  const marks: { note: string; markValue: number; matchStart: number; contentStart: number }[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = markRe.exec(text)) !== null) {
+    marks.push({ note: m[1], markValue: Number(m[2]), matchStart: m.index, contentStart: m.index + m[0].length });
+  }
+  if (marks.length === 0) {
+    throw new Error(`marks_breakdown had no @@@MARK <note> <marks>@@@ entries:\n${text.slice(0, 1500)}`);
+  }
+  const items: MarksBreakdownItem[] = [];
+  for (let i = 0; i < marks.length; i++) {
+    const end = i + 1 < marks.length ? marks[i + 1].matchStart : text.length;
+    const desc = text.slice(marks[i].contentStart, end).replace(/\r?\n+$/, '');
+    items.push({ note: marks[i].note, desc, marks: marks[i].markValue });
+  }
+  return items;
+}
+
+function parseGeneratedQuestion(raw: string): GeneratedQuestionJson {
+  const sectionVal = section(raw, 'SECTION').trim();
+  if (sectionVal !== 'A' && sectionVal !== 'B') {
+    throw new Error(`@@@SECTION@@@ must be A or B, got: "${sectionVal}"`);
+  }
+  const difficultyVal = section(raw, 'DIFFICULTY').trim();
+  if (difficultyVal !== 'easy' && difficultyVal !== 'medium' && difficultyVal !== 'hard') {
+    throw new Error(`@@@DIFFICULTY@@@ must be easy/medium/hard, got: "${difficultyVal}"`);
+  }
+  const levelVal = section(raw, 'LEVEL').trim();
+  if (levelVal !== 'SL' && levelVal !== 'HL') {
+    throw new Error(`@@@LEVEL@@@ must be SL or HL, got: "${levelVal}"`);
+  }
+  const calcVal = section(raw, 'CALCULATOR_ALLOWED').trim().toLowerCase();
+  if (calcVal !== 'true' && calcVal !== 'false') {
+    throw new Error(`@@@CALCULATOR_ALLOWED@@@ must be true/false, got: "${calcVal}"`);
+  }
+
+  const marksBreakdownBlock = section(raw, 'MARKS_BREAKDOWN');
+  const needsDiagramVal = section(raw, 'NEEDS_DIAGRAM').trim().toLowerCase();
+  if (needsDiagramVal !== 'true' && needsDiagramVal !== 'false') {
+    throw new Error(`@@@NEEDS_DIAGRAM@@@ must be true/false, got: "${needsDiagramVal}"`);
+  }
+  const diagramDescRaw = section(raw, 'DIAGRAM_DESCRIPTION').trim();
+  const needsDiagram = needsDiagramVal === 'true';
+
+  return {
+    section: sectionVal,
+    difficulty: difficultyVal,
+    level: levelVal,
+    calculator_allowed: calcVal === 'true',
+    primary_topic_code: section(raw, 'PRIMARY_TOPIC').trim(),
+    secondary_topic_codes: splitCommaList(section(raw, 'SECONDARY_TOPICS')),
+    question_text: section(raw, 'QUESTION_TEXT'),
+    proposed_solution: section(raw, 'PROPOSED_SOLUTION'),
+    final_answer: section(raw, 'FINAL_ANSWER'),
+    command_terms_used: splitCommaList(section(raw, 'COMMAND_TERMS')),
+    marks_breakdown: parseMarksBreakdown(marksBreakdownBlock),
+    needs_diagram: needsDiagram,
+    diagram_description: needsDiagram ? diagramDescRaw : null,
+  };
 }
 
 export interface CheapCheckResult {
@@ -131,7 +244,7 @@ export function runCheapChecks(q: GeneratedQuestionJson, spec: QuestionSpec): Ch
  */
 // Section B questions carry a full multi-part question_text, proposed_solution,
 // and marks_breakdown for 12-20 marks -- 8000 output tokens was cutting these
-// off mid-JSON on the pilot run (3/6 Section B calls truncated). Section A's
+// off mid-response on the pilot run (3/6 Section B calls truncated). Section A's
 // 3-6 mark single-skill questions never came close to 8000, so only Section B
 // needs the higher cap.
 const MAX_TOKENS_BY_SECTION: Record<QuestionSpec['section'], number> = {
@@ -147,14 +260,14 @@ export async function generateQuestion(
 ): Promise<{ question: GeneratedQuestionJson; cheapChecks: CheapCheckResult; regenerated: boolean }> {
   const maxTokens = MAX_TOKENS_BY_SECTION[spec.section];
   const firstPrompt = buildUserPrompt(spec, topic, secondaryCandidates, refs);
-  let question = await callForJson<GeneratedQuestionJson>(SYSTEM_PROMPT, firstPrompt, maxTokens);
+  let question = parseGeneratedQuestion(await callForDelimitedText(SYSTEM_PROMPT, firstPrompt, maxTokens));
   let checks = runCheapChecks(question, spec);
   let regenerated = false;
 
   if (!checks.passed) {
     regenerated = true;
     const retryPrompt = buildUserPrompt(spec, topic, secondaryCandidates, refs, checks.notes.join('\n'));
-    question = await callForJson<GeneratedQuestionJson>(SYSTEM_PROMPT, retryPrompt, maxTokens);
+    question = parseGeneratedQuestion(await callForDelimitedText(SYSTEM_PROMPT, retryPrompt, maxTokens));
     checks = runCheapChecks(question, spec);
   }
 

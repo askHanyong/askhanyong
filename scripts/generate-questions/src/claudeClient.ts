@@ -43,6 +43,31 @@ export async function callForJson<T>(system: string, userText: string, maxTokens
   return extractJson<T>(textBlock.text);
 }
 
+// Delimited plain-text output for calls whose content includes LaTeX. JSON
+// output is unreliable here: the model intermittently emits a single
+// backslash instead of the JSON-required double backslash inside a LaTeX
+// command, which either throws a JSON parse error or -- worse -- silently
+// parses as the wrong text for commands starting with a letter that collides
+// with a JSON escape (\frac -> \f + "rac", \begin -> \b + "egin"). See
+// scripts/ingest-paper/src/backfillLatex.ts, which hit this in production
+// and switched to this same delimited approach.
+export async function callForDelimitedText(system: string, userText: string, maxTokens = 16000): Promise<string> {
+  const resp = await client.messages
+    .stream({
+      model: env.claudeModel,
+      max_tokens: maxTokens,
+      system,
+      messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
+    })
+    .finalMessage();
+  if (resp.stop_reason === 'max_tokens') {
+    throw new Error(`Claude's response was truncated (hit the ${maxTokens} output-token cap) before finishing.`);
+  }
+  const textBlock = resp.content.find((b): b is Anthropic.Messages.TextBlock => b.type === 'text');
+  if (!textBlock) throw new Error('Claude returned no text content block.');
+  return textBlock.text;
+}
+
 export async function callForText(system: string, userText: string, maxTokens = 4000): Promise<string> {
   const resp = await client.messages
     .stream({
