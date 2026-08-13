@@ -52,7 +52,12 @@ export async function callForText(system: string, userText: string, maxTokens = 
       messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
     })
     .finalMessage();
+  if (resp.stop_reason === 'max_tokens') {
+    throw new Error(`Claude's response was truncated (hit the ${maxTokens} output-token cap) before producing visible text -- likely spent the whole budget on internal reasoning.`);
+  }
   const textBlock = resp.content.find((b): b is Anthropic.Messages.TextBlock => b.type === 'text');
-  if (!textBlock) throw new Error('Claude returned no text content block.');
+  if (!textBlock) {
+    throw new Error(`Claude returned no text content block (stop_reason: ${resp.stop_reason}, content block types: ${resp.content.map((b) => b.type).join(', ') || 'none'}).`);
+  }
   return textBlock.text.trim();
 }

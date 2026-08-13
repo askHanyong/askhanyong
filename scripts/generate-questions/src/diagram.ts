@@ -19,7 +19,7 @@ export async function generateDiagram(diagramDescription: string, questionText: 
   const userPrompt = [`QUESTION:\n${questionText}`, `DIAGRAM DESCRIPTION:\n${diagramDescription}`].join('\n\n');
 
   try {
-    const raw = await callForText(DIAGRAM_SYSTEM_PROMPT, userPrompt, 3000);
+    const raw = await callForText(DIAGRAM_SYSTEM_PROMPT, userPrompt, 6000);
 
     // Extract from the first <svg to the last </svg> rather than assuming the
     // response starts/ends exactly there -- tolerates stray preamble (a bare
