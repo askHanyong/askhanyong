@@ -77,13 +77,13 @@ async function callForDelimitedText(system: string, userText: string): Promise<s
   const resp = await client.messages
     .stream({
       model: env.claudeModel,
-      max_tokens: 16000,
+      max_tokens: 32000,
       system,
       messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
     })
     .finalMessage();
   if (resp.stop_reason === 'max_tokens') {
-    throw new Error(`Response truncated (hit 16000 output-token cap) -- reduce batch size.`);
+    throw new Error(`Response truncated (hit 32000 output-token cap) -- reduce batch size.`);
   }
   const textBlock = resp.content.find((b): b is Anthropic.Messages.TextBlock => b.type === 'text');
   if (!textBlock) throw new Error('Claude returned no text content block.');
@@ -184,7 +184,7 @@ interface MarkschemePartRow {
   marks_breakdown: Array<{ note: string; desc: string }> | null;
 }
 
-const BATCH_SIZE = 12;
+const BATCH_SIZE = 8;
 
 function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
