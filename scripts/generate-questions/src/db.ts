@@ -93,11 +93,15 @@ export interface GeneratedQuestionInput {
   level: 'SL' | 'HL';
   section: 'A' | 'B';
   difficulty: 'easy' | 'medium' | 'hard';
+  calculator_allowed: boolean;
   question_text: string;
   proposed_solution: string;
   final_answer: string;
   total_marks: number;
   marks_breakdown: Array<{ note: string; desc: string; marks: number }>;
+  needs_diagram: boolean;
+  diagram_description: string | null;
+  diagram_svg: string | null;
   status: 'verified' | 'flagged' | 'draft';
   verifications: VerificationInput[];
 }
