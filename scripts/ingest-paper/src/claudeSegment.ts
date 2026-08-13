@@ -73,14 +73,12 @@ async function callForJson<T>(
 }
 
 const MATH_NOTATION_RULES = [
-  'Math notation style -- follow exactly, plain text only, NEVER LaTeX commands:',
-  '- Never emit a backslash-prefixed LaTeX command: no \\frac, \\sqrt, \\left, \\right, \\begin, \\end, \\lim, \\int, \\times, or any other backslash+word token, and no {} used LaTeX-style for grouping exponents, subscripts, or fraction arguments.',
-  '- Exponents: base^exponent, with parentheses around the exponent whenever it is more than one character, e.g. x^2, e^(-0.5x), c^(3/2), (3+x^2)^(n+1). Never base^{exponent}.',
-  '- Fractions: a/b for simple cases; wrap multi-term numerator/denominator in parentheses, e.g. (e+6)/2, (2n-3)!/(n-2)!. Never \\frac{a}{b}.',
-  '- Square/nth roots: √(...), e.g. √(1+x), √((x^2+k)^3). Never \\sqrt{...}.',
-  '- Limits: lim(x->0) f(x), not \\lim_{x \\to 0} f(x).',
-  '- Vectors and matrices: write as a plain tuple, e.g. (0, 1, 2) for a column vector, or describe rows in words if a full matrix -- never \\begin{pmatrix}...\\end{pmatrix} or similar LaTeX environments.',
-  '- Unicode math symbols are fine and expected where the paper itself uses them (the root sign, pi, theta, integral and sum signs, inequality signs, arrows, set-membership and number-set symbols, multiplication/division signs, the degree sign, superscript/subscript digits).',
+  'Math notation style -- follow exactly, ALL mathematical notation must be valid LaTeX wrapped in MathJax delimiters:',
+  '- Inline math (a symbol or expression sitting within a sentence): wrap in single dollar signs, e.g. "the function $f(x) = x^{2} + 3x - 4$ has roots" or "so $\\frac{1}{2} < x < \\frac{3}{4}$".',
+  '- Standalone/display equations (an equation shown on its own line, not embedded mid-sentence -- e.g. a definition line, a working step set apart on the page): wrap in double dollar signs, e.g. $$\\int_{0}^{1} x^{2} \\, dx = \\frac{1}{3}$$.',
+  '- Use proper LaTeX commands, never plain-text approximations: \\frac{a}{b} for every fraction (never a/b), \\sqrt{...} and \\sqrt[n]{...} for roots (never √(...)), x^{2} and x_{i} for exponents/subscripts -- braces are REQUIRED whenever the exponent/subscript is more than one character (x^{n+1}, not x^n+1), \\int \\sum \\lim_{x \\to 0} \\sin \\cos \\tan \\ln \\log \\pi \\theta \\alpha \\beta \\leq \\geq \\neq \\in \\mathbb{R} \\mathbb{Z} \\mathbb{C} \\times \\cdot \\div \\infty, and \\begin{pmatrix} ... \\end{pmatrix} (rows separated by \\\\, entries by &) for vectors and matrices.',
+  '- Regular prose -- the words of the question itself -- stays plain text, NOT wrapped in math delimiters. Only the mathematical expressions go inside $...$ or $$...$$.',
+  '- You are producing valid JSON. Every literal backslash inside a LaTeX command must be written as TWO backslash characters in the JSON text you output, so it decodes to a single backslash (to represent $\\frac{1}{2}$, the JSON text you write must contain backslash-backslash-f-r-a-c, i.e. \\\\frac, not a single \\frac) -- this applies to every backslash in every LaTeX command you emit. Double-check this before finishing, since a single un-escaped backslash breaks JSON parsing entirely.',
   '- This applies to every text field you output (part_text, markscheme_text, desc), not just isolated formulas.',
 ].join('\n');
 
