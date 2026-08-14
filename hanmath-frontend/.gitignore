@@ -1,0 +1,13 @@
+# deps
+/node_modules
+
+# next.js build output
+/.next/
+/out/
+
+# env files (publishable key is not secret, but keep local overrides out of git anyway)
+.env.local
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
