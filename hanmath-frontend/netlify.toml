@@ -1,0 +1,13 @@
+# Static export (next.config.js: output:'export') -- no SSR, no API routes,
+# so this deliberately does NOT use the Netlify Next.js Runtime plugin. A
+# netlify.toml scoped to this base directory takes precedence over both the
+# root repo's netlify.toml (askhanyong.com's own config) and Netlify's
+# automatic Next.js framework auto-detection, which otherwise tries to
+# install its own runtime/plugin for "next"-framework sites and ignores the
+# plain static publish directory.
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
