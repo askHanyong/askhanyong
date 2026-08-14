@@ -1,7 +1,13 @@
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'node:fs/promises';
 import { env } from './env.js';
-import type { PaperSegmentation, MarkschemeSegmentation } from './types.js';
+import type {
+  PaperSegmentation,
+  MarkschemeSegmentation,
+  MarkschemeQuestionSeg,
+  MarkschemePartSeg,
+  MarksBreakdownEntry,
+} from './types.js';
 
 const client = new Anthropic({ apiKey: env.anthropicApiKey });
 
@@ -73,6 +79,44 @@ async function callForJson<T>(
   return extractJson<T>(textBlock.text);
 }
 
+// Markscheme segmentation switched from JSON to this delimited plain-text
+// format for two reasons: (1) JSON-encoded LaTeX requires doubled backslashes,
+// which inflates output tokens enough that a dense HL Paper 1 markscheme (12
+// questions, heavy marks_breakdown) truncated even at a 48000-token cap; (2)
+// this is the exact escaping-fragility class that already broke
+// backfillLatex.ts in production (a single un-escaped backslash either throws
+// a JSON parse error or silently decodes as the wrong text for LaTeX commands
+// starting with f/b/n/r/t/u). A delimited format sidesteps both: the model
+// writes LaTeX literally with no escaping, and it's meaningfully cheaper in
+// tokens. segmentPaper() stays on JSON -- it has never truncated across 30+
+// papers, so there's no reason to touch it.
+async function callForDelimitedText(
+  system: string,
+  doc: Anthropic.Messages.DocumentBlockParam,
+  instruction: string,
+  extraText?: string
+): Promise<string> {
+  const content: Anthropic.Messages.ContentBlockParam[] = [doc];
+  if (extraText) content.push({ type: 'text', text: extraText });
+  content.push({ type: 'text', text: instruction });
+
+  const maxTokens = 48000;
+  const resp = await client.messages
+    .stream({
+      model: env.claudeModel,
+      max_tokens: maxTokens,
+      system,
+      messages: [{ role: 'user', content }],
+    })
+    .finalMessage();
+  if (resp.stop_reason === 'max_tokens') {
+    throw new Error(`Claude's response was truncated (hit the ${maxTokens} output-token cap) before finishing.`);
+  }
+  const textBlock = resp.content.find((b): b is Anthropic.Messages.TextBlock => b.type === 'text');
+  if (!textBlock) throw new Error('Claude returned no text content block.');
+  return textBlock.text;
+}
+
 const MATH_NOTATION_RULES = [
   'Math notation style -- follow exactly, ALL mathematical notation must be valid LaTeX wrapped in MathJax delimiters:',
   '- Inline math (a symbol or expression sitting within a sentence): wrap in single dollar signs, e.g. "the function $f(x) = x^{2} + 3x - 4$ has roots" or "so $\\frac{1}{2} < x < \\frac{3}{4}$".',
@@ -121,35 +165,110 @@ export async function segmentPaper(paperPdfPath: string): Promise<PaperSegmentat
   );
 }
 
+const MARKSCHEME_OUTPUT_FORMAT = `Return your answer in this exact delimited plain-text format -- NOT JSON, no markdown fences, no prose outside the markers. Write every backslash literally, single, exactly as a LaTeX command needs it (\\frac, not \\\\frac) -- this format needs no escaping of any kind.
+
+@@@QUESTION <question_number>@@@
+@@@PART <part_label>@@@
+@@@TEXT@@@
+<the full markscheme text for this part, verbatim, LaTeX included -- can span multiple lines>
+@@@BREAKDOWN@@@
+@@@NOTE <note>@@@
+<desc for this mark, e.g. valid attempt to substitute -- one block per mark note, e.g. @@@NOTE M1@@@ then @@@NOTE A1@@@>
+(repeat @@@PART ...@@@ for every part in this question)
+(repeat @@@QUESTION ...@@@ for every question)
+@@@DONE@@@
+
+Notes on the markers:
+- <part_label> may be an empty string -- write it as @@@PART @@@ (nothing between "PART " and "@@@") for a question with no sub-parts.
+- <note> is a short IB mark code only (M1, A1, R1, AG, G1, or a combined code like M1A1) -- never a description. The description goes on the line(s) after @@@NOTE ...@@@, never inside the marker line itself.
+- If a part genuinely has zero marks_breakdown entries, omit the @@@BREAKDOWN@@@ section entirely for that part.
+- Do not add any text before the first @@@QUESTION@@@ or after @@@DONE@@@.`;
+
 const MARKSCHEME_SYSTEM_PROMPT = `You segment IB Diploma Mathematics exam markschemes into per-question, per-part marking notes.
-Return ONLY a single JSON object, no prose, no markdown fences, matching exactly this shape:
-{
-  "questions": [
-    {
-      "question_number": number,
-      "parts": [
-        {
-          "part_label": string,        // must exactly match one of the paper's confirmed part labels for this question (see the "confirmed paper structure" list you're given) -- never invented, merged, or split differently
-          "markscheme_text": string,   // the full markscheme text for this part, verbatim
-          "marks_breakdown": [ { "note": string, "desc": string } ]
-            // one entry per mark note in order, e.g. {"note": "M1", "desc": "valid attempt to substitute"}, {"note": "A1", "desc": "correct value"}, {"note": "AG", "desc": "answer given"}
-        }
-      ]
-    }
-  ]
-}
+
 Critical rule on part_label:
 - You are given the CONFIRMED PAPER STRUCTURE below: the exact list of part labels the question paper uses for each question, already determined by segmenting the paper itself. Your job is to slot the markscheme's marking notes into that exact structure, not to re-derive part boundaries from how the markscheme happens to lay out its own working.
-- For each question, produce exactly one parts[] entry per label in its confirmed list, using those exact label strings, in that exact order.
-- If a question's confirmed list is a single empty string "", produce exactly one part with part_label "" covering that question's entire marking, even if the markscheme shows multiple METHODs or several marking lines for it -- multiple methods for one undivided question is not the same thing as sub-parts.
+- For each question, produce exactly one @@@PART@@@ block per label in its confirmed list, using those exact label strings, in that exact order.
+- If a question's confirmed list is a single empty label, produce exactly one @@@PART @@@ block covering that question's entire marking, even if the markscheme shows multiple METHODs or several marking lines for it -- multiple methods for one undivided question is not the same thing as sub-parts.
 - If the markscheme's marking for two confirmed labels (e.g. "c.i" and "c.ii") appears together without a clear visual split, split the marking text between them as best you can rather than merging them into one label that isn't in the confirmed list.
 - Do not add labels that aren't in the confirmed list, and do not omit any label that is in it.
 Other rules:
 - Preserve mathematical content faithfully.
 - Include every question in the confirmed paper structure, in order.
-- Do not include any text outside the JSON object.
 
-${MATH_NOTATION_RULES}`;
+${MATH_NOTATION_RULES}
+
+${MARKSCHEME_OUTPUT_FORMAT}`;
+
+function parseMarksBreakdown(block: string): MarksBreakdownEntry[] {
+  const noteRe = /@@@NOTE ([^\n@]+)@@@\r?\n/g;
+  const notes: { note: string; matchStart: number; contentStart: number }[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = noteRe.exec(block)) !== null) {
+    notes.push({ note: m[1].trim(), matchStart: m.index, contentStart: m.index + m[0].length });
+  }
+  const entries: MarksBreakdownEntry[] = [];
+  for (let i = 0; i < notes.length; i++) {
+    const end = i + 1 < notes.length ? notes[i + 1].matchStart : block.length;
+    const desc = block.slice(notes[i].contentStart, end).replace(/\r?\n+$/, '');
+    entries.push({ note: notes[i].note, desc });
+  }
+  return entries;
+}
+
+function parsePartBlock(block: string): { markscheme_text: string; marks_breakdown: MarksBreakdownEntry[] } {
+  const textMarker = /@@@TEXT@@@\r?\n/;
+  const breakdownMarker = /@@@BREAKDOWN@@@\r?\n?/;
+  const textMatch = textMarker.exec(block);
+  if (!textMatch) throw new Error(`Malformed part block, missing @@@TEXT@@@ marker:\n${block.slice(0, 500)}`);
+  const breakdownMatch = breakdownMarker.exec(block);
+  const textEnd = breakdownMatch ? breakdownMatch.index : block.length;
+  const markscheme_text = block.slice(textMatch.index + textMatch[0].length, textEnd).replace(/\r?\n+$/, '');
+  const marks_breakdown = breakdownMatch
+    ? parseMarksBreakdown(block.slice(breakdownMatch.index + breakdownMatch[0].length))
+    : [];
+  return { markscheme_text, marks_breakdown };
+}
+
+function parseMarkschemeSegmentation(raw: string): MarkschemeSegmentation {
+  const questionRe = /@@@QUESTION (\d+)@@@\r?\n/g;
+  const questionMatches: { num: number; matchStart: number; contentStart: number }[] = [];
+  let qm: RegExpExecArray | null;
+  while ((qm = questionRe.exec(raw)) !== null) {
+    questionMatches.push({ num: Number(qm[1]), matchStart: qm.index, contentStart: qm.index + qm[0].length });
+  }
+  if (questionMatches.length === 0) {
+    throw new Error(`No @@@QUESTION <n>@@@ markers found in markscheme response:\n${raw.slice(0, 1500)}`);
+  }
+  const doneIdx = raw.indexOf('@@@DONE@@@');
+  const questions: MarkschemeQuestionSeg[] = [];
+  for (let i = 0; i < questionMatches.length; i++) {
+    const qEnd = i + 1 < questionMatches.length ? questionMatches[i + 1].matchStart : doneIdx !== -1 ? doneIdx : raw.length;
+    const qBlock = raw.slice(questionMatches[i].contentStart, qEnd);
+
+    const partRe = /@@@PART ([^\n@]*)@@@\r?\n/g;
+    const partMatches: { label: string; matchStart: number; contentStart: number }[] = [];
+    let pm: RegExpExecArray | null;
+    while ((pm = partRe.exec(qBlock)) !== null) {
+      partMatches.push({ label: pm[1].trim(), matchStart: pm.index, contentStart: pm.index + pm[0].length });
+    }
+    if (partMatches.length === 0) {
+      throw new Error(`Question ${questionMatches[i].num} has no @@@PART ...@@@ blocks:\n${qBlock.slice(0, 500)}`);
+    }
+    const parts: MarkschemePartSeg[] = [];
+    for (let j = 0; j < partMatches.length; j++) {
+      // Scan forward for the next @@@PART@@@/@@@QUESTION@@@ marker (not an
+      // inner @@@NOTE@@@) to find where this part's content ends.
+      const pBlockRaw = qBlock.slice(partMatches[j].contentStart);
+      const nextPartMarker = /\r?\n@@@(?:PART|QUESTION)[^\n]*@@@(?:\r?\n|$)/.exec(pBlockRaw);
+      const pBlock = nextPartMarker ? pBlockRaw.slice(0, nextPartMarker.index) : pBlockRaw;
+      const { markscheme_text, marks_breakdown } = parsePartBlock(pBlock);
+      parts.push({ part_label: partMatches[j].label, markscheme_text, marks_breakdown });
+    }
+    questions.push({ question_number: questionMatches[i].num, parts });
+  }
+  return { questions };
+}
 
 function paperStructureSummary(paper: PaperSegmentation): string {
   const lines = paper.questions.map((q) => {
@@ -164,10 +283,11 @@ export async function segmentMarkscheme(
   paperSeg: PaperSegmentation
 ): Promise<MarkschemeSegmentation> {
   const doc = await pdfDocumentBlock(markschemePdfPath);
-  return callForJson<MarkschemeSegmentation>(
+  const raw = await callForDelimitedText(
     MARKSCHEME_SYSTEM_PROMPT,
     doc,
-    'Segment this IB Math markscheme against the confirmed paper structure given above. Respond with ONLY the JSON object described in the system prompt -- start your reply with { and end with }, no markdown code fences, no explanation before or after.',
+    'Segment this IB Math markscheme against the confirmed paper structure given above. Respond with ONLY the delimited-format answer described in the system prompt -- start with @@@QUESTION@@@ and end with @@@DONE@@@.',
     paperStructureSummary(paperSeg)
   );
+  return parseMarkschemeSegmentation(raw);
 }
