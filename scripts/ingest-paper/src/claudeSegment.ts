@@ -53,17 +53,18 @@ async function callForJson<T>(
   // non-streaming call since generation could exceed Anthropic's 10-minute
   // non-streaming limit. .stream().finalMessage() gives the same Message
   // shape once the stream completes.
+  const maxTokens = 48000;
   const resp = await client.messages
     .stream({
       model: env.claudeModel,
-      max_tokens: 32000,
+      max_tokens: maxTokens,
       system,
       messages: [{ role: 'user', content }],
     })
     .finalMessage();
   if (resp.stop_reason === 'max_tokens') {
     throw new Error(
-      `Claude's response was truncated (hit the 32000 output-token cap) before finishing the JSON -- ` +
+      `Claude's response was truncated (hit the ${maxTokens} output-token cap) before finishing the JSON -- ` +
       `this paper/markscheme has more content than the budget allows. Raise max_tokens in callForJson() and retry.`
     );
   }
