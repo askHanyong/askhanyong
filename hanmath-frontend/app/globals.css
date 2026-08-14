@@ -1,0 +1,73 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Prevents iOS Safari auto-zooming into inputs/text -- not strictly needed
+     here (no inputs yet) but harmless and standard. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  /* A wide element anywhere (a long equation, a diagram) must never widen
+     the page itself -- individual elements scroll internally instead (see
+     .math-block / .diagram-wrap below), not the whole viewport. */
+  overflow-x: hidden;
+}
+
+/* Topic picker: flex-basis (not a fixed width) lets each card size itself
+   up to ~240px and wrap onto its own row once the viewport can't fit two
+   side by side -- at 375px wide, one card fills the row naturally with no
+   media query needed. min-width: 0 stops long unbroken topic names from
+   forcing the flex item wider than its container. */
+.topic-btn {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  min-height: 44px; /* comfortable tap target */
+}
+
+/* MathJax renders each formula as an <mjx-container> SVG with an intrinsic
+   width. A long equation (a wide fraction, a matrix) can be wider than a
+   375px phone screen -- rather than letting it overflow the page or shrink
+   to the point of being unreadable, it scrolls horizontally within its own
+   box. This is MathJax's own recommended pattern for narrow viewports. */
+.math-block {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+.math-block mjx-container {
+  max-width: 100%;
+}
+
+/* Diagram SVGs come from generated_questions.diagram_svg (our own pipeline,
+   see diagram.ts) and sometimes carry literal width/height attributes from
+   their viewBox -- max-width/height:auto on the svg itself (not just its
+   wrapper) is required to override those and scale the diagram down on a
+   narrow screen instead of overflowing. */
+.diagram-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.diagram-wrap svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.reveal-btn {
+  min-height: 44px;
+  padding: 0.65rem 1.1rem;
+}
+
+@media (max-width: 480px) {
+  .page-main {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .question-card {
+    padding: 0.9rem 1rem;
+  }
+}

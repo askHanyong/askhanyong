@@ -1,5 +1,6 @@
 import Script from 'next/script';
 import type { ReactNode } from 'react';
+import './globals.css';
 
 export const metadata = {
   title: 'hanmath.com (proof of concept)',
