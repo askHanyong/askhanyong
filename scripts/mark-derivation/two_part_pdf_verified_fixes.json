@@ -1,0 +1,30 @@
+{
+  "6bf688b7-d755-4c3c-9af6-6e0da5aa9c6c": {
+    "breakdown": [
+      {"note":"(M1)","desc":"$P(CM) \\times P(C<61|CM) + P(BM) \\times P(B<61|BM) = 0.157$"},
+      {"note":"(A1)","desc":"$P(C<61) = 0.248496...$"},
+      {"note":"(M1)","desc":"attempt to solve for $\\sigma$ using GDC"},
+      {"note":"A2","desc":"$\\sigma = 1.47$ (g)"}
+    ],
+    "reasoning": {
+      "verified_against_raw_pdf": true,
+      "paper_bracket": "Confirmed directly from the raw paper PDF (M22/5/MATHX/HP2/ENG/TZ1): part (d) 'Find the value of sigma' is printed with an explicit [5] bracket. Question 11's parts sum 2+2+7+5=16, matching the question's own stated max of 16.",
+      "original_marks_value": 7,
+      "gap_explanation": "The originally stored marks=7 was simply wrong -- not a dropped markscheme code. The raw markscheme PDF's METHOD 1 (the only method actually used to derive this part's mark scheme) explicitly carries codes (M1),(A1),(M1),A2 = 5, matching the paper's own [5] bracket exactly. There was no missing code to find, unlike Q1(a.i); the number 7 simply never corresponded to anything printed on either the paper or the markscheme.",
+      "resolution": "Corrected marks 7 -> 5 via STEP1 (paper_explicit) during Stage 2 processing. marks_breakdown backfilled separately to keep only METHOD 1's confirmed codes (the stored breakdown had conflated METHOD 1 and METHOD 2's steps into one array, the same duplicate-branch pattern found in the other 17-part backfill)."
+    }
+  },
+  "baec497d-9c9a-4726-9100-f79072ab8bc4": {
+    "breakdown": [
+      {"note":"(M1)","desc":"METHOD 1: attempting to express $S_{n}$ in terms of $n$"},
+      {"note":"(M1)","desc":"use of a graph or a table to attempt to find the maximum sum"},
+      {"note":"A1","desc":"$= 750$"}
+    ],
+    "reasoning": {
+      "verified_against_raw_pdf": true,
+      "paper_bracket": "Confirmed directly from the raw paper PDF (M21/5/MATHX/HP2/ENG/TZ2): part (b) 'Find the maximum value of Sn' is printed with an explicit [3] bracket. Question 2's parts sum 2+3=5, matching the question's own stated max of 5.",
+      "markscheme_pdf_check": "The stored markscheme_text field for this part was missing all inline mark codes ((M1)/(A1)/A1), the same dropped-code failure mode found in Q1(a.i)'s Prompt 2 segmentation. Re-extracted the raw markscheme PDF directly (not the stored text): METHOD 1 explicitly prints '(M1)...(M1)...A1' with an explicit '[3 marks]' label directly beneath it, and 'Total [5 marks]' for the whole question -- confirming 3 is correct and printed, not inferred.",
+      "resolution": "marks=3 was already correct (STEP1 paper_explicit, sourced from the paper's own [3] bracket, unaffected by the markscheme_text gap). marks_breakdown backfilled to keep only METHOD 1's codes -- (M1),(M1),A1 = 3 -- which are directly confirmed against the raw markscheme PDF page, removing the duplicated METHOD 2 EITHER/OR/THEN entries that had been conflated into the same array."
+    }
+  }
+}
