@@ -18,6 +18,7 @@ Rules, in priority order:
 2. If there is an EITHER/OR structure (standalone, or nested inside a METHOD block), count marks from only ONE of the branches, then add any marks from a THEN section that follows (a THEN section may be worth 0 marks if it's just a narrative conclusion, or may carry real marks — read it, don't assume).
 3. Mark codes: M1/A1/A2/R1/G1 etc are each worth the digit shown. A code repeated with no separator in one line, e.g. "A1A1" or "(A1)(A1)", is worth 2 marks (one for each occurrence), not 1. AG (answer given) is worth 0 marks.
 4. Cross-check your derived value against the context you're given: sibling parts already known for this question, the question's own stated maximum mark, and (if this part shares a printed paper bracket with sibling parts) whether your value plus the known siblings' values reconciles with that combined bracket. If something doesn't add up, say so explicitly in tally_notes rather than silently picking a number.
+5. You are also given this part's structured marks_breakdown, extracted from the same markscheme PDF by the same segmentation pass that produced the free-text below. Known issue: that segmentation pass frequently drops inline mark codes from the free text (confirmed on ~20% of parts) while still placing them correctly in marks_breakdown (confirmed correct on ~99% of spot-checked parts) -- so marks_breakdown is at least as trustworthy as the free text, not a fallback to be overridden by it. If the free text reads as bare descriptive steps with no attached M/A/R/G codes but marks_breakdown supplies codes for those same steps, use marks_breakdown's codes rather than concluding the steps are uncoded. Only depart from marks_breakdown's total when the free text gives you concrete contrary evidence (e.g. a printed [n] bracket, or an explicit code visible in the text that contradicts it) -- and say so explicitly in tally_notes.
 
 Respond with ONLY a JSON object, no markdown fences, no other text:
 {
@@ -48,7 +49,7 @@ Raw markscheme text for THIS part (${job.part_label}):
 ${job.markscheme_text}
 """
 
-Structured marks_breakdown as currently stored (for reference only — it may be wrong; derive independently from the raw text above):
+Structured marks_breakdown as currently stored, extracted independently by the same segmentation pass (treat as at least as authoritative as the free text above -- see rule 5):
 ${JSON.stringify(job.marks_breakdown, null, 2)}
 
 Derive the true mark value for part (${job.part_label}) following the rules in the system prompt.`;

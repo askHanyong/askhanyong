@@ -180,6 +180,7 @@ const MARKSCHEME_OUTPUT_FORMAT = `Return your answer in this exact delimited pla
 
 Notes on the markers:
 - <part_label> may be an empty string -- write it as @@@PART @@@ (nothing between "PART " and "@@@") for a question with no sub-parts.
+- @@@TEXT@@@ must be truly verbatim: include every inline mark code (M1, A1, R1, AG, G1, etc.) exactly where it's printed on the page, right next to the line/step it marks -- do NOT strip codes out of this field just because they're also being broken out into @@@BREAKDOWN@@@ below. The two sections serve different purposes (TEXT is the literal page content, BREAKDOWN is the structured decomposition of it) and both must independently carry the same codes.
 - <note> is a short IB mark code only (M1, A1, R1, AG, G1, or a combined code like M1A1) -- never a description. The description goes on the line(s) after @@@NOTE ...@@@, never inside the marker line itself.
 - If a part genuinely has zero marks_breakdown entries, omit the @@@BREAKDOWN@@@ section entirely for that part.
 - Do not add any text before the first @@@QUESTION@@@ or after @@@DONE@@@.`;

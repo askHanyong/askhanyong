@@ -1,0 +1,519 @@
+{
+  "questions": [
+    {
+      "question_number": 1,
+      "parts": [
+        {
+          "part_label": "a",
+          "markscheme_text": "1.01206…, 2.45230…\n\n$a =1.01$ , $b = 2.45$ $(1.01x + 2.45)$ A1A1\n\n[2 marks]",
+          "marks_breakdown": [
+            {
+              "note": "A1",
+              "desc": "correct value of $a = 1.01$"
+            },
+            {
+              "note": "A1",
+              "desc": "correct value of $b = 2.45$"
+            }
+          ]
+        },
+        {
+          "part_label": "b",
+          "markscheme_text": "0.981464…\n\n$r = 0.981$ A1\n\nNote: A common error is to enter the data incorrectly into the GDC, and obtain the \nanswers $a =1.01700..., b= 2.09814...$ and $r = 0.980888...$ Some candidates may \nwrite the 3 sf answers, ie. $a = 1.02, b = 2.10$ and $r = 0.981$ or 2 sf answers, ie. \n$a = 1.0, b = 2.1$ and $r = 0.98$ . In these cases award A0A0 for part (a) and A0 for \npart (b). Even though some values round to an accepted answer, they come \nfrom incorrect working.\n\n[1 mark]",
+          "marks_breakdown": [
+            {
+              "note": "A1",
+              "desc": "$r = 0.981$"
+            }
+          ]
+        },
+        {
+          "part_label": "c",
+          "markscheme_text": "correct substitution of 78 into their regression equation (M1)\n\n81.3930… 81.23 from 3 sf answer\n\n81 A1\n\n[2 marks]\n\nTotal [5 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "correct substitution of 78 into their regression equation"
+            },
+            {
+              "note": "A1",
+              "desc": "81 (81.3930…, 81.23 from 3 sf answer)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question_number": 2,
+      "parts": [
+        {
+          "part_label": "a",
+          "markscheme_text": "attempt to use sine rule (M1)\n\n$\\frac{24}{\\sin 113°} = \\frac{17}{\\sin B\\hat{A}C}$ OR $\\left(\\sin B\\hat{A}C =\\right)0.652024...$ (A1)\n\n40.6943…\n\n$B\\hat{A}C = 40.7°$ A1\n\n[3 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "attempt to use sine rule"
+            },
+            {
+              "note": "A1",
+              "desc": "$\\frac{24}{\\sin 113°} = \\frac{17}{\\sin B\\hat{A}C}$ OR $\\sin B\\hat{A}C = 0.652024...$"
+            },
+            {
+              "note": "A1",
+              "desc": "$B\\hat{A}C = 40.7°$"
+            }
+          ]
+        },
+        {
+          "part_label": "b",
+          "markscheme_text": "METHOD 1 (cosine rule with $A\\hat{B}C$ or $B\\hat{A}C$)\n\nattempt to use the cosine rule (M1)\n\n$24^{2} = AB^{2} + 17^{2} - 2\\cdot 17 \\cdot AB \\cdot \\cos 113°$ $\\left(AB^{2} +13.2848...AB - 287 = 0\\right)$ OR\n$17^{2} = AB^{2} + 24^{2} - 2 \\cdot 24 \\cdot AB \\cdot \\cos 40.6943...°$ $\\left(AB^{2} - 36.3935...AB + 287 = 0\\right)$ (A1)\n\n11.5543…\n\n$AB = 11.6$ A1\n\nMETHOD 2 (cosine rule with $B\\hat{C}A$)\n\nattempt to use cosine rule (M1)\n\ncorrect substitution (A1)\n\n$AB^{2} = 17^{2} + 24^{2} - 2 \\cdot 17 \\cdot 24 \\cdot \\cos 26.3056...°$ OR $AB^{2} = 133.502...$\n\n11.5543…\n\n$AB = 11.6$ A1\n\ncontinued…\n\nMETHOD 3 (sine rule)\n\nattempt to use sine rule (M1)\n\ncorrect substitution (A1)\n\n$\\frac{AB}{\\sin 26.3056...°} = \\frac{24}{\\sin 113°} = \\frac{17}{\\sin 40.6943...°}$ OR $AB = \\frac{24 \\cdot \\sin(180° - 113° - 40.6943...°)}{\\sin 113°}$\n\n11.5543…\n\n$AB = 11.6$ A1\n\n[3 marks]\n\nTotal [6 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "attempt to use the cosine rule (or sine rule, depending on method)"
+            },
+            {
+              "note": "A1",
+              "desc": "correct substitution"
+            },
+            {
+              "note": "A1",
+              "desc": "$AB = 11.6$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question_number": 3,
+      "parts": [
+        {
+          "part_label": "a",
+          "markscheme_text": "$(0.708519...,0.639580...)$\n\n$(0.709,0.640)$ $(x = 0.709, y = 0.640)$ A1A1\n\n[2 marks]",
+          "marks_breakdown": [
+            {
+              "note": "A1",
+              "desc": "$x = 0.709$"
+            },
+            {
+              "note": "A1",
+              "desc": "$y = 0.640$"
+            }
+          ]
+        },
+        {
+          "part_label": "b",
+          "markscheme_text": "1.09885...\n\n$x = 1.10$ accept $(1.10,0)$ A1\n\n[1 mark]",
+          "marks_breakdown": [
+            {
+              "note": "A1",
+              "desc": "$x = 1.10$"
+            }
+          ]
+        },
+        {
+          "part_label": "c",
+          "markscheme_text": "METHOD 1\n\n$$\\int_{0}^{2} \\left| f(x) \\right| dx$$ (A1)\n\n4.61117...\n\narea = $4.61$ A2\n\nMETHOD 2\n\n$$-\\int_{1.09885...}^{2} f(x) dx$$ OR $$\\int_{1.09885...}^{2} \\left| f(x) \\right| dx$$ OR 4.17527… (A1)\n\n$$\\int_{0}^{1.09885...} f(x) dx - \\int_{1.09885...}^{2} f(x) dx$$ OR 0.435901… + 4.17527… (A1)\n\n4.61117...\n\narea = $4.61$ A1\n\n[3 marks]\n\nTotal [6 marks]",
+          "marks_breakdown": [
+            {
+              "note": "A1",
+              "desc": "correct integral (METHOD 1) or correct expression (METHOD 2)"
+            },
+            {
+              "note": "A1",
+              "desc": "(METHOD 2) second correct expression combining both regions"
+            },
+            {
+              "note": "A2",
+              "desc": "area = 4.61 (METHOD 1, or A1 for METHOD 2)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question_number": 4,
+      "parts": [
+        {
+          "part_label": "",
+          "markscheme_text": "$86.4 = 50r^{3}$ (A1)\n\n$r = 1.2\\left(=\\sqrt[3]{\\frac{86.4}{50}}\\right)$ seen anywhere (A1)\n\n$\\frac{50(1.2^{n} -1)}{0.2} > 33500$ OR $250(1.2^{n} -1) = 33500$ (A1)\n\nattempt to solve their geometric $S_{n}$ inequality or equation (M1)\n\nsketch OR $n > 26.9045, n = 26.9$ OR $S_{26} = 28368.8$ OR $S_{27} =34092.6$ OR algebraic \nmanipulation involving logarithms\n\n$n = 27$ accept $n \\geq 27$ A1\n\nTotal [5 marks]",
+          "marks_breakdown": [
+            {
+              "note": "A1",
+              "desc": "$86.4 = 50r^{3}$"
+            },
+            {
+              "note": "A1",
+              "desc": "$r = 1.2$ seen anywhere"
+            },
+            {
+              "note": "A1",
+              "desc": "$\\frac{50(1.2^{n} -1)}{0.2} > 33500$ OR $250(1.2^{n} -1) = 33500$"
+            },
+            {
+              "note": "M1",
+              "desc": "attempt to solve their geometric $S_{n}$ inequality or equation"
+            },
+            {
+              "note": "A1",
+              "desc": "$n = 27$ accept $n \\geq 27$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question_number": 5,
+      "parts": [
+        {
+          "part_label": "",
+          "markscheme_text": "recognition that initial population is 15000 (seen anywhere) (A1)\n\n$P(0) = 15000$ OR $0.11 \\times 15000$ OR $0.89 \\times 15000$\n\npopulation after 11% decrease is $15000 \\times 0.89 (=13350)$ (A1)\n\nrecognizing that $t = 8$ on 1 January 2022 (seen anywhere) (A1)\n\nsubstitution of their value of $t$ for 1 January 2022 and their value of $P(8)$ into the\nmodel (M1)\n\n$15000 \\times 0.89 = 15000e^{8k}$ OR $13350 = 15000e^{8k}$\n\n$k = \\frac{\\ln 0.89}{8}$ $(-0.014566)$ (A1)\n\nsubstitution of $t = 2041 - 2014(=27)$ and their value for $k$ into the model (M1)\n\n$P(27) = 15000e^{-0.0145...\\times 27}$\n\n10122.3…\n\n$P(27) = 10100$ $(10122)$ A1\n\nTotal [7 marks]",
+          "marks_breakdown": [
+            {
+              "note": "A1",
+              "desc": "recognition that initial population is 15000 (seen anywhere)"
+            },
+            {
+              "note": "A1",
+              "desc": "population after 11% decrease is $15000 \\times 0.89 (=13350)$"
+            },
+            {
+              "note": "A1",
+              "desc": "recognizing that $t = 8$ on 1 January 2022 (seen anywhere)"
+            },
+            {
+              "note": "M1",
+              "desc": "substitution of their value of $t$ for 1 January 2022 and their value of $P(8)$ into the model"
+            },
+            {
+              "note": "A1",
+              "desc": "$k = \\frac{\\ln 0.89}{8}$ $(-0.014566)$"
+            },
+            {
+              "note": "M1",
+              "desc": "substitution of $t = 2041 - 2014(=27)$ and their value for $k$ into the model"
+            },
+            {
+              "note": "A1",
+              "desc": "$P(27) = 10100$ $(10122)$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question_number": 6,
+      "parts": [
+        {
+          "part_label": "",
+          "markscheme_text": "Note: Do not award any marks if there is clear evidence of adding instead of \nmultiplying, for example $^{9}C_{r} + (ax)^{9-r} + (1)^{r}$ . \n\nvalid approach for expansion (must be the product of a binomial coefficient with $n = 9$\nand a power of $ax$) (M1)\n\n$^{9}C_{r}(ax)^{9-r}(1)^{r}$ OR $^{9}C_{9-r}(ax)^{r}(1)^{9-r}$ OR $^{9}C_{0}(ax)^{0}(1)^{9} + {}^{9}C_{1}(ax)^{1}(1)^{8} + ...$\n\nrecognizing that the term in $x^{6}$ is needed (M1)\n\n$\\frac{\\text{Term in } x^{6}}{21x^{2}} = kx^{4}$ OR $r = 6$ OR $r = 3$ OR $9-r = 6$\n\ncorrect term or coefficient in binomial expansion (seen anywhere) (A1)\n\n$^{9}C_{6}(ax)^{6}(1)^{3}$ OR $^{9}C_{3}a^{6}x^{6}$ OR $84(a^{6}x^{6})(1)$ OR $84a^{6}$\n\nEITHER\n\ncorrect term in $x^{4}$ or coefficient (may be seen in equation) (A1)\n\n$\\frac{^{9}C_{6}}{21}a^{6}x^{4}$ OR $4a^{6}x^{4}$ OR $4a^{6}$\n\nSet their term in $x^{4}$ or coefficient of $x^{4}$ equal to $\\frac{8}{7}a^{5}x^{4}$ or \n$\\frac{8}{7}a^{5}$ (do not accept other \npowers of $x$) (M1)\n\n$\\frac{^{9}C_{3}}{21}a^{6}x^{4} = \\frac{8}{7}a^{5}x^{4}$ OR $4a^{6} = \\frac{8}{7}a^{5}$\n\ncontinued…\n\nOR\n\ncorrect term in $x^{6}$ or coefficient of $x^{6}$ (may be seen in equation) (A1)\n\n$84a^{6}x^{6}$ OR $84a^{6}$\n\nset their term in $x^{6}$ or coefficient of $x^{6}$ equal to $24a^{5}x^{6}$ or $24a^{5}$ (do not accept other \npowers of $x$) (M1)\n\n$84a^{6}x^{6} = 24a^{5}x^{6}$ OR $84a = 24$\n\nTHEN\n\n$a = \\frac{2}{7} \\approx 0.286 (0.285714...)$ A1\n\nNote: Award A0 for the final mark for $a = \\frac{2}{7}$ and $a = 0$ . \n\nTotal [6 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "valid approach for expansion (must be the product of a binomial coefficient with $n = 9$ and a power of $ax$)"
+            },
+            {
+              "note": "M1",
+              "desc": "recognizing that the term in $x^{6}$ is needed"
+            },
+            {
+              "note": "A1",
+              "desc": "correct term or coefficient in binomial expansion (seen anywhere)"
+            },
+            {
+              "note": "A1",
+              "desc": "correct term in $x^{4}$ (or $x^{6}$) or coefficient"
+            },
+            {
+              "note": "M1",
+              "desc": "set their term/coefficient equal to the given term/coefficient"
+            },
+            {
+              "note": "A1",
+              "desc": "$a = \\frac{2}{7} \\approx 0.286$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question_number": 7,
+      "parts": [
+        {
+          "part_label": "a",
+          "markscheme_text": "initial displacement is $s(0)$ (M1)\n\n6 (m) A1\n\n[2 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "initial displacement is $s(0)$"
+            },
+            {
+              "note": "A1",
+              "desc": "6 (m)"
+            }
+          ]
+        },
+        {
+          "part_label": "b",
+          "markscheme_text": "velocity is $s'$ (M1)\n\n−2.29920\n\n−2.30 (m/s) A1\n\n[2 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "velocity is $s'$"
+            },
+            {
+              "note": "A1",
+              "desc": "$-2.30$ (m/s)"
+            }
+          ]
+        },
+        {
+          "part_label": "c",
+          "markscheme_text": "attempting to find $t$ when the particle changes direction (M1)\n\n$t = 0.433007...$AND $3.25575...$AND$6.33965...$ (may be seen on a graph) (A1)\n\nparticle travels away from P when $v > 0$ OR when $s' > 0$ (M1)\n\n$0 \\leq t < 0.433007..., 3.25575... < t < 6.33965...$\n\n$0 \\leq t < 0.433, 3.26 < t < 6.34$ A1A1\n\n[5 marks]\n\ncontinued…",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "attempting to find $t$ when the particle changes direction"
+            },
+            {
+              "note": "A1",
+              "desc": "$t = 0.433007..., 3.25575..., 6.33965...$ (may be seen on a graph)"
+            },
+            {
+              "note": "M1",
+              "desc": "particle travels away from P when $v > 0$ OR when $s' > 0$"
+            },
+            {
+              "note": "A1",
+              "desc": "$0 \\leq t < 0.433$"
+            },
+            {
+              "note": "A1",
+              "desc": "$3.26 < t < 6.34$"
+            }
+          ]
+        },
+        {
+          "part_label": "d",
+          "markscheme_text": "recognizing that acceleration is $a(t) = v'(t)$ OR $a(t) = s''(t)$ (M1)\n\nattempting to find max/min on graph of velocity OR finding zeros on graph of\nacceleration (M1)\n\n$b =1.23140...$ , $c = 5.68959...$\n\n$b =1.23$ , $c = 5.69$ A1A1\n\n[4 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "recognizing that acceleration is $a(t) = v'(t)$ OR $a(t) = s''(t)$"
+            },
+            {
+              "note": "M1",
+              "desc": "attempting to find max/min on graph of velocity OR finding zeros on graph of acceleration"
+            },
+            {
+              "note": "A1",
+              "desc": "$b = 1.23$"
+            },
+            {
+              "note": "A1",
+              "desc": "$c = 5.69$"
+            }
+          ]
+        },
+        {
+          "part_label": "e",
+          "markscheme_text": "METHOD 1 (using integral of velocity)\n\ncorrect integral (accept absence of $dt$) (A1)\n\n$$\\int_{1.23140...}^{5.68959...} \\left| v(t) \\right| dt$$ OR $$\\int_{b}^{c} \\left| s'(t) \\right| dt$$ OR $$-\\int_{1.23140...}^{3.25575...} v(t)\\, dt + \\int_{3.25575...}^{5.68959...} v(t)\\, dt$$ OR\n\n3.8560  + 15.696 \n\n19.5525… \n\ntotal distance = 19.6 (m) A2\n\ncontinued…\n\nMETHOD 2 (using differences in displacement)\n\nfinding displacement at $b, c$ and local min on displacement graph (A1)\n\n$(b, 4.43306), (c, 16.2734),(3.25575, 0.577001)$ OR $4.43306,0.577001, 16.2734$\n\ncorrect approach (A1)\n\n$(4.43306-0.577001) + (16.2734-0.577001)$ OR towards P $3.85606$ + away from \nP $15.696$\n\n19.5525… \n\ntotal distance = 19.6 (m) A1\n\n[3 marks]\n\nTotal [16 marks]",
+          "marks_breakdown": [
+            {
+              "note": "A1",
+              "desc": "correct integral (METHOD 1) or finding displacement at $b, c$ and local min (METHOD 2)"
+            },
+            {
+              "note": "A1",
+              "desc": "(METHOD 2) correct approach combining differences"
+            },
+            {
+              "note": "A2",
+              "desc": "total distance = 19.6 (m) (METHOD 1) or A1 (METHOD 2)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question_number": 8,
+      "parts": [
+        {
+          "part_label": "a",
+          "markscheme_text": "Note: In parts (a) and (b) of this question, candidates may consider either triangle \nAOD or triangle AOE and work correctly to obtain the answer. Side AD is \ninterchangeable with side AE in the following MS.\n\nattempt to use right angled trigonometry or sine rule to find AE in terms of $r$\nand $\\alpha$ (M1)\n\n$\\tan \\alpha = \\frac{r}{AE}$ OR $\\frac{AE}{\\sin\\left(\\frac{\\pi}{2} - \\alpha\\right)} = \\frac{r}{\\sin\\alpha}$\n\n$AE = \\frac{r}{\\tan\\alpha}$ OR $AE = \\frac{r\\sin\\left(\\frac{\\pi}{2} - \\alpha\\right)}{\\sin\\alpha}$ OR $AE = \\frac{r\\cos\\alpha}{\\sin\\alpha}$ A1\n\nvalid approach to find the area of ADOE (M1)\n\n2x area of triangle AOE OR area of triangle AED + area of triangle OED OR \n$OE \\times AE$\n\nArea ADOE = $2\\left(\\frac{1}{2}\\cdot\\frac{r}{\\tan\\alpha}\\cdot r\\right)$ OR $r \\times AE$ A1\n\nArea ADOE = $\\frac{r^{2}}{\\tan\\alpha}$ AG\n\n[4 marks]\n\ncontinued…",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "attempt to use right angled trigonometry or sine rule to find AE in terms of $r$ and $\\alpha$"
+            },
+            {
+              "note": "A1",
+              "desc": "$AE = \\frac{r}{\\tan\\alpha}$ (or equivalent)"
+            },
+            {
+              "note": "M1",
+              "desc": "valid approach to find the area of ADOE"
+            },
+            {
+              "note": "A1",
+              "desc": "Area ADOE $= 2\\left(\\frac{1}{2}\\cdot\\frac{r}{\\tan\\alpha}\\cdot r\\right)$ OR $r \\times AE$"
+            }
+          ]
+        },
+        {
+          "part_label": "b.i",
+          "markscheme_text": "(i) recognizing that the sum of the angles of a kite is $2\\pi$ (M1)\n\n$D\\hat{O}E + O\\hat{E}A + E\\hat{A}D + A\\hat{D}O = 2\\pi$ OR $2\\alpha + 2\\cdot\\frac{\\pi}{2} + D\\hat{O}E = 2\\pi$\n\n$D\\hat{O}E = \\pi - 2\\alpha$ A1\n\nNote: Award M1A0 if candidate uses degrees (i.e. \n$D\\hat{O}E + O\\hat{E}A + E\\hat{A}D + A\\hat{D}O = 360°$ or \n$2\\alpha + 2\\cdot\\frac{\\pi}{2} + D\\hat{O}E = 360°$) and obtains \n$D\\hat{O}E = 180° - 2\\alpha$ .",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "recognizing that the sum of the angles of a kite is $2\\pi$"
+            },
+            {
+              "note": "A1",
+              "desc": "$D\\hat{O}E = \\pi - 2\\alpha$"
+            }
+          ]
+        },
+        {
+          "part_label": "b.ii",
+          "markscheme_text": "(ii) valid approach to find the area of R (M1)\n\narea of kite – area of sector OR 2(area of triangle AOE $- 0.5$ area of sector\nOED)\n\nArea of sector = $\\frac{1}{2}r^{2}\\cdot D\\hat{O}E\\left(=\\frac{1}{2}r^{2}(\\pi - 2\\alpha)\\right)$ seen anywhere (A1)\n\nArea of R = $\\frac{r^{2}}{\\tan\\alpha} - \\frac{1}{2}r^{2}(\\pi - 2\\alpha)$ A1\n\nNote: Accept \n$\\frac{r^{2}}{\\tan\\alpha} - \\frac{1}{2}r^{2}\\cdot D\\hat{O}E$ .\n\n[5 marks]\n\ncontinued…",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "valid approach to find the area of R"
+            },
+            {
+              "note": "A1",
+              "desc": "Area of sector $= \\frac{1}{2}r^{2}\\cdot D\\hat{O}E\\left(=\\frac{1}{2}r^{2}(\\pi - 2\\alpha)\\right)$ seen anywhere"
+            },
+            {
+              "note": "A1",
+              "desc": "Area of R $= \\frac{r^{2}}{\\tan\\alpha} - \\frac{1}{2}r^{2}(\\pi - 2\\alpha)$"
+            }
+          ]
+        },
+        {
+          "part_label": "c",
+          "markscheme_text": "equating their area formula to $\\pi r^{2}$ (M1)\n\n$\\frac{r^{2}}{\\tan\\alpha} - \\frac{1}{2}r^{2}(\\pi - 2\\alpha) = \\pi r^{2}$\n\ncorrect equation in terms of $\\alpha$ A1\n\n$\\frac{1}{\\tan\\alpha} - \\frac{1}{2}(\\pi - 2\\alpha) = \\pi$\n\nvalid approach to solve the equation (M1)\n\n$\\alpha = 0.218979...$\n\n$\\alpha = 0.219$ A1\n\n[4 marks]\n\nTotal [13 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "equating their area formula to $\\pi r^{2}$"
+            },
+            {
+              "note": "A1",
+              "desc": "correct equation in terms of $\\alpha$"
+            },
+            {
+              "note": "M1",
+              "desc": "valid approach to solve the equation"
+            },
+            {
+              "note": "A1",
+              "desc": "$\\alpha = 0.219$"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question_number": 9,
+      "parts": [
+        {
+          "part_label": "a",
+          "markscheme_text": "Note: Do not penalize for inclusion or non-inclusion of endpoints for probabilities \nusing a normal distribution. For example, for $P(T < 55 | T > 40)$ accept\n$P(T \\leq 55 | T > 40)$, $P(T \\leq 55 | T \\geq 40)$, etc.\n\nrecognising to find $P(T > 40)$ (M1)\n\n$P(T > 40) = 0.574136...$\n\n$P(T > 40) = 0.574$ A1\n\n[2 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "recognising to find $P(T > 40)$"
+            },
+            {
+              "note": "A1",
+              "desc": "$P(T > 40) = 0.574$"
+            }
+          ]
+        },
+        {
+          "part_label": "b",
+          "markscheme_text": "attempt to multiply four independent probabilities using their $P(T > 40)$ and\n$P(T < 40)$ (M1)\n\n$(1-p)^{3}\\cdot p$ OR $(1-0.574136...)^{3}\\cdot 0.574136...$ OR $(0.425863...)^{3}\\cdot 0.574136...$ (A1)\n\n0.0443430...\n\n0.0443 , 0.0444 from 3 sf values A1\n\n[3 marks]\n\ncontinued…",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "attempt to multiply four independent probabilities using their $P(T > 40)$ and $P(T < 40)$"
+            },
+            {
+              "note": "A1",
+              "desc": "$(1-p)^{3}\\cdot p$ OR $(1-0.574136...)^{3}\\cdot 0.574136...$ OR $(0.425863...)^{3}\\cdot 0.574136...$"
+            },
+            {
+              "note": "A1",
+              "desc": "0.0443, 0.0444 from 3 sf values"
+            }
+          ]
+        },
+        {
+          "part_label": "c.i",
+          "markscheme_text": "(i) recognizing conditional probability (M1)\n\n$P(T < 55 | T > 40)$\n\nNote: Award (M1) for an expression or description in context. Accept \n$P(T > 40 | T < 55)$ but do not accept just $P(A|B)$.\n\n$\\frac{P(40 < T < 55)}{P(T > 40)}$ (A1)\n\n0.461944...\n\n0.574136... (A1)\n\n$P(T < 55 | T > 40) = 0.804590...$\n\n$= 0.805$ A1",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "recognizing conditional probability"
+            },
+            {
+              "note": "A1",
+              "desc": "$\\frac{P(40 < T < 55)}{P(T > 40)}$"
+            },
+            {
+              "note": "A1",
+              "desc": "$\\frac{0.461944...}{0.574136...}$"
+            },
+            {
+              "note": "A1",
+              "desc": "$P(T < 55 | T > 40) = 0.805$"
+            }
+          ]
+        },
+        {
+          "part_label": "c.ii",
+          "markscheme_text": "(ii) recognizing binomial probability (M1)\n\n$X \\sim B(n, p)$\n\n$n = 10$ and $p = 0.804589...$ (A1)\n\n0.0242111...,0.0240188...using $p = 0.805$\n\n$P(X = 5) = 0.0242$ A1\n\n[7 marks]\n\ncontinued…",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "recognizing binomial probability"
+            },
+            {
+              "note": "A1",
+              "desc": "$n = 10$ and $p = 0.804589...$"
+            },
+            {
+              "note": "A1",
+              "desc": "$P(X = 5) = 0.0242$"
+            }
+          ]
+        },
+        {
+          "part_label": "d",
+          "markscheme_text": "Let $P(T < a) = x$\n\nrecognition that probabilities sum to 1 (seen anywhere) (M1)\n\nEITHER\n\nexpressing the three regions in one variable (M1)\n\n$x + 0.904 + 2x$ OR $P(T < a)+0.904+2P(T<a)$ OR $\\frac{1}{2}P(T>b)+0.904+P(T>b)$\n\nOR $x$ and $2x$ correctly indicated on labelled bell diagram\n\n$P(T < a)+0.904+2P(T<a)=1$ OR $\\frac{1}{2}P(T>b)+0.904+P(T>b)=1$ (or \nequivalent) (A1)\n\nOR\n\nexpressing either $P(T < a)$ or $P(T > b)$ only in terms of $P(a \\leq T \\leq b)$ (M1)\n\n$\\left(P(T<a)=\\right)\\frac{1}{3}\\left(1-P(a\\leq T\\leq b)\\right)$ OR $\\left(P(T>b)=\\right)\\frac{2}{3}\\cdot\\left(1-P(a\\leq T\\leq b)\\right)$\n\n$x=\\frac{1}{3}(1-0.904)(=0.032)$ OR $P(T>b)=\\frac{2}{3}(1-0.904)(=0.064)$ (A1)\n\nTHEN\n\n$P(T<a)=0.032$\n\n$a = 22.18167...$\n\n$a = 22.2$ accept 22.1 A1\n\n[4 marks]\n\nTotal [16 marks]",
+          "marks_breakdown": [
+            {
+              "note": "M1",
+              "desc": "recognition that probabilities sum to 1 (seen anywhere)"
+            },
+            {
+              "note": "M1",
+              "desc": "expressing the three regions in one variable, OR expressing either $P(T<a)$ or $P(T>b)$ only in terms of $P(a\\leq T\\leq b)$"
+            },
+            {
+              "note": "A1",
+              "desc": "correct equation/expression e.g. $x=\\frac{1}{3}(1-0.904)(=0.032)$"
+            },
+            {
+              "note": "A1",
+              "desc": "$a = 22.2$ accept 22.1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
