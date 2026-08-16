@@ -87,9 +87,11 @@ function buildUserPrompt(
     `Generate ONE ${spec.section === 'A' ? 'Section A' : 'Section B'} IB Math AA question at ${spec.difficulty} difficulty, level ${spec.level}.`,
     `Primary topic: ${topic.code} -- ${topic.subtopic_name} (level_scope: ${topic.level_scope}).`,
     `calculator_allowed MUST be ${spec.calculatorAllowed} for this question -- ${spec.calculatorAllowed ? 'write it as a Paper 2 style question (numerical methods/decimal answers expected where natural)' : 'write it as a Paper 1 style question (everything must resolve exactly by hand, no GDC needed anywhere)'}.`,
-    spec.section === 'B' && secondaryCandidates.length > 0
-      ? `You may blend in 0-2 of these closely related topics if it makes for a natural multi-part question (use their exact codes in secondary_topic_codes if used, else leave empty): ${secondaryCandidates.map((t) => `${t.code} (${t.subtopic_name})`).join('; ')}.`
-      : `This is Section A: primary_topic_code must be ${topic.code} and secondary_topic_codes must be (none).`,
+    spec.section === 'A'
+      ? `This is Section A: primary_topic_code must be ${topic.code} and secondary_topic_codes must be (none).`
+      : secondaryCandidates.length > 0
+        ? `You may blend in 0-2 of these closely related topics if it makes for a natural multi-part question (use their exact codes in secondary_topic_codes if used, else leave empty): ${secondaryCandidates.map((t) => `${t.code} (${t.subtopic_name})`).join('; ')}.`
+        : `No pre-approved secondary topics are available for this Section B question -- primary_topic_code must be ${topic.code} and secondary_topic_codes must be (none).`,
     `Target total marks: ${spec.marksRange[0]}-${spec.marksRange[1]}.`,
     referenceSummary(topic, refs),
   ];
