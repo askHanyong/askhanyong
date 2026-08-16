@@ -16,3 +16,4 @@ scripts/mark-derivation/may2024_rows.json
 # Scratch output overwritten on every backfillMarkschemeText.ts run --
 # per-batch copies are saved deliberately as scripts/mark-derivation/batchN_report.json
 scripts/ingest-paper/backfill_report.json
+scripts/mark-derivation/may2024_all_parts.json

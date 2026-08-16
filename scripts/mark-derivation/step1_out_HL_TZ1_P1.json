@@ -1,0 +1,350 @@
+{
+  "1": {
+    "max_mark": 6,
+    "parts": {
+      "a": {
+        "own_bracket": 5,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "2": {
+    "max_mark": 5,
+    "parts": {
+      "a": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "3": {
+    "max_mark": 8,
+    "parts": {
+      "a": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "4": {
+    "max_mark": 7,
+    "parts": {
+      "a": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "5": {
+    "max_mark": 5,
+    "parts": {
+      "a": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "6": {
+    "max_mark": 6,
+    "parts": {
+      "": {
+        "own_bracket": 6,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          ""
+        ]
+      }
+    }
+  },
+  "7": {
+    "max_mark": 7,
+    "parts": {
+      "": {
+        "own_bracket": 7,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          ""
+        ]
+      }
+    }
+  },
+  "8": {
+    "max_mark": 7,
+    "parts": {
+      "a.i": {
+        "own_bracket": null,
+        "group_combined_bracket": 5,
+        "group_siblings": [
+          "a.i",
+          "a.ii"
+        ]
+      },
+      "a.ii": {
+        "own_bracket": null,
+        "group_combined_bracket": 5,
+        "group_siblings": [
+          "a.i",
+          "a.ii"
+        ]
+      },
+      "b": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "9": {
+    "max_mark": 6,
+    "parts": {
+      "a": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c.i": {
+        "own_bracket": null,
+        "group_combined_bracket": 2,
+        "group_siblings": [
+          "c.i",
+          "c.ii"
+        ]
+      },
+      "c.ii": {
+        "own_bracket": null,
+        "group_combined_bracket": 2,
+        "group_siblings": [
+          "c.i",
+          "c.ii"
+        ]
+      }
+    }
+  },
+  "10": {
+    "max_mark": 16,
+    "parts": {
+      "a": {
+        "own_bracket": 5,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      },
+      "d": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "d"
+        ]
+      },
+      "e": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "e"
+        ]
+      },
+      "f": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "f"
+        ]
+      }
+    }
+  },
+  "11": {
+    "max_mark": 17,
+    "parts": {
+      "a": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      },
+      "d": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "d"
+        ]
+      },
+      "e": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "e"
+        ]
+      },
+      "f.i": {
+        "own_bracket": null,
+        "group_combined_bracket": 3,
+        "group_siblings": [
+          "f.i",
+          "f.ii"
+        ]
+      },
+      "f.ii": {
+        "own_bracket": null,
+        "group_combined_bracket": 3,
+        "group_siblings": [
+          "f.i",
+          "f.ii"
+        ]
+      }
+    }
+  },
+  "12": {
+    "max_mark": 20,
+    "parts": {
+      "a.i": {
+        "own_bracket": null,
+        "group_combined_bracket": 3,
+        "group_siblings": [
+          "a.i",
+          "a.ii"
+        ]
+      },
+      "a.ii": {
+        "own_bracket": null,
+        "group_combined_bracket": 3,
+        "group_siblings": [
+          "a.i",
+          "a.ii"
+        ]
+      },
+      "b": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      },
+      "d": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "d"
+        ]
+      },
+      "e": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "e"
+        ]
+      },
+      "f": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "f"
+        ]
+      },
+      "g": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "g"
+        ]
+      }
+    }
+  }
+}

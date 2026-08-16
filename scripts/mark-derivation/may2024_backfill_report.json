@@ -1,0 +1,377 @@
+{
+  "HL2024MayTZ1P3": [
+    {
+      "part_id": "ce5a49e2-d557-4759-8c3c-140a091a275d",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "valid attempt to find x-coordinates (e.g. solving $12x^{2}-18x=0$ or graphing $\\frac{\\mathrm{d}y}{\\mathrm{d}x}=4x^{3}-9x^{2}+3$) (M1)\n$$x=0,\\ 1.5\\left(\\frac{3}{2}\\right)$$ (A1)\npoint B is $(0,0)$ A1\np"
+    },
+    {
+      "part_id": "de0b5c68-f3f3-44eb-968a-27cea79de598",
+      "question_number": 1,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "LHS:\n$a+2ar+3ar^{2}+...$ A1\nNote: Award A1 for writing LHS $=\\sum ar^{n}$ and differentiating to get $=\\sum anr^{n-1}$.\n\nRHS:\nattempt to differentiate $a(1-r)^{-1}$ or use quotient rule (M1)\n\n$$\\frac{"
+    },
+    {
+      "part_id": "798ce163-167e-4ab9-a981-dc0ddd6c19d4",
+      "question_number": 1,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "recognition that $a=p$ and $r=1-p$ (and $x=n$) (M1)\n\n$$\\mathrm{E}(X)=\\frac{p}{(1-(1-p))^{2}}$$ A1\n\nNote: Award A0 FT if their answer does not lead to the AG.\n\n$$=\\frac{1}{p}$$ AG\n[2 marks]"
+    },
+    {
+      "part_id": "227b12c3-e1bf-40bc-b73e-645c338e674e",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$$\\frac{\\mathrm{d}y}{\\mathrm{d}x}=4x^{3}-9x^{2}+3$$ (M1)(A1)\nNote: Award M1 for at least two correct terms.\n$$\\frac{\\mathrm{d}^{2}y}{\\mathrm{d}x^{2}}=12x^{2}-18x$$ A1\n[3 marks]"
+    },
+    {
+      "part_id": "5694dd32-dd90-429b-b46e-8c15c26b2bf6",
+      "question_number": 2,
+      "part_label": "h",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n$$x^{4}-mx^{3}+nx=-\\frac{m^{3}}{8}x+nx$$\n\nattempt to rearrange this equation to equal zero (M1)\n\n$$x^{4}-mx^{3}+\\frac{m^{3}}{8}x=0$$\n\nrecognizing their $(x-x_{C})$ is a factor of this express"
+    },
+    {
+      "part_id": "1cb9386c-b039-4bd1-8c58-76fc6ffbeab4",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$0.9\\times0.9\\times0.1$ (M1)\nNote: Award M1 for 0.9 seen as part of a multiplication.\n$=0.081$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "4e2ab1d8-bde2-48da-80c0-c8e1dd91673b",
+      "question_number": 1,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "$0.8\\times0.6\\times0.6$ (M1)A1\nNote: Award M1 for evidence of P(\"not boosted\") changing, e.g. a labelled tree diagram and/or 0.8 AND 0.6 seen.\n$=0.288$ AG\n[2 marks]"
+    },
+    {
+      "part_id": "c963d092-34ed-4699-bbcf-d3efd60f9bd3",
+      "question_number": 1,
+      "part_label": "g.ii",
+      "status": "ok",
+      "new_text_preview": "attempt to multiply outcomes by probabilities and find the sum (M1)\n$0.2+2\\times0.32+3\\times0.288+4\\times0.1536+5\\times0.0384$ A1\nNote: The A1 can only be awarded if $m$ and $n$ are correct and the ex"
+    },
+    {
+      "part_id": "77d8dad2-3af5-4541-b467-32240bb7da0a",
+      "question_number": 2,
+      "part_label": "f.ii",
+      "status": "ok",
+      "new_text_preview": "$$y_{c}=\\left(\\frac{m}{2}\\right)^{4}-m\\left(\\frac{m}{2}\\right)^{3}+n\\left(\\frac{m}{2}\\right)\\ \\left(=\\frac{m^{4}}{16}-\\frac{m^{4}}{8}+\\frac{nm}{2}\\right)$$ (A1)\n\n$$=-\\frac{m^{4}}{16}+\\frac{nm}{2}\\ \\te"
+    },
+    {
+      "part_id": "a05fd4a8-0b0b-4826-bd09-093010152e87",
+      "question_number": 2,
+      "part_label": "g",
+      "status": "ok",
+      "new_text_preview": "attempt to divide their $y_{C}$ by their $x_{C}$ OR substitute into $\\dfrac{y_{2}-y_{1}}{x_{2}-x_{1}}$ (M1)\n\ne.g. $\\left(-\\dfrac{m^{4}}{16}+\\dfrac{nm}{2}\\right)\\div\\dfrac{m}{2}$\n\n$\\left(-\\dfrac{m^{4}}"
+    },
+    {
+      "part_id": "0633c16c-a761-4349-8286-770da8b99381",
+      "question_number": 1,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "EITHER\nthere will be $x-1$ actions not boosted, followed by one boosted action A1\n\nOR\nThe $x^{\\text{th}}$ action is boosted and all previous actions are not boosted A1\n\nOR\n$\\underbrace{(1-p)\\times(1-p"
+    },
+    {
+      "part_id": "6c2fd415-402e-4363-ab13-ddd394615091",
+      "question_number": 1,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "$$\\mathrm{E}(X)=\\sum_{x=1}^{\\infty}xp(1-p)^{x-1}$$ A1\n[1 mark]"
+    },
+    {
+      "part_id": "12ff7a05-0556-4c30-986b-785efa4f793b",
+      "question_number": 1,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "$\\mathrm{E}(X)=10$, $\\mathrm{Var}(X)=90$ A1A1\n[2 marks]"
+    },
+    {
+      "part_id": "e8eb43f4-a17b-4115-8ba2-908eaea2512a",
+      "question_number": 1,
+      "part_label": "f",
+      "status": "ok",
+      "new_text_preview": "after four actions that are not boosted, the probability that the next action is boosted is 1 (and $p=1$ is a certainty) R1\nNote: Accept \"when $Y=5$, the probability of a boost is 1\".\nDo not accept \"o"
+    },
+    {
+      "part_id": "29caec97-5057-4524-91f5-47f8a1f6e615",
+      "question_number": 1,
+      "part_label": "g.i",
+      "status": "ok",
+      "new_text_preview": "$m=0.32,\\ n=0.1536\\ (0.154)$ A1A1\n[2 marks]"
+    },
+    {
+      "part_id": "b993e7e8-9f0b-4d2b-bf64-66c9c43dbb89",
+      "question_number": 1,
+      "part_label": "h.i",
+      "status": "ok",
+      "new_text_preview": "$\\left(p=\\frac{1}{2.5104}\\right)=0.398\\ (0.398342...)$ A1\n[1 mark]"
+    },
+    {
+      "part_id": "6ed13b57-8f3f-4d6b-89f3-86f1b296fc6a",
+      "question_number": 2,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "$$\\frac{\\mathrm{d}y}{\\mathrm{d}x}=4x^{3}-3mx^{2}+n$$ (A1)\n$$\\frac{\\mathrm{d}^{2}y}{\\mathrm{d}x^{2}}=12x^{2}-6mx$$ (A1)\n$6x(2x-m)=0$\n$$x=0,\\ \\frac{m}{2}$$ A1\nNote: Accept $0m$ in place of $0$.\n[3 marks"
+    },
+    {
+      "part_id": "366266b8-63a8-4cee-92ea-3bbaa580f657",
+      "question_number": 2,
+      "part_label": "f.i",
+      "status": "ok",
+      "new_text_preview": "point B is $(0,0)$ A1\n[1 mark]"
+    },
+    {
+      "part_id": "52a51a25-2759-46bb-b0ce-804c8f45dd1c",
+      "question_number": 2,
+      "part_label": "i",
+      "status": "ok",
+      "new_text_preview": "$$\\frac{0-\\left(\\frac{m}{4}-\\frac{m}{4}\\sqrt{5}\\right)}{\\frac{m}{2}-0}$$ (A1)\n\n$$=\\frac{\\sqrt{5}-1}{2}$$ A1\n\nNote: Answer must be exact.\n[2 marks]\nTotal [28 marks]"
+    }
+  ],
+  "SL2024MayTZ2P1": [
+    {
+      "part_id": "8e750d7e-ee30-44ef-870a-478df23fc271",
+      "question_number": 2,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "$\\tan^{-1}1=45^{\\circ}$ or equivalent (A1)\n\nattempt to equate $2x-5^{\\circ}$ to their reference angle (M1)\n\nNote: Do not accept $2x-5^{\\circ}=1$.\n\n$2x-5^{\\circ}=45^{\\circ},(225^{\\circ})$\n\n$x=25^{\\circ"
+    },
+    {
+      "part_id": "47f9bf93-5aed-4916-8276-7f647da5d566",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "concave up curve with $y$ intercept at $(0,10)$ and $x$ intercept at $(5,0)$ A1\n\ncurve passes through $(2,2)$ OR through (1, 4) and (3, 1) A1\n\nNote: Do not award the second mark unless the first mark "
+    },
+    {
+      "part_id": "25c3b408-7eea-4096-be7f-7dd5b77edc53",
+      "question_number": 3,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "setting their $m$-value(s) $=3^{x}$ OR recognising a quadratic in $3^{x}$ (M1)\n\n$3^{x}=\\dfrac{1}{3}$ ( or $3^{x}=-2$ ) OR $3\\times(3^{x})^{2}+5\\times3^{x}-2=0$\n\n$x=-1$ A1\n\nNote: Award the final A1 if "
+    },
+    {
+      "part_id": "e65f20a1-b4c8-41fb-8987-4b7f2a61139c",
+      "question_number": 8,
+      "part_label": "b.iii",
+      "status": "ok",
+      "new_text_preview": "substituting $x=-1$ into $f''(x)$, clearly leading to positive numerator A1\n\n$f''(-1)=\\left(\\dfrac{-2+4}{1}\\right)(=2)$\n\n$f''(-1)>0$ R1\n\ntherefore this is a local minimum point AG\n\nNote: Do not award "
+    },
+    {
+      "part_id": "0ead9390-36c5-4431-b49d-f7c705774f24",
+      "question_number": 9,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "EITHER\n\n$2p-1=s^{2}$ (or equivalent) A1\n\n$(s^{2}>0)\\Rightarrow2p-1>0$ OR $s=\\sqrt{2p-1}\\Rightarrow2p-1>0$ OR $p=\\dfrac{s^{2}+1}{2}$ ( and $s^{2}>0$ ) R1\n\nOR\n\n$2p-1=a$ and $s^{2}=a$ A1\n\n( $s^{2}>0$ , s"
+    },
+    {
+      "part_id": "636b66e7-7d1c-4e7f-abf4-d37da5b1eee4",
+      "question_number": 9,
+      "part_label": "d.i",
+      "status": "ok",
+      "new_text_preview": "$9,5,1,-3$ A1A1\n\nNote: Award A1 for each of 2nd term and 4th term"
+    },
+    {
+      "part_id": "2ae37740-3516-4915-9993-1ea9258eedfd",
+      "question_number": 9,
+      "part_label": "d.ii",
+      "status": "ok",
+      "new_text_preview": "$9,3,1,\\dfrac{1}{3}$ A1A1\n\nNote: Award A1 for each of 2nd term and 4th term\n\n[4 marks]"
+    },
+    {
+      "part_id": "3adbd805-6b0e-482e-949f-802d9791f010",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$f(4)=1$ A1\n[3 marks]"
+    },
+    {
+      "part_id": "4b913f23-1207-482b-b8f8-757f14e0a1a9",
+      "question_number": 1,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$f\\circ f(4)=3$ A1"
+    },
+    {
+      "part_id": "0dacdb89-7e61-413e-ae18-2752a1c098a3",
+      "question_number": 1,
+      "part_label": "a.iii",
+      "status": "ok",
+      "new_text_preview": "$f^{-1}(3)=1$ A1"
+    },
+    {
+      "part_id": "92fe1c50-3d83-4b9d-9f5b-604c021202db",
+      "question_number": 3,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "valid attempt to solve a quadratic equation (factorising, use of formula, completing square, or otherwise) (M1)\n\n$(3m-1)(m+2)=0$ OR $m=\\dfrac{-5\\pm\\sqrt{25+24}}{6}$ (or equivalent) (A1)\n\n$m=\\dfrac{1}{"
+    },
+    {
+      "part_id": "e766c361-6d2d-47ce-ad4e-e306ed41defd",
+      "question_number": 4,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$\\left(\\dfrac{9}{2},\\dfrac{3\\sqrt{3}}{2}\\right)$ (accept $x=\\dfrac{9}{2}$ and $y=\\dfrac{3\\sqrt{3}}{2}$) A1\n\n[4 marks]"
+    },
+    {
+      "part_id": "39dd6faa-c0be-418c-9018-42df11455799",
+      "question_number": 4,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "using $m=\\dfrac{\\text{change in }y}{\\text{change in }x}$ with their midpoint OR gradient perpendicular to AC OR $m=\\tan30$ (M1)\n\n$m=\\dfrac{\\sqrt{3}}{3}$ (A1)\n\n$y=\\dfrac{\\sqrt{3}}{3}x$ OR $y-\\dfrac{3\\s"
+    },
+    {
+      "part_id": "371f2229-0cab-42df-8bd8-36e763d4ae36",
+      "question_number": 4,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "substituting $x=6$ into their equation (M1)\n\nso at B $y=2\\sqrt{3}$ (A1)\n\narea of triangle $OAB=\\dfrac{1}{2}\\times6\\times2\\sqrt{3}=6\\sqrt{3}$\n\narea of quadrilateral $OABC=12\\sqrt{3}$ A1\n\n[3 marks]\nTota"
+    },
+    {
+      "part_id": "61d66815-386f-4438-8480-56dd32121ca3",
+      "question_number": 5,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$1-k$ for Spring A1\n\n$1-\\dfrac{k}{2}$ for both Summers A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "f8079eef-6cba-45f3-bbae-f29b48b46ecb",
+      "question_number": 5,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "multiplying the two correct branches (A1)\n\n$(1-k)\\left(1-\\dfrac{k}{2}\\right)$\n\nattempt to expand and equate to $\\dfrac{5}{9}$ (M1)\n\n$1-k-\\dfrac{k}{2}+\\dfrac{k^{2}}{2}=\\dfrac{5}{9}$\n\n$18-18k-9k+9k^{2}="
+    },
+    {
+      "part_id": "6802fdcd-1876-4026-b7f8-e05bb9836921",
+      "question_number": 5,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "($k=\\dfrac{1}{3}$ is the only valid solution as) $\\dfrac{8}{3}>1$ R1\n\nNote: Accept any valid reasoning indicating that any probability cannot be greater than 1 and/or probability cannot be less than 0"
+    },
+    {
+      "part_id": "5fcca047-374c-438d-8da4-5557a43b9b17",
+      "question_number": 6,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$y=\\dfrac{2}{3}$ (must be written as equation with $y=$,) A1\n\n[1 mark]"
+    },
+    {
+      "part_id": "992c41f7-065b-4852-aff8-460eb36caa12",
+      "question_number": 6,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "2 A1"
+    },
+    {
+      "part_id": "e3e6f6fc-3677-485b-abbc-33a5fd9e1f91",
+      "question_number": 6,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "EITHER\n\n$\\dfrac{2(x+3)}{3(x+2)}=mx+1$\n\nattempt to expand to obtain a quadratic equation (M1)\n\n$2x+6=3mx^{2}+6mx+3x+6$\n\n$3mx^{2}+(6m+1)x=0$ OR $3mx^{2}+6mx+x=0$ A1\n\nrecognition that discriminant $\\Delt"
+    },
+    {
+      "part_id": "88dbfd59-9531-416c-8c23-48ff0c008460",
+      "question_number": 7,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$12b=2\\pi$ OR $(b=)\\dfrac{2\\pi}{12}$ OR $12=\\dfrac{2\\pi}{b}$ A1\n\n$b=\\dfrac{\\pi}{6}$ AG\n\n[1 mark]"
+    },
+    {
+      "part_id": "26acf164-ca96-4be4-94a2-c6ac30153897",
+      "question_number": 7,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "$a=5$ A1"
+    },
+    {
+      "part_id": "df9d6a32-8815-4837-8fc7-c7ed4abe3672",
+      "question_number": 7,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "$c=15$ A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "73f99586-68a2-4e63-a58d-bcef6dbcf486",
+      "question_number": 7,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute $x=5$ into $g(x)$ (M1)\n\n$g(5)=3.5\\sin\\dfrac{5\\pi}{6}+11$\n\n$\\sin\\dfrac{5\\pi}{6}=\\dfrac{1}{2}$ (A1)\n\n$g(5)=3.5\\times\\dfrac{1}{2}+11$\n\n$g(5)=12.75\\left(=\\dfrac{51}{4}\\right)$ A1"
+    },
+    {
+      "part_id": "2ba068cc-f2c0-4e99-8a60-147a7157bc10",
+      "question_number": 7,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "EITHER\n\nattempt to find $0.7f(x)$ OR $0.7f(x)+q$ (M1)\n\n$0.7f(x)=3.5\\sin\\dfrac{\\pi}{6}x+10.5$ OR $0.7f(x)+q=3.5\\sin\\dfrac{\\pi}{6}x+10.5+q$ OR\n\n$10.5+q=11$ (A1)\n\nOR\n\nattempt to find $0.7f(x)$ for a part"
+    },
+    {
+      "part_id": "1fc5eca7-856f-4026-8ed8-ca95e3644a99",
+      "question_number": 8,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n\n$x^{2}+2x+2=(x+1)^{2}+1$ A1\n\n$(x+1)^{2}\\geq0$ R1\n\n$(x+1)^{2}+1>0$ AG\n\nMETHOD 2\n\ndiscriminant $\\Delta=4-8(=-4)$ A1\n\n$\\Delta<0$ and concave up OR $\\Delta<0$ and coefficient of $x^{2}>0$ (may b"
+    },
+    {
+      "part_id": "02bdc13a-8728-4d4b-8161-13334c933722",
+      "question_number": 8,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$x>-1$ (accept $x\\geq-1$) A1\n\n[3 marks]"
+    },
+    {
+      "part_id": "87fc6267-c389-41bd-ac67-fb338dc4f901",
+      "question_number": 8,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "$x=-1$ A1"
+    },
+    {
+      "part_id": "cb68c179-3eef-4c7e-976a-7d69ef8de59e",
+      "question_number": 8,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "recognition to integrate $f'(x)$ (M1)\n\n$f(x)=\\displaystyle\\int\\dfrac{2x+2}{x^{2}+2x+2}\\,dx$ OR $\\displaystyle\\int\\dfrac{1}{u}\\,du$ with $u=x^{2}+2x+2$\n\n$f(x)=\\ln(x^{2}+2x+2)(+c)$ A1\n\nusing initial con"
+    },
+    {
+      "part_id": "7c62db59-c880-4a1e-92f2-98a82a85c511",
+      "question_number": 8,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "$f'(2)=\\dfrac{6}{10}$ A1\n\nattempt to take the negative reciprocal of their $f'(2)$ M1\n\ngradient of normal $=-\\dfrac{10}{6}$\n\n$y-(\\ln10+3)=-\\dfrac{5}{3}(x-2)$ $\\left(y=-\\dfrac{5}{3}x+\\dfrac{19}{3}+\\ln1"
+    },
+    {
+      "part_id": "561452f2-b75a-4e7b-b51e-273ab83a07e7",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to find a difference (M1)\n\n$d=p-a$, $2d=q-a$, $d=q-p$ OR $p=a+d$, $q=a+2d$, $q=p+d$\n\ncorrect equation A1\n\n$p-a=q-p$ OR $q-a=2(p-a)$ OR $p=\\dfrac{a+q}{2}$ (or equivalent)\n\n$2p-q=a$ AG\n\n[2 marks"
+    },
+    {
+      "part_id": "66e21ce2-e38f-4005-92da-a9dfefd6361f",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to find a ratio (M1)\n\n$r=\\dfrac{s}{a}$, $r^{2}=\\dfrac{t}{a}$, $r=\\dfrac{t}{s}$ OR $s=ar$, $t=ar^{2}$, $t=sr$\n\ncorrect equation A1\n\n$\\left(\\dfrac{s}{a}\\right)^{2}=\\dfrac{t}{a}$ OR $\\dfrac{s}{a}"
+    },
+    {
+      "part_id": "27394a73-5e50-4c43-a13a-9612888696d1",
+      "question_number": 9,
+      "part_label": "e.i",
+      "status": "ok",
+      "new_text_preview": "attempt to find the difference between two consecutive terms (M1)\n\n$d=u_{2}-u_{1}=5+\\ln3-9-\\ln9$ OR $d=u_{3}-u_{2}=1+\\ln1-5-\\ln3$\n\n$\\ln9=2\\ln3$ OR $\\ln1=0$ OR $\\ln3-\\ln9=\\ln\\dfrac{1}{3}\\left(=\\ln3^{-1"
+    },
+    {
+      "part_id": "6c0e6c69-9c33-450d-b9c4-f306b234c556",
+      "question_number": 9,
+      "part_label": "e.ii",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n\nattempt to substitute first term and their common difference into $S_{10}$ (M1)\n\n$\\dfrac{10}{2}\\big(2(9+\\ln9)+9(-4-\\ln3)\\big)$ OR $\\dfrac{10}{2}\\big(2(9+2\\ln3)+9(-4-\\ln3)\\big)$ (or equivalen"
+    }
+  ]
+}

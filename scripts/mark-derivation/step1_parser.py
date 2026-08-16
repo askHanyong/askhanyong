@@ -18,7 +18,7 @@ def _is_citation(text, pos):
 
 def parse_paper(text):
     """Returns {question_number: {'max_mark': int, 'parts': {part_label: {'own_bracket':int|None, 'group_combined_bracket':int|None, 'group_siblings':[labels]}}}}"""
-    q_pattern = re.compile(r'^(\d{1,2})\.\s*\[Maximum marks?:\s*(\d+)\]', re.MULTILINE)
+    q_pattern = re.compile(r'^(\d{1,2})\.\s*\[Maximum\s+marks?:\s*(\d+)\]', re.MULTILINE)
     headers = [(m.start(), int(m.group(1)), int(m.group(2))) for m in q_pattern.finditer(text)]
     result = {}
     for idx, (start, qnum, maxmark) in enumerate(headers):

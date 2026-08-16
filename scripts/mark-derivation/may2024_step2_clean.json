@@ -1,0 +1,634 @@
+[
+  {
+    "part_id": "42713fb6-a285-429b-a87a-54337ff97343",
+    "paper_label": "HL24MayTZ1P1",
+    "question_number": 8,
+    "part_label": "a.i",
+    "derived_value": 2,
+    "tally_notes": "A1A1 = 2 marks, matching marks_breakdown. Leaves 3 marks for (a.ii) to reach the shared [5] bracket; 5 + 2 (part b) = 7 = stated question maximum. Consistent."
+  },
+  {
+    "part_id": "e41f4c09-cc57-490e-be0c-fa1f0ea6d36b",
+    "paper_label": "HL24MayTZ1P1",
+    "question_number": 8,
+    "part_label": "a.ii",
+    "derived_value": 3,
+    "tally_notes": "3 here leaves 2 for part (a.i), summing to the printed [5] bracket; with (b) = 2 this gives the stated question maximum of 7. Consistent with marks_breakdown."
+  },
+  {
+    "part_id": "651e92c3-6d16-4ac6-9c52-b865e3d80d6e",
+    "paper_label": "HL24MayTZ1P1",
+    "question_number": 9,
+    "part_label": "c.i",
+    "derived_value": 1,
+    "tally_notes": "c.i = 1 leaves 1 mark for c.ii, summing to the shared [2] bracket; consistent with question total 6 (2+2+2)."
+  },
+  {
+    "part_id": "2908d1bd-0b9b-4a00-970e-4a4af7eb5d4a",
+    "paper_label": "HL24MayTZ1P1",
+    "question_number": 9,
+    "part_label": "c.ii",
+    "derived_value": 1,
+    "tally_notes": "c.i and c.ii share a [2] bracket; 1 here leaves 1 for c.i, consistent. Total 2+2+2=6 matches stated maximum."
+  },
+  {
+    "part_id": "524f4d84-d24a-4737-8b3b-f79f94c10283",
+    "paper_label": "HL24MayTZ1P1",
+    "question_number": 11,
+    "part_label": "f.i",
+    "derived_value": 2,
+    "tally_notes": "Both METHODs are worth M1+A1 = 2, consistent with marks_breakdown. Leaves 1 mark for (f.ii) within the shared [3] bracket. Total check: 2+3+3+2+4+2+1 = 17, matching the question maximum."
+  },
+  {
+    "part_id": "dca3a87c-3a06-4116-86e6-18d114d2be4c",
+    "paper_label": "HL24MayTZ1P1",
+    "question_number": 11,
+    "part_label": "f.ii",
+    "derived_value": 1,
+    "tally_notes": "marks_breakdown lists only the A1. The 'attempt to consider coefficients' line carries an M1 that, per the Note, is shared with part (i) ('if the M1 has not been awarded in part (i) it can be awarded in part (ii)'), so it is counted in (f.i) rather than here. This gives (f.i)=2 (M1A1) and (f.ii)=1, summing to the printed [3] bracket, and total question marks 2+3+3+2+4+3=17, matching the stated maximum."
+  },
+  {
+    "part_id": "9f6fab63-316d-454c-a5e4-61a2f6f2e691",
+    "paper_label": "HL24MayTZ1P1",
+    "question_number": 12,
+    "part_label": "a.i",
+    "derived_value": 2,
+    "tally_notes": "Derived 2 for (a.i); the shared [3] bracket for (a.i)+(a.ii) leaves 1 mark (A1 for the imaginary part) for (a.ii), which reconciles. Total question: 2+1+2+2+3+4+3+3 = 20, matching the stated maximum."
+  },
+  {
+    "part_id": "2ca1de3c-ca9b-4397-b293-4eecf32c9e15",
+    "paper_label": "HL24MayTZ1P1",
+    "question_number": 12,
+    "part_label": "a.ii",
+    "derived_value": 1,
+    "tally_notes": "Group [a.i, a.ii] totals [3]; a.ii = 1 (A1), leaving 2 for a.i (consistent with the Note referencing (M1)A1A0, i.e. M1+A1 in (i) and A1 in (ii))."
+  },
+  {
+    "part_id": "77c04d96-09dd-47cd-9edc-788c24bb00dc",
+    "paper_label": "HL24MayTZ1P2",
+    "question_number": 5,
+    "part_label": "c.i",
+    "derived_value": 1,
+    "tally_notes": "1 mark here leaves 3 for (c.ii) within the shared [4] bracket; total 2+1+4 = 7 matches the question maximum."
+  },
+  {
+    "part_id": "07850416-30cd-498c-864b-c55176537492",
+    "paper_label": "HL24MayTZ1P2",
+    "question_number": 5,
+    "part_label": "c.ii",
+    "derived_value": 3,
+    "tally_notes": "Reconciles: c.i would then be 1, giving group bracket 3+1=4; total question 2(a)+1(b)+4(c)=7 matches stated maximum."
+  },
+  {
+    "part_id": "a51f1606-e82c-4139-9471-d547264f0149",
+    "paper_label": "HL24MayTZ1P2",
+    "question_number": 11,
+    "part_label": "b.i",
+    "derived_value": 4,
+    "tally_notes": "Free text and marks_breakdown agree: M1+A1+M1+A1 = 4, with AG worth 0. This leaves 5 marks for part (b.ii) within the shared [9] bracket, and the question total reconciles: 5 (a) + 9 (b) + 1 (c) + 4 (d) = 19."
+  },
+  {
+    "part_id": "9d968696-3932-4c77-bac6-1a3207216c69",
+    "paper_label": "HL24MayTZ1P2",
+    "question_number": 11,
+    "part_label": "b.ii",
+    "derived_value": 5,
+    "tally_notes": "5 marks here leaves 4 for (b.i), summing to the printed [9] bracket; question total 5 + 9 + 1 + 4 = 19, matching the stated maximum. Consistent with marks_breakdown."
+  },
+  {
+    "part_id": "4ff8d389-dd02-496e-bd7e-1ac0d947b3b4",
+    "paper_label": "HL24MayTZ1P2",
+    "question_number": 12,
+    "part_label": "b.i",
+    "derived_value": 1,
+    "tally_notes": "Single A1 in both free text and marks_breakdown; leaves 12 marks for (b.ii) and (b.iii) within the shared [13] bracket, and total 2+13+5=20 matches the question maximum."
+  },
+  {
+    "part_id": "12c7c502-1b04-4c24-aeb2-4a6777e7076f",
+    "paper_label": "HL24MayTZ1P2",
+    "question_number": 12,
+    "part_label": "b.ii",
+    "derived_value": 4,
+    "tally_notes": "Free text and marks_breakdown agree: A1+A1+M1+A1 = 4. Question total checks: (a) 2 + group [13] + (c) 5 = 20. Leaves 9 marks for b.i and b.iii combined, which is plausible."
+  },
+  {
+    "part_id": "a1b97102-956a-47cf-a7b8-adf059e6da6e",
+    "paper_label": "HL24MayTZ1P2",
+    "question_number": 12,
+    "part_label": "b.iii",
+    "derived_value": 8,
+    "tally_notes": "Free text codes and marks_breakdown agree exactly: 8 marks. Leaves 5 marks for b.i + b.ii within the shared [13] bracket, and 2 + 13 + 5 = 20 matches the question maximum."
+  },
+  {
+    "part_id": "50f10ead-c49d-4a73-a069-8b7cc46a8edd",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 3,
+    "part_label": "a.i",
+    "derived_value": 1,
+    "tally_notes": "Single A1. With part (b) = 3 and the shared [4] bracket for (a.i)+(a.ii), this leaves 3 for (a.ii); 1+3+3 = 7 matches the question's stated maximum."
+  },
+  {
+    "part_id": "88281963-bb79-49d0-946d-bc82f5feee01",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 3,
+    "part_label": "a.ii",
+    "derived_value": 3,
+    "tally_notes": "Matches marks_breakdown (M1+A1+A1=3). With a.i then worth 1, the group sums to the printed [4]; adding part (b)'s 3 gives the stated question maximum of 7."
+  },
+  {
+    "part_id": "07de46ca-86ca-48cc-83e3-da6ddc5873fd",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 4,
+    "part_label": "b.i",
+    "derived_value": 3,
+    "tally_notes": "3 marks here leaves 1 mark for (b.ii) within the shared [4] bracket; with part (a) at 2 the question totals 2+4=6, matching the stated maximum. The OR list in the third line is a list of acceptable equivalent forms for one A1, not an EITHER/OR branch structure."
+  },
+  {
+    "part_id": "da6ff075-297f-4df6-812a-07f81e2c0a15",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 4,
+    "part_label": "b.ii",
+    "derived_value": 1,
+    "tally_notes": "b.ii = 1 leaves 3 for b.i, summing to the shared [4] bracket; with part (a) = 2 this gives the stated question maximum of 6. Consistent."
+  },
+  {
+    "part_id": "92ff3546-bd7b-4b53-a09c-988dfa74ff9c",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 5,
+    "part_label": "b.i",
+    "derived_value": 1,
+    "tally_notes": "Single A1 gives 1 mark; leaves 6 marks for b.ii and b.iii within the shared [7] bracket, and total 1(a)+7 = 8 matches the question maximum."
+  },
+  {
+    "part_id": "414cb1e1-5e0e-4fd2-b452-905ee169c7e0",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 5,
+    "part_label": "b.ii",
+    "derived_value": 4,
+    "tally_notes": "All three alternative branches carry M1+A1+M1 = 3, plus shared THEN A1 = 4 total, matching marks_breakdown. Question max 8 minus part (a) 1 = 7 for the (b) group; 4 here leaves 3 for b.i and b.iii combined, which is consistent."
+  },
+  {
+    "part_id": "7e1023ec-1819-417c-9b4a-468ac5d1a8d8",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 5,
+    "part_label": "b.iii",
+    "derived_value": 2,
+    "tally_notes": "A2 gives 2 marks; leaves 5 for (b.i)+(b.ii) within the shared [7] bracket, and 1+7=8 matches the question maximum."
+  },
+  {
+    "part_id": "38826e5c-a44b-4286-befe-b762ac05ee9d",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 7,
+    "part_label": "c.i",
+    "derived_value": 2,
+    "tally_notes": "2 marks here leaves 1 mark for (c.ii), summing to the printed [3] bracket; total question 1+3+3 = 7 matches stated maximum."
+  },
+  {
+    "part_id": "f2ec6fa2-52ad-459b-8dec-60c0a14bcec1",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 7,
+    "part_label": "c.ii",
+    "derived_value": 1,
+    "tally_notes": "a(1) + b(3) + c group(3) = 7 = stated maximum. With c.ii = 1, c.i would be 2, summing to the shared [3] bracket. Consistent."
+  },
+  {
+    "part_id": "dd9bb9ea-6b6b-45c5-8991-522d0f091248",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 10,
+    "part_label": "d.i",
+    "derived_value": 2,
+    "tally_notes": "A1A1 = 2 marks, matching marks_breakdown. Leaves 2 marks for (d.ii) within the shared [4] bracket, which is consistent."
+  },
+  {
+    "part_id": "08d41e43-f757-42a1-9eff-59fc79e76362",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 10,
+    "part_label": "d.ii",
+    "derived_value": 2,
+    "tally_notes": "A1A1 = 2 marks, matching marks_breakdown. Leaves 2 marks for (d.i), consistent with the shared [4] bracket; also consistent with question total 16 (2+2+2+4+6 for (e))."
+  },
+  {
+    "part_id": "2d093cb2-471f-4dee-91aa-0c478ba4224c",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 10,
+    "part_label": "e.i",
+    "derived_value": 3,
+    "tally_notes": "3 marks here leaves 3 for (e.ii), summing to the printed [6] bracket for the (e.i)+(e.ii) group; consistent with marks_breakdown."
+  },
+  {
+    "part_id": "019e82f3-18b2-4972-bc87-b1a3540c6a04",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 10,
+    "part_label": "e.ii",
+    "derived_value": 3,
+    "tally_notes": "Both METHODs total 3; matches marks_breakdown (M1+A1+A1). Leaves 3 for (e.i), consistent with the shared [6] bracket, and leaves 4 marks for (d.i)+(d.ii) within the 16-mark maximum."
+  },
+  {
+    "part_id": "883af1d9-3da9-406b-964e-077a32835fb6",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 11,
+    "part_label": "d.i",
+    "derived_value": 5,
+    "tally_notes": "5 marks here leaves 2 for (d.ii), summing to the printed [7] bracket. Whole question: 1+5+2+7+4 = 19, matching the stated maximum."
+  },
+  {
+    "part_id": "6dce2949-53bc-490b-b715-773a3faf850e",
+    "paper_label": "HL24MayTZ2P1",
+    "question_number": 11,
+    "part_label": "d.ii",
+    "derived_value": 2,
+    "tally_notes": "Question max 19; known siblings a=1, b=5, c=2, e=4 sum to 12, leaving 7 for [d.i, d.ii]. With d.ii = 2, d.i would be 5, consistent with the shared [7] bracket."
+  },
+  {
+    "part_id": "fa00dd53-50a7-410e-ad1e-947aba909b89",
+    "paper_label": "HL24MayTZ2P2",
+    "question_number": 8,
+    "part_label": "a.i",
+    "derived_value": 3,
+    "tally_notes": "Free text explicitly prints [3 marks] at end of METHOD 1 for (i), matching marks_breakdown (A1+M1+A1=3). Leaves 4 marks for (a.ii) to reach the shared [7] bracket; 7 + 3 (part b) = 10 = stated question maximum. Consistent. METHOD 2's 7 marks cover (i) and (ii) together, consistent with the combined bracket."
+  },
+  {
+    "part_id": "dfbef2ce-219f-4e01-a4c9-e1d1e35c6872",
+    "paper_label": "HL24MayTZ2P2",
+    "question_number": 8,
+    "part_label": "a.ii",
+    "derived_value": 4,
+    "tally_notes": "Free text states [4 marks], matching marks_breakdown (M1+M1+A1+A1=4). Leaves 3 for part (a.i) within the shared [7] bracket; with part (b)=3 the question totals 10, matching the stated maximum."
+  },
+  {
+    "part_id": "b29d8211-c892-47b0-a754-8be924ee58d4",
+    "paper_label": "HL24MayTZ2P2",
+    "question_number": 11,
+    "part_label": "g.i",
+    "derived_value": 1,
+    "tally_notes": "Siblings sum to 13 (3+1+4+1+3+1); group [g.i, g.ii] must total 4, so g.i = 1 leaves 3 for g.ii \u2014 consistent with question max of 17."
+  },
+  {
+    "part_id": "4f700591-dbbd-473d-a377-6329af9e7939",
+    "paper_label": "HL24MayTZ2P2",
+    "question_number": 11,
+    "part_label": "g.ii",
+    "derived_value": 3,
+    "tally_notes": "Sibling parts (a)-(f) total 13; question max is 17, leaving 4 for the shared [g.i, g.ii] bracket. Deriving 3 here leaves 1 for (g.i), which is consistent. The printed [4 marks] line in this excerpt is the combined bracket for the whole (g) group, not for (g.ii) alone."
+  },
+  {
+    "part_id": "7f2a87dd-60d4-4117-9616-f6d91ba811a3",
+    "paper_label": "HL24MayTZ2P2",
+    "question_number": 12,
+    "part_label": "e.i",
+    "derived_value": 1,
+    "tally_notes": "Confirmed parts sum to 18 (3+4+4+5+2); the e-group bracket of [3] brings total to 21, matching the stated maximum. e.i = 1 leaves 2 marks for e.ii and e.iii, consistent."
+  },
+  {
+    "part_id": "bb0560d7-d484-4839-a148-5b427a46defb",
+    "paper_label": "HL24MayTZ2P2",
+    "question_number": 12,
+    "part_label": "e.ii",
+    "derived_value": 1,
+    "tally_notes": "Sum of confirmed parts (3+4+4+5+2=18) plus the [3] group bracket gives 21, matching the stated maximum. This part contributes 1 mark (R1), leaving 2 marks for e.i and e.iii combined \u2014 consistent."
+  },
+  {
+    "part_id": "4520d740-ddc3-484f-9821-8df8cc16bc10",
+    "paper_label": "HL24MayTZ2P2",
+    "question_number": 12,
+    "part_label": "e.iii",
+    "derived_value": 1,
+    "tally_notes": "EITHER/OR branches are alternatives, each worth A1, so only 1 mark counted. The [3 marks] bracket is the shared bracket for e.i\u2013e.iii, leaving 2 marks for e.i and e.ii combined. Total question: 3+4+4+5+3+2 = 21, matching the stated maximum."
+  },
+  {
+    "part_id": "c2ee3d2b-5cdf-4e29-b4d3-099b95868465",
+    "paper_label": "SL24MayTZ1P1",
+    "question_number": 7,
+    "part_label": "a.i",
+    "derived_value": 2,
+    "tally_notes": "a.i = 2 leaves 1 mark for a.ii within the shared [3] bracket; total question 3+6+2+3 = 14 matches stated maximum."
+  },
+  {
+    "part_id": "f2b330af-6e08-4f38-bad5-40b65ecaf3d4",
+    "paper_label": "SL24MayTZ1P1",
+    "question_number": 7,
+    "part_label": "a.ii",
+    "derived_value": 1,
+    "tally_notes": "a.ii = 1 mark, leaving 2 marks for a.i to make the shared [3] bracket. Question total checks: 3 (a) + 6 (b) + 2 (c) + 3 (d) = 14, matching the stated maximum."
+  },
+  {
+    "part_id": "71bd1c6c-f36d-47d6-ab7e-02695802f3c6",
+    "paper_label": "SL24MayTZ1P2",
+    "question_number": 1,
+    "part_label": "b.i",
+    "derived_value": 2,
+    "tally_notes": "2 marks here leaves 2 for (b.ii), summing to the printed [4] bracket; with part (a)'s 3 marks that gives 7, matching the question maximum."
+  },
+  {
+    "part_id": "1d1a59d9-3f09-4008-bb52-b28ca22bc8b9",
+    "paper_label": "SL24MayTZ1P2",
+    "question_number": 1,
+    "part_label": "b.ii",
+    "derived_value": 2,
+    "tally_notes": "R1+A1 = 2. The [4 marks] bracket is shared with b.i, leaving 2 for b.i. Total reconciles: a(3) + b.i(2) + b.ii(2) = 7 = stated maximum."
+  },
+  {
+    "part_id": "c21f862b-64dd-47b0-9e69-de1de9b12698",
+    "paper_label": "SL24MayTZ1P2",
+    "question_number": 6,
+    "part_label": "c.i",
+    "derived_value": 1,
+    "tally_notes": "1 mark here leaves 3 for (c.ii) within the shared [4] bracket; (a) 2 + (b) 1 + 4 = 7 matches the question maximum."
+  },
+  {
+    "part_id": "ddd14417-a23c-4515-a6a9-0fd9603c4e2e",
+    "paper_label": "SL24MayTZ1P2",
+    "question_number": 6,
+    "part_label": "c.ii",
+    "derived_value": 3,
+    "tally_notes": "The printed [4 marks] is the shared bracket for c.i and c.ii; this part contributes M1+A1+A1 = 3, leaving 1 for c.i. Question total 2 (a) + 1 (b) + 1 (c.i) + 3 (c.ii) = 7, matching the stated maximum."
+  },
+  {
+    "part_id": "787de09c-6ac0-4191-be3f-6ca840784f98",
+    "paper_label": "SL24MayTZ1P2",
+    "question_number": 7,
+    "part_label": "c.i",
+    "derived_value": 2,
+    "tally_notes": "Free text shows A1A1 and marks_breakdown lists two A1 entries, giving 2. With c.ii = 1, the group bracket of [3] reconciles; total question marks 3+3+3(c.i+c.ii)+3 = 12, matching the stated maximum."
+  },
+  {
+    "part_id": "d06e29d5-c44b-4f72-acad-bac2974d9d8e",
+    "paper_label": "SL24MayTZ1P2",
+    "question_number": 7,
+    "part_label": "c.ii",
+    "derived_value": 1,
+    "tally_notes": "The [3 marks] bracket is the combined c.i+c.ii bracket; this part contributes A1 = 1, leaving 2 for c.i. Totals: 3(a)+3(b)+3(c)+3(d)=12, matching the stated question maximum."
+  },
+  {
+    "part_id": "a87f45a5-f662-41e0-aabf-d3340a3cd60f",
+    "paper_label": "SL24MayTZ1P2",
+    "question_number": 9,
+    "part_label": "a.i",
+    "derived_value": 5,
+    "tally_notes": "5 for (a.i) leaves 3 for (a.ii), summing to the printed [8] bracket; 8 + 5 (b) + 3 (c) = 16, matching the question maximum. Both METHODs total 5, consistent with marks_breakdown."
+  },
+  {
+    "part_id": "4ad2d570-68ac-4937-b0af-f4a3758d1eee",
+    "paper_label": "SL24MayTZ1P2",
+    "question_number": 9,
+    "part_label": "a.ii",
+    "derived_value": 3,
+    "tally_notes": "3 marks here leaves 5 for (a.i), summing to the printed [8] bracket; 8 + 5 (b) + 3 (c) = 16, matching the question maximum."
+  },
+  {
+    "part_id": "3adbd805-6b0e-482e-949f-802d9791f010",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 1,
+    "part_label": "a.i",
+    "derived_value": 1,
+    "tally_notes": "The [3 marks] printed is the combined bracket for a.i\u2013a.iii; this part contributes A1 = 1, leaving 2 for a.ii and a.iii. With part (b) = 2, total is 3 + 2 = 5, matching the question maximum."
+  },
+  {
+    "part_id": "4b913f23-1207-482b-b8f8-757f14e0a1a9",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 1,
+    "part_label": "a.ii",
+    "derived_value": 1,
+    "tally_notes": "Group [a.i, a.ii, a.iii] totals 3; 1 here is consistent with 1+1+1=3, and with question max 5 (3 + part (b) 2)."
+  },
+  {
+    "part_id": "0dacdb89-7e61-413e-ae18-2752a1c098a3",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 1,
+    "part_label": "a.iii",
+    "derived_value": 1,
+    "tally_notes": "Group [a.i, a.ii, a.iii] shares a [3] bracket; 1 mark here leaves 2 for a.i and a.ii (1 each), consistent. Question max 5 = 3 (part a) + 2 (part b)."
+  },
+  {
+    "part_id": "e766c361-6d2d-47ce-ad4e-e306ed41defd",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 4,
+    "part_label": "a.i",
+    "derived_value": 1,
+    "tally_notes": "Only one A1 appears in both the free text and marks_breakdown, so this part is worth 1. The [4 marks] bracket is shared with (a.ii), which would then carry 3 marks; 1 + 3 = 4, and 4 + 3 (part b) = 7, matching the question maximum."
+  },
+  {
+    "part_id": "39dd6faa-c0be-418c-9018-42df11455799",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 4,
+    "part_label": "a.ii",
+    "derived_value": 3,
+    "tally_notes": "3 for (a.ii) leaves 1 mark for (a.i), summing to the printed [4] bracket; with (b)=3 this gives the stated question maximum of 7. Consistent."
+  },
+  {
+    "part_id": "f8079eef-6cba-45f3-bbae-f29b48b46ecb",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 5,
+    "part_label": "b.i",
+    "derived_value": 3,
+    "tally_notes": "3 marks here leaves 1 mark for (b.ii), summing to the printed [4] bracket; with part (a)'s 2 marks this gives the stated question maximum of 6."
+  },
+  {
+    "part_id": "6802fdcd-1876-4026-b7f8-e05bb9836921",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 5,
+    "part_label": "b.ii",
+    "derived_value": 1,
+    "tally_notes": "The [4 marks] bracket is the shared group bracket for (b.i)+(b.ii). This part contributes R1 = 1, leaving 3 marks for (b.i), and 2 (part a) + 3 + 1 = 6 matches the question maximum."
+  },
+  {
+    "part_id": "992c41f7-065b-4852-aff8-460eb36caa12",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 6,
+    "part_label": "b.i",
+    "derived_value": 1,
+    "tally_notes": "Single A1. Question max 8 with part (a) = 1 leaves 7 for the b-group; b.i = 1 leaves 6 for b.ii and b.iii, which is consistent."
+  },
+  {
+    "part_id": "e3e6f6fc-3677-485b-abbc-33a5fd9e1f91",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 6,
+    "part_label": "b.ii",
+    "derived_value": 4,
+    "tally_notes": "The marks_breakdown lists 6 codes, but the free text shows these are pooled across three alternative EITHER/OR branches; each branch is M1 A1 M1 (3 marks) followed by a shared THEN A1, giving 4. This departs from a naive sum of the breakdown, per rule 2. Reconciles with context: a=1, and b.i+b.ii+b.iii=7 leaves 3 marks for b.i and b.iii combined, and 1+7=8 matches the stated maximum."
+  },
+  {
+    "part_id": "48bc31d1-98ed-4915-91b8-2bd30d811ed2",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 6,
+    "part_label": "b.iii",
+    "derived_value": 2,
+    "tally_notes": "marks_breakdown gives A2 = 2; the note awarding A1 for each single correct bound confirms a 2-mark allocation. Question max 8, part (a) = 1, so the b-group bracket is 7; b.iii = 2 leaves 5 for b.i + b.ii, which is consistent."
+  },
+  {
+    "part_id": "26acf164-ca96-4be4-94a2-c6ac30153897",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 7,
+    "part_label": "b.i",
+    "derived_value": 1,
+    "tally_notes": "Group [b.i, b.ii] shares a [2] bracket; b.i = 1 leaves 1 for b.ii, consistent. Overall question max 12 with (a)=1 and (d)=3 leaves 8 for (b) and (c), fine."
+  },
+  {
+    "part_id": "df9d6a32-8815-4837-8fc7-c7ed4abe3672",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 7,
+    "part_label": "b.ii",
+    "derived_value": 1,
+    "tally_notes": "The '[2 marks]' bracket is the shared bracket for b.i and b.ii; this part carries one A1, leaving 1 mark for b.i, which reconciles to 2. Consistent with question max of 12 (a=1, b=2, d=3, leaving 6 for c.i/c.ii)."
+  },
+  {
+    "part_id": "73f99586-68a2-4e63-a58d-bcef6dbcf486",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 7,
+    "part_label": "c.i",
+    "derived_value": 3,
+    "tally_notes": "3 marks here leaves 3 for (c.ii), consistent with the shared [6] bracket. Overall: (a)=1, (c)=6, (d)=3 gives 10 of 12, leaving 2 for (b.i)+(b.ii), which is plausible."
+  },
+  {
+    "part_id": "dc2b39e0-20ab-441f-b75c-27ceac178789",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 7,
+    "part_label": "c.ii",
+    "derived_value": 3,
+    "tally_notes": "M1+A1+R1 = 3, matching marks_breakdown. METHOD 2 likewise gives M1 (inequality set up), A1 (sin >= 8/7), R1 (sine cannot exceed 1) = 3, consistent. Leaves 3 marks for (c.i) within the shared [6] bracket, and question total 1 + (b.i+b.ii) + 6 + 3 = 12 implies b.i+b.ii = 2, which is plausible."
+  },
+  {
+    "part_id": "1fc5eca7-856f-4026-8ed8-ca95e3644a99",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 8,
+    "part_label": "a.i",
+    "derived_value": 2,
+    "tally_notes": "Both METHODs give A1+R1+AG = 2. Leaves 1 mark for (a.ii), consistent with the shared [3] bracket for a.i and a.ii."
+  },
+  {
+    "part_id": "02bdc13a-8728-4d4b-8161-13334c933722",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 8,
+    "part_label": "a.ii",
+    "derived_value": 1,
+    "tally_notes": "The [3 marks] bracket is the shared printed bracket for (a.i)+(a.ii); this part carries a single A1, leaving 2 marks for (a.i), which reconciles with the shared total of 3."
+  },
+  {
+    "part_id": "87fc6267-c389-41bd-ac67-fb338dc4f901",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 8,
+    "part_label": "b.i",
+    "derived_value": 1,
+    "tally_notes": "Single A1; leaves 6 marks for b.ii and b.iii within the shared [7] bracket, consistent."
+  },
+  {
+    "part_id": "847d5f60-9983-4d2d-851b-bbcd2cbff9b6",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 8,
+    "part_label": "b.ii",
+    "derived_value": 4,
+    "tally_notes": "M1+A1A1+A1 = 4, AG worth 0. Leaves 3 marks for b.i and b.iii within the shared [7] bracket, which is plausible; total question 17 then leaves 3 for a.i+a.ii. No contradiction found."
+  },
+  {
+    "part_id": "e65f20a1-b4c8-41fb-8987-4b7f2a61139c",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 8,
+    "part_label": "b.iii",
+    "derived_value": 2,
+    "tally_notes": "The [7 marks] shown is the shared bracket for b.i-b.iii, not this part alone. A1+R1 = 2 here, leaving 5 for b.i and b.ii combined, which is consistent. Question max 17 = a.i+a.ii (3) + b group (7) + c (4) + d (3) reconciles if a.i+a.ii = 3."
+  },
+  {
+    "part_id": "636b66e7-7d1c-4e7f-abf4-d37da5b1eee4",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 9,
+    "part_label": "d.i",
+    "derived_value": 2,
+    "tally_notes": "A1A1 gives 2 marks; leaves 2 marks for (d.ii) within the shared [4] bracket, which is consistent. Question total 16 with (a)+(b)+(c)=6 and (d)=4 leaves 6 for (e.i)+(e.ii)."
+  },
+  {
+    "part_id": "2ae37740-3516-4915-9993-1ea9258eedfd",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 9,
+    "part_label": "d.ii",
+    "derived_value": 2,
+    "tally_notes": "A1A1 = 2 marks. The printed [4 marks] belongs to the shared d.i/d.ii bracket, leaving 2 for d.i, which reconciles. Question total: a(2)+b(2)+c(2)+d(4)=10, leaving 6 for parts (e.i)+(e.ii) out of stated max 16 \u2014 consistent."
+  },
+  {
+    "part_id": "27394a73-5e50-4c43-a13a-9612888696d1",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 9,
+    "part_label": "e.i",
+    "derived_value": 3,
+    "tally_notes": "3 marks here leaves 3 for (e.ii), summing to the printed [6] bracket. With (a)+(b)+(c)=6 and (e)=6, parts (d.i)+(d.ii) would total 4, consistent with the question maximum of 16."
+  },
+  {
+    "part_id": "6c0e6c69-9c33-450d-b9c4-f306b234c556",
+    "paper_label": "SL24MayTZ2P1",
+    "question_number": 9,
+    "part_label": "e.ii",
+    "derived_value": 3,
+    "tally_notes": "Both METHODs give M1+A1+A1 = 3, matching marks_breakdown. Leaves 3 marks for (e.i), reconciling with the shared [6] bracket; also leaves 4 marks for (d.i)+(d.ii) within the 16-mark total, which is plausible."
+  },
+  {
+    "part_id": "0b10671d-11a3-47a4-b868-6a0b0af361c2",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 1,
+    "part_label": "a.i",
+    "derived_value": 1,
+    "tally_notes": "1 mark here leaves 2 for (a.ii) to make the shared [3] bracket; with (b)=3 the question totals 6, matching the stated maximum."
+  },
+  {
+    "part_id": "87f4ed6a-d614-4a48-87ec-307f0c92f1b0",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 1,
+    "part_label": "a.ii",
+    "derived_value": 2,
+    "tally_notes": "The [3 marks] bracket is the shared printed bracket for the group [a.i, a.ii]; a.ii's own codes total 2, leaving 1 for a.i (median), which reconciles. With part (b) = 3 and a-group = 3, question total = 6, matching the stated maximum."
+  },
+  {
+    "part_id": "c4612191-0354-4eac-81eb-8cac35704245",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 7,
+    "part_label": "d.i",
+    "derived_value": 3,
+    "tally_notes": "3 here leaves 2 for (d.ii), summing to the printed [5] bracket. Question total: 2+2+2+5+3 = 14, matching the stated maximum."
+  },
+  {
+    "part_id": "311f6e72-6a11-432b-b30c-f9f02ee9fbec",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 7,
+    "part_label": "d.ii",
+    "derived_value": 2,
+    "tally_notes": "d.ii = 2 leaves d.i = 3 within the shared [5] bracket; question total 2+2+2+(3+2)+3 = 14 matches the stated maximum."
+  },
+  {
+    "part_id": "420bd492-8924-4bf5-83f0-a74e29908c5d",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 8,
+    "part_label": "d.i",
+    "derived_value": 2,
+    "tally_notes": "Free text shows (M1)A1, matching marks_breakdown, total 2. Question total: a(2)+b(2)+c(4)+d group(7) = 15, consistent with stated maximum. Leaves 5 marks for d.ii and d.iii combined."
+  },
+  {
+    "part_id": "bf34fcab-cb55-4653-bdcf-a7d6033398f4",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 8,
+    "part_label": "d.ii",
+    "derived_value": 3,
+    "tally_notes": "Total 3. Leaves 4 marks for d.i + d.iii within the shared [7] bracket, and 2+2+4+7 = 15 matches the question maximum. The OR alternatives at the end are equivalent justifications for the single R1, not additional marks."
+  },
+  {
+    "part_id": "86689648-70f6-40d1-83d2-96ea753c350e",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 8,
+    "part_label": "d.iii",
+    "derived_value": 2,
+    "tally_notes": "Total question max 15 = 2+2+4+7; this part contributes 2 of the shared [7] bracket, leaving 5 for (d.i)+(d.ii), which is plausible. marks_breakdown matches free text."
+  },
+  {
+    "part_id": "2d9f05da-fe56-45c6-bc12-2f562c9d7da9",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 9,
+    "part_label": "g.i",
+    "derived_value": 1,
+    "tally_notes": "Siblings sum to 13 (3+1+4+1+3+1), leaving 4 for the [g.i, g.ii] bracket; g.i = 1 leaves 3 for g.ii, consistent with the 17-mark maximum."
+  },
+  {
+    "part_id": "bd0a0723-6d76-4601-9bc3-1bdb6defc6da",
+    "paper_label": "SL24MayTZ2P2",
+    "question_number": 9,
+    "part_label": "g.ii",
+    "derived_value": 3,
+    "tally_notes": "The printed [4 marks] bracket is shared by (g.i) and (g.ii); this part accounts for M1+A1+A1 = 3, leaving 1 mark for (g.i). Question total checks out: 3+1+4+1+3+1+1+3 = 17."
+  }
+]

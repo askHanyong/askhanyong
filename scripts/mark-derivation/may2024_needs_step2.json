@@ -1,0 +1,2547 @@
+[
+  {
+    "part_id": "42713fb6-a285-429b-a87a-54337ff97343",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 8,
+    "question_max_mark": 7,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "$\\sin(x^{2})=x^{2}-\\frac{(x^{2})^{3}}{3!}+\\ldots$\n$\\sin(x^{2})=x^{2}-\\frac{x^{6}}{3!}+\\ldots\\left(=x^{2}-\\frac{x^{6}}{6}+\\ldots\\right)$ A1A1\nNote: Award A1 for each term.",
+    "marks_breakdown": [
+      {
+        "desc": "first term of $\\sin(x^{2})$ expansion, $x^{2}$",
+        "note": "A1"
+      },
+      {
+        "desc": "second term of $\\sin(x^{2})$ expansion, $-\\frac{x^{6}}{6}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 5,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "e41f4c09-cc57-490e-be0c-fa1f0ea6d36b",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 8,
+    "question_max_mark": 7,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "METHOD 1\nattempt to square their series for $\\sin(x^{2})$ (M1)\n$(\\sin(x^{2}))^{2}=\\left(x^{2}-\\frac{x^{6}}{3!}+\\ldots\\right)^{2}$\nNote: Award M0 for $(x^{2})^{2}-\\left(\\frac{x^{6}}{3!}\\right)^{2}+\\ldots$\n$=x^{4}-\\frac{2x^{8}}{3!}+\\ldots\\left(=x^{4}-\\frac{x^{8}}{3}+\\ldots\\right)$ A1A1\nNote: Award A1 for each term.\n\nMETHOD 2\nattempt to use the identity $\\sin^{2}(x^{2})=\\frac{1-\\cos(2x^{2})}{2}$ (M1)\n$\\sin^{2}(x^{2})=\\frac{1}{2}\\left(1-\\left(1-\\frac{(2x^{2})^{2}}{2!}+\\frac{(2x^{2})^{4}}{4!}\\right)\\right)$\n$=x^{4}-\\frac{8x^{8}}{4!}+\\ldots\\left(=x^{4}-\\frac{x^{8}}{3}+\\ldots\\right)$ A1A1\nNote: Award A1 for each term.",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to square their series for $\\sin(x^{2})$ or use the identity $\\sin^{2}(x^{2})=\\frac{1-\\cos(2x^{2})}{2}$",
+        "note": "M1"
+      },
+      {
+        "desc": "first term $x^{4}$",
+        "note": "A1"
+      },
+      {
+        "desc": "second term $-\\frac{x^{8}}{3}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 5,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "651e92c3-6d16-4ac6-9c52-b865e3d80d6e",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 9,
+    "question_max_mark": 6,
+    "part_label": "c.i",
+    "order_index": 2,
+    "markscheme_text": "$-1.6$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$-1.6$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 2,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 6
+  },
+  {
+    "part_id": "2908d1bd-0b9b-4a00-970e-4a4af7eb5d4a",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 9,
+    "question_max_mark": 6,
+    "part_label": "c.ii",
+    "order_index": 3,
+    "markscheme_text": "$3.2$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$3.2$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 2,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 6
+  },
+  {
+    "part_id": "524f4d84-d24a-4737-8b3b-f79f94c10283",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 11,
+    "question_max_mark": 17,
+    "part_label": "f.i",
+    "order_index": 5,
+    "markscheme_text": "METHOD 1\nattempt to cancel factors and substitute $x=-1$ (M1)\n$\\lim_{x\\to -1}f(x)=\\lim_{x\\to -1}\\left(\\frac{(x+1)^{2}(3x-1)}{(x+1)^{2}(2x+1)}\\right)=\\lim_{x\\to -1}\\left(\\frac{3x-1}{2x+1}\\right)=\\frac{3(-1)-1}{2(-1)+1}$\n$=4$ A1\n\nMETHOD 2\nattempt to expand denominator, differentiate numerator and denominator twice and substitute $x=-1$ (M1)\n$\\lim_{x\\to -1}f(x)=\\lim_{x\\to -1}\\left(\\frac{3x^{3}+5x^{2}+x-1}{2x^{3}+5x^{2}+4x+1}\\right)=\\lim_{x\\to -1}\\left(\\frac{9x^{2}+10x+1}{6x^{2}+10x+4}\\right)=\\lim_{x\\to -1}\\left(\\frac{18x+10}{12x+10}\\right)=\\frac{18(-1)+10}{12(-1)+10}$\n$=4$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to cancel factors and substitute $x=-1$ (or equivalent method)",
+        "note": "M1"
+      },
+      {
+        "desc": "$=4$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "f.i",
+        "f.ii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "dca3a87c-3a06-4116-86e6-18d114d2be4c",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 11,
+    "question_max_mark": 17,
+    "part_label": "f.ii",
+    "order_index": 6,
+    "markscheme_text": "METHOD 1\nattempt to consider coefficients of $x^{3}$ or divide all terms by $x^{3}$\n$\\lim_{x\\to\\infty}f(x)=\\lim_{x\\to\\infty}\\left(\\frac{3x^{3}+\\ldots}{2x^{3}+\\ldots}\\right)$ or $\\lim_{x\\to\\infty}\\left(\\frac{3+\\text{terms which tend to }0}{2+\\text{terms which tend to }0}\\right)$\n$=\\frac{3}{2}$ A1\n\nMETHOD 2\nattempt to cancel factors and consider coefficients of $x$ or divide all terms by $x$\n$\\lim_{x\\to\\infty}f(x)=\\lim_{x\\to\\infty}\\left(\\frac{(x+1)^{2}(3x-1)}{(x+1)^{2}(2x+1)}\\right)=\\lim_{x\\to\\infty}\\left(\\frac{3x-1}{2x+1}\\right)$ or $\\lim_{x\\to\\infty}\\left(\\frac{3-\\frac{1}{x}}{2+\\frac{1}{x}}\\right)$\n$=\\frac{3}{2}$ A1\n\nMETHOD 3\nattempt to expand denominator, differentiate numerator and denominator three times\n$\\lim_{x\\to\\infty}f(x)=\\lim_{x\\to\\infty}\\left(\\frac{3x^{3}+5x^{2}+x-1}{2x^{3}+5x^{2}+4x+1}\\right)=\\lim_{x\\to\\infty}\\left(\\frac{9x^{2}+10x+1}{6x^{2}+10x+4}\\right)=\\lim_{x\\to\\infty}\\left(\\frac{18x+10}{12x+10}\\right)=\\lim_{x\\to\\infty}\\left(\\frac{18}{12}\\right)$\n$=\\frac{3}{2}$ A1\nNote: If the M1 has not been awarded in part (i) it can be awarded in part (ii).",
+    "marks_breakdown": [
+      {
+        "desc": "$=\\frac{3}{2}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "f.i",
+        "f.ii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "9f6fab63-316d-454c-a5e4-61a2f6f2e691",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 12,
+    "question_max_mark": 20,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "attempt to expand the brackets or attempt to find modulus and argument of $\\phi$ (M1)\n$(a+bi)^{3}=a^{3}+3a^{2}bi+3a(bi)^{2}+(bi)^{3}$ OR $\\left(\\sqrt{a^{2}+b^{2}}\\right)^{3}\\text{cis}\\left(3\\arctan\\left(\\frac{b}{a}\\right)\\right)$\n(i) real part is $a^{3}-3ab^{2}$ OR $(a^{2}+b^{2})^{\\frac{3}{2}}\\cos\\left(3\\arctan\\left(\\frac{b}{a}\\right)\\right)$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to expand the brackets or attempt to find modulus and argument of $\\phi$",
+        "note": "M1"
+      },
+      {
+        "desc": "real part is $a^{3}-3ab^{2}$ OR $(a^{2}+b^{2})^{\\frac{3}{2}}\\cos\\left(3\\arctan\\left(\\frac{b}{a}\\right)\\right)$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 20
+  },
+  {
+    "part_id": "2ca1de3c-ca9b-4397-b293-4eecf32c9e15",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 12,
+    "question_max_mark": 20,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "(ii) imaginary part is $3a^{2}b-b^{3}$ OR $(a^{2}+b^{2})^{\\frac{3}{2}}\\sin\\left(3\\arctan\\left(\\frac{b}{a}\\right)\\right)$ A1\nNote: Award (M1)A1A0 for $(a^{3}-3ab^{2})+(3a^{2}b-b^{3})i$ OR $(a^{2}+b^{2})^{\\frac{3}{2}}\\cos\\left(3\\arctan\\left(\\frac{b}{a}\\right)\\right)+(a^{2}+b^{2})^{\\frac{3}{2}}i\\sin\\left(3\\arctan\\left(\\frac{b}{a}\\right)\\right)$\nFor (ii) condone $(3a^{2}b-b^{3})i$ OR $(a^{2}+b^{2})^{\\frac{3}{2}}i\\sin\\left(3\\arctan\\left(\\frac{b}{a}\\right)\\right)$",
+    "marks_breakdown": [
+      {
+        "desc": "imaginary part is $3a^{2}b-b^{3}$ OR $(a^{2}+b^{2})^{\\frac{3}{2}}\\sin\\left(3\\arctan\\left(\\frac{b}{a}\\right)\\right)$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 20
+  },
+  {
+    "part_id": "77c04d96-09dd-47cd-9edc-788c24bb00dc",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 5,
+    "question_max_mark": 7,
+    "part_label": "c.i",
+    "order_index": 2,
+    "markscheme_text": "Student 12 Test A: should not use line of $y$ on $x$ to predict $x$ from $y$ (or\nequivalent) R1",
+    "marks_breakdown": [
+      {
+        "desc": "Student 12 Test A: should not use line of $y$ on $x$ to predict $x$ from $y$ (or equivalent)",
+        "note": "R1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "07850416-30cd-498c-864b-c55176537492",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 5,
+    "question_max_mark": 7,
+    "part_label": "c.ii",
+    "order_index": 3,
+    "markscheme_text": "attempt to find the equation of the regression line of $x$ on $y$ (M1)\n$(x=)0.987124... y - 3.21970...$ $((x=)0.987y-3.22)$ A1\n$(x=)0.987124...(90) - 3.21970...$ $(=85.6214...)$ A1\n$=86$ to nearest integer. AG\nNote: Condone notation for $x$ and $y$ switched if values are correct.\nTotal [7 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to find the equation of the regression line of $x$ on $y$",
+        "note": "M1"
+      },
+      {
+        "desc": "$(x=)0.987y-3.22$",
+        "note": "A1"
+      },
+      {
+        "desc": "$(x=)0.987124...(90)-3.21970...(=85.6214...)$",
+        "note": "A1"
+      },
+      {
+        "desc": "$=86$ to nearest integer",
+        "note": "AG"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "a51f1606-e82c-4139-9471-d547264f0149",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 11,
+    "question_max_mark": 19,
+    "part_label": "b.i",
+    "order_index": 1,
+    "markscheme_text": "recognition that $2x-e^{x+y}=0$ at P and Q (M1)\n$\\Rightarrow x+y = \\ln(2x)$ A1\nrecognition that $e^{x+y}=x^{2}+y^{2}$ at P and Q (M1)\n$\\Rightarrow 2x = x^{2}+(\\ln(2x)-x)^{2}$ or equivalent A1\n$2x^{2}+(\\ln(2x))^{2}-2x\\ln(2x)-2x=0$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "recognition that $2x-e^{x+y}=0$ at P and Q",
+        "note": "M1"
+      },
+      {
+        "desc": "$x+y=\\ln(2x)$",
+        "note": "A1"
+      },
+      {
+        "desc": "recognition that $e^{x+y}=x^{2}+y^{2}$ at P and Q",
+        "note": "M1"
+      },
+      {
+        "desc": "$2x=x^{2}+(\\ln(2x)-x)^{2}$ or equivalent",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 9,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 19
+  },
+  {
+    "part_id": "9d968696-3932-4c77-bac6-1a3207216c69",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 11,
+    "question_max_mark": 19,
+    "part_label": "b.ii",
+    "order_index": 2,
+    "markscheme_text": "$x=0.331077...$ or $1.84273...$\n$x=0.331$ or $1.84$ A1A1\nattempt to use $x+y=\\ln(2x)$ OR $e^{x+y}=x^{2}+y^{2}$ to find $y$-coordinates (M1)\n$y=-0.743332...$, $y=-0.538335...$\ncoordinates $(0.331,-0.743)$ and $(1.84,-0.538)$ A1A1\nNote: If no working shown, award A1A1(M1)A0A0 for $(0.33,-0.74)$ and $(1.8,-0.54)$ (2 sf)\nTotal [9 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$x=0.331$ or $1.84$",
+        "note": "A1A1"
+      },
+      {
+        "desc": "attempt to use $x+y=\\ln(2x)$ OR $e^{x+y}=x^{2}+y^{2}$ to find $y$-coordinates",
+        "note": "M1"
+      },
+      {
+        "desc": "coordinates $(0.331,-0.743)$ and $(1.84,-0.538)$",
+        "note": "A1A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 9,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 19
+  },
+  {
+    "part_id": "4ff8d389-dd02-496e-bd7e-1ac0d947b3b4",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 12,
+    "question_max_mark": 20,
+    "part_label": "b.i",
+    "order_index": 1,
+    "markscheme_text": "$|\\mathbf{u}\\times\\mathbf{v}| = 2\\sqrt{6}(=4.89897...=4.90)$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$|\\mathbf{u}\\times\\mathbf{v}|=2\\sqrt{6}(=4.90)$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 13,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 20
+  },
+  {
+    "part_id": "12c7c502-1b04-4c24-aeb2-4a6777e7076f",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 12,
+    "question_max_mark": 20,
+    "part_label": "b.ii",
+    "order_index": 2,
+    "markscheme_text": "$$\\mathbf{v} = \\begin{pmatrix} 3 \\\\ 1 \\\\ -1 \\end{pmatrix}$$ (A1)\n$|\\mathbf{v}| = \\sqrt{3^{2}+1^{2}+(-1)^{2}} \\left(=\\sqrt{11}=3.31662...\\right)$ (A1)\nsubstitution of values $\\mathbf{u}\\cdot\\mathbf{v}, |\\mathbf{u}\\times\\mathbf{v}|$ and $|\\mathbf{v}|$ into $(\\mathbf{u}\\cdot\\mathbf{v})^{2}+|\\mathbf{u}\\times\\mathbf{v}|^{2}=|\\mathbf{u}|^{2}|\\mathbf{v}|^{2}$ M1\n$3^{2}+(2\\sqrt{6})^{2} = |\\mathbf{u}|^{2}|\\sqrt{11}|^{2}$\n$|\\mathbf{u}| = \\sqrt{3}(=1.73205...=1.73)$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$\\mathbf{v}=\\begin{pmatrix}3\\\\1\\\\-1\\end{pmatrix}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$|\\mathbf{v}|=\\sqrt{11}=3.31662...$",
+        "note": "A1"
+      },
+      {
+        "desc": "substitution of values $\\mathbf{u}\\cdot\\mathbf{v}, |\\mathbf{u}\\times\\mathbf{v}|$ and $|\\mathbf{v}|$ into $(\\mathbf{u}\\cdot\\mathbf{v})^{2}+|\\mathbf{u}\\times\\mathbf{v}|^{2}=|\\mathbf{u}|^{2}|\\mathbf{v}|^{2}$",
+        "note": "M1"
+      },
+      {
+        "desc": "$|\\mathbf{u}|=\\sqrt{3}=1.73$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 13,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 20
+  },
+  {
+    "part_id": "a1b97102-956a-47cf-a7b8-adf059e6da6e",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 12,
+    "question_max_mark": 20,
+    "part_label": "b.iii",
+    "order_index": 3,
+    "markscheme_text": "$$\\mathbf{u} = \\begin{pmatrix} p \\\\ q-1 \\\\ 1 \\end{pmatrix}$$ (A1)\nattempt to use $\\mathbf{u}\\cdot\\mathbf{v}=3$ (M1)\n$$\\begin{pmatrix} p \\\\ q-1 \\\\ 1 \\end{pmatrix}\\cdot\\begin{pmatrix} 3 \\\\ 1 \\\\ -1 \\end{pmatrix}=3$$\n$3p+q=5(\\Rightarrow q=5-3p)$ A1\nattempt to use $|\\mathbf{u}|=\\sqrt{3}$ (M1)\n$p^{2}+(q-1)^{2}+1^{2}=\\sqrt{3}^{2}(\\Rightarrow p^{2}+q^{2}-2q+1+1=3)$\nNote: Award M1 for use of $|\\mathbf{u}\\times\\mathbf{v}|^{2}=q^{2}+(p+3)^{2}+(p-3q+3)^{2}\\left(=(2\\sqrt{6})^{2}\\right)$.\nattempt to form quadratic in one variable, $p$ or $q$ (M1)\n$p^{2}+(4-3p)^{2}=2$ OR $p^{2}+(5-3p)^{2}-2p=1$ OR $10p^{2}-24p+14=0$ OR\n$\\left(\\frac{5-q}{3}\\right)^{2}+(q-1)^{2}=2$ OR $\\left(\\frac{5-q}{3}\\right)^{2}+q^{2}-2q=1$ OR $10q^{2}-28q+16=0$ (A1)\n$p=1$ or $p=1.4\\left(=\\frac{7}{5}\\right)$ A1\n$q=2$ or $q=0.8\\left(=\\frac{4}{5}\\right)$ A1\nNote: Award final A1 marks for correct values, even if the $p$ values and $q$ values\nare not explicitly paired.\nTotal [13 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$\\mathbf{u}=\\begin{pmatrix}p\\\\q-1\\\\1\\end{pmatrix}$",
+        "note": "A1"
+      },
+      {
+        "desc": "attempt to use $\\mathbf{u}\\cdot\\mathbf{v}=3$",
+        "note": "M1"
+      },
+      {
+        "desc": "$3p+q=5$",
+        "note": "A1"
+      },
+      {
+        "desc": "attempt to use $|\\mathbf{u}|=\\sqrt{3}$",
+        "note": "M1"
+      },
+      {
+        "desc": "attempt to form quadratic in one variable, $p$ or $q$",
+        "note": "M1"
+      },
+      {
+        "desc": "correct quadratic equation",
+        "note": "A1"
+      },
+      {
+        "desc": "$p=1$ or $p=1.4$",
+        "note": "A1"
+      },
+      {
+        "desc": "$q=2$ or $q=0.8$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 13,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 20
+  },
+  {
+    "part_id": "50f10ead-c49d-4a73-a069-8b7cc46a8edd",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 3,
+    "question_max_mark": 7,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "$\\left(\\frac{9}{2}, \\frac{3\\sqrt{3}}{2}\\right)$ (accept $x=\\frac{9}{2}$ and $y=\\frac{3\\sqrt{3}}{2}$) A1",
+    "marks_breakdown": [
+      {
+        "desc": "$\\left(\\frac{9}{2}, \\frac{3\\sqrt{3}}{2}\\right)$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "88281963-bb79-49d0-946d-bc82f5feee01",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 3,
+    "question_max_mark": 7,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "METHOD 1\n\nusing $m=\\frac{\\text{change in } y}{\\text{change in } x}$ with their midpoint OR gradient perpendicular to AC OR $m=\\tan 30\u00b0$ (M1)\n\n$m=\\frac{\\sqrt{3}}{3}$ (A1)\n\n$y=\\frac{\\sqrt{3}}{3}x$ OR $y-\\frac{3\\sqrt{3}}{2}=\\frac{\\sqrt{3}}{3}\\left(x-\\frac{9}{2}\\right)$ (must be written as an equation) A1\n\nMETHOD 2\n\nattempt to find the vector equation of the line using a direction and a point on the line (M1)\n\ndirection vector is $\\begin{pmatrix} \\frac{9}{2} \\\\ \\frac{3\\sqrt{3}}{2} \\end{pmatrix}$ or equivalent/parallel vectors (A1)\n\n$\\mathbf{r}=\\begin{pmatrix} 0 \\\\ 0 \\end{pmatrix}+\\lambda\\begin{pmatrix} \\frac{9}{2} \\\\ \\frac{3\\sqrt{3}}{2} \\end{pmatrix}$ OR $\\mathbf{r}=\\lambda\\begin{pmatrix} \\frac{9}{2} \\\\ \\frac{3\\sqrt{3}}{2} \\end{pmatrix}$ OR $\\begin{pmatrix} x \\\\ y \\end{pmatrix}=\\begin{pmatrix} \\frac{9}{2} \\\\ \\frac{3\\sqrt{3}}{2} \\end{pmatrix}+\\lambda\\begin{pmatrix} \\frac{9}{2} \\\\ \\frac{3\\sqrt{3}}{2} \\end{pmatrix}$ (or equivalent) A1\n\nNote: Vector equation must be in the form $\\mathbf{r}=$ or $\\begin{pmatrix} x \\\\ y \\end{pmatrix}=$. Allow equivalent parametric forms such as $x=\\frac{9}{2}t$, $y=\\frac{3\\sqrt{3}}{2}t$.",
+    "marks_breakdown": [
+      {
+        "desc": "using gradient formula with midpoint, or gradient perpendicular to AC, or attempt to find vector equation of the line using a direction and a point on the line",
+        "note": "M1"
+      },
+      {
+        "desc": "$m=\\frac{\\sqrt{3}}{3}$, or direction vector $\\begin{pmatrix} \\frac{9}{2} \\\\ \\frac{3\\sqrt{3}}{2} \\end{pmatrix}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$y=\\frac{\\sqrt{3}}{3}x$ (or equivalent equation), or vector equation of the line (or equivalent)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "07de46ca-86ca-48cc-83e3-da6ddc5873fd",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 4,
+    "question_max_mark": 6,
+    "part_label": "b.i",
+    "order_index": 1,
+    "markscheme_text": "multiplying the two correct branches (A1)\n\n$(1-k)\\left(1-\\frac{k}{2}\\right)$\n\nattempt to expand and equate to $\\frac{5}{9}$ (M1)\n\n$1-k-\\frac{k}{2}+\\frac{k^{2}}{2}=\\frac{5}{9}$\n\n$18-18k-9k+9k^{2}=10$ OR $\\frac{k^{2}}{2}-\\frac{3k}{2}+\\frac{4}{9}=0$ OR $\\frac{9k^{2}}{2}-\\frac{27k}{2}+4=0$ A1\n\n$9k^{2}-27k+8=0$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "multiplying the two correct branches",
+        "note": "A1"
+      },
+      {
+        "desc": "attempt to expand and equate to $\\frac{5}{9}$",
+        "note": "M1"
+      },
+      {
+        "desc": "$18-18k-9k+9k^{2}=10$ OR $\\frac{k^{2}}{2}-\\frac{3k}{2}+\\frac{4}{9}=0$ OR $\\frac{9k^{2}}{2}-\\frac{27k}{2}+4=0$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 6
+  },
+  {
+    "part_id": "da6ff075-297f-4df6-812a-07f81e2c0a15",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 4,
+    "question_max_mark": 6,
+    "part_label": "b.ii",
+    "order_index": 2,
+    "markscheme_text": "($k=\\frac{1}{3}$ is the only valid solution as) $\\frac{8}{3}>1$ R1\n\nNote: Accept any valid reasoning indicating that any probability cannot be greater than 1 and/or probability cannot be less than 0.",
+    "marks_breakdown": [
+      {
+        "desc": "$k=\\frac{1}{3}$ is the only valid solution as $\\frac{8}{3}>1$",
+        "note": "R1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 6
+  },
+  {
+    "part_id": "92ff3546-bd7b-4b53-a09c-988dfa74ff9c",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 5,
+    "question_max_mark": 8,
+    "part_label": "b.i",
+    "order_index": 1,
+    "markscheme_text": "2 A1",
+    "marks_breakdown": [
+      {
+        "desc": "2",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 8
+  },
+  {
+    "part_id": "414cb1e1-5e0e-4fd2-b452-905ee169c7e0",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 5,
+    "question_max_mark": 8,
+    "part_label": "b.ii",
+    "order_index": 2,
+    "markscheme_text": "EITHER\n\n$\\frac{2(x+3)}{3(x+2)}=mx+1$\n\nattempt to expand to obtain a quadratic equation (M1)\n\n$2x+6=3mx^{2}+6mx+3x+6$\n\n$3mx^{2}+(6m+1)x=0$ OR $3mx^{2}+6mx+x=0$ A1\n\nrecognition that discriminant $\\Delta=0$ for one solution (M1)\n\n$(6m+1)^{2}=0$\n\nOR\n\n$\\frac{2(x+3)}{3(x+2)}=mx+1$\n\nattempt to expand to obtain a quadratic equation (M1)\n\n$2x+6=3mx^{2}+6mx+3x+6$\n\n$3mx^{2}+(6m+1)x=0$ OR $3mx^{2}+6mx+x=0$ A1\n\nattempt to solve their quadratic for $x$ and equating their solutions (M1)\n\n$x(3mx+6m+1)=0$\n\n$x=0$ OR $x=-\\frac{6m+1}{3m}(=0)$\n\n$-\\frac{6m+1}{3m}=0$\n\nOR\n\nattempt to find $f'(x)$ using the quotient rule (M1)\n\n$f'(x)=\\frac{2}{3}\\left(\\frac{(x+2)-(x+3)}{(x+2)^{2}}\\right)=\\left(\\frac{-2}{3(x+2)^{2}}\\right)$ OR $\\frac{2(3x+6)-3(2x+6)}{(3x+6)^{2}}$ or equivalent A1\n\nrecognition that $m$ is the derivative of $f(x)$ at $x=0$ (M1)\n\nTHEN\n\n$\\Rightarrow m=-\\frac{1}{6}$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to expand to obtain a quadratic equation",
+        "note": "M1"
+      },
+      {
+        "desc": "$3mx^{2}+(6m+1)x=0$ OR $3mx^{2}+6mx+x=0$",
+        "note": "A1"
+      },
+      {
+        "desc": "recognition that discriminant $\\Delta=0$ for one solution, OR attempt to solve their quadratic for $x$ and equate their solutions, OR attempt to find $f'(x)$ using the quotient rule and recognition that $m$ is the derivative of $f(x)$ at $x=0$",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\Rightarrow m=-\\frac{1}{6}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 8
+  },
+  {
+    "part_id": "7e1023ec-1819-417c-9b4a-468ac5d1a8d8",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 5,
+    "question_max_mark": 8,
+    "part_label": "b.iii",
+    "order_index": 3,
+    "markscheme_text": "Note: In this part, FT may be awarded only for values of $m$ between $-1$ and 0.\n\n$-\\frac{1}{6}<m<0$ A2\n\nNote: Award A1 for only $m>-\\frac{1}{6}$. Award A1 for only $m<0$.",
+    "marks_breakdown": [
+      {
+        "desc": "$-\\frac{1}{6}<m<0$",
+        "note": "A2"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 8
+  },
+  {
+    "part_id": "38826e5c-a44b-4286-befe-b762ac05ee9d",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 7,
+    "question_max_mark": 7,
+    "part_label": "c.i",
+    "order_index": 2,
+    "markscheme_text": "attempt to find product of 5 roots and equate to $\\pm 10$ (M1)\n\n$(1+3i)(1-3i)\\frac{1}{2}\\alpha\\beta=10$\n\n$\\alpha\\beta=2$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to find product of 5 roots and equate to $\\pm 10$",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\alpha\\beta=2$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "f2ec6fa2-52ad-459b-8dec-60c0a14bcec1",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 7,
+    "question_max_mark": 7,
+    "part_label": "c.ii",
+    "order_index": 3,
+    "markscheme_text": "$\\alpha=1$ and $\\beta=2$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$\\alpha=1$ and $\\beta=2$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "dd9bb9ea-6b6b-45c5-8991-522d0f091248",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 10,
+    "question_max_mark": 16,
+    "part_label": "d.i",
+    "order_index": 3,
+    "markscheme_text": "$9,5,1,-3$ A1A1\n\nNote: Award A1 for each of 2nd term and 4th term",
+    "marks_breakdown": [
+      {
+        "desc": "2nd term $=5$",
+        "note": "A1"
+      },
+      {
+        "desc": "4th term $=-3$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "d.i",
+        "d.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "08d41e43-f757-42a1-9eff-59fc79e76362",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 10,
+    "question_max_mark": 16,
+    "part_label": "d.ii",
+    "order_index": 4,
+    "markscheme_text": "$9,3,1,\\frac{1}{3}$ A1A1\n\nNote: Award A1 for each of 2nd term and 4th term",
+    "marks_breakdown": [
+      {
+        "desc": "2nd term $=3$",
+        "note": "A1"
+      },
+      {
+        "desc": "4th term $=\\frac{1}{3}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "d.i",
+        "d.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "2d093cb2-471f-4dee-91aa-0c478ba4224c",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 10,
+    "question_max_mark": 16,
+    "part_label": "e.i",
+    "order_index": 5,
+    "markscheme_text": "attempt to find the difference between two consecutive terms (M1)\n\n$d=u_{2}-u_{1}=5+\\ln 3-9-\\ln 9$ OR $d=u_{3}-u_{2}=1+\\ln 1-5-\\ln 3$\n\n$\\ln 9=2\\ln 3$ OR $\\ln 1=0$ OR $\\ln 3-\\ln 9=\\ln\\frac{1}{3}\\left(=\\ln 3^{-1}=-\\ln 3\\right)$ (seen anywhere) (A1)\n\n$d=-4-\\ln 3$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to find the difference between two consecutive terms",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\ln 9=2\\ln 3$ OR $\\ln 1=0$ OR $\\ln 3-\\ln 9=\\ln\\frac{1}{3}$ (seen anywhere)",
+        "note": "A1"
+      },
+      {
+        "desc": "$d=-4-\\ln 3$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 6,
+      "group_siblings": [
+        "e.i",
+        "e.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "019e82f3-18b2-4972-bc87-b1a3540c6a04",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 10,
+    "question_max_mark": 16,
+    "part_label": "e.ii",
+    "order_index": 6,
+    "markscheme_text": "METHOD 1\n\nattempt to substitute first term and their common difference into $S_{10}$ (M1)\n\n$\\frac{10}{2}\\left(2(9+\\ln 9)+9(-4-\\ln 3)\\right)$ OR $\\frac{10}{2}\\left(2(9+2\\ln 3)+9(-4-\\ln 3)\\right)$ (or equivalent) A1\n\n$=5(-18-5\\ln 3)$ (or equivalent in terms of $\\ln 3$) A1\n\n$\\sum_{i=1}^{10}u_{i}=-90-25\\ln 3$ AG\n\nMETHOD 2\n\n$u_{10}=9+\\ln 9+9(-4-\\ln 3)(=-27+\\ln 9-9\\ln 3)$\n\nattempt to substitute first term and their $u_{10}$ into $S_{10}$ (M1)\n\n$\\frac{10}{2}\\left(2(9+\\ln 9)+9(-4-\\ln 3)\\right)$ OR $\\frac{10}{2}(9+\\ln 9-27+\\ln 9-9\\ln 3)$ OR $\\frac{10}{2}\\left(2(9+2\\ln 3)+9(-4-\\ln 3)\\right)$ OR $\\frac{10}{2}(9+\\ln 9-27-7\\ln 3)$ (or equivalent) A1\n\n$=5(-18-5\\ln 3)$ (or equivalent in terms of $\\ln 3$) A1\n\n$\\sum_{i=1}^{10}u_{i}=-90-25\\ln 3$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to substitute first term and their common difference (or their $u_{10}$) into $S_{10}$",
+        "note": "M1"
+      },
+      {
+        "desc": "correct substitution into $S_{10}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$=5(-18-5\\ln 3)$ (or equivalent in terms of $\\ln 3$)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 6,
+      "group_siblings": [
+        "e.i",
+        "e.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "883af1d9-3da9-406b-964e-077a32835fb6",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 11,
+    "question_max_mark": 19,
+    "part_label": "d.i",
+    "order_index": 3,
+    "markscheme_text": "attempt to find the vector equation of the line through A perpendicular to $\\Pi_{1}$ (M1)\n\n$(\\mathbf{r}=)\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}=\\begin{pmatrix} 2 \\\\ \\frac{1}{2} \\\\ 1 \\end{pmatrix}+\\lambda\\begin{pmatrix} 2 \\\\ 6 \\\\ -2 \\end{pmatrix}$\n\nattempt to substitute their vector equation into $\\Pi_{2}$ (M1)\n\n$3(2+2\\lambda)+9\\left(\\frac{1}{2}+6\\lambda\\right)-3(1-2\\lambda)\\left(=-\\frac{51}{2}\\right)$\n\n$6+6\\lambda+\\frac{9}{2}+54\\lambda-3+6\\lambda=-\\frac{51}{2}$ (or equivalent) (A1)\n\n$66\\lambda=-\\frac{51}{2}-6-\\frac{9}{2}+3$ (or equivalent)\n\n$\\lambda=-\\frac{1}{2}$ A1\n\n$\\left(1,-\\frac{5}{2},2\\right)$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to find the vector equation of the line through A perpendicular to $\\Pi_{1}$",
+        "note": "M1"
+      },
+      {
+        "desc": "attempt to substitute their vector equation into $\\Pi_{2}$",
+        "note": "M1"
+      },
+      {
+        "desc": "$6+6\\lambda+\\frac{9}{2}+54\\lambda-3+6\\lambda=-\\frac{51}{2}$ (or equivalent)",
+        "note": "A1"
+      },
+      {
+        "desc": "$\\lambda=-\\frac{1}{2}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$\\left(1,-\\frac{5}{2},2\\right)$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "d.i",
+        "d.ii"
+      ]
+    },
+    "question_max_mark_step1": 19
+  },
+  {
+    "part_id": "6dce2949-53bc-490b-b715-773a3faf850e",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 11,
+    "question_max_mark": 19,
+    "part_label": "d.ii",
+    "order_index": 4,
+    "markscheme_text": "distance AB or $\\left|\\lambda\\begin{pmatrix} 2 \\\\ 6 \\\\ -2 \\end{pmatrix}\\right|$ (M1)\n\n$\\sqrt{(2-1)^{2}+\\left(\\frac{1}{2}+\\frac{5}{2}\\right)^{2}+(1-2)^{2}}$ OR $\\sqrt{1+9+1}$ A1\n\n$=\\sqrt{11}$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "distance AB or $\\left|\\lambda\\begin{pmatrix} 2 \\\\ 6 \\\\ -2 \\end{pmatrix}\\right|$",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\sqrt{(2-1)^{2}+\\left(\\frac{1}{2}+\\frac{5}{2}\\right)^{2}+(1-2)^{2}}$ OR $\\sqrt{1+9+1}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "d.i",
+        "d.ii"
+      ]
+    },
+    "question_max_mark_step1": 19
+  },
+  {
+    "part_id": "fa00dd53-50a7-410e-ad1e-947aba909b89",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 8,
+    "question_max_mark": 10,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "METHOD 1\n\n(i) $$\\arg z = \\arctan\\left(\\frac{\\sin 2\\theta}{1+\\cos 2\\theta}\\right)\\left(\\tan(\\arg z) = \\frac{\\sin 2\\theta}{1+\\cos 2\\theta}\\right)$$ A1\n\nuses $2\\sin\\theta\\cos\\theta$ in the numerator and any double angle identity for $\\cos 2\\theta$ in the denominator M1\n\n$$\\arg z = \\arctan\\left(\\frac{2\\sin\\theta\\cos\\theta}{2\\cos^{2}\\theta}\\right)\\left(\\tan(\\arg z) = \\frac{2\\sin\\theta\\cos\\theta}{2\\cos^{2}\\theta}\\right)$$\n\n$$\\Rightarrow \\arg z = \\arctan(\\tan\\theta) \\left(-\\frac{\\pi}{2} < \\theta < \\frac{\\pi}{2}\\right)$$ A1\n\n$= \\theta$ AG\n\n[3 marks]\n\nMETHOD 2 (i) and (ii)\n\n$$z = 1 + 2\\cos^{2}\\theta - 1 + 2\\sin\\theta\\cos\\theta\\, i$$ M1A1A1\n$$z = 2\\cos^{2}\\theta + 2\\sin\\theta\\cos\\theta\\, i$$ A1\nattempt to form $z = r\\,cis\\,\\theta$ M1\n$$z = 2\\cos\\theta(\\cos\\theta + i\\sin\\theta)$$ A1A1\n\n$\\therefore |z| = 2\\cos\\theta$ and $\\arg z = \\theta$. AG",
+    "marks_breakdown": [
+      {
+        "desc": "$\\arg z = \\arctan\\left(\\frac{\\sin 2\\theta}{1+\\cos 2\\theta}\\right)$",
+        "note": "A1"
+      },
+      {
+        "desc": "uses $2\\sin\\theta\\cos\\theta$ in the numerator and any double angle identity for $\\cos 2\\theta$ in the denominator",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\Rightarrow \\arg z = \\arctan(\\tan\\theta)$, $-\\frac{\\pi}{2}<\\theta<\\frac{\\pi}{2}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 10
+  },
+  {
+    "part_id": "dfbef2ce-219f-4e01-a4c9-e1d1e35c6872",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 8,
+    "question_max_mark": 10,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "(ii) attempts to express $|z|$ in the form $\\sqrt{(\\text{Re}\\,z)^{2}+(\\text{Im}\\,z)^{2}}$ (M1)\n\n$$|z| = \\sqrt{(1+\\cos 2\\theta)^{2}+\\sin^{2}2\\theta}$$\n\nattempts to expand $(1+\\cos 2\\theta)^{2}$ and then uses $\\cos^{2}2\\theta + \\sin^{2}2\\theta = 1$ in an attempt to simplify (M1)\n\n$$|z| = \\sqrt{2+2\\cos 2\\theta}$$ A1\n\n$$|z| = \\sqrt{4\\cos^{2}\\theta} \\left(=2|\\cos\\theta|\\right)$$ A1\n\n$$= 2\\cos\\theta \\left(-\\frac{\\pi}{2}<\\theta<\\frac{\\pi}{2}\\right)$$ AG\n\n[4 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempts to express $|z|$ in the form $\\sqrt{(\\text{Re}\\,z)^{2}+(\\text{Im}\\,z)^{2}}$",
+        "note": "M1"
+      },
+      {
+        "desc": "attempts to expand $(1+\\cos 2\\theta)^{2}$ and then uses $\\cos^{2}2\\theta+\\sin^{2}2\\theta=1$ in an attempt to simplify",
+        "note": "M1"
+      },
+      {
+        "desc": "$|z| = \\sqrt{2+2\\cos 2\\theta}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$|z| = \\sqrt{4\\cos^{2}\\theta}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 10
+  },
+  {
+    "part_id": "b29d8211-c892-47b0-a754-8be924ee58d4",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 11,
+    "question_max_mark": 17,
+    "part_label": "g.i",
+    "order_index": 6,
+    "markscheme_text": "$$w = 0.05t^{2}+1.1t+18-\\frac{20\\sin\\left(\\frac{\\pi t}{8}\\right)}{\\sin\\left(2.37-\\frac{\\pi t}{8}\\right)}$$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$w = 0.05t^{2}+1.1t+18-\\frac{20\\sin\\left(\\frac{\\pi t}{8}\\right)}{\\sin\\left(2.37-\\frac{\\pi t}{8}\\right)}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "g.i",
+        "g.ii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "4f700591-dbbd-473d-a377-6329af9e7939",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 11,
+    "question_max_mark": 17,
+    "part_label": "g.ii",
+    "order_index": 7,
+    "markscheme_text": "attempts to solve $w=0$ for $t$ (M1)\n\n$t = 3.34880... (12.7765...)$\n\n$t = 3.35$ (s) A1\n\n$22.2444...$\n\n$22.2$ (m) (south of $A$) A1\n\n[4 marks]\n\nTotal [17 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempts to solve $w=0$ for $t$",
+        "note": "M1"
+      },
+      {
+        "desc": "$t = 3.35$ (s)",
+        "note": "A1"
+      },
+      {
+        "desc": "$22.2$ (m) (south of $A$)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "g.i",
+        "g.ii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "7f2a87dd-60d4-4117-9616-f6d91ba811a3",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 12,
+    "question_max_mark": 21,
+    "part_label": "e.i",
+    "order_index": 4,
+    "markscheme_text": "$y = 2.52878...$\n\n$y = 2.53$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$y = 2.53$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "e.i",
+        "e.ii",
+        "e.iii"
+      ]
+    },
+    "question_max_mark_step1": 21
+  },
+  {
+    "part_id": "bb0560d7-d484-4839-a148-5b427a46defb",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 12,
+    "question_max_mark": 21,
+    "part_label": "e.ii",
+    "order_index": 5,
+    "markscheme_text": "the gradient changes substantially (in the neighbourhood of $x=\\frac{5\\pi}{12}$) R1\n\nNote: Award R0 for saying the gradient is very large at $x=\\frac{5\\pi}{12}$",
+    "marks_breakdown": [
+      {
+        "desc": "the gradient changes substantially (in the neighbourhood of $x=\\frac{5\\pi}{12}$)",
+        "note": "R1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "e.i",
+        "e.ii",
+        "e.iii"
+      ]
+    },
+    "question_max_mark_step1": 21
+  },
+  {
+    "part_id": "4520d740-ddc3-484f-9821-8df8cc16bc10",
+    "level": "HL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 12,
+    "question_max_mark": 21,
+    "part_label": "e.iii",
+    "order_index": 6,
+    "markscheme_text": "EITHER\n\nthe curve is concave up (over the interval) A1\n\nOR\n\n$\\frac{d^{2}y}{dx^{2}}>0$ (over the interval) A1\n\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "the curve is concave up (over the interval), or $\\frac{d^{2}y}{dx^{2}}>0$ (over the interval)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "e.i",
+        "e.ii",
+        "e.iii"
+      ]
+    },
+    "question_max_mark_step1": 21
+  },
+  {
+    "part_id": "c2ee3d2b-5cdf-4e29-b4d3-099b95868465",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 7,
+    "question_max_mark": 14,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "$$\\frac{dy}{dx}=3x^{2}-2x-1$$ A1A1\nNote: Award A1 for $3x^{2}-2x$ and A1 for $-1$.",
+    "marks_breakdown": [
+      {
+        "desc": "$3x^{2}-2x$",
+        "note": "A1"
+      },
+      {
+        "desc": "$-1$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 14
+  },
+  {
+    "part_id": "f2b330af-6e08-4f38-bad5-40b65ecaf3d4",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 1,
+    "question_number": 7,
+    "question_max_mark": 14,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "$$\\frac{d^{2}y}{dx^{2}}=6x-2$$ A1\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$\\frac{d^{2}y}{dx^{2}}=6x-2$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 14
+  },
+  {
+    "part_id": "71bd1c6c-f36d-47d6-ab7e-02695802f3c6",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 1,
+    "question_max_mark": 7,
+    "part_label": "b.i",
+    "order_index": 1,
+    "markscheme_text": "Note: In this part, their reasoning and answer must be consistent with their values in part (a).\nIn both part (i) and part (ii), award R0A1 for a correct answer with no reasoning.\n\n$80 > 75$ OR Australia has a higher median OR Spain's median is lower R1\nNote: Award R1 for correct reasoning based on a comparison of their medians.\n\nin general (on average), rabbits in Australia have longer ears (than rabbits in Spain)\nOR\nin the top $50\\%$ of each distribution, some rabbits in Spain have smaller ears than those in Australia\nOR\nin the bottom $50\\%$ of each distribution, some rabbits in Australia have longer ears than those in Spain A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct reasoning based on a comparison of their medians",
+        "note": "R1"
+      },
+      {
+        "desc": "correct conclusion comparing the ear lengths based on medians",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "1d1a59d9-3f09-4008-bb52-b28ca22bc8b9",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 1,
+    "question_max_mark": 7,
+    "part_label": "b.ii",
+    "order_index": 2,
+    "markscheme_text": "$16 > 11$ OR higher IQR in Spain OR lower IQR in Australia R1\nNote: Award R1 for correct reasoning based on a comparison of their IQR's.\n\n(the IQR's suggest that) there is more variation/spread in (the middle $50\\%$ of) rabbit ears in Spain (than those in Australia) (or equivalent) A1\nNote: Award A1 for any correct answer which uses the IQR's to compare each distribution.\n[4 marks]\nTotal [7 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "correct reasoning based on a comparison of their IQR's",
+        "note": "R1"
+      },
+      {
+        "desc": "correct conclusion using IQR's to compare the spread of each distribution",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "c21f862b-64dd-47b0-9e69-de1de9b12698",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 6,
+    "question_max_mark": 7,
+    "part_label": "c.i",
+    "order_index": 2,
+    "markscheme_text": "Student $12$ Test A: should not use line of $y$ on $x$ to predict $x$ from $y$ (or equivalent) R1",
+    "marks_breakdown": [
+      {
+        "desc": "Student $12$ Test A: should not use line of $y$ on $x$ to predict $x$ from $y$ (or equivalent)",
+        "note": "R1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "ddd14417-a23c-4515-a6a9-0fd9603c4e2e",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 6,
+    "question_max_mark": 7,
+    "part_label": "c.ii",
+    "order_index": 3,
+    "markscheme_text": "attempt to find the equation of the regression line of $x$ on $y$ (M1)\n$(x =) 0.987124...y - 3.21970...$ $((x =) 0.987y - 3.22)$ A1\n$(x =) 0.987124...(90) - 3.21970...$ $(= 85.6214...)$ A1\n$= 86$ to nearest integer. AG\nNote: Condone notation for $x$ and $y$ switched if values are correct.\n[4 marks]\nTotal [7 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to find the equation of the regression line of $x$ on $y$",
+        "note": "M1"
+      },
+      {
+        "desc": "$(x =) 0.987124...y - 3.21970...$ $((x =) 0.987y - 3.22)$",
+        "note": "A1"
+      },
+      {
+        "desc": "$(x =) 0.987124...(90) - 3.21970...$ $(= 85.6214...)$",
+        "note": "A1"
+      },
+      {
+        "desc": "$= 86$ to nearest integer",
+        "note": "AG"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "787de09c-6ac0-4191-be3f-6ca840784f98",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 7,
+    "question_max_mark": 12,
+    "part_label": "c.i",
+    "order_index": 2,
+    "markscheme_text": "$$g(x) = -\\frac{3}{2}e^{x-2} + 5 \\text{ OR } g(x) = -f(x) + 5$$ A1A1\nNote: Award A1 for each correct term.",
+    "marks_breakdown": [
+      {
+        "desc": "first correct term, e.g. $-\\frac{3}{2}e^{x-2}$ or $-f(x)$",
+        "note": "A1"
+      },
+      {
+        "desc": "second correct term, $+5$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 12
+  },
+  {
+    "part_id": "d06e29d5-c44b-4f72-acad-bac2974d9d8e",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 7,
+    "question_max_mark": 12,
+    "part_label": "c.ii",
+    "order_index": 3,
+    "markscheme_text": "$0 \\leq x \\leq 4$ A1\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$0 \\leq x \\leq 4$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 12
+  },
+  {
+    "part_id": "a87f45a5-f662-41e0-aabf-d3340a3cd60f",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "METHOD 1\nattempt to use the sine rule to find $A\\hat{B}O$ (M1)\n$$\\frac{25}{\\sin 28^{\\circ}} = \\frac{50}{\\sin A\\hat{B}O}$$\n$(A\\hat{B}O =) 69.8748...^{\\circ}$ or $(A\\hat{B}O =) 110.125...^{\\circ}$ (A1)(A1)\nNote: Award A1 for each value.\nattempt to find at least one possible angle for $O\\hat{A}B$ (M1)\n$(O\\hat{A}B =) 180^{\\circ} - 28^{\\circ} - 69.8748...^{\\circ}$ OR $(O\\hat{A}B =) 180^{\\circ} - 28^{\\circ} - 110.125...^{\\circ}$\n$O\\hat{A}B = 82.1251...^{\\circ}, 41.8748...^{\\circ}$\n$O\\hat{A}B = 82.1^{\\circ}, 41.9^{\\circ}$ A1\n\nMETHOD 2\nattempt to use the cosine rule to find OB (M1)\n$25^{2} = 50^{2} + OB^{2} - 2(50)(OB)\\cos 28^{\\circ}$\n$OB = 52.7491...$ or $35.5455...$ (A1)(A1)\nattempt to use the sine rule to find $O\\hat{A}B$ (M1)\n$$\\frac{25}{\\sin 28^{\\circ}} = \\frac{OB}{\\sin O\\hat{A}B}$$\n$O\\hat{A}B = 82.1251...^{\\circ}, 41.8748...^{\\circ}$\n$O\\hat{A}B = 82.1^{\\circ}, 41.9^{\\circ}$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to use the sine rule to find $A\\hat{B}O$ (or cosine rule to find OB)",
+        "note": "M1"
+      },
+      {
+        "desc": "first value, e.g. $(A\\hat{B}O =) 69.8748...^{\\circ}$ (or $OB = 52.7491...$)",
+        "note": "A1"
+      },
+      {
+        "desc": "second value, e.g. $(A\\hat{B}O =) 110.125...^{\\circ}$ (or $OB = 35.5455...$)",
+        "note": "A1"
+      },
+      {
+        "desc": "attempt to find at least one possible angle for $O\\hat{A}B$ (or attempt to use the sine rule to find $O\\hat{A}B$)",
+        "note": "M1"
+      },
+      {
+        "desc": "$O\\hat{A}B = 82.1^{\\circ}, 41.9^{\\circ}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 8,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "4ad2d570-68ac-4937-b0af-f4a3758d1eee",
+    "level": "SL",
+    "time_zone": "TZ1",
+    "paper_number": 2,
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "attempt to substitute two sides of triangle OAB and one of their angles into the area formula $\\frac{1}{2}ab\\sin C$ (M1)\n$$\\frac{1}{2}(OA)(AB)\\sin 82.1251...^{\\circ} \\text{ OR } \\frac{1}{2}(50)(25)\\sin 41.8748...^{\\circ} \\text{ OR }$$\n$$\\frac{1}{2}(50)(52.7491...)\\sin 28^{\\circ} \\text{ OR } \\frac{1}{2}(50)(35.5455)\\sin 28^{\\circ}$$\nArea $= 619.106...$ OR $= 417.190...$\n$= 619$ (m$^{2}$) OR $= 417$ (m$^{2}$) A1A1\n[8 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to substitute two sides of triangle OAB and one of their angles into the area formula $\\frac{1}{2}ab\\sin C$",
+        "note": "M1"
+      },
+      {
+        "desc": "$= 619$ (m$^{2}$)",
+        "note": "A1"
+      },
+      {
+        "desc": "$= 417$ (m$^{2}$)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 8,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "3adbd805-6b0e-482e-949f-802d9791f010",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 1,
+    "question_max_mark": 5,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "$f(4)=1$ A1\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "correct value",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii",
+        "a.iii"
+      ]
+    },
+    "question_max_mark_step1": 5
+  },
+  {
+    "part_id": "4b913f23-1207-482b-b8f8-757f14e0a1a9",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 1,
+    "question_max_mark": 5,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "$f\\circ f(4)=3$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct value",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii",
+        "a.iii"
+      ]
+    },
+    "question_max_mark_step1": 5
+  },
+  {
+    "part_id": "0dacdb89-7e61-413e-ae18-2752a1c098a3",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 1,
+    "question_max_mark": 5,
+    "part_label": "a.iii",
+    "order_index": 2,
+    "markscheme_text": "$f^{-1}(3)=1$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct value",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii",
+        "a.iii"
+      ]
+    },
+    "question_max_mark_step1": 5
+  },
+  {
+    "part_id": "e766c361-6d2d-47ce-ad4e-e306ed41defd",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 4,
+    "question_max_mark": 7,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "$\\left(\\dfrac{9}{2},\\dfrac{3\\sqrt{3}}{2}\\right)$ (accept $x=\\dfrac{9}{2}$ and $y=\\dfrac{3\\sqrt{3}}{2}$) A1\n\n[4 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "correct coordinates",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "39dd6faa-c0be-418c-9018-42df11455799",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 4,
+    "question_max_mark": 7,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "using $m=\\dfrac{\\text{change in }y}{\\text{change in }x}$ with their midpoint OR gradient perpendicular to AC OR $m=\\tan30$ (M1)\n\n$m=\\dfrac{\\sqrt{3}}{3}$ (A1)\n\n$y=\\dfrac{\\sqrt{3}}{3}x$ OR $y-\\dfrac{3\\sqrt{3}}{2}=\\dfrac{\\sqrt{3}}{3}\\left(x-\\dfrac{9}{2}\\right)$ (must be written as an equation) A1",
+    "marks_breakdown": [
+      {
+        "desc": "using $m=\\frac{\\text{change in } y}{\\text{change in } x}$ with their midpoint OR gradient perpendicular to AC OR $m=\\tan 30$",
+        "note": "M1"
+      },
+      {
+        "desc": "$m=\\frac{\\sqrt{3}}{3}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$y=\\frac{\\sqrt{3}}{3}x$ OR $y-\\frac{3\\sqrt{3}}{2}=\\frac{\\sqrt{3}}{3}\\left(x-\\frac{9}{2}\\right)$ (must be written as an equation)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 7
+  },
+  {
+    "part_id": "f8079eef-6cba-45f3-bbae-f29b48b46ecb",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 5,
+    "question_max_mark": 6,
+    "part_label": "b.i",
+    "order_index": 1,
+    "markscheme_text": "multiplying the two correct branches (A1)\n\n$(1-k)\\left(1-\\dfrac{k}{2}\\right)$\n\nattempt to expand and equate to $\\dfrac{5}{9}$ (M1)\n\n$1-k-\\dfrac{k}{2}+\\dfrac{k^{2}}{2}=\\dfrac{5}{9}$\n\n$18-18k-9k+9k^{2}=10$ OR $\\dfrac{k^{2}}{2}-\\dfrac{3k}{2}+\\dfrac{4}{9}=0$ OR $\\dfrac{9k^{2}}{2}-\\dfrac{27k}{2}+4=0$ A1\n\n$9k^{2}-27k+8=0$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "multiplying the two correct branches",
+        "note": "A1"
+      },
+      {
+        "desc": "attempt to expand and equate to $\\frac{5}{9}$",
+        "note": "M1"
+      },
+      {
+        "desc": "$18-18k-9k+9k^{2}=10$ OR $\\frac{k^{2}}{2}-\\frac{3k}{2}+\\frac{4}{9}=0$ OR $\\frac{9k^{2}}{2}-\\frac{27k}{2}+4=0$",
+        "note": "A1"
+      },
+      {
+        "desc": "$9k^{2}-27k+8=0$",
+        "note": "AG"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 6
+  },
+  {
+    "part_id": "6802fdcd-1876-4026-b7f8-e05bb9836921",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 5,
+    "question_max_mark": 6,
+    "part_label": "b.ii",
+    "order_index": 2,
+    "markscheme_text": "($k=\\dfrac{1}{3}$ is the only valid solution as) $\\dfrac{8}{3}>1$ R1\n\nNote: Accept any valid reasoning indicating that any probability cannot be greater than 1 and/or probability cannot be less than 0.\n\n[4 marks]\nTotal [6 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "($k=\\frac{1}{3}$ is the only valid solution as) $\\frac{8}{3}>1$",
+        "note": "R1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 6
+  },
+  {
+    "part_id": "992c41f7-065b-4852-aff8-460eb36caa12",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 6,
+    "question_max_mark": 8,
+    "part_label": "b.i",
+    "order_index": 1,
+    "markscheme_text": "2 A1",
+    "marks_breakdown": [
+      {
+        "desc": "$2$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 8
+  },
+  {
+    "part_id": "e3e6f6fc-3677-485b-abbc-33a5fd9e1f91",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 6,
+    "question_max_mark": 8,
+    "part_label": "b.ii",
+    "order_index": 2,
+    "markscheme_text": "EITHER\n\n$\\dfrac{2(x+3)}{3(x+2)}=mx+1$\n\nattempt to expand to obtain a quadratic equation (M1)\n\n$2x+6=3mx^{2}+6mx+3x+6$\n\n$3mx^{2}+(6m+1)x=0$ OR $3mx^{2}+6mx+x=0$ A1\n\nrecognition that discriminant $\\Delta=0$ for one solution (M1)\n\n$(6m+1)^{2}=0$\n\nOR\n\n$\\dfrac{2(x+3)}{3(x+2)}=mx+1$\n\nattempt to expand to obtain a quadratic equation (M1)\n\n$2x+6=3mx^{2}+6mx+3x+6$\n\n$3mx^{2}+(6m+1)x=0$ OR $3mx^{2}+6mx+x=0$ A1\n\nattempt to solve their quadratic for $x$ and equating their solutions (M1)\n\n$x(3mx+6m+1)=0$\n\n$x=0$ OR $x=-\\dfrac{6m+1}{3m}(=0)$\n\n$-\\dfrac{6m+1}{3m}=0$\n\nOR\n\nattempt to find $f'(x)$ using the quotient rule (M1)\n\n$f'(x)=\\dfrac{2}{3}\\left(\\dfrac{(x+2)-(x+3)}{(x+2)^{2}}\\right)=\\left(\\dfrac{-2}{3(x+2)^{2}}\\right)$ OR $\\dfrac{2(3x+6)-3(2x+6)}{(3x+6)^{2}}$ or equivalent A1\n\nrecognition that $m$ is the derivative of $f(x)$ at $x=0$ (M1)\n\nTHEN\n\n$\\Rightarrow m=-\\dfrac{1}{6}$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to expand to obtain a quadratic equation",
+        "note": "M1"
+      },
+      {
+        "desc": "$3mx^{2}+(6m+1)x=0$ OR $3mx^{2}+6mx+x=0$",
+        "note": "A1"
+      },
+      {
+        "desc": "recognition that discriminant $\\Delta=0$ for one solution (or attempt to solve their quadratic for $x$ and equate their solutions, or attempt to find $f'(x)$ using the quotient rule)",
+        "note": "M1"
+      },
+      {
+        "desc": "correct simplified derivative/expression (or equivalent step depending on method)",
+        "note": "A1"
+      },
+      {
+        "desc": "recognition that $m$ is the derivative of $f(x)$ at $x=0$ (where applicable)",
+        "note": "M1"
+      },
+      {
+        "desc": "$m=-\\frac{1}{6}$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 8
+  },
+  {
+    "part_id": "48bc31d1-98ed-4915-91b8-2bd30d811ed2",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 6,
+    "question_max_mark": 8,
+    "part_label": "b.iii",
+    "order_index": 3,
+    "markscheme_text": "Note: In this part, FT may be awarded only for values of $m$ between $-1$ and $0$.\n\n$-\\frac{1}{6}<m<0$\n\nNote: Award A1 for only $m>-\\frac{1}{6}$. Award A1 for only $m<0$.",
+    "marks_breakdown": [
+      {
+        "desc": "$-\\frac{1}{6}<m<0$",
+        "note": "A2"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 8
+  },
+  {
+    "part_id": "26acf164-ca96-4be4-94a2-c6ac30153897",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 7,
+    "question_max_mark": 12,
+    "part_label": "b.i",
+    "order_index": 1,
+    "markscheme_text": "$a=5$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$a=5$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 2,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 12
+  },
+  {
+    "part_id": "df9d6a32-8815-4837-8fc7-c7ed4abe3672",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 7,
+    "question_max_mark": 12,
+    "part_label": "b.ii",
+    "order_index": 2,
+    "markscheme_text": "$c=15$ A1\n\n[2 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$c=15$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 2,
+      "group_siblings": [
+        "b.i",
+        "b.ii"
+      ]
+    },
+    "question_max_mark_step1": 12
+  },
+  {
+    "part_id": "73f99586-68a2-4e63-a58d-bcef6dbcf486",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 7,
+    "question_max_mark": 12,
+    "part_label": "c.i",
+    "order_index": 3,
+    "markscheme_text": "attempt to substitute $x=5$ into $g(x)$ (M1)\n\n$g(5)=3.5\\sin\\dfrac{5\\pi}{6}+11$\n\n$\\sin\\dfrac{5\\pi}{6}=\\dfrac{1}{2}$ (A1)\n\n$g(5)=3.5\\times\\dfrac{1}{2}+11$\n\n$g(5)=12.75\\left(=\\dfrac{51}{4}\\right)$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to substitute $x=5$ into $g(x)$",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\sin\\frac{5\\pi}{6}=\\frac{1}{2}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$g(5)=12.75\\left(=\\frac{51}{4}\\right)$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 6,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 12
+  },
+  {
+    "part_id": "dc2b39e0-20ab-441f-b75c-27ceac178789",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 7,
+    "question_max_mark": 12,
+    "part_label": "c.ii",
+    "order_index": 4,
+    "markscheme_text": "METHOD 1 (finding maximum temperature)\n\nconsidering the maximum value of $\\sin\\frac{\\pi}{6}x(=1)$ OR $g'(x)=0$ at maximum OR maximum = vertical shift + amplitude (may be seen on a graph)\n\n$g_{\\max}=3.5+11$ OR $\\frac{\\pi}{6}\\cdot 3.5\\cos\\left(\\frac{\\pi}{6}x\\right)=0$ OR $x=3$\n\n$g_{\\max}=14.5$\n\n$14.5<15$ (hence the midday water temperature is never warm enough for Alex to swim)\n\nNote: Do not award the R mark unless the previous marks been awarded (Do not award M1A0R1 or M0A0R1).\n\nWorded conclusions are acceptable for the R1, as long as the reasoning is clear that the water does not reach $15^{\\circ}$, so not warm enough for Alex.\n\nMETHOD 2 (working with inequality)\n\n$3.5\\sin\\left(\\frac{\\pi}{6}x\\right)+11\\geq 15$\n\n$\\sin\\left(\\frac{\\pi}{6}x\\right)\\geq \\frac{8}{7}$\n\nsine values can never be greater than 1 (hence the midday water temperature is never warm enough for Alex to swim)\n\nNote: Do not award the R mark unless the previous marks been awarded (Do not award M1A0R1 or M0A0R1).\n\nIf candidate works with an equation throughout, the M1 and A1 may be awarded, if appropriate. A correct inequality is required for the R1 to be awarded.",
+    "marks_breakdown": [
+      {
+        "desc": "considering the maximum value of $\\sin\\frac{\\pi}{6}x(=1)$ OR $g'(x)=0$ at maximum OR maximum = vertical shift + amplitude",
+        "note": "M1"
+      },
+      {
+        "desc": "$g_{\\max}=14.5$",
+        "note": "A1"
+      },
+      {
+        "desc": "$14.5<15$ (hence the midday water temperature is never warm enough for Alex to swim)",
+        "note": "R1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 6,
+      "group_siblings": [
+        "c.i",
+        "c.ii"
+      ]
+    },
+    "question_max_mark_step1": 12
+  },
+  {
+    "part_id": "1fc5eca7-856f-4026-8ed8-ca95e3644a99",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 8,
+    "question_max_mark": 17,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "METHOD 1\n\n$x^{2}+2x+2=(x+1)^{2}+1$ A1\n\n$(x+1)^{2}\\geq0$ R1\n\n$(x+1)^{2}+1>0$ AG\n\nMETHOD 2\n\ndiscriminant $\\Delta=4-8(=-4)$ A1\n\n$\\Delta<0$ and concave up OR $\\Delta<0$ and coefficient of $x^{2}>0$ (may be seen in diagram) R1\n\nhence $x^{2}+2x+2>0$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "$x^{2}+2x+2=(x+1)^{2}+1$ (or discriminant $\\Delta=4-8(=-4)$)",
+        "note": "A1"
+      },
+      {
+        "desc": "$(x+1)^{2}\\geq 0$ (or $\\Delta<0$ and concave up OR $\\Delta<0$ and coefficient of $x^{2}>0$)",
+        "note": "R1"
+      },
+      {
+        "desc": "$(x+1)^{2}+1>0$ (hence $x^{2}+2x+2>0$)",
+        "note": "AG"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "02bdc13a-8728-4d4b-8161-13334c933722",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 8,
+    "question_max_mark": 17,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "$x>-1$ (accept $x\\geq-1$) A1\n\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$x>-1$ (accept $x\\geq -1$)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "87fc6267-c389-41bd-ac67-fb338dc4f901",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 8,
+    "question_max_mark": 17,
+    "part_label": "b.i",
+    "order_index": 2,
+    "markscheme_text": "$x=-1$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$x=-1$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "847d5f60-9983-4d2d-851b-bbcd2cbff9b6",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 8,
+    "question_max_mark": 17,
+    "part_label": "b.ii",
+    "order_index": 3,
+    "markscheme_text": "attempt to use the quotient rule\n\n$f''(x)=\\frac{2(x^{2}+2x+2)-(2x+2)(2x+2)}{(x^{2}+2x+2)^{2}}$\n\nNote: Award A1 for first term in numerator, A1 for second term in numerator (including the minus sign). If the numerator is correct, but the denominator is incorrect or missing, award M1A1A0.\n\n$f''(x)=\\frac{2x^{2}+4x+4-4x^{2}-8x-4}{(x^{2}+2x+2)^{2}}$ OR $f''(x)=\\frac{2x^{2}+4x+4-(4x^{2}+8x+4)}{(x^{2}+2x+2)^{2}}$\n\n$f''(x)=\\frac{-2x^{2}-4x}{(x^{2}+2x+2)^{2}}$",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to use the quotient rule",
+        "note": "M1"
+      },
+      {
+        "desc": "$f''(x)=\\frac{2(x^{2}+2x+2)-(2x+2)(2x+2)}{(x^{2}+2x+2)^{2}}$ (A1 for each term in numerator)",
+        "note": "A1A1"
+      },
+      {
+        "desc": "$f''(x)=\\frac{2x^{2}+4x+4-4x^{2}-8x-4}{(x^{2}+2x+2)^{2}}$ OR equivalent",
+        "note": "A1"
+      },
+      {
+        "desc": "$f''(x)=\\frac{-2x^{2}-4x}{(x^{2}+2x+2)^{2}}$",
+        "note": "AG"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "e65f20a1-b4c8-41fb-8987-4b7f2a61139c",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 8,
+    "question_max_mark": 17,
+    "part_label": "b.iii",
+    "order_index": 4,
+    "markscheme_text": "substituting $x=-1$ into $f''(x)$, clearly leading to positive numerator A1\n\n$f''(-1)=\\left(\\dfrac{-2+4}{1}\\right)(=2)$\n\n$f''(-1)>0$ R1\n\ntherefore this is a local minimum point AG\n\nNote: Do not award A0R1.\n\n[7 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "substituting $x=-1$ into $f''(x)$, clearly leading to positive numerator",
+        "note": "A1"
+      },
+      {
+        "desc": "$f''(-1)>0$",
+        "note": "R1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "b.i",
+        "b.ii",
+        "b.iii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "636b66e7-7d1c-4e7f-abf4-d37da5b1eee4",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "d.i",
+    "order_index": 3,
+    "markscheme_text": "$9,5,1,-3$ A1A1\n\nNote: Award A1 for each of 2nd term and 4th term",
+    "marks_breakdown": [
+      {
+        "desc": "$9,5,1,-3$ (A1 for each of 2nd term and 4th term)",
+        "note": "A1A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "d.i",
+        "d.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "2ae37740-3516-4915-9993-1ea9258eedfd",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "d.ii",
+    "order_index": 4,
+    "markscheme_text": "$9,3,1,\\dfrac{1}{3}$ A1A1\n\nNote: Award A1 for each of 2nd term and 4th term\n\n[4 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$9,3,1,\\frac{1}{3}$ (A1 for each of 2nd term and 4th term)",
+        "note": "A1A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "d.i",
+        "d.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "27394a73-5e50-4c43-a13a-9612888696d1",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "e.i",
+    "order_index": 5,
+    "markscheme_text": "attempt to find the difference between two consecutive terms (M1)\n\n$d=u_{2}-u_{1}=5+\\ln3-9-\\ln9$ OR $d=u_{3}-u_{2}=1+\\ln1-5-\\ln3$\n\n$\\ln9=2\\ln3$ OR $\\ln1=0$ OR $\\ln3-\\ln9=\\ln\\dfrac{1}{3}\\left(=\\ln3^{-1}=-\\ln3\\right)$ (seen anywhere) (A1)\n\n$d=-4-\\ln3$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to find the difference between two consecutive terms",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\ln 9=2\\ln 3$ OR $\\ln 1=0$ OR $\\ln 3-\\ln 9=\\ln\\frac{1}{3}\\left(=\\ln 3^{-1}=-\\ln 3\\right)$ (seen anywhere)",
+        "note": "A1"
+      },
+      {
+        "desc": "$d=-4-\\ln 3$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 6,
+      "group_siblings": [
+        "e.i",
+        "e.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "6c0e6c69-9c33-450d-b9c4-f306b234c556",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 1,
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "e.ii",
+    "order_index": 6,
+    "markscheme_text": "METHOD 1\n\nattempt to substitute first term and their common difference into $S_{10}$ (M1)\n\n$\\dfrac{10}{2}\\big(2(9+\\ln9)+9(-4-\\ln3)\\big)$ OR $\\dfrac{10}{2}\\big(2(9+2\\ln3)+9(-4-\\ln3)\\big)$ (or equivalent) A1\n\n$=5(-18-5\\ln3)$ (or equivalent in terms of $\\ln3$) A1\n\n$\\displaystyle\\sum_{i=1}^{10}u_{i}=-90-25\\ln3$ AG\n\nMETHOD 2\n\n$u_{10}=9+\\ln9+9(-4-\\ln3)(=-27+\\ln9-9\\ln3)$\n\nattempt to substitute first term and their $u_{10}$ into $S_{10}$ (M1)\n\n$\\dfrac{10}{2}\\big(2(9+\\ln9)+9(-4-\\ln3)\\big)$ OR $\\dfrac{10}{2}(9+\\ln9-27+\\ln9-9\\ln3)$ OR\n\n$\\dfrac{10}{2}\\big(2(9+2\\ln3)+9(-4-\\ln3)\\big)$ OR $\\dfrac{10}{2}(9+\\ln9-27-7\\ln3)$ (or equivalent) A1\n\n$=5(-18-5\\ln3)$ (or equivalent in terms of $\\ln3$) A1\n\n$\\displaystyle\\sum_{i=1}^{10}u_{i}=-90-25\\ln3$ AG\n\n[6 marks]\nTotal [16 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to substitute first term and their common difference (or $u_{10}$) into $S_{10}$",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\frac{10}{2}\\left(2(9+\\ln 9)+9(-4-\\ln 3)\\right)$ (or equivalent)",
+        "note": "A1"
+      },
+      {
+        "desc": "$=5(-18-5\\ln 3)$ (or equivalent in terms of $\\ln 3$)",
+        "note": "A1"
+      },
+      {
+        "desc": "$\\sum_{i=1}^{10}u_{i}=-90-25\\ln 3$",
+        "note": "AG"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 6,
+      "group_siblings": [
+        "e.i",
+        "e.ii"
+      ]
+    },
+    "question_max_mark_step1": 16
+  },
+  {
+    "part_id": "0b10671d-11a3-47a4-b868-6a0b0af361c2",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 1,
+    "question_max_mark": 6,
+    "part_label": "a.i",
+    "order_index": 0,
+    "markscheme_text": "4.45 (hours) A1",
+    "marks_breakdown": [
+      {
+        "desc": "4.45 (hours)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 6
+  },
+  {
+    "part_id": "87f4ed6a-d614-4a48-87ec-307f0c92f1b0",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 1,
+    "question_max_mark": 6,
+    "part_label": "a.ii",
+    "order_index": 1,
+    "markscheme_text": "one correct quartile either $Q_{1} = 1.9$ or $Q_{3} = 5.7$ (A1)\n\n$$IQR = 5.7 - 1.9$$\n$$= 3.8 \\text{ (hours)}$$ A1\n\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "one correct quartile either $Q_{1} = 1.9$ or $Q_{3} = 5.7$",
+        "note": "A1"
+      },
+      {
+        "desc": "$IQR = 5.7 - 1.9 = 3.8$ (hours)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 3,
+      "group_siblings": [
+        "a.i",
+        "a.ii"
+      ]
+    },
+    "question_max_mark_step1": 6
+  },
+  {
+    "part_id": "c4612191-0354-4eac-81eb-8cac35704245",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 7,
+    "question_max_mark": 14,
+    "part_label": "d.i",
+    "order_index": 3,
+    "markscheme_text": "$P(40 < L < 56) = 0.902149...$ (may be seen in part (ii)) (A1)\n\nattempts to find $100 \\times P(40 < L < 56)$ with their probability (M1)\n\n$= 90.2149...$\n\n$= 90.2$ A1\n\nNote: Accept 90 or 91.\n\n[part of 5 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$P(40 < L < 56) = 0.902149...$",
+        "note": "A1"
+      },
+      {
+        "desc": "attempts to find $100 \\times P(40 < L < 56)$ with their probability",
+        "note": "M1"
+      },
+      {
+        "desc": "$= 90.2$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 5,
+      "group_siblings": [
+        "d.i",
+        "d.ii"
+      ]
+    },
+    "question_max_mark_step1": 14
+  },
+  {
+    "part_id": "311f6e72-6a11-432b-b30c-f9f02ee9fbec",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 7,
+    "question_max_mark": 14,
+    "part_label": "d.ii",
+    "order_index": 4,
+    "markscheme_text": "recognizes binomial distribution (M1)\n\n$X \\sim B(100, 0.902149...)$\n\n$P(X=95) = 0.038105...$\n\n$= 0.0381$ A1\n\n[5 marks total for (d)]",
+    "marks_breakdown": [
+      {
+        "desc": "recognizes binomial distribution",
+        "note": "M1"
+      },
+      {
+        "desc": "$= 0.0381$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 5,
+      "group_siblings": [
+        "d.i",
+        "d.ii"
+      ]
+    },
+    "question_max_mark_step1": 14
+  },
+  {
+    "part_id": "420bd492-8924-4bf5-83f0-a74e29908c5d",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "d.i",
+    "order_index": 3,
+    "markscheme_text": "$$\\frac{dL}{dx} = 30 - 12x - 5\\pi x \\quad \\left(= 30 - (12+5\\pi)x\\right) \\text{ (accept } \\frac{dL}{dx} = 30 - 27.7x \\text{ )}$$ (M1)A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempts to differentiate $L$",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\frac{dL}{dx} = 30 - 12x - 5\\pi x$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "d.i",
+        "d.ii",
+        "d.iii"
+      ]
+    },
+    "question_max_mark_step1": 15
+  },
+  {
+    "part_id": "bf34fcab-cb55-4653-bdcf-a7d6033398f4",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "d.ii",
+    "order_index": 4,
+    "markscheme_text": "recognition that $\\frac{dL}{dx} = 0$ (may be represented graphically) (M1)\n\n$x = 1.08272...$\n\n$$x = 1.08 \\left( = \\frac{30}{12+5\\pi}\\right) \\text{ (m)}$$ A1\n\ncorrect reasoning to justify a maximum R1\n\n$L$ is a quadratic (function of $x$) with a negative coefficient of $x^{2}$ (may be represented as a sketch indicating maximum point) OR\n\na clearly labelled sign diagram showing the change in gradient OR\n\n$$\\frac{d^{2}L}{dx^{2}} = -12 - 5\\pi \\; (= -27.7079...) \\; (< 0)$$",
+    "marks_breakdown": [
+      {
+        "desc": "recognition that $\\frac{dL}{dx} = 0$ (may be represented graphically)",
+        "note": "M1"
+      },
+      {
+        "desc": "$x = 1.08$ (m)",
+        "note": "A1"
+      },
+      {
+        "desc": "correct reasoning to justify a maximum",
+        "note": "R1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "d.i",
+        "d.ii",
+        "d.iii"
+      ]
+    },
+    "question_max_mark_step1": 15
+  },
+  {
+    "part_id": "86689648-70f6-40d1-83d2-96ea753c350e",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "d.iii",
+    "order_index": 5,
+    "markscheme_text": "attempts to substitute their value of $x$ into $h$ (M1)\n\n$h = 2.21654...$\n\n$$h = 2.22 \\left( = \\frac{30+10\\pi}{12+5\\pi}\\right) \\text{ (m)}$$ A1\n\n[7 marks]\nTotal [15 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempts to substitute their value of $x$ into $h$",
+        "note": "M1"
+      },
+      {
+        "desc": "$h = 2.22$ (m)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 7,
+      "group_siblings": [
+        "d.i",
+        "d.ii",
+        "d.iii"
+      ]
+    },
+    "question_max_mark_step1": 15
+  },
+  {
+    "part_id": "2d9f05da-fe56-45c6-bc12-2f562c9d7da9",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 9,
+    "question_max_mark": 17,
+    "part_label": "g.i",
+    "order_index": 6,
+    "markscheme_text": "$$w = \\left|0.05t^{2} + 1.1t + 18 - \\frac{20\\sin\\left(\\frac{\\pi t}{8}\\right)}{\\sin\\left(2.37-\\frac{\\pi t}{8}\\right)}\\right|$$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$w = \\left|0.05t^{2} + 1.1t + 18 - \\frac{20\\sin\\left(\\frac{\\pi t}{8}\\right)}{\\sin\\left(2.37-\\frac{\\pi t}{8}\\right)}\\right|$",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "g.i",
+        "g.ii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "bd0a0723-6d76-4601-9bc3-1bdb6defc6da",
+    "level": "SL",
+    "time_zone": "TZ2",
+    "paper_number": 2,
+    "question_number": 9,
+    "question_max_mark": 17,
+    "part_label": "g.ii",
+    "order_index": 7,
+    "markscheme_text": "attempts to solve $w = 0$ for $t$ (M1)\n\n$t = 3.34880... (12.7765...)$\n\n$t = 3.35$ (s) A1\n\n$22.2444...$\n\n$22.2$ (m) (south of $A$) A1\n\n[4 marks]\nTotal [17 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempts to solve $w = 0$ for $t$",
+        "note": "M1"
+      },
+      {
+        "desc": "$t = 3.35$ (s)",
+        "note": "A1"
+      },
+      {
+        "desc": "$22.2$ (m) (south of $A$)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": 4,
+      "group_siblings": [
+        "g.i",
+        "g.ii"
+      ]
+    },
+    "question_max_mark_step1": 17
+  },
+  {
+    "part_id": "5694dd32-dd90-429b-b46e-8c15c26b2bf6",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 3,
+    "question_number": 2,
+    "question_max_mark": 28,
+    "part_label": "h",
+    "order_index": 8,
+    "markscheme_text": "METHOD 1\n$$x^{4}-mx^{3}+nx=-\\frac{m^{3}}{8}x+nx$$\n\nattempt to rearrange this equation to equal zero (M1)\n\n$$x^{4}-mx^{3}+\\frac{m^{3}}{8}x=0$$\n\nrecognizing their $(x-x_{C})$ is a factor of this expression (M1)\n\n$$x\\left(x-\\frac{m}{2}\\right)\\left(x^{2}-\\frac{m}{2}x-\\frac{m^{2}}{4}\\right)(=0)\\ \\text{OR equivalent}$$ A1M1A1\n\nNote: Award A1 for $x\\left(x-\\frac{m}{2}\\right)$, M1A1 for $\\left(x^{2}-\\frac{m}{2}x-\\frac{m^{2}}{4}\\right)$.\nIf a candidate divides by $x$ without justification, do not award the first A1, but all subsequent marks can still be awarded.\n\nuse of quadratic formula to find roots, $x_{A}$ (and $x_{D}$), of the quadratic M1\n\n$$x_{A}=\\frac{\\frac{m}{2}-\\sqrt{\\frac{m^{2}}{4}+m^{2}}}{2}\\ \\text{OR equivalent}$$ A1\n\nNote: Condone a $\\pm$ in place of the minus sign, provided given answer is restated.\n\n$$x_{A}=\\frac{m}{4}-\\frac{m}{4}\\sqrt{5}$$ AG\n\nNote: Award (M1)(M0)A0M0A0M0A0 for attempting to verify the given answer satisfies $x^{4}-mx^{3}+nx=-\\frac{m^{3}}{8}x+nx$.\n\nMETHOD 2\n$$x^{4}-mx^{3}+nx=-\\frac{m^{3}}{8}x+nx$$\n\nattempt to rearrange this equation to equal zero (M1)\n\n$$x^{4}-mx^{3}+\\frac{m^{3}}{8}x=0$$\n\n$$x\\left(x^{3}-mx^{2}+\\frac{m^{3}}{8}\\right)=0$$\n\nRecognise that their $x_{C}$ is a root of this equation (M1)\n\nAttempt to find sum and product of roots (M1)\n\n$$x_{A}+x_{D}+\\frac{m}{2}=m\\ \\text{AND}\\ x_{A}\\times x_{D}\\times\\frac{m}{2}=-\\frac{m^{3}}{8}$$ A1\n\n$$x_{A}\\times\\left(\\frac{m}{2}-x_{A}\\right)\\times\\frac{m}{2}=-\\frac{m^{3}}{8}$$\n\n$$x_{A}^{2}-\\frac{m}{2}x_{A}-\\frac{m^{2}}{4}=0$$ A1\n\nuse of quadratic formula to find roots, $x_{A}$ (and $x_{D}$), of the quadratic M1\n\n$$x_{A}=\\frac{\\frac{m}{2}-\\sqrt{\\frac{m^{2}}{4}+m^{2}}}{2}\\ \\text{OR equivalent}$$ A1\n\nNote: Condone a $\\pm$ in place of the minus sign, provided given answer is restated.\n\n$$x_{A}=\\frac{m}{4}-\\frac{m}{4}\\sqrt{5}$$ AG\n[7 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to rearrange this equation to equal zero",
+        "note": "M1"
+      },
+      {
+        "desc": "recognizing their $(x - x_{C})$ is a factor of this expression (or recognizing their $x_{C}$ is a root, Method 2)",
+        "note": "M1"
+      },
+      {
+        "desc": "$x\\left(x - \\frac{m}{2}\\right)$",
+        "note": "A1"
+      },
+      {
+        "desc": "factoring/finding quadratic (attempt to find sum and product of roots in Method 2)",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\left(x^{2} - \\frac{m}{2}x - \\frac{m^{2}}{4}\\right)$",
+        "note": "A1"
+      },
+      {
+        "desc": "use of quadratic formula to find roots, $x_{A}$ (and $x_{D}$), of the quadratic",
+        "note": "M1"
+      },
+      {
+        "desc": "$x_{A} = \\frac{\\frac{m}{2} - \\sqrt{\\frac{m^{2}}{4} + m^{2}}}{2}$ OR equivalent",
+        "note": "A1"
+      },
+      {
+        "desc": "$x_{A} = \\frac{m}{4} - \\frac{m}{4}\\sqrt{5}$",
+        "note": "AG"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": null,
+      "group_siblings": [
+        "h"
+      ]
+    },
+    "force_review": true
+  },
+  {
+    "part_id": "52a51a25-2759-46bb-b0ce-804c8f45dd1c",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 3,
+    "question_number": 2,
+    "question_max_mark": 28,
+    "part_label": "i",
+    "order_index": 9,
+    "markscheme_text": "$$\\frac{0-\\left(\\frac{m}{4}-\\frac{m}{4}\\sqrt{5}\\right)}{\\frac{m}{2}-0}$$ (A1)\n\n$$=\\frac{\\sqrt{5}-1}{2}$$ A1\n\nNote: Answer must be exact.\n[2 marks]\nTotal [28 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$\\frac{0 - \\left(\\frac{m}{4} - \\frac{m}{4}\\sqrt{5}\\right)}{\\frac{m}{2} - 0}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$= \\frac{\\sqrt{5} - 1}{2}$ (exact)",
+        "note": "A1"
+      }
+    ],
+    "step1": {
+      "own_bracket": null,
+      "group_combined_bracket": null,
+      "group_siblings": [
+        "i"
+      ]
+    },
+    "force_review": true
+  }
+]

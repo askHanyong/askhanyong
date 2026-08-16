@@ -1,0 +1,24 @@
+[
+  {
+    "part_id": "5694dd32-dd90-429b-b46e-8c15c26b2bf6",
+    "paper_label": "HL24MayTZ1P3",
+    "question_number": 2,
+    "part_label": "h",
+    "derived_value": 7,
+    "tally_notes": "Printed [7 marks] confirms the tally; matches marks_breakdown (M1+M1+A1+M1+A1+M1+A1 = 7, AG = 0). METHOD 2 also totals 7. Siblings sum to 19, so 19 + 7 = 26 of the 28 maximum, leaving 2 marks for part (i) \u2014 consistent.",
+    "reasons": [
+      "STEP1 could not locate this part on the paper (structural parser limit)"
+    ]
+  },
+  {
+    "part_id": "52a51a25-2759-46bb-b0ce-804c8f45dd1c",
+    "paper_label": "HL24MayTZ1P3",
+    "question_number": 2,
+    "part_label": "i",
+    "derived_value": 2,
+    "tally_notes": "Printed [2 marks] matches marks_breakdown (A1+A1). Known siblings sum to 19; with this part (2) total is 21, leaving 7 for part (h), consistent with the stated question maximum of 28.",
+    "reasons": [
+      "STEP1 could not locate this part on the paper (structural parser limit)"
+    ]
+  }
+]

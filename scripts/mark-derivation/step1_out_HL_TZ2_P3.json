@@ -1,0 +1,132 @@
+{
+  "1": {
+    "max_mark": 24,
+    "parts": {
+      "a.i": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a.i",
+          "a.ii",
+          "a.iii"
+        ]
+      },
+      "a.ii": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a.i",
+          "a.ii",
+          "a.iii"
+        ]
+      },
+      "a.iii": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a.i",
+          "a.ii",
+          "a.iii"
+        ]
+      },
+      "b": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      },
+      "d": {
+        "own_bracket": 5,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "d"
+        ]
+      },
+      "e": {
+        "own_bracket": 7,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "e"
+        ]
+      }
+    }
+  },
+  "2": {
+    "max_mark": 31,
+    "parts": {
+      "a": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 6,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      },
+      "d": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "d"
+        ]
+      },
+      "e.i": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "e.i",
+          "e.ii"
+        ]
+      },
+      "e.ii": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "e.i",
+          "e.ii"
+        ]
+      },
+      "f": {
+        "own_bracket": 6,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "f"
+        ]
+      },
+      "g": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "g"
+        ]
+      },
+      "h": {
+        "own_bracket": 7,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "h"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+[
+  {
+    "part_id": "5694dd32-dd90-429b-b46e-8c15c26b2bf6",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 3,
+    "question_number": 2,
+    "question_max_mark": 28,
+    "part_label": "h",
+    "order_index": 8,
+    "markscheme_text": "METHOD 1\n$$x^{4}-mx^{3}+nx=-\\frac{m^{3}}{8}x+nx$$\n\nattempt to rearrange this equation to equal zero (M1)\n\n$$x^{4}-mx^{3}+\\frac{m^{3}}{8}x=0$$\n\nrecognizing their $(x-x_{C})$ is a factor of this expression (M1)\n\n$$x\\left(x-\\frac{m}{2}\\right)\\left(x^{2}-\\frac{m}{2}x-\\frac{m^{2}}{4}\\right)(=0)\\ \\text{OR equivalent}$$ A1M1A1\n\nNote: Award A1 for $x\\left(x-\\frac{m}{2}\\right)$, M1A1 for $\\left(x^{2}-\\frac{m}{2}x-\\frac{m^{2}}{4}\\right)$.\nIf a candidate divides by $x$ without justification, do not award the first A1, but all subsequent marks can still be awarded.\n\nuse of quadratic formula to find roots, $x_{A}$ (and $x_{D}$), of the quadratic M1\n\n$$x_{A}=\\frac{\\frac{m}{2}-\\sqrt{\\frac{m^{2}}{4}+m^{2}}}{2}\\ \\text{OR equivalent}$$ A1\n\nNote: Condone a $\\pm$ in place of the minus sign, provided given answer is restated.\n\n$$x_{A}=\\frac{m}{4}-\\frac{m}{4}\\sqrt{5}$$ AG\n\nNote: Award (M1)(M0)A0M0A0M0A0 for attempting to verify the given answer satisfies $x^{4}-mx^{3}+nx=-\\frac{m^{3}}{8}x+nx$.\n\nMETHOD 2\n$$x^{4}-mx^{3}+nx=-\\frac{m^{3}}{8}x+nx$$\n\nattempt to rearrange this equation to equal zero (M1)\n\n$$x^{4}-mx^{3}+\\frac{m^{3}}{8}x=0$$\n\n$$x\\left(x^{3}-mx^{2}+\\frac{m^{3}}{8}\\right)=0$$\n\nRecognise that their $x_{C}$ is a root of this equation (M1)\n\nAttempt to find sum and product of roots (M1)\n\n$$x_{A}+x_{D}+\\frac{m}{2}=m\\ \\text{AND}\\ x_{A}\\times x_{D}\\times\\frac{m}{2}=-\\frac{m^{3}}{8}$$ A1\n\n$$x_{A}\\times\\left(\\frac{m}{2}-x_{A}\\right)\\times\\frac{m}{2}=-\\frac{m^{3}}{8}$$\n\n$$x_{A}^{2}-\\frac{m}{2}x_{A}-\\frac{m^{2}}{4}=0$$ A1\n\nuse of quadratic formula to find roots, $x_{A}$ (and $x_{D}$), of the quadratic M1\n\n$$x_{A}=\\frac{\\frac{m}{2}-\\sqrt{\\frac{m^{2}}{4}+m^{2}}}{2}\\ \\text{OR equivalent}$$ A1\n\nNote: Condone a $\\pm$ in place of the minus sign, provided given answer is restated.\n\n$$x_{A}=\\frac{m}{4}-\\frac{m}{4}\\sqrt{5}$$ AG\n[7 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to rearrange this equation to equal zero",
+        "note": "M1"
+      },
+      {
+        "desc": "recognizing their $(x - x_{C})$ is a factor of this expression (or recognizing their $x_{C}$ is a root, Method 2)",
+        "note": "M1"
+      },
+      {
+        "desc": "$x\\left(x - \\frac{m}{2}\\right)$",
+        "note": "A1"
+      },
+      {
+        "desc": "factoring/finding quadratic (attempt to find sum and product of roots in Method 2)",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\left(x^{2} - \\frac{m}{2}x - \\frac{m^{2}}{4}\\right)$",
+        "note": "A1"
+      },
+      {
+        "desc": "use of quadratic formula to find roots, $x_{A}$ (and $x_{D}$), of the quadratic",
+        "note": "M1"
+      },
+      {
+        "desc": "$x_{A} = \\frac{\\frac{m}{2} - \\sqrt{\\frac{m^{2}}{4} + m^{2}}}{2}$ OR equivalent",
+        "note": "A1"
+      },
+      {
+        "desc": "$x_{A} = \\frac{m}{4} - \\frac{m}{4}\\sqrt{5}$",
+        "note": "AG"
+      }
+    ]
+  },
+  {
+    "part_id": "52a51a25-2759-46bb-b0ce-804c8f45dd1c",
+    "level": "HL",
+    "time_zone": "TZ1",
+    "paper_number": 3,
+    "question_number": 2,
+    "question_max_mark": 28,
+    "part_label": "i",
+    "order_index": 9,
+    "markscheme_text": "$$\\frac{0-\\left(\\frac{m}{4}-\\frac{m}{4}\\sqrt{5}\\right)}{\\frac{m}{2}-0}$$ (A1)\n\n$$=\\frac{\\sqrt{5}-1}{2}$$ A1\n\nNote: Answer must be exact.\n[2 marks]\nTotal [28 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$\\frac{0 - \\left(\\frac{m}{4} - \\frac{m}{4}\\sqrt{5}\\right)}{\\frac{m}{2} - 0}$",
+        "note": "A1"
+      },
+      {
+        "desc": "$= \\frac{\\sqrt{5} - 1}{2}$ (exact)",
+        "note": "A1"
+      }
+    ]
+  }
+]

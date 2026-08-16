@@ -1,0 +1,338 @@
+{
+  "1": {
+    "max_mark": 6,
+    "parts": {
+      "a": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "2": {
+    "max_mark": 5,
+    "parts": {
+      "a": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "3": {
+    "max_mark": 6,
+    "parts": {
+      "a": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      }
+    }
+  },
+  "4": {
+    "max_mark": 6,
+    "parts": {
+      "a": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      }
+    }
+  },
+  "5": {
+    "max_mark": 5,
+    "parts": {
+      "": {
+        "own_bracket": 5,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          ""
+        ]
+      }
+    }
+  },
+  "6": {
+    "max_mark": 6,
+    "parts": {
+      "": {
+        "own_bracket": 6,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          ""
+        ]
+      }
+    }
+  },
+  "7": {
+    "max_mark": 5,
+    "parts": {
+      "": {
+        "own_bracket": 5,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          ""
+        ]
+      }
+    }
+  },
+  "8": {
+    "max_mark": 10,
+    "parts": {
+      "a.i": {
+        "own_bracket": null,
+        "group_combined_bracket": 7,
+        "group_siblings": [
+          "a.i",
+          "a.ii"
+        ]
+      },
+      "a.ii": {
+        "own_bracket": null,
+        "group_combined_bracket": 7,
+        "group_siblings": [
+          "a.i",
+          "a.ii"
+        ]
+      },
+      "b": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      }
+    }
+  },
+  "9": {
+    "max_mark": 8,
+    "parts": {
+      "": {
+        "own_bracket": 8,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          ""
+        ]
+      }
+    }
+  },
+  "10": {
+    "max_mark": 15,
+    "parts": {
+      "a": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      },
+      "d": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "d"
+        ]
+      },
+      "e": {
+        "own_bracket": 5,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "e"
+        ]
+      }
+    }
+  },
+  "11": {
+    "max_mark": 17,
+    "parts": {
+      "a": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      },
+      "d": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "d"
+        ]
+      },
+      "e": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "e"
+        ]
+      },
+      "f": {
+        "own_bracket": 1,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "f"
+        ]
+      },
+      "g.i": {
+        "own_bracket": null,
+        "group_combined_bracket": 4,
+        "group_siblings": [
+          "g.i",
+          "g.ii"
+        ]
+      },
+      "g.ii": {
+        "own_bracket": null,
+        "group_combined_bracket": 4,
+        "group_siblings": [
+          "g.i",
+          "g.ii"
+        ]
+      }
+    }
+  },
+  "12": {
+    "max_mark": 21,
+    "parts": {
+      "a": {
+        "own_bracket": 3,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "a"
+        ]
+      },
+      "b": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "b"
+        ]
+      },
+      "c": {
+        "own_bracket": 4,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "c"
+        ]
+      },
+      "d": {
+        "own_bracket": 5,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "d"
+        ]
+      },
+      "e.i": {
+        "own_bracket": null,
+        "group_combined_bracket": 3,
+        "group_siblings": [
+          "e.i",
+          "e.ii",
+          "e.iii"
+        ]
+      },
+      "e.ii": {
+        "own_bracket": null,
+        "group_combined_bracket": 3,
+        "group_siblings": [
+          "e.i",
+          "e.ii",
+          "e.iii"
+        ]
+      },
+      "e.iii": {
+        "own_bracket": null,
+        "group_combined_bracket": 3,
+        "group_siblings": [
+          "e.i",
+          "e.ii",
+          "e.iii"
+        ]
+      },
+      "f": {
+        "own_bracket": 2,
+        "group_combined_bracket": null,
+        "group_siblings": [
+          "f"
+        ]
+      }
+    }
+  }
+}
