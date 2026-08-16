@@ -1,0 +1,270 @@
+[
+  {
+    "part_id": "44c5c7ae-e09a-4afe-96b1-f65a4d30b742",
+    "job": {
+      "part_id": "44c5c7ae-e09a-4afe-96b1-f65a4d30b742",
+      "paper_label": "SL22NovTZ0P2",
+      "question_number": 9,
+      "question_max_mark": 16,
+      "part_label": "c.i",
+      "markscheme_text": "recognizing conditional probability (M1)\n\n$P(T < 55 | T > 40)$\n\nNote: Award (M1) for an expression or description in context. Accept \n$P(T > 40 | T < 55)$ but do not accept just $P(A|B)$.\n\n$\\frac{P(40 < T < 55)}{P(T > 40)}$ (A1)\n\n$\\frac{0.461944...}{0.574136...}$ (A1)\n\n0.804590...\n\n$P(T < 55 | T > 40) = 0.804590...$\n\n= 0.805 A1",
+      "marks_breakdown": [
+        {
+          "desc": "recognizing conditional probability",
+          "note": "M1"
+        },
+        {
+          "desc": "$P(40<T<55)/P(T>40)$",
+          "note": "A1"
+        },
+        {
+          "desc": "$0.461944.../0.574136...$",
+          "note": "A1"
+        },
+        {
+          "desc": "$P(T<55|T>40) = 0.805$",
+          "note": "A1"
+        }
+      ],
+      "currently_stored_marks": 4,
+      "other_siblings_in_question": [
+        {
+          "part_label": "a",
+          "marks": 2
+        },
+        {
+          "part_label": "d",
+          "marks": 4
+        },
+        {
+          "part_label": "b",
+          "marks": 3
+        },
+        {
+          "part_label": "c.ii",
+          "marks": 3
+        }
+      ]
+    },
+    "run1": {
+      "method_used": "single path",
+      "branch_chosen": "none",
+      "steps": [
+        "Recognizing conditional probability (M1) = 1",
+        "Setting up P(40<T<55)/P(T>40) (A1) = 1",
+        "Correct numerical values 0.461944.../0.574136... (A1) = 1",
+        "Final answer 0.805 (A1) = 1"
+      ],
+      "derived_value": 4,
+      "tally_notes": "Siblings total 2+3+3+4 = 12; question max is 16, leaving exactly 4 for (c.i), which matches the M1+A1+A1+A1 breakdown."
+    },
+    "run2": {
+      "method_used": "single path",
+      "branch_chosen": "none",
+      "steps": [
+        "recognizing conditional probability (M1) = 1",
+        "correct conditional probability expression P(40<T<55)/P(T>40) (A1) = 1",
+        "correct numerical values 0.461944.../0.574136... (A1) = 1",
+        "final answer 0.805 (A1) = 1"
+      ],
+      "derived_value": 4,
+      "tally_notes": "Siblings (a)=2, (b)=3, (c.ii)=3, (d)=4 sum to 12; question max 16 leaves exactly 4 for (c.i), matching the M1+A1+A1+A1 breakdown."
+    },
+    "agree": true,
+    "matches_stored": true,
+    "error": null
+  },
+  {
+    "part_id": "668bbfad-edad-49c0-8b15-bf3b13447596",
+    "job": {
+      "part_id": "668bbfad-edad-49c0-8b15-bf3b13447596",
+      "paper_label": "SL22NovTZ0P2",
+      "question_number": 8,
+      "question_max_mark": 13,
+      "part_label": "b.i",
+      "markscheme_text": "recognizing that the sum of the angles of a kite is $2\\pi$ (M1)\n\n$D\\hat{O}E + O\\hat{E}A + E\\hat{A}D + A\\hat{D}O = 2\\pi$ OR $2\\alpha + 2\\cdot \\frac{\\pi}{2} + D\\hat{O}E = 2\\pi$\n\n$D\\hat{O}E = \\pi - 2\\alpha$ A1\n\nNote: Award M1A0 if candidate uses degrees (i.e. \n$D\\hat{O}E + O\\hat{E}A + E\\hat{A}D + A\\hat{D}O = 360^{\\circ}$ or \n$2\\alpha + 2\\cdot \\frac{\\pi}{2} + D\\hat{O}E = 360^{\\circ}$) and obtains \n$D\\hat{O}E = 180^{\\circ} - 2\\alpha$.",
+      "marks_breakdown": [
+        {
+          "desc": "recognizing that the sum of the angles of a kite is $2\\pi$",
+          "note": "M1"
+        },
+        {
+          "desc": "$\\widehat{DOE} = \\pi - 2\\alpha$",
+          "note": "A1"
+        }
+      ],
+      "currently_stored_marks": 2,
+      "other_siblings_in_question": [
+        {
+          "part_label": "a",
+          "marks": 4
+        },
+        {
+          "part_label": "b.ii",
+          "marks": 3
+        },
+        {
+          "part_label": "c",
+          "marks": 4
+        }
+      ]
+    },
+    "run1": {
+      "method_used": "single path",
+      "branch_chosen": "none",
+      "steps": [
+        "recognizing sum of angles of a kite is 2π (M1) = 1",
+        "DÔE = π − 2α (A1) = 1"
+      ],
+      "derived_value": 2,
+      "tally_notes": "Siblings 4 + 3 + 4 = 11; 13 − 11 = 2, matching M1 + A1 = 2. Consistent with marks_breakdown."
+    },
+    "run2": {
+      "method_used": "single path",
+      "branch_chosen": "none",
+      "steps": [
+        "Recognizing sum of angles of a kite is 2π (M1) = 1",
+        "DÔE = π − 2α (A1) = 1"
+      ],
+      "derived_value": 2,
+      "tally_notes": "Siblings 4 + 3 + 4 = 11; 13 − 11 = 2, matching M1 + A1 = 2. The OR in the second line is just an alternative statement of the same unmarked working, not a mark-bearing branch."
+    },
+    "agree": true,
+    "matches_stored": true,
+    "error": null
+  },
+  {
+    "part_id": "74eda57a-3db0-4715-8793-cb461c3848ec",
+    "job": {
+      "part_id": "74eda57a-3db0-4715-8793-cb461c3848ec",
+      "paper_label": "SL22NovTZ0P2",
+      "question_number": 8,
+      "question_max_mark": 13,
+      "part_label": "b.ii",
+      "markscheme_text": "valid approach to find the area of R (M1)\n\narea of kite – area of sector OR 2(area of triangle AOE − 0.5 area of sector\nOED)\n\nArea of sector = $\\frac{1}{2}r^{2}\\cdot D\\hat{O}E \\left(=\\frac{1}{2}r^{2}\\left(\\pi - 2\\alpha\\right)\\right)$ seen anywhere (A1)\n\nArea of R = $\\frac{r^{2}}{\\tan \\alpha} - \\frac{1}{2}r^{2}\\left(\\pi - 2\\alpha\\right)$ A1\n\nNote: Accept \n$\\frac{r^{2}}{\\tan \\alpha} - \\frac{1}{2}r^{2}\\cdot D\\hat{O}E$.\n\n[5 marks]\n\ncontinued…",
+      "marks_breakdown": [
+        {
+          "desc": "valid approach to find the area of $R$",
+          "note": "M1"
+        },
+        {
+          "desc": "$\\text{Area of sector} = \\frac{1}{2}r^2 \\cdot \\widehat{DOE}$ $(=\\frac{1}{2}r^2(\\pi-2\\alpha))$ seen anywhere",
+          "note": "A1"
+        },
+        {
+          "desc": "$\\text{Area of } R = \\frac{r^2}{\\tan \\alpha} - \\frac{1}{2}r^2(\\pi-2\\alpha)$",
+          "note": "A1"
+        }
+      ],
+      "currently_stored_marks": 3,
+      "other_siblings_in_question": [
+        {
+          "part_label": "a",
+          "marks": 4
+        },
+        {
+          "part_label": "b.i",
+          "marks": 2
+        },
+        {
+          "part_label": "c",
+          "marks": 4
+        }
+      ]
+    },
+    "run1": {
+      "method_used": "single path",
+      "branch_chosen": "none (the OR shown is just alternative descriptions of the same valid approach, not separate mark-bearing branches)",
+      "steps": [
+        "Valid approach to find area of R (kite − sector) — M1 = 1",
+        "Area of sector expression seen anywhere — A1 = 1",
+        "Correct expression for Area of R — A1 = 1"
+      ],
+      "derived_value": 3,
+      "tally_notes": "Codes total M1+A1+A1 = 3, matching marks_breakdown. The '[5 marks]' tag in the text is a cumulative total for part (b) (b.i = 2 plus b.ii = 3). Reconciles with question max: 4 (a) + 2 (b.i) + 3 (b.ii) + 4 (c) = 13."
+    },
+    "run2": {
+      "method_used": "single path",
+      "branch_chosen": "none (the OR shown is just alternative wording of the same valid approach, worth one M1)",
+      "steps": [
+        "Valid approach to find area of R (kite − sector, or 2×(triangle − half sector)) M1 = 1",
+        "Area of sector expression seen anywhere A1 = 1",
+        "Final expression for area of R A1 = 1"
+      ],
+      "derived_value": 3,
+      "tally_notes": "Codes total M1+A1+A1 = 3, matching the structured breakdown. Question max 13 minus confirmed siblings (4 + 2 + 4 = 10) leaves exactly 3 for (b.ii). The '[5 marks]' printed in the markscheme is the cumulative total for part (b) (b.i 2 + b.ii 3), not for this part alone."
+    },
+    "agree": true,
+    "matches_stored": true,
+    "error": null
+  },
+  {
+    "part_id": "9f2e72e0-e383-470a-aefd-7f09fe0fedc9",
+    "job": {
+      "part_id": "9f2e72e0-e383-470a-aefd-7f09fe0fedc9",
+      "paper_label": "SL22NovTZ0P2",
+      "question_number": 9,
+      "question_max_mark": 16,
+      "part_label": "c.ii",
+      "markscheme_text": "recognizing binomial probability (M1)\n\n$X \\sim B(n, p)$\n\n$n = 10$ and $p = 0.804589...$ (A1)\n\n$0.0242111..., 0.0240188...$using $p = 0.805$\n\n$P(X = 5) = 0.0242$ A1\n\n[7 marks]\n\ncontinued…",
+      "marks_breakdown": [
+        {
+          "desc": "recognizing binomial probability",
+          "note": "M1"
+        },
+        {
+          "desc": "$n = 10$ and $p = 0.804589...$",
+          "note": "A1"
+        },
+        {
+          "desc": "$P(X=5) = 0.0242$",
+          "note": "A1"
+        }
+      ],
+      "currently_stored_marks": 3,
+      "other_siblings_in_question": [
+        {
+          "part_label": "c.i",
+          "marks": 4
+        },
+        {
+          "part_label": "a",
+          "marks": 2
+        },
+        {
+          "part_label": "d",
+          "marks": 4
+        },
+        {
+          "part_label": "b",
+          "marks": 3
+        }
+      ]
+    },
+    "run1": {
+      "method_used": "single path",
+      "branch_chosen": "none",
+      "steps": [
+        "recognizing binomial probability M1 = 1",
+        "n = 10 and p = 0.804589... (A1) = 1",
+        "P(X = 5) = 0.0242 A1 = 1"
+      ],
+      "derived_value": 3,
+      "tally_notes": "Siblings total 4+2+4+3 = 13; 16 - 13 = 3, matching M1+A1+A1. The '[7 marks]' label covers the whole of part (c) (c.i 4 + c.ii 3 = 7), not this part alone."
+    },
+    "run2": {
+      "method_used": "single path",
+      "branch_chosen": "none",
+      "steps": [
+        "recognizing binomial probability (M1) = 1",
+        "n = 10 and p = 0.804589... (A1) = 1",
+        "P(X = 5) = 0.0242 (A1) = 1"
+      ],
+      "derived_value": 3,
+      "tally_notes": "M1+A1+A1 = 3. The '[7 marks]' label is the cumulative total for part (c) as a whole (c.i 4 + c.ii 3 = 7). Reconciles with the question maximum: 2 (a) + 3 (b) + 4 (c.i) + 3 (c.ii) + 4 (d) = 16."
+    },
+    "agree": true,
+    "matches_stored": true,
+    "error": null
+  }
+]

@@ -1,0 +1,571 @@
+{
+  "SL2023MayTZ2P1": [
+    {
+      "part_id": "a9b38425-bd32-4aca-b219-f2e057faee1c",
+      "question_number": 7,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "$$f'(x) = \\frac{1}{2}(x+2)\\left(=\\frac{1}{2}x+1\\right)$$ (A1)\nsubstituting $x = 0$ into their derivative (M1)\n$f'(0) = 1$\ngradient of normal is $-1$ (may be seen in their equation) A1\n$y = -x - 4$ (ac"
+    },
+    {
+      "part_id": "e83a0cfa-dfd0-4b00-bab8-f150c8dd7d6d",
+      "question_number": 9,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "$$\\frac{dA}{dx} = 0 \\left(\\frac{9-3x-2x^{2}}{\\sqrt{9-x^{2}}} = 0\\right)$$ (M1)\n\nattempts to solve $9 - 3x - 2x^{2} = 0$ (or equivalent) (M1)\n\n$-(2x-3)(x+3) = 0$ OR $$x = \\frac{3\\pm\\sqrt{(-3)^{2}-4(-2)"
+    },
+    {
+      "part_id": "be82c92c-4282-42b9-80cb-2a2f96f59f6a",
+      "question_number": 5,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "$$A = \\int_{0}^{c} \\frac{x}{x^{2}+2} \\, dx$$\n\nEITHER\nattempts to integrate by inspection or substitution using $u = x^{2}+2$ or $u = x^{2}$ (M1)\n\nNote: If candidate simply states $u = x^{2}+2$ or $u ="
+    },
+    {
+      "part_id": "15833925-4e37-42df-8911-bf7e5b72707e",
+      "question_number": 8,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1 (using values from part (a))\n\n$$\\frac{b}{\\sin\\theta} = \\frac{a}{\\sin 2\\theta}$$\n\nattempt to use sine rule with their values from part (a) (M1)\n$$\\frac{b}{\\left(\\frac{\\sqrt{5}}{3}\\right)} = \\f"
+    },
+    {
+      "part_id": "ebf14226-7bc4-4dac-a4f8-88dc65915b71",
+      "question_number": 1,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempts to find perimeter (M1)\narc+2 radius OR $10 + 4 + 4$\n$=18$ (cm) A1\n[2 marks]"
+    },
+    {
+      "part_id": "33caa965-4645-4543-ac41-90109dc8e741",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$10 = 4\\theta$ (A1)\n$$\\theta = \\frac{10}{4} \\left( = \\frac{5}{2}, 2.5 \\right)$$\nA1\n[2 marks]"
+    },
+    {
+      "part_id": "b7ea3af7-8baa-4b8c-9d21-d9ede3ff0d2e",
+      "question_number": 1,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "area $= \\frac{1}{2}\\left(\\frac{10}{4}\\right)(4^{2})$ $(=1.25 \\times 16)$ (A1)\n$= 20$ (cm$^{2}$) A1\n[2 marks]\nTotal [6 marks]"
+    },
+    {
+      "part_id": "7a2fbed4-9157-4966-85be-ddc22bde7f8e",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$u_{1} + 3d = u_{4}$ (M1)\n$0.6 + 3d = 0.15$\n$d = -0.15$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "abd12ada-59cc-4a2b-87c7-510f9f1b0167",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n$u_{2} = 0.45$ or $u_{3} = 0.3$ (may be seen in their equation) (A1)\nsumming their probabilities to 1 (seen anywhere) (M1)\n$$\\frac{0.6}{k} + \\frac{u_{2}}{k} + \\frac{u_{3}}{k} + \\frac{0.15}{k}"
+    },
+    {
+      "part_id": "bbe642d7-db03-46f7-8bb9-919969271ce7",
+      "question_number": 3,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "(i) $x = 2$ A1\n(ii) $y = 1$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "157b83a2-5e4b-4986-99b3-5646807a14c5",
+      "question_number": 3,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "(i) $\\left(0, \\frac{3}{2}\\right)$ A1\n(ii) $(3, 0)$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "46afe2ce-a76c-4e9e-aea2-b0f32f5875ca",
+      "question_number": 3,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "two correct branches with correct asymptotic behaviour and intercepts clearly shown A1\n[1 mark]\nTotal [5 marks]"
+    },
+    {
+      "part_id": "97307360-1c69-4527-88c7-63c6a901cc0c",
+      "question_number": 4,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "substitutes into $P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$ to form\n$0.55 = 0.4 + P(B) - P(A \\cap B)$ (or equivalent) (A1)\n\nsubstitutes into $P(A|B) = \\frac{P(A \\cap B)}{P(B)}$ to form $0.25 = \\frac{P("
+    },
+    {
+      "part_id": "8e9757cd-489d-49a8-b594-0e9fa69b69b2",
+      "question_number": 6,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "attempts to form $(g \\circ f)(x)$ (M1)\n$$[f(x)]^{2} + f(x) + 3$$ OR $(ax+b)^{2} + ax + b + 3$\n$$a^{2}x^{2} + 2abx + b^{2} + ax + b + 3 (=4x^{2} - 14x + 15)$$ (A1)\n\nequates their corresponding terms to"
+    },
+    {
+      "part_id": "50d01ea0-0bcc-447e-b528-3977d09a1716",
+      "question_number": 7,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$x = -2$ (must be an equation) A1\n[1 mark]"
+    },
+    {
+      "part_id": "9cd96dee-8de1-42ee-ba05-d564bbb9f484",
+      "question_number": 7,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$h = -2$, $k = -5$ A1A1\n[2 marks]"
+    },
+    {
+      "part_id": "3e3c8217-9cfe-4182-adea-a76e33832b13",
+      "question_number": 7,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "substituting $x = 0$ into $f(x)$ (M1)\n$$y = \\frac{1}{4}(0+2)^{2} - 5$$\n$y = -4$ (accept $P(0, -4)$) A1\n[2 marks]"
+    },
+    {
+      "part_id": "0559ed83-7618-4f56-8059-0eaeae85b1b0",
+      "question_number": 7,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "equating their $f(x)$ to their $L$ (M1)\n$$\\frac{1}{4}(x+2)^{2} - 5 = -x - 4$$\n$$\\frac{1}{4}x^{2} + 2x = 0$$ (or equivalent) (A1)\n\nvalid attempt to solve their quadratic (M1)\n$\\frac{1}{4}x(x+8) = 0$ OR"
+    },
+    {
+      "part_id": "dc779108-788d-460e-90bc-c5c0fa2bace4",
+      "question_number": 8,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "(i) attempt to use Pythagoras (M1)\n$$\\sin^{2}\\theta + \\left(\\frac{2}{3}\\right)^{2} = 1$$ OR $x^{2} + 2^{2} = 3^{2}$ OR right triangle with side 2 and hypotenuse 3\n$$\\sin\\theta = \\frac{\\sqrt{5}}{3}$$ A"
+    },
+    {
+      "part_id": "951b1ac6-5097-448a-b0ac-18bd3f60ae91",
+      "question_number": 8,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "METHOD 1 (using supplementary angles)\nrecognizing $\\hat{CAD}$ and $\\hat{BAC}$ are supplementary (M1)\nrecognizing supplementary angles have the same sine value (A1)\n$\\sin \\hat{CAD} = \\sin 2\\theta$\n$$\\s"
+    },
+    {
+      "part_id": "89439489-7294-44d2-ace2-4efde0db44c9",
+      "question_number": 8,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "METHOD 1 (using $\\hat{CAD}$ in area formula)\nrecognizing $\\hat{DCA} = \\theta$ (A1)\nrecognizing $AD = b \\left(=\\frac{3a}{4}\\right)$ (A1)\n\ncorrect substitution into area formula (must substitute express"
+    },
+    {
+      "part_id": "afc58ed9-e9be-4de3-a688-925083e51cca",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$y^{2} = 9 - x^{2}$ OR $y = \\pm\\sqrt{9-x^{2}}$ A1\n(since $y > 0$) $\\Rightarrow y = \\sqrt{9-x^{2}}$ AG\n[1 mark]"
+    },
+    {
+      "part_id": "df1196fc-78ac-4f9e-abbe-d9c03cc117f5",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$b = 2y \\left(=2\\sqrt{9-x^{2}}\\right)$ or $h = x+3$ (A1)\n\nattempts to substitute their base expression and height expression into $A = \\frac{1}{2}bh$ (M1)\n\n$$A = \\sqrt{9-x^{2}}(x+3)$$ (or equivalent) "
+    },
+    {
+      "part_id": "a1d3562f-99f9-4ab7-b5c6-c841cdb2e56a",
+      "question_number": 9,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempts to use the product rule to find $\\frac{dA}{dx}$ (M1)\n\nattempts to use the chain rule to find $\\frac{d}{dx}\\sqrt{9-x^{2}}$ (M1)\n\n$$\\left(\\frac{dA}{dx}=\\right)\\sqrt{9-x^{2}} + (3+x)\\left(\\frac{"
+    }
+  ],
+  "SL2023NovTZ2P2": [
+    {
+      "part_id": "bf55e0d0-24f2-49a9-b68f-b47fae0e1584",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nrecognizing the need to use inverse normal with $0.288, (1-0.434)$ or $0.434$ (M1)\n$\\mu + \\text{invNorm}(0.288)\\sigma = 94.6, \\mu + \\text{invNorm}(1-0.434)\\sigma = 98.1$ (or equivalent) (A1)("
+    },
+    {
+      "part_id": "7d10e8b2-20f3-4ebb-a38c-768d63f9be6a",
+      "question_number": 7,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$\\pi x^{2}h = 45$ (A1)\nattempt to rearrange AND substitute their $h$ into the expression for the total surface area (M1)\n$S = 2\\pi x\\left(\\frac{45}{\\pi x^{2}}\\right) + 4\\pi x^{2}$ A1\n$S = \\frac{90}{x}"
+    },
+    {
+      "part_id": "faf8210a-c46c-4de1-9074-dc224cb21d2f",
+      "question_number": 4,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "use of sector area formula to find area of at least one sector (M1)\n$\\frac{1}{2} \\times 5.2 \\times 100 - \\frac{1}{2} \\times 5.2 \\times r^{2}$ OR $10^{2}\\pi - \\frac{1}{2}10^{2} \\times (2\\pi - 5.2) - \\l"
+    },
+    {
+      "part_id": "36ea4493-be0d-4502-b92a-faf60f736b89",
+      "question_number": 1,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempt to find intersection of curve and their normal either graphically or analytically (M1)\nsketch showing intersection OR $x^{2} - 8x = 0.5x - 16.5$\n$(5.5, -13.8)$ (exact answer is $(5.5, -13.75)$"
+    },
+    {
+      "part_id": "79a50ada-9c29-4bda-b8fc-7c74358bc5c4",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$y + 15 = \\frac{1}{2}(x - 3)$ ($y = 0.5x - 16.5$) A1"
+    },
+    {
+      "part_id": "1b85bda1-47c7-47e7-ab04-51466d93ce8c",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$BV = \\sqrt{(6-3)^{2} + (8-4)^{2} + (0-9)^{2}}$ (A1)\n$=10.2956...$\n$=10.3 (=\\sqrt{106})$ A1"
+    },
+    {
+      "part_id": "7de5a182-508d-4aa0-a806-2461a57a6cfd",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n$BV = VC$ AND $BC = 8$ (seen anywhere) (A1)\nattempt to use the cosine rule on triangle BVC for any angle (M1)\n\nNote: Recognition must be shown in context either in terms of labelled sides or "
+    },
+    {
+      "part_id": "6cec95a8-5030-454e-99cd-434a0566fc77",
+      "question_number": 3,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$k = \\frac{1}{2}$ A1\n\n$c = -3$ (accept translate/shift 3 (units) down) A1"
+    },
+    {
+      "part_id": "2897891f-345b-46f3-affe-a91d6394141f",
+      "question_number": 5,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "recognizing at rest when $\\frac{ds}{dt} = 0$ OR $s$ is a minimum (M1)\n$q = 5.73553...$\n$= 5.74$ A1"
+    },
+    {
+      "part_id": "508f3a2a-d481-4573-b8b4-dda0e65ee155",
+      "question_number": 5,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nrecognizing that integral of $v(t)$ is required (M1)\n$\\int_{0}^{5.73...}|v(t)|dt$ OR $\\int_{0}^{5.73...}\\left|\\frac{d}{dt}s(t)\\right|dt$ OR $\\left|\\int_{0}^{5.73...}v(t)dt\\right|$ OR $-\\int_{"
+    },
+    {
+      "part_id": "ab58204d-b32d-4aad-8fd5-ca71b787175b",
+      "question_number": 6,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "$E(X) = k + 2k^{2} + 3a + 4k^{3} = 2.3$ (A1)\n$k + k^{2} + a + k^{3} = 1$ (A1)\n\nNote: The first two A marks are independent of each other.\n\nEITHER (finding intersections of functions)\nattempt to make $"
+    },
+    {
+      "part_id": "8358157f-ba78-4818-82d7-2e0304041ec1",
+      "question_number": 8,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "Sorin's future value after $n$ years = $120000\\left(1+\\frac{4}{100\\times12}\\right)^{12n}$ A1"
+    },
+    {
+      "part_id": "866b0a92-ef82-4b20-abbf-f312b4efeead",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "recognizing probabilities sum to 1 (M1)\n$0.288 + P(94.6 < X < 98.1) + 0.434 = 1$\n$P(94.6 < X < 98.1) = 0.278$ A1"
+    },
+    {
+      "part_id": "6c59c0ed-8198-47d0-bc0c-14e71d722967",
+      "question_number": 9,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "$Q_{1}= 96.19$ OR $Q_{3} =101.01$ (may be seen on a labelled diagram with areas indicated) (A1)\n$P(96.19 < F < 101.01) = 0.5$ OR $P(F<96.19) = 0.25$ OR $P(F<101.01) = 0.75$ (or equivalent)\n\nEITHER\natt"
+    },
+    {
+      "part_id": "468af34e-8a2a-4859-82f8-fa1bb6616cac",
+      "question_number": 7,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "EITHER\nsubstituting their value of $x$ into their $\\frac{d^{2}S}{dx^{2}}$ (M1)\n$\\frac{d^{2}S}{dx^{2}} = 75.39822...$\n$= 75.4 (=24\\pi) > 0$ A1\n\nOR\nsketch of the graph of $\\frac{d^{2}S}{dx^{2}}$ with th"
+    },
+    {
+      "part_id": "c186b7ea-2354-4452-a5f8-033e970db3d3",
+      "question_number": 8,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "Note: The first time an answer is not given to two decimal places in parts (a)(ii), (c)(i) or (d), the final A1 in that part is not awarded.\n\n$5500\\times36$ (A1)\n$= (\\$)198000$ A1"
+    },
+    {
+      "part_id": "83a57835-cd45-409f-925f-fedeb46e1a75",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "recognizing that $f'$ is needed (M1)\n$(f'(3) = ) -2$ A1"
+    },
+    {
+      "part_id": "56e93092-f534-4949-8bb8-830e7003c84e",
+      "question_number": 1,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$\\frac{1}{2}$ A1"
+    },
+    {
+      "part_id": "6bbe891c-b5eb-4cab-9e8f-fadd7f5d97de",
+      "question_number": 4,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "$260 - 2.6r^{2} = 64$ (A1)\n$r = 8.68243...$\n$= 8.68$ (cm) $\\left(\\frac{14\\sqrt{65}}{13}\\text{ exact}\\right)$ A1"
+    },
+    {
+      "part_id": "0d893649-95eb-4f01-97d4-d19deb565459",
+      "question_number": 4,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "$10\\times5.2$ OR $8.68...\\times5.2$ (A1)\nsubstituting their value of $r$ into $10\\times5.2 + r\\times5.2 + 2(10-r)$ (or equivalent) (M1)\nPerimeter = $10\\times5.2 + 8.68...\\times5.2 + 2(10-8.68...)$ $(="
+    },
+    {
+      "part_id": "5121b930-070e-4f45-839c-6878a3844b57",
+      "question_number": 7,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "$\\frac{dS}{dx} = 0$ (M1)\n$-\\frac{90}{a^{2}} + 8\\pi a = 0$ A1\n$(a =)\\left(\\frac{90}{8\\pi}\\right)^{\\frac{1}{3}}$ A1"
+    },
+    {
+      "part_id": "b52b9059-c0a1-4c29-b3b8-c28b31b4b11b",
+      "question_number": 7,
+      "part_label": "c.iii",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute their value of $a$ into $S$ OR use of graph of $S$ (M1)\n$88.2401...$\nminimum surface area = $88.2$ (cm$^{2}$) A1"
+    },
+    {
+      "part_id": "c320f728-4649-442d-8acb-029d57298249",
+      "question_number": 8,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "recognizing sum of a geometric sequence is required (M1)\n$\\frac{2000\\left(1-1.06^{36}\\right)}{1-1.06}$ (A1)\n$= 238241.7333...$\n$= (\\$)238241.73$ A1"
+    },
+    {
+      "part_id": "ccb722c8-14cb-4762-a108-51d7d7d1d6c0",
+      "question_number": 8,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "Sorin's total = $120000\\left(1+\\frac{4}{100\\times12}\\right)^{6} (=122420.09)$ (A1)\n\nDaniela's total = $\\frac{2000\\left(1-1.06^{6}\\right)}{1-1.06} (=13950.64)$ (A1)\n\ntotal value = $(\\$)136370.73$ A1"
+    },
+    {
+      "part_id": "95b5362c-3f0a-4b42-8e06-a8ec3fb5996d",
+      "question_number": 8,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "EITHER (finding number of months, $m$)\n$120000\\left(1+\\frac{4}{100\\times12}\\right)^{m} + \\frac{2000\\left(1-1.06^{m}\\right)}{1-1.06} (\\geq 250000)$ (A1)\n$m \\geq 26.0905...$ OR $(m=26 \\Rightarrow) 24915"
+    },
+    {
+      "part_id": "d904d034-afd5-469f-b6fb-70cfdf234ecf",
+      "question_number": 9,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "recognition of Binomial distribution (M1)\n$X \\sim B(100,0.434)$\n$P(X=34) = 0.0133198...$\n$= 0.0133$ A1"
+    },
+    {
+      "part_id": "218ab286-fcc9-4ae3-ab61-e0345b48a2d4",
+      "question_number": 9,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "$P(X<49) = 0.848218...$ (seen anywhere) (A1)\nrecognition of conditional probability (M1)\n\nNote: recognition must be shown in context, either in symbols eg $P(X=34 | X<49)$, or in words eg $P(34\\text{ "
+    }
+  ],
+  "SL2021NovTZ1P1": {
+    "error": "Error: Question 9 has no @@@PART ...@@@ blocks:\n"
+  },
+  "SL2023NovTZ1P1": [
+    {
+      "part_id": "f545a9f4-1b5b-4dff-82b1-11f9482ae101",
+      "question_number": 4,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nattempt to form at least one equation, using either $S_5$ or $S_6$ (M1)\n$65 = 25p - 5q$ $(13 = 5p - q)$ and $96 = 36p - 6q$ $(16 = 6p - q)$ (A1)\nvalid attempt to solve simultaneous linear equ"
+    },
+    {
+      "part_id": "dbc254c8-b2a4-4f5d-8e1f-0baa4fd79634",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to use either the quotient or product rule (M1)\n$$\\frac{12(x^{2}+2)^{3} - 12x \\times 3 \\times 2x(x^{2}+2)^{2}}{(x^{2}+2)^{6}}$$ OR $12(x^{2}+2)^{-3} + 12x \\times (-3) \\times 2x(x^{2}+2)^{-4}$ "
+    },
+    {
+      "part_id": "f56aa21b-6988-4718-b2c5-41dff1ab0cb8",
+      "question_number": 3,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "recognition that $A' \\cap B' = (A \\cup B)'$ OR $A' \\cap B' = 1 - A \\cup B$\n(region/value may be seen in a correctly shaded/labeled Venn diagram) (M1)\n$(= 1 - 0.9)$\n$= 0.1$ A1\n\nNote: For the final mark"
+    },
+    {
+      "part_id": "fe8c1c62-2e96-4e23-b57c-bcd1d6a90fb9",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "EITHER\nattempts to integrate by substitution using $u = x^{2}+2$ or $u = x^{2}$ (M1)\n$u = x^{2}+2 \\Rightarrow \\frac{\\mathrm{d}u}{\\mathrm{d}x} = 2x$ OR $u = x^{2} \\Rightarrow \\frac{\\mathrm{d}u}{\\mathrm"
+    },
+    {
+      "part_id": "2e8660c0-59d2-46ef-8204-395427b2c566",
+      "question_number": 1,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$a = 7$ A1\n[1 mark]"
+    },
+    {
+      "part_id": "47550ed9-c216-4fbb-9770-2fb6fa1cf675",
+      "question_number": 1,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "substituting $\\frac{\\pi}{12}$ into their $f(x)$ (M1)\n$$f\\left(\\frac{\\pi}{12}\\right) = 7\\sin\\left(\\frac{\\pi}{6}\\right)$$\n$\\sin\\left(\\frac{\\pi}{6}\\right) = \\frac{1}{2}$ (A1)\n$= \\frac{7}{2}$ A1\n[3 marks]"
+    },
+    {
+      "part_id": "60804394-98ff-433b-a65b-5a1bef410d54",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to form $(g \\circ f)(x)$ (M1)\n$$((g \\circ f)(x)) = (x+2)^{2} - k^{2} \\quad (= x^{2} + 4x + 4 - k^{2})$$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "bd1e7db1-11f5-4c6d-aefe-267a55cfb5d7",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "substituting $x = 4$ into their $(g \\circ f)(x)$ and setting their expression $= 11$ (M1)\n$(4+2)^{2} - k^{2} = 11$ OR $4^{2} + 4(4) + 4 - k^{2} = 11$\n$k^{2} = 25$ OR $-k^{2} = -25$ (A1)\n$k = \\pm 5$ A1"
+    },
+    {
+      "part_id": "488e379c-2e3f-4254-9a61-9ec8f9f7fc04",
+      "question_number": 3,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$(\\mathrm{P}(A \\cup B) =) 0.7 + 0.75 - 0.55$ (A1)\n$= 0.9$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "9132d9cf-4904-48d9-84f7-01e3a4966705",
+      "question_number": 4,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$u_6 = S_6 - S_5$ OR substituting their values of $u_1$ and $d$ into $u_6 = u_1 + 5d$\nOR substituting their value of $u_1$ into $96 = \\frac{6}{2}(u_1 + u_6)$ (M1)\n$(u_6 =) 96 - 65$ OR $(u_6 =) 1 + 5 \\"
+    },
+    {
+      "part_id": "67c5a3a0-658f-452d-9eee-b6d877f2e258",
+      "question_number": 5,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nEITHER\nattempt to use Pythagoras' theorem in a right-angled triangle. (M1)\n$$\\left(\\sqrt{4^{2} - 1^{2}} = \\right)\\sqrt{15}$$ (A1)\n\nOR\n\nattempt to use the Pythagorean identity $\\cos^{2}\\alpha "
+    },
+    {
+      "part_id": "df8b5e64-8aab-4cfe-bcc0-d25e78671576",
+      "question_number": 8,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$x = 0$ A1\n[1 mark]"
+    },
+    {
+      "part_id": "33b6e2a1-dedf-4a0d-97d0-71e735df8068",
+      "question_number": 8,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$x^{2} - 20x + 70 (= 0)$ A1\nattempting to solve their 3 term quadratic equation (M1)\n$$\\left((x-10)^{2} - 30 = 0\\right) \\text{ or } \\left((x=) \\frac{20 \\pm \\sqrt{(-20)^{2} - 4 \\times 1 \\times 70}}{2}\\"
+    },
+    {
+      "part_id": "034f7ae7-8a0f-459f-b1b4-a3bb75bdb91e",
+      "question_number": 9,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "recognizing $g'(x) = f'(x) \\Rightarrow g(x) = f(x) + k$ (may be seen in diagram/drawing) A1\narea of $R$ is given by subtracting functions $f$ and $g$ in integral(s) (M1)\n$$\\pm \\int_0^3 k \\, \\mathrm{d}"
+    },
+    {
+      "part_id": "bfc23e4e-da69-46eb-829e-90d47ace44d4",
+      "question_number": 7,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$600 < n \\leq 800$ A1\n\nNote: Award A0 if candidate answers 700.\n\n[2 marks]"
+    },
+    {
+      "part_id": "6ff16367-1a99-4764-8a4b-da81a913a7fb",
+      "question_number": 1,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "period $= \\pi$ A1"
+    },
+    {
+      "part_id": "e6fc0bfc-4beb-4ffc-b69e-87adacb9a376",
+      "question_number": 1,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "$b = \\frac{2\\pi}{\\pi}$ OR $\\pi = \\frac{2\\pi}{b}$ (A1)\n$= 2$ A1\n[3 marks]"
+    },
+    {
+      "part_id": "b9a1642c-7229-4052-840b-a63a1915eb9f",
+      "question_number": 7,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$p = 9$ A1"
+    },
+    {
+      "part_id": "34c4d860-c898-4c52-a389-4e5999200a3a",
+      "question_number": 7,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "median $= 600$ A1"
+    },
+    {
+      "part_id": "9452a080-0305-4369-9823-4629eca33b6a",
+      "question_number": 7,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "$80\\%$ of $800 = 640$ (A1)\n40 (performances less than 80% of tickets sold) (A1)\n20 (performances) A1\n[4 marks]"
+    },
+    {
+      "part_id": "f0acf9d1-eda8-4200-a3ac-d8b842ed140a",
+      "question_number": 7,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "any reasonable answer which suggests a biased sample (must include reason,\ndo not accept reasons such as \"sample size is too small\", or answers that simply\nsay \"not representative of entire audience\" "
+    },
+    {
+      "part_id": "33b975d8-7274-4c01-bcea-67935f26caf6",
+      "question_number": 7,
+      "part_label": "c.iii",
+      "status": "ok",
+      "new_text_preview": "quota (sampling method) A1\n[4 marks]"
+    },
+    {
+      "part_id": "076d7447-d98d-4a5d-9313-c75d538accb1",
+      "question_number": 7,
+      "part_label": "d.i",
+      "status": "ok",
+      "new_text_preview": "75% (of 36000 spent between $3 and $25) (M1)\n$= 27000$ A1"
+    },
+    {
+      "part_id": "cc5e4422-d800-4798-a663-543276469560",
+      "question_number": 7,
+      "part_label": "d.ii",
+      "status": "ok",
+      "new_text_preview": "$a = 7$ A1\n[3 marks]"
+    },
+    {
+      "part_id": "befc61c2-dee7-4f48-a903-1a01f7db7ef4",
+      "question_number": 7,
+      "part_label": "e.i",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nold mean is 600 (tickets) (A1)\nrecognising new mean is old mean + 18 (M1)\n$600 + 18$\n$= 618$ (tickets) A1\n\nMETHOD 2\nnew total number of tickets $= 36000 + 60 \\times 18 (= 37080)$ (A1)\n$$\\text"
+    },
+    {
+      "part_id": "7b2fcf10-7faf-4f55-85bf-3e32a392cb5b",
+      "question_number": 7,
+      "part_label": "e.ii",
+      "status": "ok",
+      "new_text_preview": "no effect on the variance A1\n[4 marks]\nTotal [17 marks]"
+    },
+    {
+      "part_id": "749410ad-4a85-49d6-8373-f00c3caa04a6",
+      "question_number": 8,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "setting $\\ln(2x - 7) = 2\\ln x - \\ln d$ M1\nattempt to use power rule (M1)\n$2\\ln x = \\ln x^{2}$ (seen anywhere)\nattempt to use product/quotient rule for logs (M1)\n$$\\ln(2x-7) = \\ln \\frac{x^{2}}{d}$$ OR "
+    },
+    {
+      "part_id": "98c05170-9206-41d8-9e1b-554688a46356",
+      "question_number": 8,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "discriminant $= (-2d)^{2} - 4 \\times 7d$ (A1)\nrecognizing discriminant > 0 (M1)\n$(2d)^{2} - 4 \\times 7d > 0$ OR $4d^{2} - 28d > 0$ A1\n$d^{2} - 7d > 0$ AG"
+    },
+    {
+      "part_id": "0821a1f1-8407-452a-929c-4d9534ccf315",
+      "question_number": 8,
+      "part_label": "b.iii",
+      "status": "ok",
+      "new_text_preview": "setting $d(d-7) > 0$ OR $d(d-7) = 0$ OR sketch graph\nOR sign test OR $d^{2} > 7d$ (M1)\n$d < 0$ or $d > 7$, but $d \\in \\mathbb{R}^{+}$\n$d > 7$ (or $]7, \\infty[$) A1\n[9 marks]"
+    }
+  ]
+}

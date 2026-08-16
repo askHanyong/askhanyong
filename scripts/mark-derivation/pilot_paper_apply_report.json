@@ -1,0 +1,137 @@
+{
+  "SL2022NovTZ0P2": [
+    {
+      "part_id": "52d9c1d6-4b10-426d-a7f8-9b7b3e2737f6",
+      "question_number": 6,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "Note: Do not award any marks if there is clear evidence of adding instead of multiplying, for example $^{9}C_{r}+(ax)^{9-r}+(1)^{r}$.\n\nvalid approach for expansion (must be the product of a binomial c"
+    },
+    {
+      "part_id": "48270dfe-d3db-45e7-9efb-3b6dbfe789e1",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "0.981464…\n\n$r = 0.981$ A1\n\nNote: A common error is to enter the data incorrectly into the GDC, and obtain the answers $a=1.01700..., b=2.09814...$ and $r=0.980888...$ Some candidates may write the 3 s"
+    },
+    {
+      "part_id": "a212ede5-e7be-43c0-8a9b-89fd0a0631ed",
+      "question_number": 1,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "1.01206…, 2.45230…\n\n$a =1.01$ , $b = 2.45$ $(1.01x + 2.45)$ A1A1"
+    },
+    {
+      "part_id": "b475fda0-cb90-43a0-975c-2693ddfa4e31",
+      "question_number": 1,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "correct substitution of 78 into their regression equation (M1)\n\n81.3930… 81.23 from 3 sf answer\n\n81 A1"
+    },
+    {
+      "part_id": "4e4041a9-14f1-4078-8f77-2068b9382a44",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to use sine rule (M1)\n\n$$\\frac{24}{\\sin 113^{\\circ}} = \\frac{17}{\\sin B\\hat{A}C}$$ OR $\\left(\\sin B\\hat{A}C =\\right)0.652024...$ (A1)\n\n40.6943…\n\n$B\\hat{A}C = 40.7^{\\circ}$ A1"
+    },
+    {
+      "part_id": "872ae8ad-c9e0-480a-bda5-6ef523771fad",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1 (cosine rule with $A\\hat{B}C$ or $B\\hat{A}C$)\n\nattempt to use the cosine rule (M1)\n\n$$24^{2} = AB^{2}+17^{2}-2\\cdot17\\cdot AB\\cos 113^{\\circ}$$ $\\left(AB^{2}+13.2848...AB-287=0\\right)$ OR\n\n$$"
+    },
+    {
+      "part_id": "88b5c5e5-8077-4a1b-a5bf-6792028a4e76",
+      "question_number": 3,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$(0.708519...,0.639580...)$\n\n$(0.709,0.640)$ $(x = 0.709, y = 0.640)$ A1A1"
+    },
+    {
+      "part_id": "7aef8bc6-4cbd-4251-bbb8-20ded5e8b00d",
+      "question_number": 3,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "1.09885...\n\n$x = 1.10$ accept $(1.10,0)$ A1"
+    },
+    {
+      "part_id": "ff6a0d99-9ad1-4e6a-aefe-59a930cb4bfb",
+      "question_number": 4,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "$86.4 = 50r^{3}$ (A1)\n\n$$r = 1.2\\left(=\\sqrt[3]{\\frac{86.4}{50}}\\right)$$ seen anywhere (A1)\n\n$$\\frac{50\\left(1.2^{n}-1\\right)}{0.2} > 33500$$ OR $$250\\left(1.2^{n}-1\\right)=33500$$ (A1)\n\nattempt to s"
+    },
+    {
+      "part_id": "c16a45f3-2e13-4cb6-a704-cd4f68559183",
+      "question_number": 5,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "recognition that initial population is 15000 (seen anywhere) (A1)\n\n$P(0) = 15000$ OR $0.11 \\times 15000$ OR $0.89 \\times 15000$\n\npopulation after 11% decrease is $15000 \\times 0.89 (=13350)$ (A1)\n\nrec"
+    },
+    {
+      "part_id": "0a5615d6-6079-4611-9f11-4679ad2df949",
+      "question_number": 7,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "initial displacement is $s(0)$ (M1)\n\n6 (m) A1"
+    },
+    {
+      "part_id": "c2f8e4d2-3a1b-4e82-a2d0-5d2400a64849",
+      "question_number": 7,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "velocity is $s'$ (M1)\n\n−2.29920\n\n−2.30 (m/s) A1"
+    },
+    {
+      "part_id": "76bf3390-8117-47e7-b28b-4e3df6e2e880",
+      "question_number": 7,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempting to find $t$ when the particle changes direction (M1)\n\n$t = 0.433007...$AND $3.25575...$AND$6.33965...$ (may be seen on a graph) (A1)\n\nparticle travels away from P when $v > 0$ OR when $s' >"
+    },
+    {
+      "part_id": "3f0dc86f-d872-439b-9dc2-b1639c3443df",
+      "question_number": 7,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "recognizing that acceleration is $a(t) = v'(t)$ OR $a(t) = s''(t)$ (M1)\n\nattempting to find max/min on graph of velocity OR finding zeros on graph of acceleration (M1)\n\n$b = 1.23140...$ , $c = 5.68959"
+    },
+    {
+      "part_id": "5521c3fb-92a6-4e26-9b6f-b83443b9aed8",
+      "question_number": 8,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "Note: In parts (a) and (b) of this question, candidates may consider either triangle AOD or triangle AOE and work correctly to obtain the answer. Side AD is interchangeable with side AE in the followi"
+    },
+    {
+      "part_id": "5af3fa35-32d2-44cc-9590-d97ce14c24fd",
+      "question_number": 8,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "equating their area formula to $\\pi r^{2}$ (M1)\n\n$$\\frac{r^{2}}{\\tan\\alpha}-\\frac{1}{2}r^{2}(\\pi-2\\alpha)=\\pi r^{2}$$\n\ncorrect equation in terms of $\\alpha$ A1\n\n$$\\frac{1}{\\tan\\alpha}-\\frac{1}{2}(\\pi-"
+    },
+    {
+      "part_id": "4f06e917-b63f-4907-9362-982ca46e6e13",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "Note: Do not penalize for inclusion or non-inclusion of endpoints for probabilities using a normal distribution. For example, for $P(T<55\\mid T>40)$ accept $P(T\\leq55\\mid T>40)$, $P(T\\leq55\\mid T\\geq4"
+    },
+    {
+      "part_id": "99265be8-9e43-4a11-a6ab-5cd58342592e",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to multiply four independent probabilities using their $P(T>40)$ and $P(T<40)$ (M1)\n\n$(1-p)^{3}\\cdot p$ OR $(1-0.574136...)^{3}\\cdot0.574136...$ OR $(0.425863...)^{3}\\cdot0.574136...$ (A1)\n\n0."
+    },
+    {
+      "part_id": "a8d1b4bc-15db-4003-a193-7393f93fead7",
+      "question_number": 9,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "Let $P(T<a)=x$\n\nrecognition that probabilities sum to 1 (seen anywhere) (M1)\n\nEITHER\n\nexpressing the three regions in one variable (M1)\n\n$x+0.904+2x$ OR $P(T<a)+0.904+2P(T<a)$ OR $\\frac{1}{2}P(T>b)+0."
+    }
+  ]
+}

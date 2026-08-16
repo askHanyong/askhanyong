@@ -1,0 +1,1011 @@
+{
+  "SL2021MayTZ2P2": [
+    {
+      "part_id": "5291e872-7b3f-4a84-926b-0c2457c3302c",
+      "question_number": 4,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "EITHER\n$$P(S) + P(T) + P(S' \\cap T') - P(S \\cap T) = 1 \\text{ OR } P(S \\cup T) = P((S' \\cap T')')$$ (M1)\n$$0.7 + 0.2 + 0.18 - P(S \\cap T) = 1 \\text{ OR } P(S \\cup T) = 1 - 0.18$$\n\nOR \na clearly labell"
+    },
+    {
+      "part_id": "8d7fbe8b-000a-411b-96e1-6bc4eb4ffd4f",
+      "question_number": 4,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n$P(G) \\times P(T)(= 0.48 \\times 0.2) = 0.096$ A1\n$P(G) \\times P(T) \\neq P(G \\cap T) \\Rightarrow G$ and $T$ are not independent R1\n\nMETHOD 2\n$P(T|G) = 0.25$ A1\n$P(T|G) \\neq P(T) \\Rightarrow G$"
+    },
+    {
+      "part_id": "83040e53-576f-4614-b547-0d6b9cec4588",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$a$ represents the (average) increase in waiting time ($0.805$ mins) per additional \ncustomer (waiting to receive their coffee) R1\n[1 mark]"
+    },
+    {
+      "part_id": "2444337b-27f1-4cd4-8372-86904ba66e8a",
+      "question_number": 1,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute $x = 7$ into their equation (M1)\n$8.51693...$\n$8.52$ (mins) A1\n[2 marks]\nTotal [6 marks]"
+    },
+    {
+      "part_id": "f3c1944d-0419-447b-950d-4307141127bf",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "recognizing that \n$f'(x) = 0$ at local maximum (M1)\n$x = 2.33084...$\n$x = 2.33$ A1\n[2 marks]\nTotal [5 marks]"
+    },
+    {
+      "part_id": "69c96d85-8d95-4df8-8d59-e0ca1be411f5",
+      "question_number": 3,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to use $u_{1} + (n-1)d = 0$ (M1)\n$60 - 2.5(k-1) = 0$\n$k = 25$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "7127db14-da24-4d99-9ed9-9f17882ff78d",
+      "question_number": 3,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nattempting to express \n$S_{n}$ in terms of $n$ (M1)\nuse of a graph or a table to attempt to find the maximum sum (M1)\n$= 750$ A1\n\nMETHOD 2\nEITHER\nrecognizing maximum occurs at \n$n = 25$ (M1)\n"
+    },
+    {
+      "part_id": "b36f79cd-3686-4a8d-9667-dcaf5097368b",
+      "question_number": 4,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "EITHER\n$$P(T \\cap S') = P(T) - P(T \\cap S)(= 0.2 - 0.08) \\text{ OR } P(T \\cap S') = P(T \\cup S) - P(S)(= 0.82 - 0.7)$$ (M1)\n\nOR\na clearly labelled Venn diagram including \n$P(S), P(T)$ and $P(S \\cap T)"
+    },
+    {
+      "part_id": "7f098159-67e0-4b74-b3fa-eab29b46de2f",
+      "question_number": 4,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$P(G \\cap T) = P(T / G)P(G)$ $(0.25 \\times 0.48)$ (M1)\n$= 0.12$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "b4c0cae4-6d84-4d29-9b01-5e9b180d6f3c",
+      "question_number": 5,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempting to find the vertex (M1)\n$x=1$ OR $y=-5$ OR $f(x)=6(x-1)^{2}-5$\nrange is $y \\geq -5$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "f1bed0c4-18d0-49b2-a564-a3bf464f78e1",
+      "question_number": 5,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n$$(g \\circ f)(x) = -(6x^{2} - 12x + 1) + c \\left( = -(6(x-1)^{2} - 5) + c \\right)$$ (A1)\n\nEITHER\nrelating to the range of $f$ OR attempting to find $g(-5)$ (M1)\n$5 + c \\leq 0$ (A1)\n\nOR\nattemp"
+    },
+    {
+      "part_id": "8a3f6a2a-a9f2-49d3-96a1-de3b1297eaff",
+      "question_number": 6,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$100 = A_{0}e^{0}$ A1\n$A_{0} = 100$ AG\n[1 mark]"
+    },
+    {
+      "part_id": "3eba041a-2d32-4fd4-a95a-bbe515462f31",
+      "question_number": 6,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "correct substitution of values into exponential equation (M1)\n$$50 = 100e^{-5730k} \\text{ OR } e^{-5730k} = \\frac{1}{2}$$\n\nEITHER\n$$-5730k = \\ln \\frac{1}{2}$$ A1\n$$\\ln \\frac{1}{2} = -\\ln 2 \\text{ OR }"
+    },
+    {
+      "part_id": "5757d42f-3c69-44d6-8e13-55924b5b62e3",
+      "question_number": 6,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "if $25\\%$ of the carbon-14 has decayed, $75\\%$ remains ie, $75$ units remain (A1)\n$$75 = 100e^{-\\frac{\\ln 2}{5730}t}$$\n\nEITHER\nusing an appropriate graph to attempt to solve for $t$ (M1)\n\nOR\nmanipulat"
+    },
+    {
+      "part_id": "e22f7b4a-3d14-4291-9f85-e0b1b38e506c",
+      "question_number": 7,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$$\\tan 0.6 = \\frac{h}{12}$$ (M1)\n$8.20964...$\n$8.21$ (m) A1\n[2 marks]"
+    },
+    {
+      "part_id": "38e5470f-4ca7-4e95-b7d2-4b21e39ea925",
+      "question_number": 7,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$$\\tan B = \\frac{8.2096...}{5} \\text{ OR } \\tan^{-1} 1.6419...$$ (A1)\n$1.02375…$\n$1.02$ (radians) (accept $58.7°$) A1\n[2 marks]"
+    },
+    {
+      "part_id": "77138452-4921-471d-82d0-99805a7bb455",
+      "question_number": 7,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$x + 1.8 + 2.5 = 8.20964...$ (or equivalent) (A1)\n$3.90964…$\n$3.91$ (m) A1\n[2 marks]"
+    },
+    {
+      "part_id": "ad79c34e-b53a-4e56-9042-9a705e22c0a4",
+      "question_number": 7,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nrecognition that blade length = amplitude, $p = \\frac{\\max - \\min}{2}$ (M1)\n$p = 3.91$ A1\ncentre of windmill = vertical shift, $q = \\frac{\\max + \\min}{2}$ (M1)\n$q = 8.21$ A1\n\nMETHOD 2\nattempt"
+    },
+    {
+      "part_id": "968496a3-6a40-49a6-9eca-cb85f8dd20b2",
+      "question_number": 7,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "appropriate working towards finding the period (M1)\n$$\\text{period} = \\frac{2\\pi}{\\frac{3\\pi}{10}}(=6.6666...)$$\nrotations per minute $= \\frac{60}{\\text{their period}}$ (M1)\n$n = 9$ (must be an intege"
+    },
+    {
+      "part_id": "32fe8ade-b967-467b-9992-35dad519fb9d",
+      "question_number": 8,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "use of inverse normal to find z-score (M1)\n$z = 2.0537...$\n$$2.0537... = \\frac{82-75}{\\sigma}$$ (A1)\n$\\sigma = 3.408401...$\n$\\sigma = 3.41$ A1\n[3 marks]"
+    },
+    {
+      "part_id": "16abec30-46dd-41fb-8461-8eb748354c11",
+      "question_number": 8,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "evidence of identifying the correct area under the normal curve (M1)\n$P(T > 80) = 0.071193...$\n$P(T > 80) = 0.0712$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "c8c697f7-2546-496f-99da-c32d0dac3a65",
+      "question_number": 8,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "recognition that $P(80 < T < 82)$ is required (M1)\n$$P(T<82|T>80) = \\frac{P(80<T<82)}{P(T>80)} = \\left(\\frac{0.051193...}{0.071193...}\\right)$$ (M1)(A1)\n$= 0.719075...$\n$= 0.719$ A1\n[4 marks]"
+    },
+    {
+      "part_id": "c7b286f7-e829-42a9-927b-eec59dbd776b",
+      "question_number": 8,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "recognition of binomial probability (M1)\n$X \\sim B(64, 0.071193...)$\nor \n$E(X) = 64 \\times 0.071193...$ (A1)\n$E(X) = 4.556353...$\n$E(X) = 4.56$ (flights) A1\n[3 marks]"
+    },
+    {
+      "part_id": "c97d7245-62b7-4011-acd8-a33b211e8910",
+      "question_number": 8,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "$P(X > 6) = P(X \\geq 7) = 1 - P(X \\leq 6)$ (M1)\n$= 1 - 0.83088...$ (A1)\n$= 0.1691196...$\n$= 0.169$ A1\n[3 marks]\nTotal [15 marks]"
+    },
+    {
+      "part_id": "ae4302b3-9709-4ecc-b6bb-0556c1916078",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "considering that sum of probabilities is 1 (M1)\n$0.85 + c + 0.03 + 0.002 + 0.0001 = 1$\n$0.1179$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "edff5336-ebbd-4964-acc6-d048af32896b",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "valid attempt to find $E(D)$ (M1)\n$$E(D) = (0 \\times 0.85) + (2 \\times 0.1179) + (10 \\times 0.03) + (50 \\times 0.002) + (1000 \\times 0.0001)$$\n$E(D) = 0.7358$ A1\nNo, not a fair game A1\nfor a fair game"
+    },
+    {
+      "part_id": "396ba89d-5f71-461b-9c51-a9f5a2e26304",
+      "question_number": 9,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "recognition of GP with $r = 2$ (M1)\n$1000 \\times 2^{n-1}$ OR $500(2^{n})$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "21ab7bbb-be44-4c2b-98ef-2cc7e0a47642",
+      "question_number": 9,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "recognizing $E(D) > 2$ (M1)\ncorrect expression for $w$th week (or $n$th week) (A1)\n$$(0 \\times 0.85) + (2 \\times 0.1179) + (10 \\times 0.03) + (50 \\times 0.002) + (1000 \\times 2^{w-1} \\times 0.0001)$$\n"
+    },
+    {
+      "part_id": "ecc3ee84-4fd5-4149-aad6-3b3571c8a70a",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$a = 0.805084...$\nand \n$b = 2.88135...$\n$a = 0.805$ and $b = 2.88$ A1A1"
+    },
+    {
+      "part_id": "383c84b7-26c5-4474-a4e1-1275dc469e62",
+      "question_number": 1,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$r = 0.97777...$\n$r = 0.978$ A1\n[3 marks]"
+    }
+  ],
+  "SL2023MayTZ2P2": [
+    {
+      "part_id": "bc9667d1-25d4-4327-bee8-03638b5d333e",
+      "question_number": 9,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "$P(\\text{first green on third draw}) = \\frac{15}{25} \\times \\frac{14}{24} \\times \\frac{10}{23} \\times \\frac{22}{22}\\left(=\\frac{7}{46} = 0.152173...\\right)$ (A1)\n\n$P(\\text{first green on fourth draw})"
+    },
+    {
+      "part_id": "276ebb20-bcb6-459e-8717-95dd25a54dbd",
+      "question_number": 8,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "finding second time height is 1.5 metres (M1)\n$t = 0.571757...$\n\nin each period, height is greater than 1.5 metres for $0.337978…$ seconds (A1)\n\nNote: Award (M1)(A1) for total time $2.02787...$ seen.\n"
+    },
+    {
+      "part_id": "8c15b55a-0f94-4a7a-97c9-55544d95c810",
+      "question_number": 1,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$a =1.93258...$, $b = 7.21662...$\n$a =1.93$, $b = 7.22$ A1A1\n[2 marks]"
+    },
+    {
+      "part_id": "f83583f3-18d8-4104-9d3f-ee03f7eddfa9",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$r = 0.991087...$\n$r = 0.991$ A1\n[1 mark]"
+    },
+    {
+      "part_id": "9e04b83e-2bf1-4c61-b446-e0a59bdd96a8",
+      "question_number": 1,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute $d = 20$ into their equation (M1)\nheight $= 45.8683...$\nheight $= 45.9$ (cm) A1\n[2 marks]\nTotal [5 marks]"
+    },
+    {
+      "part_id": "5f588143-bd4a-4220-a18f-5d51131d3786",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute into cosine rule (M1)\n$154^{2} = 150^{2} + 90^{2} - 2(150)(90)\\cos A\\hat{P}B$ OR $\\cos A\\hat{P}B = \\frac{150^{2} + 90^{2} - 154^{2}}{2(150)(90)}$ (A1)\n\n$A\\hat{P}B = 75.2286...°$ "
+    },
+    {
+      "part_id": "b0b2d255-c79e-4e79-b67b-73dc43f5abfd",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "valid approach to find $\\theta$ (M1)\n$\\theta = \\frac{180° - A\\hat{P}B}{2}$ OR $\\theta = \\frac{180° - 75.2286...°}{2}$ $(= 52.3856...)$ OR\n$\\theta = \\frac{\\pi - 1.31298...}{2}(= 0.914302...)$\n\nvalid ap"
+    },
+    {
+      "part_id": "095ad91a-f040-4808-b95d-2dff8dad8ab5",
+      "question_number": 3,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$A(0) = 500$ (mg) A1\n[1 mark]"
+    },
+    {
+      "part_id": "6031ced6-81b7-4a8f-9526-78eaa97a4527",
+      "question_number": 3,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$280 = 500e^{-3k}$ (A1)\n$k = 0.193272...$\n$k = 0.193$ $\\left(= -\\frac{1}{3}\\ln\\left(\\frac{280}{500}\\right)\\right)$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "20eb39fd-f680-48f9-b8c7-903df30c89ca",
+      "question_number": 3,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$500e^{-0.193272...T} = 140$ (A1)\n$T = 6.58636...$\n$T = 6.59$ (h) A1\n[2 marks]\nTotal [5 marks]"
+    },
+    {
+      "part_id": "999a38d2-b2ea-4593-9eed-cc619a52c631",
+      "question_number": 4,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "evidence of attempting to find correct area under normal curve (M1)\n$P(W > 210)$ OR sketch\n$P(W > 210) = 0.115069...$\n$P(W > 210) = 0.115$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "6a9db3e8-2e6f-4c36-8ac4-f35f8405be6c",
+      "question_number": 4,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "recognizing $P(W < w) = 1 - P(w < W < 210) - P(W > 210)$ (M1)\n$P(W < w) = 1 - 0.8 - 0.115069...$\n$P(W < w) = 0.084930...$\n$P(W < w) = 0.0849$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "d32c52f6-e2ca-4f30-9b9f-08ff9b081a6a",
+      "question_number": 4,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "evidence of attempting to use inverse normal function (M1)\n$w = 197.136...$\n$w = 197$ (grams) A1\n[2 marks]"
+    },
+    {
+      "part_id": "1f0e4c52-01a0-46da-8533-80ddd3bf6496",
+      "question_number": 4,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "recognition of binomial distribution (M1)\n$X \\sim B(10, 0.0849302...)$\n$P(X = 1) = 0.382076...$\n$P(X = 1) = 0.382$ A1\n[2 marks]\nTotal [8 marks]"
+    },
+    {
+      "part_id": "a941460e-583e-42ef-93f8-9cfc5751929a",
+      "question_number": 5,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "recognition that there is a common ratio between their terms (M1)\n$8h \\times r = 28h^{2}$ OR $28h^{2} \\times r = 70h^{4}$ OR $8h \\times r^{2} = 70h^{4}$\n\ncorrect equation in terms of $h$ (A1)\n\n$\\frac{"
+    },
+    {
+      "part_id": "017d9fc8-d91b-4855-b878-4ed479a601fa",
+      "question_number": 6,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "recognize that acceleration is zero when $v'(t) = 0$ OR at a local maximum on the graph of $v$ (M1)\n$t_{1} = 0.394791...$\n$t_{1} = 0.395\\left(=\\arctan\\left(\\frac{5}{12}\\right)\\right)$ (seconds) A1\n[2 "
+    },
+    {
+      "part_id": "15d07833-771e-4a9b-82e5-0c47b7db0575",
+      "question_number": 6,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "recognition that $v = 0$ (M1)\nsketch OR $t = 4.71238...$ OR $t = 10.9955...$\n$t_{2} = 10.9955...$\n$t_{2} = 11.0\\left(=\\frac{7\\pi}{2}\\right)$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "8338489c-805f-4603-918e-7efe8974eb0d",
+      "question_number": 6,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$\\int_{t_{1}}^{t_{2}} |v| \\, dt$ OR $\\int_{0.394791...}^{10.9955...} |v| \\, dt$ OR $\\int_{0.394791...}^{4.71238...} v \\, dt + \\int_{4.71238...}^{10.9955...} |v| \\, dt (= 6.53806... + 1.29313...)$\nOR $"
+    },
+    {
+      "part_id": "ccc4ea4e-079e-4073-82a3-765da25307ac",
+      "question_number": 7,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$\\sqrt{4x-2} = \\frac{x^{2}+2}{4}$ OR $\\sqrt{4x-2} = x$ OR $\\frac{x^{2}+2}{4} = x$ (M1)\n\n$x = 0.585786...$, $x = 3.414213...\\left(= 2+\\sqrt{2}\\right)$\n\n$x = 0.586$, $x = 3.41$ A1A1\n[3 marks]"
+    },
+    {
+      "part_id": "1f8f9be0-3bfd-42d3-a3c4-5add40805fb7",
+      "question_number": 7,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempt to form integral of the difference between $h(x)$ and their $h^{-1}$, using their limits from part (b) (M1)\n\n$\\int_{0.585786...}^{3.414213...} (h(x) - h^{-1}(x)) \\, dx$ OR $\\int_{0.585786...}^"
+    },
+    {
+      "part_id": "c74625fd-af04-40a7-ae6b-48c4f1b85703",
+      "question_number": 7,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "attempt to use chain rule or power rule (M1)\n\n$h'(x) = 4 \\cdot \\frac{1}{2}(4x-2)^{-\\frac{1}{2}}$\n\n$h'(x) = \\frac{2}{\\sqrt{4x-2}}$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "e9f18848-1632-419b-bb3b-2712b6f3f189",
+      "question_number": 8,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$7.8 = \\frac{2\\pi}{\\text{period}}$ (M1)\n\n$\\frac{2\\pi}{7.8} = 0.805536...$\n\nperiod $= 0.806\\left(=\\frac{10\\pi}{39}\\right)$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "6df2f0dc-3cb6-41a1-b300-76c4e1225951",
+      "question_number": 8,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "EITHER\n$\\frac{5}{\\text{period}} = 6.207... < 6\\frac{1}{2}$ (A1)\n\nOR\nconsideration of number of maximums on graph in first 5 seconds (A1)\n\nOR\nmaximums when $t = 0.403, 1.21, 2.01, 2.82, 3.62, 4.43$ (A1"
+    },
+    {
+      "part_id": "9f5e6af9-5f35-4d0c-b4db-af470cf6e196",
+      "question_number": 8,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "recognizing that $H(t) = 1.5$ (M1)\n\n$-0.4\\cos(7.8t) + 1.4 = 1.5$\n\n$0.233779...$\n$t = 0.234$ (seconds) A1\n[2 marks]\ncontinued…"
+    },
+    {
+      "part_id": "87e0c426-87ff-42ee-8010-a7f41e698e8d",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$P(\\text{First red}) = \\frac{15}{25}$ and $P(\\text{Second red}) = \\frac{14}{24}$ (seen anywhere) (A1)\n\n$P(RR) = \\frac{15}{25} \\times \\frac{14}{24}$ (or equivalent) A1\n\n$= 0.35$ AG\n[2 marks]"
+    },
+    {
+      "part_id": "997a842a-215b-4d12-9042-bb45795c0d22",
+      "question_number": 9,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$\\frac{15}{25} \\times \\frac{14}{24} \\times \\frac{13}{23}$ OR $0.35 \\times \\frac{13}{23}$ (A1)\n\n$0.197826...$\n$P(\\text{three red}) = 0.198$ (exact answer is $\\frac{91}{460}$) A1\n[2 marks]\ncontinued…"
+    },
+    {
+      "part_id": "540fedf7-d269-4df1-92c5-5620c9e594fd",
+      "question_number": 9,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "$P(\\text{at least one green}) = 1 - P(\\text{three red})$ OR\n$P(\\text{at least one G}) = P(\\text{one G}) + P(\\text{two G}) + P(\\text{three G})$ (M1)\n\n$1 - \\left(\\frac{15}{25} \\times \\frac{14}{24} \\time"
+    },
+    {
+      "part_id": "cdd85b42-577b-4521-93f7-992348c85fdf",
+      "question_number": 5,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "attempt to use the binomial expansion of $(x+h)^{8}$ (M1)\n$^{8}C_{0}x^{8}h^{0} + ^{8}C_{1}x^{7}h^{1} + ^{8}C_{2}x^{6}h^{2} + ...$\n\n(i) $a = 8h$ (accept $^{8}C_{1}h$) A1\n[4 marks]"
+    },
+    {
+      "part_id": "aecc6556-f674-48af-9c5a-dc473b1f26d6",
+      "question_number": 5,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "(ii) $b = 28h^{2}$ (accept $^{8}C_{2}h^{2}$) A1"
+    },
+    {
+      "part_id": "82a58e82-cb9f-43ca-8e87-de0933da0a3f",
+      "question_number": 5,
+      "part_label": "a.iii",
+      "status": "ok",
+      "new_text_preview": "(iii) $d = 70h^{4}$ (accept $^{8}C_{4}h^{4}$) A1"
+    },
+    {
+      "part_id": "f4afd6e7-fb55-450b-b0b3-6242141db32d",
+      "question_number": 7,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "(i) swapping $x$ and $y$, or $h(h^{-1}(x)) = x$ (M1)\n\n$h^{-1}(x) = \\frac{x^{2} + 2}{4}$ A1\n\nrecognizing range of $h$ is domain of $h^{-1}$ (M1)\n\nDomain: $x \\geq 0$ A1"
+    },
+    {
+      "part_id": "033d2c88-3986-42e0-8f1a-dc32b5fb6e0f",
+      "question_number": 7,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "(ii) range of $h^{-1}$ is $y \\geq \\frac{1}{2}$ A1\n[5 marks]"
+    },
+    {
+      "part_id": "57cc6958-5e54-4079-ba69-0a58ac4fd448",
+      "question_number": 8,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n(i) amplitude $= \\frac{\\max - \\min}{2}$ (M1)\n\n$\\frac{1.8-1}{2}$\n$a = -0.4$ A1\n\nMETHOD 2\nattempt to form two simultaneous equations in $a$ and $b$ (M1)\n\n$H(0) = 1 \\Rightarrow a+b=1$, $H\\left(\\"
+    },
+    {
+      "part_id": "9492ea04-9a0b-4d8c-8daa-88a5e0afe473",
+      "question_number": 8,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "(ii) $b = 1.4$ A1"
+    },
+    {
+      "part_id": "b380feb0-279c-424f-811d-a12c73aea72d",
+      "question_number": 9,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "(i) $\\frac{10}{n}$ A1"
+    },
+    {
+      "part_id": "b750385b-f7b6-4ab0-b7f7-0c47c9e5def5",
+      "question_number": 9,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "(ii) multiplying probabilities for $GG$ (M1)\n\n$P(GG) = \\frac{10}{n} \\times \\frac{9}{n-1}$\n\n$P(GG) = \\frac{90}{n^{2}-n}\\left(\\text{accept} \\frac{90}{n(n-1)}\\right)$ A1\n[3 marks]"
+    }
+  ],
+  "HL2021MayTZ1P2": [
+    {
+      "part_id": "36b3297c-e12e-49cd-877e-544eaa9bc34b",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to differentiate with respect to t (M1)\n\n$$\\frac{dy}{dt}=\\frac{dx}{dt}-50(\\csc\\theta)^{2}\\frac{d\\theta}{dt}$$ A1\n\nattempt to set speed of B equal to double the speed of A (M1)\n\n$$2\\frac{dx}{dt"
+    },
+    {
+      "part_id": "40c2fb78-366b-4eb7-a54d-479eed1c108c",
+      "question_number": 10,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$f'(x)=-45e^{-0.5x}$ A1\n\nattempt to set the gradient of $f$ equal to $-1$ (M1)\n\n$$-45e^{-0.5x}=-1$$\n\nQ has coordinates $(2\\ln45,2)$ (accept $(-2\\ln\\frac{1}{45},2)$) A1A1\n\nNote: Award A1 for each value"
+    },
+    {
+      "part_id": "bb378b58-9f59-4ba2-838c-1cecf8acbb42",
+      "question_number": 11,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "$x=-\\frac{2}{3}(=-0.667)$ A1\n\n(oblique asymptote has) gradient $\\frac{4}{3}(=1.33)$ (A1)\n\nappropriate method to find complete equation of oblique asymptote M1\n\n$$\\frac{\\frac{4}{3}x-\\frac{8}{9}}{3x+2\\o"
+    },
+    {
+      "part_id": "9e50fc23-bcea-4a09-a762-d53093978ff0",
+      "question_number": 4,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "recognising $v = 0$ (M1)\n\n$t = 6.74416...$\n\n$= 6.74$ (sec) A1\n\nNote: Do not award A1 if additional values are given.\n\n[2 marks]"
+    },
+    {
+      "part_id": "717e9a2a-76c6-45c6-b34e-c893d03dff71",
+      "question_number": 11,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to use quotient rule or product rule (M1)\n\nEITHER\n\n$$f'(x)=\\frac{3(4x^{2}-1)-8x(3x+2)}{(4x^{2}-1)^{2}}\\left(=\\frac{-12x^{2}-16x-3}{(4x^{2}-1)^{2}}\\right)$$ A1A1\n\nNote: Award A1 for each term i"
+    },
+    {
+      "part_id": "ae0bc75a-6474-4381-9f1b-9068e9e0f79a",
+      "question_number": 12,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to integrate their $\\frac{a}{x}+\\frac{b}{k-x}$ (M1)\n\n$$f(x)=\\frac{1}{k}\\int\\left(\\frac{1}{x}+\\frac{1}{k-x}\\right)dx$$\n\n$$=\\frac{1}{k}\\left(\\ln|x|-\\ln|k-x|\\right)(+c)\\left(=\\frac{1}{k}\\ln\\left|"
+    },
+    {
+      "part_id": "becef560-bb8c-42aa-8525-f03c176c6428",
+      "question_number": 12,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute $t=10$, $P=2400$ (M1)\n\n$$2400=\\frac{1200k}{(k-1200)e^{-2}+1200}$$ (A1)\n\n$k=2845.34...$\n$k=2845$ A1\n\nNote: Award (M1)(A1)A0 for any other value of $k$ which rounds to 2850\n\n[3 mar"
+    },
+    {
+      "part_id": "4e1e0b79-48e9-45b1-b6e7-0bb5e52c0808",
+      "question_number": 1,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$a = 0.433156...$, $b = 4.50265...$\n\n$a = 0.433$, $b = 4.50$ A1A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "d9b94cd8-8bcd-42da-8e4d-50da9126ac47",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute $x=18$ into their equation (M1)\n\n$$y = 0.433 \\times 18 + 4.50$$\n$$= 12.2994...$$\n$$=12.3$$ A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "e076c649-aec0-46d1-aba7-4a90504893cc",
+      "question_number": 1,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$\\bar{x} =15$, $\\bar{y} =11$ A1\n\n[1 mark]"
+    },
+    {
+      "part_id": "ab9798bb-ef1d-420a-8d9b-d93cafb343bf",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "Note: In this question, do not penalise incorrect use of strict inequality signs.\n\nLet $X$ = mass of a bag of sugar\n\nevidence of identifying the correct area (M1)\n\n$$P(X < 995) = 0.0765637...$$\n$$= 0."
+    },
+    {
+      "part_id": "786a9230-cc44-4b97-8a9f-5bd78aa48ad6",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$$0.0766 \\times 100$$\n$$\\approx 8$$ A1\n\nNote: Accept 7.66 .\n\n[1 mark]"
+    },
+    {
+      "part_id": "287c3927-ca46-4572-9cdc-623eb9c05cbf",
+      "question_number": 2,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "recognition that $P(X > 1005|X \\geq 995)$ is required (M1)\n\n$$\\frac{P(X \\geq 995 \\cap X > 1005)}{P(X \\geq 995)}$$\n\n$$\\frac{P(X > 1005)}{P(X \\geq 995)}$$ (A1)\n\n$$\\frac{0.07656...}{1-0.07656...}\\left(=\\"
+    },
+    {
+      "part_id": "0677c259-d8a1-4b97-ac8e-b5c61014c9f4",
+      "question_number": 3,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "Amplitude is $\\frac{110}{2} = 55$ (A1)\n\n$a = -55$ A1\n\n$c = 65$ A1\n\n$\\frac{2\\pi}{b} = 20$ OR $-55\\cos(20b) + 65 = 10$ (M1)\n\n$b = \\frac{\\pi}{10}(= 0.314)$ A1\n\nTotal [5 marks]"
+    },
+    {
+      "part_id": "ccea405d-3b16-4b68-b295-a77b0d3d8227",
+      "question_number": 4,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$\\int_{0}^{10}|v(t)|dt$ OR $-\\int_{0}^{6.74416...}v(t)\\,dt + \\int_{6.74416...}^{9.08837...}v(t)\\,dt - \\int_{9.08837...}^{10}v(t)\\,dt$ (A1)\n\n$= 37.0968...$\n\n$= 37.1$ (m) A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "3d7d4955-8c49-4998-bb68-c37afab89aca",
+      "question_number": 4,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "recognising acceleration at $t = 7$ is given by $v'(7)$ (M1)\n\nacceleration $= 5.93430...$\n\n$= 5.93$ (ms$^{-2}$) A1\n\n[2 marks]\nTotal [6 marks]"
+    },
+    {
+      "part_id": "de4f8f39-0eb8-4071-8ca1-f0ebad7bf9b6",
+      "question_number": 5,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n\nproduct of a binomial coefficient, a power of 3 (and a power of $x^{2}$) seen (M1)\nevidence of correct term chosen (A1)\n\n$$^{n+1}C_2 \\times 3^{n+1-2} \\times (x^{2})^{2}\\left(=\\frac{n(n+1)}{2"
+    },
+    {
+      "part_id": "56e20406-2699-4c96-9833-a88fd86702eb",
+      "question_number": 6,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to find a vector perpendicular to $\\Pi_1$ and $\\Pi_2$\nusing a cross product (M1)\n\n$$\\begin{pmatrix}3\\\\2\\\\1\\end{pmatrix}\\times\\begin{pmatrix}1\\\\-2\\\\1\\end{pmatrix}=(2-(-2))\\mathbf{i}+(1-3)\\mathb"
+    },
+    {
+      "part_id": "f2752d44-52d6-425c-8924-4c8a7aa07d83",
+      "question_number": 6,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to solve 3 simultaneous equations in 3 variables (M1)\n\n$$\\left(\\frac{41}{21},-\\frac{10}{21},\\frac{23}{21}\\right)(=(1.95,-0.476,1.10))$$ A1\n\n[2 marks]\nTotal [5 marks]"
+    },
+    {
+      "part_id": "d64abda1-9495-454a-8314-324b2c46a317",
+      "question_number": 7,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "recognition of the need to integrate $\\frac{x}{\\sqrt{(x^{2}+k)^{3}}}$ (M1)\n\n$$\\int \\frac{x}{\\sqrt{(x^{2}+k)^{3}}}dx(=1)$$\nEITHER\n$u = x^{2}+k \\Rightarrow \\frac{du}{dx}=2x$ (or equivalent) (A1)\n\n$$\\int"
+    },
+    {
+      "part_id": "0d9eb3ab-76a7-4bb4-b06f-2e8541616186",
+      "question_number": 7,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to solve $\\sqrt{16+k}-\\sqrt{k}=\\sqrt{k}\\sqrt{16+k}$ (M1)\n\n$k = 0.645038...$\n$= 0.645$ A1\n\n[2 marks]\nTotal [7 marks]"
+    },
+    {
+      "part_id": "95c1be33-2fc2-4c05-a763-8e98119af480",
+      "question_number": 8,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$(|zw|=)16$ A1\n\n[1 mark]"
+    },
+    {
+      "part_id": "1e24cd71-106d-4d98-9070-fd488e586824",
+      "question_number": 8,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "attempt to find $\\arg(z)+\\arg(w)$ (M1)\n\n$$\\arg(zw) = \\arg(z)+\\arg(w)$$\n\n$$=\\frac{\\pi}{5}-\\frac{2k\\pi}{5}\\left(=\\frac{(1-2k)\\pi}{5}\\right)$$ A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "2d898530-e73f-43dc-b946-05aba558c332",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$\\tan\\theta = \\frac{50}{y-x}$ OR $\\cot\\theta = \\frac{y-x}{50}$ A1\n\n$y = x + 50\\cot\\theta$ AG\n\nNote: $y - x$ may be identified as a length on a diagram, and not written explicitly.\n\n[1 mark]"
+    },
+    {
+      "part_id": "bd9905b0-e718-4916-9a5d-b7ada368d46b",
+      "question_number": 10,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to find the point of intersection of the graph of $f$ and the line $y = x$ (M1)\n\n$x = 5.56619...$\n\n$= 5.57$ A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "c93c1ad5-bfc3-44e7-935e-68c07d7ec804",
+      "question_number": 10,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute coordinates of Q (in any order)\ninto an appropriate equation (M1)\n\n$$y-2=-(x-2\\ln45)$$ OR $$2=-2\\ln45+c$$ A1\n\nequation of $L$ is $y=-x+2\\ln45+2$ AG\n\n[2 marks]"
+    },
+    {
+      "part_id": "6710349c-c9b0-4e76-9c78-a973ff533f74",
+      "question_number": 10,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "by symmetry $2\\times1.52$ (M1)\n\n$$=3.03930...$$\n$$=3.04$$ A1\n\nNote: Accept any answer that rounds to 3.0 (but do not accept 3).\n\n[2 marks]\nTotal [15 marks]"
+    },
+    {
+      "part_id": "9d7b9216-cf87-444c-b70a-6640e6e9d69e",
+      "question_number": 11,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to solve $4x^{2}-1=0$ e.g. by factorising $4x^{2}-1$ (M1)\n\n$p=\\frac{1}{2}, q=-\\frac{1}{2}$ or vice versa A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "d3fed9e4-5e85-4013-9704-87ba691fff00",
+      "question_number": 11,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempt to find the local min point on $y=f'(x)$ OR solve $f''(x)=0$ (M1)\n\n$x=-1.60$ A1\n\n[2 marks]"
+    },
+    {
+      "part_id": "50a13504-8f84-4932-bf02-e123442b39c4",
+      "question_number": 11,
+      "part_label": "f",
+      "status": "ok",
+      "new_text_preview": "attempting to find at least one critical value $(x=-0.568729...,x=1.31872...)$ (M1)\n\n$-\\frac{2}{3}<x<-0.569$ OR $-0.5<x<0.5$ OR $x>1.32$ A1A1A1\n\nNote: Only penalize once for use of $\\leq$ rather than "
+    },
+    {
+      "part_id": "508bb281-5299-40cb-a083-d02726a00000",
+      "question_number": 12,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$$\\frac{1}{x(k-x)}\\equiv\\frac{a}{x}+\\frac{b}{k-x}$$\n\n$$a(k-x)+bx=1$$ (A1)\n\nattempt to compare coefficients OR substitute $x=k$ and $x=0$ and solve (M1)\n\n$a=\\frac{1}{k}$ and $b=\\frac{1}{k}$ A1\n\n$$f'(x)"
+    },
+    {
+      "part_id": "76b91df2-626a-4508-9523-c3871f410db2",
+      "question_number": 12,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempt to separate variables and integrate both sides M1\n\n$$5k\\int\\frac{1}{P(k-P)}dP=\\int1\\,dt$$\n\n$$5\\left(\\ln P-\\ln(k-P)\\right)=t+c$$ A1\n\nNote: There are variations on this which should be accepted,"
+    },
+    {
+      "part_id": "79da7312-9d51-47f1-9c6b-77ffb94bf785",
+      "question_number": 12,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "attempt to find the maximum of the first derivative graph OR zero\nof the second derivative graph OR that $P=\\frac{k}{2}(=1422.67...)$ (M1)\n\n$t=1.57814...$\n$=1.58$ (days) A2\n\nNote: Accept any value whi"
+    },
+    {
+      "part_id": "3963ebc2-e283-4dd3-959b-68f2454d28a8",
+      "question_number": 10,
+      "part_label": "d.ii",
+      "status": "ok",
+      "new_text_preview": "appropriate method to find the sum of two areas using integrals of the difference\nof two functions (M1)\n\nNote: Allow absent or incorrect limits.\n\n$$\\int_{4.806...}^{5.566...}\\left(x-(-x+2\\ln45+2)\\righ"
+    },
+    {
+      "part_id": "e73981a0-ace3-4c9d-a198-ed3e343ce2af",
+      "question_number": 8,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "$zw \\in \\mathbb{Z} \\Rightarrow \\arg(zw)$ is a multiple of $\\pi$ (M1)\n\n$\\Rightarrow 1-2k$ is a multiple of 5 (M1)\n\n$k = 3$ A1"
+    },
+    {
+      "part_id": "d49f63d4-e3e7-439e-85ca-7f5c9ffd457b",
+      "question_number": 8,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "$$zw = 16(\\cos(-\\pi)+i\\sin(-\\pi))$$\n\n$$-16$$ A1\n\n[4 marks]\nTotal [7 marks]"
+    },
+    {
+      "part_id": "c94e398b-b242-44f5-84e7-bb4af8c743b8",
+      "question_number": 10,
+      "part_label": "d.i",
+      "status": "ok",
+      "new_text_preview": "$x = \\ln45+1(=4.81)$ A1"
+    }
+  ],
+  "HL2021MayTZ2P2": [
+    {
+      "part_id": "ca391c75-146b-4013-ae67-65054fb78635",
+      "question_number": 11,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to use $$V = \\pi\\int_{a}^{b}(f(x))^{2}\\,dx$$ (M1)\n\n$$V = \\pi\\int_{0}^{\\ln 16}\\left(\\frac{ke^{\\frac{x}{2}}}{1+e^{x}}\\right)^{2}dx \\ \\left(V = k^{2}\\pi\\int_{0}^{\\ln 16}\\frac{e^{x}}{(1+e^{x})^{2}"
+    },
+    {
+      "part_id": "2a580775-cfc3-498b-8be1-eb450e9c5b62",
+      "question_number": 8,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "$$\\frac{1+z}{1-z} = \\frac{1+\\cos\\theta + i\\sin\\theta}{1-\\cos\\theta - i\\sin\\theta}$$\n\nattempt to use the complex conjugate of their denominator M1\n\n$$= \\frac{(1+\\cos\\theta + i\\sin\\theta)(1-\\cos\\theta +"
+    },
+    {
+      "part_id": "85a49321-7583-4b0d-a88b-0c50921ebdd3",
+      "question_number": 9,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$$\\arctan 2x = 2x - \\frac{(2x)^{3}}{3} + ...$$\n\n$$\\lim_{x \\to 0}\\left(\\frac{x\\arctan 2x}{\\sec x - 1}\\right) = \\lim_{x \\to 0}\\left(\\frac{x\\left(2x - \\frac{(2x)^{3}}{3} + ...\\right)}{\\left(1 + \\frac{x^{"
+    },
+    {
+      "part_id": "6e93bba2-56e5-4c3a-a5bb-6f0c2c4e8ee0",
+      "question_number": 3,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "EITHER\n$P(S) + P(T) + P(S' \\cap T') - P(S \\cap T) = 1$ OR $P(S \\cup T) = P((S' \\cap T')')$ (M1)\n$0.7 + 0.2 + 0.18 - P(S \\cap T) = 1$ OR $P(S \\cup T) = 1 - 0.18$\n\nOR\na clearly labelled Venn diagram (M1"
+    },
+    {
+      "part_id": "701edf2a-ee0f-46be-b67d-b457b08ed312",
+      "question_number": 3,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n$P(G) \\times P(T) (= 0.48 \\times 0.2) = 0.096$ A1\n\n$P(G) \\times P(T) \\neq P(G \\cap T) \\Rightarrow$ $G$ and $T$ are not independent R1\n\nMETHOD 2\n$P(T|G) = 0.25$ A1\n\n$P(T|G) \\neq P(T) \\Rightarr"
+    },
+    {
+      "part_id": "b3e7eb9f-98e6-486d-83f1-75ef58461854",
+      "question_number": 12,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "$$x = \\arcsin\\left(\\frac{y^{2}-1}{y^{2}+1}\\right)$$ M1\n\n$$\\sin x = \\frac{y^{2}-1}{y^{2}+1} \\Rightarrow y^{2}\\sin x + \\sin x = y^{2}-1$$ A1\n\n$$y^{2} = \\frac{1+\\sin x}{1-\\sin x}$$ A1\n\ndomain of $g$ is $"
+    },
+    {
+      "part_id": "523edc81-b2aa-4bec-abe4-62246633e5b1",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$a$ represents the (average) increase in waiting time ($0.805$ mins) per additional customer (waiting to receive their coffee) R1"
+    },
+    {
+      "part_id": "d3d4ee91-d171-41ef-b96f-7cd28ad54db7",
+      "question_number": 1,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "attempt to substitute $x = 7$ into their equation (M1)\n\n$8.51693...$\n$8.52$ (mins) A1"
+    },
+    {
+      "part_id": "d262c48d-38c4-4473-9f5c-8c913e163ece",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempt to use $u_{1} + (n-1)d = 0$ (M1)\n$60 - 2.5(k-1) = 0$\n\n$k = 25$ A1"
+    },
+    {
+      "part_id": "baec497d-9c9a-4726-9100-f79072ab8bc4",
+      "question_number": 2,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nattempting to express $S_{n}$ in terms of $n$ (M1)\n\nuse of a graph or a table to attempt to find the maximum sum (M1)\n\n$= 750$ A1\n\nMETHOD 2\nEITHER\nrecognizing maximum occurs at $n = 25$ (M1)\n"
+    },
+    {
+      "part_id": "1f34a95b-fe59-41a1-b11c-4e46e4f4bc4d",
+      "question_number": 3,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "EITHER\n$P(T \\cap S') = P(T) - P(T \\cap S) (= 0.2 - 0.08)$ OR\n$P(T \\cap S') = P(T \\cup S) - P(S) (= 0.82 - 0.7)$ (M1)\n\nOR\na clearly labelled Venn diagram including $P(S)$, $P(T)$ and $P(S \\cap T)$ (M1)"
+    },
+    {
+      "part_id": "9b2a5b4f-0aec-4ac7-9e42-8a789ee21657",
+      "question_number": 3,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$P(G \\cap T) = P(T|G)P(G)$ $(0.25 \\times 0.48)$ (M1)\n\n$= 0.12$ A1"
+    },
+    {
+      "part_id": "dfe0f2f6-4198-4cc1-8468-6f836aae258a",
+      "question_number": 4,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "attempting to find the vertex (M1)\n$x = 1$ OR $y = -5$ OR $f(x) = 6(x-1)^{2} - 5$\n\nrange is $y \\geq -5$ A1"
+    },
+    {
+      "part_id": "a2544b4d-6fc6-4702-af88-47ef738bf8f3",
+      "question_number": 4,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n$$(g \\circ f)(x) = -(6x^{2} - 12x + 1) + c \\ \\left(= -\\left(6(x-1)^{2} - 5\\right) + c\\right)$$ (A1)\n\nEITHER\nrelating to the range of $f$ OR attempting to find $g(-5)$ (M1)\n\n$5 + c \\leq 0$ (A1"
+    },
+    {
+      "part_id": "a71c38ec-308a-42b1-97d4-0499d0e6ad4f",
+      "question_number": 5,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$100 = A_{0}e^{0}$ A1\n$A_{0} = 100$ AG"
+    },
+    {
+      "part_id": "8a86b1cc-652b-418e-9162-b5d546fdd2c4",
+      "question_number": 5,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "correct substitution of values into exponential equation (M1)\n$50 = 100e^{-5730k}$ OR $e^{-5730k} = \\frac{1}{2}$\n\nEITHER\n$-5730k = \\ln\\frac{1}{2}$ A1\n\n$\\ln\\frac{1}{2} = -\\ln 2$ OR $-\\ln\\frac{1}{2} = \\"
+    },
+    {
+      "part_id": "3d8f2322-41cf-44da-af5f-cd9789130ca8",
+      "question_number": 5,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "if $25\\%$ of the carbon-14 has decayed, $75\\%$ remains ie, $75$ units remain\n$75 = 100e^{-\\frac{\\ln 2}{5730}t}$ (A1)\n\nEITHER\nusing an appropriate graph to attempt to solve for $t$ (M1)\n\nOR\nmanipulatin"
+    },
+    {
+      "part_id": "100b4b28-889e-4e78-9359-7eba813df310",
+      "question_number": 6,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$$E(X) = (n+1)\\int_{0}^{1} x^{n+1}\\,dx$$ M1\n\n$$= (n+1)\\left[\\frac{x^{n+2}}{n+2}\\right]_{0}^{1}$$ A1\n\nleading to $E(X) = \\frac{n+1}{n+2}$ AG"
+    },
+    {
+      "part_id": "97651712-7913-4593-8169-0c2a08a0e3b6",
+      "question_number": 6,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nuse of $Var(X) = E(X^{2}) - [E(X)]^{2}$ M1\n\n$$Var(X) = (n+1)\\int_{0}^{1} x^{n+2}\\,dx - \\left(\\frac{n+1}{n+2}\\right)^{2}$$\n\n$$= (n+1)\\left[\\frac{1}{n+3}x^{n+3}\\right]_{0}^{1} - \\left(\\frac{n+1"
+    },
+    {
+      "part_id": "8d0f6737-8514-42fa-be42-9cc440597ed4",
+      "question_number": 7,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "Jack and Andrea finish in that order (as a unit) so we are considering the arrangement of 7 objects (M1)\n\n$7! (= 5040)$ ways A1"
+    },
+    {
+      "part_id": "f3ffd74f-a759-4f5f-a902-d29a35adb931",
+      "question_number": 7,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n\nthe number of ways that Andrea finishes in front of Jack is equal to the number of ways that Jack finishes in front of Andrea (M1)\n\ntotal number of ways is $8!$ (A1)\n\n$\\frac{8!}{2} (= 20160)"
+    },
+    {
+      "part_id": "74d8a632-cc2a-4652-bd33-67417b305ccb",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$1 - t + t^{2}$ A1\n\nNote: Accept $1, -t$ and $t^{2}$."
+    },
+    {
+      "part_id": "c95b1ddd-9178-49a4-b62c-c70b0ada2bff",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$$\\sec x = \\frac{1}{1 - \\frac{x^{2}}{2!} + \\frac{x^{4}}{4!}(-...)} \\ \\left(= \\left(1 - \\frac{x^{2}}{2!} + \\left(\\frac{x^{4}}{4!}(-...)\\right)\\right)^{-1}\\right)$$ (M1)\n\n$t = \\cos x - 1$ or $\\sec x = 1"
+    },
+    {
+      "part_id": "c35998dc-17b2-4282-b62d-c960a8d25bc0",
+      "question_number": 10,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "use of inverse normal to find z-score (M1)\n\n$z = 2.0537...$\n\n$$2.0537... = \\frac{82-75}{\\sigma}$$ (A1)\n\n$\\sigma = 3.408401...$\n\n$\\sigma = 3.41$ A1"
+    },
+    {
+      "part_id": "b83eb17d-ff57-43a9-a5c4-cfa2bb3fa548",
+      "question_number": 10,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "evidence of identifying the correct area under the normal curve (M1)\n\n$P(T > 80) = 0.071193...$\n\n$P(T > 80) = 0.0712$ A1"
+    },
+    {
+      "part_id": "a28d1fda-ac5a-444f-9dbd-dc96b343c283",
+      "question_number": 10,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "recognition that $P(80 < T < 82)$ is required (M1)\n\n$$P(T < 82 | T > 80) = \\frac{P(80 < T < 82)}{P(T > 80)} = \\left(\\frac{0.051193...}{0.071193...}\\right)$$ (M1)(A1)\n\n$= 0.719075...$\n\n$= 0.719$ A1"
+    },
+    {
+      "part_id": "b118ce19-6e37-468d-b074-263569ed1f3c",
+      "question_number": 10,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "recognition of binomial probability (M1)\n\n$X \\sim B(64, 0.071193...)$ or $E(X) = 64 \\times 0.071193...$ (A1)\n\n$E(X) = 4.556353...$\n\n$E(X) = 4.56$ (flights) A1"
+    },
+    {
+      "part_id": "e8526e63-77c7-4030-a465-82c3f0902074",
+      "question_number": 10,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "$P(X > 6) = P(X \\geq 7) = 1 - P(X \\leq 6)$ (M1)\n\n$= 1 - 0.83088...$ (A1)\n\n$= 0.1691196...$\n\n$= 0.169$ A1"
+    },
+    {
+      "part_id": "57fdfa1e-fd55-4fb6-b7dc-585c549b4846",
+      "question_number": 11,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "a valid algebraic or graphical attempt to find $k$ (M1)\n\n$$k^{2} = \\frac{300 \\times 34}{15\\pi}$$\n\n$$k = 14.7 \\ \\left(= 2\\sqrt{\\frac{170}{\\pi}} = \\sqrt{\\frac{680}{\\pi}}\\right) \\text{ (as } k \\in \\mathb"
+    },
+    {
+      "part_id": "c6ec0fc9-ae1f-43eb-9fd8-7bee88fafde1",
+      "question_number": 12,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "EITHER\n\n$$f(-x) = \\arcsin\\left(\\frac{(-x)^{2}-1}{(-x)^{2}+1}\\right) = \\arcsin\\left(\\frac{x^{2}-1}{x^{2}+1}\\right) = f(x)$$ R1\n\nOR\n\na sketch graph of $y = f(x)$ with line symmetry in the y-axis indicat"
+    },
+    {
+      "part_id": "471bc302-ed4c-4ea7-a26b-93dc7565bc21",
+      "question_number": 12,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "as $x \\to \\pm\\infty$, $f(x) \\to \\arcsin 1 \\left(\\to \\frac{\\pi}{2}\\right)$ A1\n\nso the horizontal asymptote is $y = \\frac{\\pi}{2}$ A1"
+    },
+    {
+      "part_id": "e610e367-22f3-401b-85f6-8dc38b7db4d1",
+      "question_number": 12,
+      "part_label": "e",
+      "status": "ok",
+      "new_text_preview": "domain is $-\\frac{\\pi}{2} \\leq x < \\frac{\\pi}{2}$ A1\n\nNote: Accept correct alternative notations, for example, $\\left[-\\frac{\\pi}{2}, \\frac{\\pi}{2}\\right[$ or $\\left[-\\frac{\\pi}{2}, \\frac{\\pi}{2}\\righ"
+    },
+    {
+      "part_id": "69b5f12f-fcb0-42ed-ae99-741c42c151ff",
+      "question_number": 11,
+      "part_label": "d.i",
+      "status": "ok",
+      "new_text_preview": "EITHER\n\nrecognising to graph $y = f'(x)$ (M1)\n\nNote: Award M1 for attempting to use quotient rule or product rule differentiation.\n$$f'(x) = \\frac{ke^{\\frac{x}{2}}(1-e^{x})}{2(1+e^{x})^{2}}$$\n\nfor $x "
+    },
+    {
+      "part_id": "05b10bc3-f521-45be-9f77-14fd503de111",
+      "question_number": 12,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "$$f'(x) = \\frac{2x}{|x|(x^{2}+1)}$$\n\nEITHER\n\nfor $x < 0$, $|x| = -x$ (A1)\n\nso $$f'(x) = -\\frac{2}{x^{2}+1}$$ A1\n\nOR\n\n$|x| > 0$ and $x^{2}+1 > 0$ A1\n\n$2x < 0$, $x < 0$ A1\n\nTHEN\n\n$f'(x) < 0$ R1\n\nNote: A"
+    },
+    {
+      "part_id": "2ef67f73-b064-4e62-8474-3ee43f643ba5",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$a = 0.805084...$ and $b = 2.88135...$\n$a = 0.805$ and $b = 2.88$ A1A1"
+    },
+    {
+      "part_id": "1ba775fb-5ef0-4995-af4e-b8aa0c17f720",
+      "question_number": 1,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$r = 0.97777...$\n$r = 0.978$ A1"
+    },
+    {
+      "part_id": "89952c7a-cabe-4485-844d-8070025cabd8",
+      "question_number": 11,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "attempting to find $OA = f(0) = \\frac{k}{2}$ with $k = 14.712... \\left(= 2\\sqrt{\\frac{170}{\\pi}} = \\sqrt{\\frac{680}{\\pi}}\\right)$ (M1)\n\n$$OA = 7.36 \\left(= \\sqrt{\\frac{170}{\\pi}}\\right)$$ A1"
+    },
+    {
+      "part_id": "c959d45b-5720-4d54-a6fe-1f11aa5e3cda",
+      "question_number": 11,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "attempting to find $BC = f(\\ln 16) = \\frac{4k}{17}$ with $k = 14.712... \\left(= 2\\sqrt{\\frac{170}{\\pi}} = \\sqrt{\\frac{680}{\\pi}}\\right)$ (M1)\n\n$$BC = 3.46 \\left(= \\frac{8}{17}\\sqrt{\\frac{170}{\\pi}} = "
+    },
+    {
+      "part_id": "0a21dc51-365d-4660-aff5-b441aea31f1c",
+      "question_number": 11,
+      "part_label": "d.ii",
+      "status": "ok",
+      "new_text_preview": "attempting to find $f(1.76...)$ (M1)\n\nthe cross-sectional radius at this point is $5.20 \\left(\\sqrt{\\frac{85}{\\pi}}\\right)$ (cm) A1"
+    },
+    {
+      "part_id": "23015286-2e2d-4a57-8e35-3f7217cfdd7f",
+      "question_number": 12,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "attempting to use the quotient rule to find $$\\frac{d}{dx}\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)$$ M1\n\n$$\\frac{d}{dx}\\left(\\frac{x^{2}-1}{x^{2}+1}\\right) = \\frac{2x(x^{2}+1) - 2x(x^{2}-1)}{(x^{2}+1)^{2}"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "SL2022NovTZ0P2": [
+    {
+      "part_id": "44c5c7ae-e09a-4afe-96b1-f65a4d30b742",
+      "question_number": 9,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "recognizing conditional probability (M1)\n\n$P(T < 55 | T > 40)$\n\nNote: Award (M1) for an expression or description in context. Accept \n$P(T > 40 | T < 55)$ but do not accept just $P(A|B)$.\n\n$\\frac{P(40"
+    },
+    {
+      "part_id": "668bbfad-edad-49c0-8b15-bf3b13447596",
+      "question_number": 8,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "recognizing that the sum of the angles of a kite is $2\\pi$ (M1)\n\n$D\\hat{O}E + O\\hat{E}A + E\\hat{A}D + A\\hat{D}O = 2\\pi$ OR $2\\alpha + 2\\cdot \\frac{\\pi}{2} + D\\hat{O}E = 2\\pi$\n\n$D\\hat{O}E = \\pi - 2\\alp"
+    },
+    {
+      "part_id": "74eda57a-3db0-4715-8793-cb461c3848ec",
+      "question_number": 8,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "valid approach to find the area of R (M1)\n\narea of kite – area of sector OR 2(area of triangle AOE − 0.5 area of sector\nOED)\n\nArea of sector = $\\frac{1}{2}r^{2}\\cdot D\\hat{O}E \\left(=\\frac{1}{2}r^{2}\\"
+    },
+    {
+      "part_id": "9f2e72e0-e383-470a-aefd-7f09fe0fedc9",
+      "question_number": 9,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "recognizing binomial probability (M1)\n\n$X \\sim B(n, p)$\n\n$n = 10$ and $p = 0.804589...$ (A1)\n\n$0.0242111..., 0.0240188...$using $p = 0.805$\n\n$P(X = 5) = 0.0242$ A1\n\n[7 marks]\n\ncontinued…"
+    }
+  ]
+}

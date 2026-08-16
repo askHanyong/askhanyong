@@ -1,0 +1,207 @@
+{
+  "SL2021NovTZ1P1": [
+    {
+      "part_id": "7aa24e05-53d4-4ade-9faf-d6436a32b7fa",
+      "question_number": 6,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "consider the equation $\\frac{2\\sin^{2} 2\\theta - 5\\sin 2\\theta - 3}{\\sin 2\\theta - 1} = 0$ (M1)\n$\\Rightarrow 2\\sin^{2} 2\\theta - 5\\sin 2\\theta - 3 = 0$\n\nEITHER\nattempt to factorise in the form $(2\\sin"
+    },
+    {
+      "part_id": "d98c3999-c5bd-4754-8dc5-8ffc41b89550",
+      "question_number": 7,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "valid approach to solve $4 + 4t - 3t^{2} = 0$ (may be seen in part (a)) (M1)\n\n$(2 - t)(2 + 3t)$ OR $\\frac{-4 \\pm \\sqrt{16 + 48}}{-6}$\n\ncorrect $x$-intercept on the graph at $t = 2$ A1\n\nNote: The follo"
+    },
+    {
+      "part_id": "b90b3a36-ca22-4979-a725-b7f5afed4927",
+      "question_number": 9,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$f$ increases when $p < x < 0$ A1\n$f$ increases when $f'(x) > 0$ OR $f'$ is above the $x$-axis R1\n\nNote: Do not award A0R1."
+    },
+    {
+      "part_id": "b0957dd7-ea75-4045-82ef-93ce1cbf25eb",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$h = -1$ A1\n$k = 8$ A1"
+    },
+    {
+      "part_id": "f3fad332-f04d-469f-a64f-8c804b1f30d7",
+      "question_number": 2,
+      "part_label": "",
+      "status": "ok",
+      "new_text_preview": "recognition that $$y = \\int \\cos\\left(x - \\frac{\\pi}{4}\\right) \\, dx$$ (M1)\n$$y = \\sin\\left(x - \\frac{\\pi}{4}\\right) \\; (+c)$$ (A1)\nsubstitute both $x$ and $y$ values into their integrated expression "
+    },
+    {
+      "part_id": "dff0df0f-0da5-42f9-97b9-06c29d9e4590",
+      "question_number": 4,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "valid approach to find $\\text{P}(R)$ (M1)\ntree diagram (must include probabilty of picking box) with correct required probabilities\nOR\n$\\text{P}(R \\cap B_1) + \\text{P}(R \\cap B_2)$\nOR\n$\\text{P}(R \\mid"
+    },
+    {
+      "part_id": "7c8f8ef3-8f04-47d6-9986-479e90348a9a",
+      "question_number": 5,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$f'(4) = 6$ A1"
+    },
+    {
+      "part_id": "b4fb64ab-a2e2-4a57-9285-f0b8674f9349",
+      "question_number": 5,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$f(4) = 6 \\times 4 - 1 = 23$ A1"
+    },
+    {
+      "part_id": "bc54602e-ed35-4154-878d-fe526bdb8880",
+      "question_number": 5,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "$h(4) = f(g(4))$ (M1)\n$h(4) = f(4^{2} - 3 \\times 4) = f(4)$\n\n$h(4) = 23$ A1"
+    },
+    {
+      "part_id": "ed253130-27f9-4761-b159-e8564c6abb35",
+      "question_number": 5,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "attempt to use chain rule to find $h'$ (M1)\n$f'(g(x)) \\times g'(x)$ OR $(x^{2} - 3x)' \\times f'(x^{2} - 3x)$\n\n$h'(4) = (2 \\times 4 - 3) f'(4^{2} - 3 \\times 4)$ A1\n\n$= 30$\n\n$y - 23 = 30(x - 4)$ OR $y ="
+    },
+    {
+      "part_id": "226e4cf4-37b6-4764-88f1-dd24dd82959a",
+      "question_number": 6,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nattempt to write all LHS terms with a common denominator of $x - 1$ (M1)\n$2x - 3 - \\frac{6}{x-1} = \\frac{2x(x-1) - 3(x-1) - 6}{x - 1}$ OR $\\frac{(2x-3)(x-1)}{x-1} - \\frac{6}{x-1}$\n\n$= \\frac{2"
+    },
+    {
+      "part_id": "3256fd45-aca7-4de4-8127-1abb51a175f2",
+      "question_number": 7,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "recognising to integrate between $0$ and $2$, or $2$ and $3$ OR $\\int_{0}^{3} \\left|4 + 4t - 3t^{2}\\right| \\, dt$ (M1)\n\n$\\int_{0}^{2} (4 + 4t - 3t^{2}) \\, dt$\n\n$= 8$ A1\n\n$\\int_{2}^{3} (4 + 4t - 3t^{2}"
+    },
+    {
+      "part_id": "e00f1b08-1c93-43ab-b130-71c02cd77531",
+      "question_number": 8,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$f\\left(\\frac{2}{3}\\right) = 4$ OR $a^{\\frac{2}{3}} = 4$ (M1)\n\n$a = 4^{\\frac{3}{2}}$ OR $a = \\left(2^{2}\\right)^{\\frac{3}{2}}$ OR $a^{2} = 64$ OR $\\sqrt[3]{a} = 2$ A1\n\n$a = 8$ AG"
+    },
+    {
+      "part_id": "33211166-703e-4572-ba6d-781b8b5e2984",
+      "question_number": 8,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$f^{-1}(x) = \\log_{8} x$ A1\n\nNote: Accept $f^{-1}(x) = \\log_{a} x$.\nAccept any equivalent expression for $f^{-1}$ e.g. $f^{-1}(x) = \\frac{\\ln x}{\\ln 8}$."
+    },
+    {
+      "part_id": "61ec0c45-12f8-4a75-91eb-567fe4feb971",
+      "question_number": 8,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "correct substitution (A1)\n$\\log_{8} \\sqrt{32}$ OR $8^{x} = 32^{\\frac{1}{2}}$\n\ncorrect working involving log/index law (A1)\n$\\frac{1}{2}\\log_{8} 32$ OR $\\frac{5}{2}\\log_{8} 2$ OR $\\log_{8} 2 = \\frac{1}"
+    },
+    {
+      "part_id": "7c84f4fd-ebd6-48f8-8b30-6fd0043c4707",
+      "question_number": 9,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$x = 0$ A1"
+    },
+    {
+      "part_id": "8b8b6920-dc79-4855-bd65-7a40f66a0bcd",
+      "question_number": 9,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "recognizing area from $p$ to $t$ (seen anywhere) M1\n$\\int_{p}^{t} \\left|f'(x)\\right| \\, dx$\n\nrecognizing to negate integral for area below $x$-axis (M1)\n$\\int_{p}^{0} f'(x) \\, dx - \\int_{0}^{t} f'(x) "
+    },
+    {
+      "part_id": "5891bab4-f035-4091-9b83-95687a7d7503",
+      "question_number": 7,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "attempt to integrate $v$ (M1)\n$\\int v \\, dt = \\int (4 + 4t - 3t^{2}) \\, dt = 4t + 2t^{2} - t^{3} (+c)$ A1A1\n\nNote: Award A1 for $4t + 2t^{2}$, A1 for $-t^{3}$.\n\nattempt to substitute their $t$ into th"
+    },
+    {
+      "part_id": "06b4b189-77b9-46a9-9e27-26e047bcde3e",
+      "question_number": 9,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "$f$ has points of inflexion when $x = q$, $x = r$ and $x = t$ A2\n\n$f'$ has turning points at $x = q$, $x = r$ and $x = t$\nOR\n$f''(q) = 0$, $f''(r) = 0$ and $f''(t) = 0$ and\n$f'$ changes from increasin"
+    },
+    {
+      "part_id": "3c74f95e-bdd1-4360-8d9e-2efda33a5baf",
+      "question_number": 9,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "$f$ is minimum when $x = p$ A1\nbecause $f'(p) = 0$, $f'(x) < 0$ when $x < p$ and\n$f'(x) > 0$ when $x > p$ (may be seen in a sign diagram clearly labelled as $f'$)\nOR because $f'$ changes from negative"
+    },
+    {
+      "part_id": "1672779a-d8a1-4d56-bb2e-2f283250f363",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "setting $f(x) = 0$ (M1)\n$x = 1$, $x = -3$ (accept $(1,0), (-3,0)$) A1"
+    },
+    {
+      "part_id": "df2e6974-6969-463a-86b9-534921b9704c",
+      "question_number": 1,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\n$x = -1$ A1\nsubstituting their $x$-coordinate into $f$ (M1)\n$y = 8$ A1\n$(-1, 8)$\n\nMETHOD 2\nattempt to complete the square (M1)\n$-2\\left((x+1)^{2} - 4\\right)$\n$x = -1$, $y = 8$ A1A1\n$(-1, 8)$"
+    },
+    {
+      "part_id": "772bb8fa-0165-4663-85d3-c2fcdb435364",
+      "question_number": 3,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$x = 3$ A1"
+    },
+    {
+      "part_id": "84cd0c00-f911-4a18-94f0-ed3e90f698c3",
+      "question_number": 3,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$y = -2$ A1"
+    },
+    {
+      "part_id": "ae71a1fb-b0a9-4f94-b05e-3127d8e19aed",
+      "question_number": 3,
+      "part_label": "b.i",
+      "status": "ok",
+      "new_text_preview": "$(-2, 0)$ (accept $x = -2$) A1"
+    },
+    {
+      "part_id": "abc288c3-3823-4fbe-8f80-336e58e6ba36",
+      "question_number": 3,
+      "part_label": "b.ii",
+      "status": "ok",
+      "new_text_preview": "$\\left(0, \\frac{4}{3}\\right)$ (accept $y = \\frac{4}{3}$ and $f(0) = \\frac{4}{3}$) A1"
+    },
+    {
+      "part_id": "a51170cd-0969-4e15-95da-7011f754a719",
+      "question_number": 7,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "valid approach to find turning point ($v' = 0$, $-\\frac{b}{2a}$, average of roots) (M1)\n\n$4 - 6t = 0$ OR $-\\frac{4}{2(-3)}$ OR $\\frac{-\\frac{2}{3} + 2}{2}$\n\n$t = \\frac{2}{3}$ (s) A1"
+    },
+    {
+      "part_id": "9142f7a1-5728-4139-afb8-70cd8c857ca8",
+      "question_number": 8,
+      "part_label": "d.i",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nequating a pair of differences (M1)\n$u_{2} - u_{1} = u_{4} - u_{3} (= u_{3} - u_{2})$\n$\\log_{8} p - \\log_{8} 27 = \\log_{8} 125 - \\log_{8} q$\n$\\log_{8} 125 - \\log_{8} q = \\log_{8} q - \\log_{8}"
+    },
+    {
+      "part_id": "0204501f-a451-4dba-ac70-7f7f3088785e",
+      "question_number": 8,
+      "part_label": "d.ii",
+      "status": "ok",
+      "new_text_preview": "METHOD 1 (geometric, finding r)\n$u_{4} = u_{1} r^{3}$ OR $125 = 27(r)^{3}$ (M1)\n\n$r = \\frac{5}{3}$ (seen anywhere) A1\n\n$p = 27r$ OR $\\frac{125}{q} = \\frac{5}{3}$ (M1)\n\n$p = 45, q = 75$ A1A1\n\nMETHOD 2 "
+    }
+  ]
+}

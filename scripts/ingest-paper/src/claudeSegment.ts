@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'node:fs/promises';
+import * as fsSync from 'node:fs';
 import { env } from './env.js';
 import type {
   PaperSegmentation,
@@ -232,6 +233,7 @@ function parsePartBlock(block: string): { markscheme_text: string; marks_breakdo
 }
 
 function parseMarkschemeSegmentation(raw: string): MarkschemeSegmentation {
+  if (process.env.DEBUG_DUMP_RAW) fsSync.writeFileSync('debug_raw_segment.txt', raw);
   const questionRe = /@@@QUESTION (\d+)@@@\r?\n/g;
   const questionMatches: { num: number; matchStart: number; contentStart: number }[] = [];
   let qm: RegExpExecArray | null;

@@ -1,0 +1,2967 @@
+[
+  {
+    "part_id": "5891bab4-f035-4091-9b83-95687a7d7503",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 16,
+    "part_label": "a.ii",
+    "markscheme_text": "attempt to integrate $v$ (M1)\n$\\int v \\, dt = \\int (4 + 4t - 3t^{2}) \\, dt = 4t + 2t^{2} - t^{3} (+c)$ A1A1\n\nNote: Award A1 for $4t + 2t^{2}$, A1 for $-t^{3}$.\n\nattempt to substitute their $t$ into their solution for the integral (M1)\n\ndistance $= 4\\left(\\frac{2}{3}\\right) + 2\\left(\\frac{2}{3}\\right)^{2} - \\left(\\frac{2}{3}\\right)^{3}$\n\n$= \\frac{8}{3} + \\frac{8}{9} - \\frac{8}{27}$ (or equivalent) A1\n\n$= \\frac{88}{27}$ (m) AG",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to integrate $v$",
+        "note": "M1"
+      },
+      {
+        "desc": "$4t+2t^{2}$ term correct",
+        "note": "A1"
+      },
+      {
+        "desc": "$-t^{3}$ term correct",
+        "note": "A1"
+      },
+      {
+        "desc": "attempt to substitute their $t$ into their solution for the integral",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\text{distance} = 4\\left(\\frac{2}{3}\\right)+2\\left(\\frac{2}{3}\\right)^{2}-\\left(\\frac{2}{3}\\right)^{3} = \\frac{8}{3}+\\frac{8}{9}-\\frac{8}{27}$ (or equivalent)",
+        "note": "A1"
+      },
+      {
+        "desc": "$= \\frac{88}{27}$ (m)",
+        "note": "AG"
+      }
+    ],
+    "currently_stored_marks": 5,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 4
+      },
+      {
+        "part_label": "c",
+        "marks": 5
+      }
+    ]
+  },
+  {
+    "part_id": "44c5c7ae-e09a-4afe-96b1-f65a4d30b742",
+    "paper_label": "SL22NovTZ0P2",
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "c.i",
+    "markscheme_text": "recognizing conditional probability\n$P(T<55|T>40)$\nNote: Award (M1) for an expression or description in context. Accept $P(T>40|T<55)$ but do not accept just $P(A|B)$.\n$P(40<T<55)/P(T>40)$\n$0.461944.../0.574136...$\n$P(T<55|T>40) = 0.804590...$\n$= 0.805$",
+    "marks_breakdown": [
+      {
+        "desc": "recognizing conditional probability",
+        "note": "M1"
+      },
+      {
+        "desc": "$P(40<T<55)/P(T>40)$",
+        "note": "A1"
+      },
+      {
+        "desc": "$0.461944.../0.574136...$",
+        "note": "A1"
+      },
+      {
+        "desc": "$P(T<55|T>40) = 0.805$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 4,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 4
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "06b4b189-77b9-46a9-9e27-26e047bcde3e",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 9,
+    "question_max_mark": 14,
+    "part_label": "c.ii",
+    "markscheme_text": "$f$ has points of inflexion when $x = q$, $x = r$ and $x = t$ A2\n\n$f'$ has turning points at $x = q$, $x = r$ and $x = t$\nOR\n$f''(q) = 0$, $f''(r) = 0$ and $f''(t) = 0$ and\n$f'$ changes from increasing to decreasing or vice versa at each of these $x$-values (may be seen in a sign\ndiagram clearly labelled as $f''$ and $f'$) R1\n\nNote: Award A0 if any incorrect answers are given. Do not award A0R1.",
+    "marks_breakdown": [
+      {
+        "desc": "f has points of inflexion when $x=q$, $x=r$ and $x=t$ (award A0 if any incorrect answers given)",
+        "note": "A2"
+      },
+      {
+        "desc": "f' has turning points at $x=q$, $x=r$ and $x=t$ OR $f''(q)=0$, $f''(r)=0$ and $f''(t)=0$ and f' changes from increasing to decreasing or vice versa at each of these x-values (may be seen in a sign diagram clearly labelled as f'' and f') (do not award A0R1)",
+        "note": "R1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "c.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "d",
+        "marks": 6
+      },
+      {
+        "part_label": "a",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "3963ebc2-e283-4dd3-959b-68f2454d28a8",
+    "paper_label": "HL21MayTZ1P2",
+    "question_number": 10,
+    "question_max_mark": 15,
+    "part_label": "d.ii",
+    "markscheme_text": "appropriate method to find the sum of two areas using integrals of the difference\nof two functions (M1)\n\nNote: Allow absent or incorrect limits.\n\n$$\\int_{4.806...}^{5.566...}\\left(x-(-x+2\\ln45+2)\\right)dx+\\int_{5.566...}^{7.613...}\\left(90e^{-0.5x}-(-x+2\\ln45+2)\\right)dx$$ (A1)(A1)\n\nNote: Award A1 for one correct integral expression including correct limits\nand integrand.\nAward A1 for a second correct integral expression including correct limits and\nintegrand.\n\n$$=1.51965...$$\n$$=1.52$$ A1\n\n[5 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "appropriate method to find the sum of two areas using integrals of the difference of two functions",
+        "note": "(M1)"
+      },
+      {
+        "desc": "first correct integral expression including correct limits and integrand",
+        "note": "(A1)"
+      },
+      {
+        "desc": "second correct integral expression including correct limits and integrand",
+        "note": "(A1)"
+      },
+      {
+        "desc": "$= 1.52$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 4,
+    "other_siblings_in_question": [
+      {
+        "part_label": "d.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 4
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      },
+      {
+        "part_label": "e",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "69b5f12f-fcb0-42ed-ae99-741c42c151ff",
+    "paper_label": "HL21MayTZ2P2",
+    "question_number": 11,
+    "question_max_mark": 18,
+    "part_label": "d.i",
+    "markscheme_text": "EITHER\n\nrecognising to graph $y = f'(x)$ (M1)\n\nNote: Award M1 for attempting to use quotient rule or product rule differentiation.\n$$f'(x) = \\frac{ke^{\\frac{x}{2}}(1-e^{x})}{2(1+e^{x})^{2}}$$\n\nfor $x \\geq 0$\n\ngraph decreasing to the local minimum A1\n\nbefore increasing towards the x-axis A1\n\nOR\n\nrecognising to graph $y = f''(x)$ (M1)\n\nNote: Award M1 for attempting to use quotient rule or product rule differentiation.\n$$f''(x) = \\frac{ke^{\\frac{x}{2}}(e^{2x} - 6e^{x} + 1)}{4(1+e^{x})^{3}}$$\n\nfor $x \\geq 0$, graph increasing towards and beyond the x-intercept A1\n\nrecognising $f''(x) = 0$ for maximum rate (A1)\n\nTHEN\n\n$x = 1.76 \\left(= \\ln(2\\sqrt{2}+3)\\right)$ A1\n\nNote: Only award A marks if either graph is seen.",
+    "marks_breakdown": [
+      {
+        "desc": "recognising to graph $y = f'(x)$ (or $y = f''(x)$), attempting quotient/product rule differentiation",
+        "note": "(M1)"
+      },
+      {
+        "desc": "graph decreasing to the local minimum",
+        "note": "A1"
+      },
+      {
+        "desc": "before increasing towards the x-axis",
+        "note": "A1"
+      },
+      {
+        "desc": "$x = 1.76$ ($= \\ln(2\\sqrt{2}+3)$)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 4,
+    "other_siblings_in_question": [
+      {
+        "part_label": "c.i",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "a",
+        "marks": 6
+      }
+    ]
+  },
+  {
+    "part_id": "05b10bc3-f521-45be-9f77-14fd503de111",
+    "paper_label": "HL21MayTZ2P2",
+    "question_number": 12,
+    "question_max_mark": 21,
+    "part_label": "c.ii",
+    "markscheme_text": "$$f'(x) = \\frac{2x}{|x|(x^{2}+1)}$$\n\nEITHER\n\nfor $x < 0$, $|x| = -x$ (A1)\n\nso $$f'(x) = -\\frac{2}{x^{2}+1}$$ A1\n\nOR\n\n$|x| > 0$ and $x^{2}+1 > 0$ A1\n\n$2x < 0$, $x < 0$ A1\n\nTHEN\n\n$f'(x) < 0$ R1\n\nNote: Award R1 for stating that in $f'(x)$, the numerator is negative, and the denominator is positive.\n\nso $f$ is decreasing for $x < 0$ AG\n\nNote: Do not accept a graphical solution.",
+    "marks_breakdown": [
+      {
+        "desc": "for $x<0$, $|x|=-x$",
+        "note": "(A1)"
+      },
+      {
+        "desc": "so $f'(x) = \\frac{-2}{x^{2}+1}$, OR $|x|>0$ and $x^{2}+1>0$, and $2x<0$, $x<0$",
+        "note": "A1"
+      },
+      {
+        "desc": "$f'(x)<0$",
+        "note": "R1"
+      },
+      {
+        "desc": "so f is decreasing for $x<0$",
+        "note": "AG"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.i",
+        "marks": 6
+      },
+      {
+        "part_label": "d",
+        "marks": 5
+      },
+      {
+        "part_label": "e",
+        "marks": 1
+      },
+      {
+        "part_label": "f",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "468af34e-8a2a-4859-82f8-fa1bb6616cac",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 7,
+    "question_max_mark": 14,
+    "part_label": "c.ii",
+    "markscheme_text": "EITHER\nsubstituting their value of $x$ into their $\\frac{d^{2}S}{dx^{2}}$ (M1)\n$\\frac{d^{2}S}{dx^{2}} = 75.39822...$\n$= 75.4 (=24\\pi) > 0$ A1\n\nOR\nsketch of the graph of $\\frac{d^{2}S}{dx^{2}}$ with their value of $x$ clearly indicated (M1)\n$\\frac{d^{2}S}{dx^{2}} > 0$ at $x = a$ A1\n\nTHEN\ntherefore $S$ is a minimum AG",
+    "marks_breakdown": [
+      {
+        "desc": "substituting their value of $x$ into their $\\frac{d^{2}S}{dx^{2}}$, or sketch of the graph with their value of $x$ indicated",
+        "note": "M1"
+      },
+      {
+        "desc": "correct value / correct statement $\\frac{d^{2}S}{dx^{2}} > 0$ at $x=a$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 3
+      },
+      {
+        "part_label": "b.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "3c74f95e-bdd1-4360-8d9e-2efda33a5baf",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 9,
+    "question_max_mark": 14,
+    "part_label": "c.i",
+    "markscheme_text": "$f$ is minimum when $x = p$ A1\nbecause $f'(p) = 0$, $f'(x) < 0$ when $x < p$ and\n$f'(x) > 0$ when $x > p$ (may be seen in a sign diagram clearly labelled as $f'$)\nOR because $f'$ changes from negative to positive at $x = p$\nOR $f'(p) = 0$ and slope of $f'$ is positive at $x = p$ R1\n\nNote: Do not award A0 R1",
+    "marks_breakdown": [
+      {
+        "desc": "f is minimum when $x=p$",
+        "note": "A1"
+      },
+      {
+        "desc": "because $f'(p)=0$, $f'(x)<0$ when $x<p$ and $f'(x)>0$ when $x>p$ (may be seen in a sign diagram clearly labelled as f') OR because f' changes from negative to positive at $x=p$ OR $f'(p)=0$ and slope of f' is positive at $x=p$ (do not award A0R1)",
+        "note": "R1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "d",
+        "marks": 6
+      }
+    ]
+  },
+  {
+    "part_id": "668bbfad-edad-49c0-8b15-bf3b13447596",
+    "paper_label": "SL22NovTZ0P2",
+    "question_number": 8,
+    "question_max_mark": 13,
+    "part_label": "b.i",
+    "markscheme_text": "recognizing that the sum of the angles of a kite is $2\\pi$\n$\\widehat{DOE} + \\widehat{OEA} + \\widehat{EAD} + \\widehat{ADO} = 2\\pi$ OR $2\\alpha + 2\\cdot(\\frac{\\pi}{2}) + \\widehat{DOE} = 2\\pi$\n$\\widehat{DOE} = \\pi - 2\\alpha$\nNote: Award M1A0 if candidate uses degrees (i.e. $\\widehat{DOE} + \\widehat{OEA} + \\widehat{EAD} + \\widehat{ADO} = 360°$ or $2\\alpha + 2\\cdot(\\frac{\\pi}{2}) + \\widehat{DOE} = 360°$) and obtains $\\widehat{DOE} = 180° - 2\\alpha$.",
+    "marks_breakdown": [
+      {
+        "desc": "recognizing that the sum of the angles of a kite is $2\\pi$",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\widehat{DOE} = \\pi - 2\\alpha$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 4
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c",
+        "marks": 4
+      }
+    ]
+  },
+  {
+    "part_id": "bfc23e4e-da69-46eb-829e-90d47ace44d4",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "a.ii",
+    "markscheme_text": "$600 < n \\leq 800$ A1\n\nNote: Award A0 if candidate answers 700.\n\n[2 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "correct interval",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "c186b7ea-2354-4452-a5f8-033e970db3d3",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "a.i",
+    "markscheme_text": "Note: The first time an answer is not given to two decimal places in parts (a)(ii), (c)(i) or (d), the final A1 in that part is not awarded.\n\n$5500\\times36$ (A1)\n$= (\\$)198000$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$5500\\times36$",
+        "note": "A1"
+      },
+      {
+        "desc": "$= (\\$)198000$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c.i",
+        "marks": 3
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "d",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "e25f3031-dd23-46c5-ae87-deb8d7ffaa65",
+    "paper_label": "SL21MayTZ1P1",
+    "question_number": 1,
+    "question_max_mark": 5,
+    "part_label": "a.i",
+    "markscheme_text": "$f(2) = 6$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$f(2) = 6$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "17197b33-7bab-45a9-81b4-d16f399f6f1a",
+    "paper_label": "HL21MayTZ1P1",
+    "question_number": 1,
+    "question_max_mark": 5,
+    "part_label": "a.i",
+    "markscheme_text": "$f(2)=6$ A1\n[2 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$f(2) = 6$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "08bbea32-70be-4179-bbd4-a05bc3da53ab",
+    "paper_label": "HL21MayTZ1P1",
+    "question_number": 1,
+    "question_max_mark": 5,
+    "part_label": "a.ii",
+    "markscheme_text": "$(f \\circ f)(2)=-2$ A1\n[2 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$(f\\circ f)(2) = -2$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "55e4eb8a-a12e-4422-bb45-4c00a23b4fc7",
+    "paper_label": "SL21MayTZ1P1",
+    "question_number": 1,
+    "question_max_mark": 5,
+    "part_label": "a.ii",
+    "markscheme_text": "$(f \\circ f)(2) = -2$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$(f \\circ f)(2) = -2$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "832e1c93-ca5c-404e-8da8-ae61b20bd5fc",
+    "paper_label": "SL21MayTZ1P1",
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "c.i",
+    "markscheme_text": "$0 \\leq r \\leq 1$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$0 \\leq r \\leq 1$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 3
+      },
+      {
+        "part_label": "e",
+        "marks": 6
+      }
+    ]
+  },
+  {
+    "part_id": "d6eb3ce8-8000-4d70-97c6-efa074f2b3c5",
+    "paper_label": "HL21MayTZ1P1",
+    "question_number": 10,
+    "question_max_mark": 16,
+    "part_label": "c.i",
+    "markscheme_text": "$0 \\leq r \\leq 1$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$0 \\leq r \\leq 1$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 3
+      },
+      {
+        "part_label": "e",
+        "marks": 6
+      }
+    ]
+  },
+  {
+    "part_id": "e73981a0-ace3-4c9d-a198-ed3e343ce2af",
+    "paper_label": "HL21MayTZ1P2",
+    "question_number": 8,
+    "question_max_mark": 7,
+    "part_label": "c.i",
+    "markscheme_text": "$zw \\in \\mathbb{Z} \\Rightarrow \\arg(zw)$ is a multiple of $\\pi$ (M1)\n\n$\\Rightarrow 1-2k$ is a multiple of 5 (M1)\n\n$k = 3$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$zw \\in \\mathbb{Z} \\Rightarrow \\arg(zw)$ is a multiple of $\\pi$",
+        "note": "(M1)"
+      },
+      {
+        "desc": "$\\Rightarrow 1-2k$ is a multiple of 5",
+        "note": "(M1)"
+      },
+      {
+        "desc": "$k = 3$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "d49f63d4-e3e7-439e-85ca-7f5c9ffd457b",
+    "paper_label": "HL21MayTZ1P2",
+    "question_number": 8,
+    "question_max_mark": 7,
+    "part_label": "c.ii",
+    "markscheme_text": "$$zw = 16(\\cos(-\\pi)+i\\sin(-\\pi))$$\n\n$$-16$$ A1\n\n[4 marks]\nTotal [7 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$-16$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.i",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "c94e398b-b242-44f5-84e7-bb4af8c743b8",
+    "paper_label": "HL21MayTZ1P2",
+    "question_number": 10,
+    "question_max_mark": 15,
+    "part_label": "d.i",
+    "markscheme_text": "$x = \\ln45+1(=4.81)$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$x = \\ln45+1$ $(=4.81)$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 4
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 4
+      },
+      {
+        "part_label": "e",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "2ef67f73-b064-4e62-8474-3ee43f643ba5",
+    "paper_label": "HL21MayTZ2P2",
+    "question_number": 1,
+    "question_max_mark": 6,
+    "part_label": "a.i",
+    "markscheme_text": "$a = 0.805084...$ and $b = 2.88135...$\n$a = 0.805$ and $b = 2.88$ A1A1",
+    "marks_breakdown": [
+      {
+        "desc": "$a = 0.805$ and $b = 2.88$",
+        "note": "A1A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "ecc3ee84-4fd5-4149-aad6-3b3571c8a70a",
+    "paper_label": "SL21MayTZ2P2",
+    "question_number": 1,
+    "question_max_mark": 6,
+    "part_label": "a.i",
+    "markscheme_text": "$a = 0.805084...$\nand \n$b = 2.88135...$\n$a = 0.805$ and $b = 2.88$ A1A1",
+    "marks_breakdown": [
+      {
+        "desc": "$a = 0.805$",
+        "note": "A1"
+      },
+      {
+        "desc": "$b = 2.88$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "1ba775fb-5ef0-4995-af4e-b8aa0c17f720",
+    "paper_label": "HL21MayTZ2P2",
+    "question_number": 1,
+    "question_max_mark": 6,
+    "part_label": "a.ii",
+    "markscheme_text": "$r = 0.97777...$\n$r = 0.978$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$r = 0.978$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "383c84b7-26c5-4474-a4e1-1275dc469e62",
+    "paper_label": "SL21MayTZ2P2",
+    "question_number": 1,
+    "question_max_mark": 6,
+    "part_label": "a.ii",
+    "markscheme_text": "$r = 0.97777...$\n$r = 0.978$ A1\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$r = 0.978$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "89952c7a-cabe-4485-844d-8070025cabd8",
+    "paper_label": "HL21MayTZ2P2",
+    "question_number": 11,
+    "question_max_mark": 18,
+    "part_label": "c.i",
+    "markscheme_text": "attempting to find $OA = f(0) = \\frac{k}{2}$ with $k = 14.712... \\left(= 2\\sqrt{\\frac{170}{\\pi}} = \\sqrt{\\frac{680}{\\pi}}\\right)$ (M1)\n\n$$OA = 7.36 \\left(= \\sqrt{\\frac{170}{\\pi}}\\right)$$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempting to find $OA = f(0) = \\frac{k}{2}$ with $k = 14.712...$",
+        "note": "(M1)"
+      },
+      {
+        "desc": "$OA = 7.36$ $\\left(= \\sqrt{\\frac{170}{\\pi}}\\right)$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 6
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "d.i",
+        "marks": 4
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "c959d45b-5720-4d54-a6fe-1f11aa5e3cda",
+    "paper_label": "HL21MayTZ2P2",
+    "question_number": 11,
+    "question_max_mark": 18,
+    "part_label": "c.ii",
+    "markscheme_text": "attempting to find $BC = f(\\ln 16) = \\frac{4k}{17}$ with $k = 14.712... \\left(= 2\\sqrt{\\frac{170}{\\pi}} = \\sqrt{\\frac{680}{\\pi}}\\right)$ (M1)\n\n$$BC = 3.46 \\left(= \\frac{8}{17}\\sqrt{\\frac{170}{\\pi}} = \\frac{8\\sqrt{10}}{\\sqrt{17\\pi}}\\right)$$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempting to find $BC = f(\\ln16) = \\frac{4k}{17}$ with $k = 14.712...$",
+        "note": "(M1)"
+      },
+      {
+        "desc": "$BC = 3.46$ $\\left(= \\frac{8}{17}\\sqrt{\\frac{170}{\\pi}} = \\frac{8\\sqrt{10}}{\\sqrt{17\\pi}}\\right)$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 6
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.i",
+        "marks": 4
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "0a21dc51-365d-4660-aff5-b441aea31f1c",
+    "paper_label": "HL21MayTZ2P2",
+    "question_number": 11,
+    "question_max_mark": 18,
+    "part_label": "d.ii",
+    "markscheme_text": "attempting to find $f(1.76...)$ (M1)\n\nthe cross-sectional radius at this point is $5.20 \\left(\\sqrt{\\frac{85}{\\pi}}\\right)$ (cm) A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempting to find $f(1.76...)$",
+        "note": "(M1)"
+      },
+      {
+        "desc": "the cross-sectional radius at this point is $5.20$ ($\\sqrt{\\frac{85}{\\pi}}$) (cm)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 6
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.i",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "d.i",
+        "marks": 4
+      }
+    ]
+  },
+  {
+    "part_id": "23015286-2e2d-4a57-8e35-3f7217cfdd7f",
+    "paper_label": "HL21MayTZ2P2",
+    "question_number": 12,
+    "question_max_mark": 21,
+    "part_label": "c.i",
+    "markscheme_text": "attempting to use the quotient rule to find $$\\frac{d}{dx}\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)$$ M1\n\n$$\\frac{d}{dx}\\left(\\frac{x^{2}-1}{x^{2}+1}\\right) = \\frac{2x(x^{2}+1) - 2x(x^{2}-1)}{(x^{2}+1)^{2}} \\ \\left(= \\frac{4x}{(x^{2}+1)^{2}}\\right)$$ A1\n\nattempting to use the chain rule to find $$\\frac{d}{dx}\\left(\\arcsin\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)\\right)$$ M1\n\nlet $u = \\frac{x^{2}-1}{x^{2}+1}$ and so $y = \\arcsin u$ and $\\frac{dy}{du} = \\frac{1}{\\sqrt{1-u^{2}}}$\n\n$$f'(x) = \\frac{1}{\\sqrt{1 - \\left(\\frac{x^{2}-1}{x^{2}+1}\\right)^{2}}} \\times \\frac{4x}{(x^{2}+1)^{2}}$$ M1\n\n$$= \\frac{4x}{\\sqrt{(x^{2}+1)^{2} - (x^{2}-1)^{2}}} \\times \\frac{1}{(x^{2}+1)}$$ A1\n\n$$= \\frac{4x}{\\sqrt{4x^{2}}} \\times \\frac{1}{(x^{2}+1)}$$ A1\n\n$$= \\frac{2x}{\\sqrt{x^{2}}(x^{2}+1)}$$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "attempting to use the quotient rule to find $\\frac{d}{dx}\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)$",
+        "note": "M1"
+      },
+      {
+        "desc": "$$\\frac{d}{dx}\\left(\\frac{x^{2}-1}{x^{2}+1}\\right) = \\frac{2x(x^{2}+1)-2x(x^{2}-1)}{(x^{2}+1)^{2}} \\left(= \\frac{4x}{(x^{2}+1)^{2}}\\right)$$",
+        "note": "A1"
+      },
+      {
+        "desc": "attempting to use the chain rule to find $\\frac{d}{dx}\\left(\\arcsin\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)\\right)$",
+        "note": "M1"
+      },
+      {
+        "desc": "$$f'(x) = \\frac{1}{\\sqrt{1-\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)^{2}}} \\times \\frac{4x}{(x^{2}+1)^{2}}$$",
+        "note": "M1"
+      },
+      {
+        "desc": "$$= \\frac{4x}{\\sqrt{(x^{2}+1)^{2}-(x^{2}-1)^{2}}} \\times \\frac{1}{(x^{2}+1)}$$",
+        "note": "A1"
+      },
+      {
+        "desc": "$$= \\frac{4x}{\\sqrt{4x^{2}}} \\times \\frac{1}{(x^{2}+1)}$$",
+        "note": "A1"
+      },
+      {
+        "desc": "$$= \\frac{2x}{\\sqrt{x^{2}}(x^{2}+1)}$$",
+        "note": "AG"
+      }
+    ],
+    "currently_stored_marks": 6,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "d",
+        "marks": 5
+      },
+      {
+        "part_label": "e",
+        "marks": 1
+      },
+      {
+        "part_label": "f",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "1672779a-d8a1-4d56-bb2e-2f283250f363",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 1,
+    "question_max_mark": 7,
+    "part_label": "a.i",
+    "markscheme_text": "setting $f(x) = 0$ (M1)\n$x = 1$, $x = -3$ (accept $(1,0), (-3,0)$) A1",
+    "marks_breakdown": [
+      {
+        "desc": "setting $f(x) = 0$",
+        "note": "M1"
+      },
+      {
+        "desc": "$x = 1$, $x = -3$ (accept $(1,0)$, $(-3,0)$)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "df2e6974-6969-463a-86b9-534921b9704c",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 1,
+    "question_max_mark": 7,
+    "part_label": "a.ii",
+    "markscheme_text": "METHOD 1\n$x = -1$ A1\nsubstituting their $x$-coordinate into $f$ (M1)\n$y = 8$ A1\n$(-1, 8)$\n\nMETHOD 2\nattempt to complete the square (M1)\n$-2\\left((x+1)^{2} - 4\\right)$\n$x = -1$, $y = 8$ A1A1\n$(-1, 8)$",
+    "marks_breakdown": [
+      {
+        "desc": "$x = -1$",
+        "note": "A1"
+      },
+      {
+        "desc": "substituting their x-coordinate into $f$",
+        "note": "M1"
+      },
+      {
+        "desc": "$y = 8$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "772bb8fa-0165-4663-85d3-c2fcdb435364",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 3,
+    "question_max_mark": 5,
+    "part_label": "a.i",
+    "markscheme_text": "$x = 3$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$x = 3$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "84cd0c00-f911-4a18-94f0-ed3e90f698c3",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 3,
+    "question_max_mark": 5,
+    "part_label": "a.ii",
+    "markscheme_text": "$y = -2$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$y = -2$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "ae71a1fb-b0a9-4f94-b05e-3127d8e19aed",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 3,
+    "question_max_mark": 5,
+    "part_label": "b.i",
+    "markscheme_text": "$(-2, 0)$ (accept $x = -2$) A1",
+    "marks_breakdown": [
+      {
+        "desc": "$(-2,0)$ (accept $x = -2$)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "abc288c3-3823-4fbe-8f80-336e58e6ba36",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 3,
+    "question_max_mark": 5,
+    "part_label": "b.ii",
+    "markscheme_text": "$\\left(0, \\frac{4}{3}\\right)$ (accept $y = \\frac{4}{3}$ and $f(0) = \\frac{4}{3}$) A1",
+    "marks_breakdown": [
+      {
+        "desc": "$(0, \\frac{4}{3})$ (accept $y = \\frac{4}{3}$ and $f(0) = \\frac{4}{3}$)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "a51170cd-0969-4e15-95da-7011f754a719",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 16,
+    "part_label": "a.i",
+    "markscheme_text": "valid approach to find turning point ($v' = 0$, $-\\frac{b}{2a}$, average of roots) (M1)\n\n$4 - 6t = 0$ OR $-\\frac{4}{2(-3)}$ OR $\\frac{-\\frac{2}{3} + 2}{2}$\n\n$t = \\frac{2}{3}$ (s) A1",
+    "marks_breakdown": [
+      {
+        "desc": "valid approach to find turning point ($v'=0$, $-\\frac{b}{2a}$, average of roots)",
+        "note": "M1"
+      },
+      {
+        "desc": "$t = \\frac{2}{3}$ (s)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 5
+      },
+      {
+        "part_label": "b",
+        "marks": 4
+      },
+      {
+        "part_label": "c",
+        "marks": 5
+      }
+    ]
+  },
+  {
+    "part_id": "9142f7a1-5728-4139-afb8-70cd8c857ca8",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "d.i",
+    "markscheme_text": "METHOD 1\nequating a pair of differences (M1)\n$u_{2} - u_{1} = u_{4} - u_{3} (= u_{3} - u_{2})$\n$\\log_{8} p - \\log_{8} 27 = \\log_{8} 125 - \\log_{8} q$\n$\\log_{8} 125 - \\log_{8} q = \\log_{8} q - \\log_{8} p$\n\n$\\log_{8}\\left(\\frac{p}{27}\\right) = \\log_{8}\\left(\\frac{125}{q}\\right)$, $\\log_{8}\\left(\\frac{125}{q}\\right) = \\log_{8}\\left(\\frac{q}{p}\\right)$ A1A1\n\n$\\frac{p}{27} = \\frac{125}{q}$ and $\\frac{125}{q} = \\frac{q}{p}$ A1\n\n$27, p, q$ and $125$ are in geometric sequence AG\n\nNote: If candidate assumes the sequence is geometric, award no marks for\npart (i). If $r = \\frac{5}{3}$ has been found, this will be awarded marks in part\n(ii).\n\nMETHOD 2\nexpressing a pair of consecutive terms, in terms of $d$ (M1)\n$p = 8^{d} \\times 27$ and $q = 8^{2d} \\times 27$ OR $q = 8^{2d} \\times 27$ and $125 = 8^{3d} \\times 27$\n\ntwo correct pairs of consecutive terms, in terms of $d$ A1\n\n$\\frac{8^{d} \\times 27}{27} = \\frac{8^{2d} \\times 27}{8^{d} \\times 27} = \\frac{8^{3d} \\times 27}{8^{2d} \\times 27}$ (must include 3 ratios) A1\n\nall simplify to $8^{d}$ A1\n\n$27, p, q$ and $125$ are in geometric sequence AG",
+    "marks_breakdown": [
+      {
+        "desc": "equating a pair of differences: $u_{2}-u_{1} = u_{4}-u_{3}(=u_{3}-u_{2})$ (METHOD 1) OR expressing a pair of consecutive terms in terms of d (METHOD 2)",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\log_{8} p - \\log_{8} 27 = \\log_{8} 125 - \\log_{8} q$, $\\log_{8} 125 - \\log_{8} q = \\log_{8} q - \\log_{8} p$ (METHOD 1) / two correct pairs of consecutive terms in terms of d (METHOD 2)",
+        "note": "A1"
+      },
+      {
+        "desc": "$\\log_{8}\\left(\\frac{p}{27}\\right) = \\log_{8}\\left(\\frac{125}{q}\\right)$, $\\log_{8}\\left(\\frac{125}{q}\\right) = \\log_{8}\\left(\\frac{q}{p}\\right)$ (METHOD 1) / ratios equated including 3 ratios (METHOD 2)",
+        "note": "A1"
+      },
+      {
+        "desc": "$\\frac{p}{27} = \\frac{125}{q}$ and $\\frac{125}{q} = \\frac{q}{p}$ (METHOD 1) / all simplify to $8^{d}$ (METHOD 2)",
+        "note": "A1"
+      },
+      {
+        "desc": "27, p, q and 125 are in geometric sequence",
+        "note": "AG"
+      }
+    ],
+    "currently_stored_marks": 4,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 3
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 5
+      }
+    ]
+  },
+  {
+    "part_id": "0204501f-a451-4dba-ac70-7f7f3088785e",
+    "paper_label": "SL21NovTZ1P1",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "d.ii",
+    "markscheme_text": "METHOD 1 (geometric, finding r)\n$u_{4} = u_{1} r^{3}$ OR $125 = 27(r)^{3}$ (M1)\n\n$r = \\frac{5}{3}$ (seen anywhere) A1\n\n$p = 27r$ OR $\\frac{125}{q} = \\frac{5}{3}$ (M1)\n\n$p = 45, q = 75$ A1A1\n\nMETHOD 2 (arithmetic)\n$u_{4} = u_{1} + 3d$ OR $\\log_{8} 125 = \\log_{8} 27 + 3d$ (M1)\n\n$d = \\log_{8}\\left(\\frac{5}{3}\\right)$ (seen anywhere) A1\n\n$\\log_{8} p = \\log_{8} 27 + \\log_{8}\\left(\\frac{5}{3}\\right)$ OR $\\log_{8} q = \\log_{8} 27 + 2\\log_{8}\\left(\\frac{5}{3}\\right)$ (M1)\n\n$p = 45, q = 75$ A1A1\n\nMETHOD 3 (geometric using proportion)\nrecognizing proportion (M1)\n$pq = 125 \\times 27$ OR $q^{2} = 125p$ OR $p^{2} = 27q$\n\ntwo correct proportion equations A1\n\nattempt to eliminate either $p$ or $q$ (M1)\n$q^{2} = 125 \\times \\frac{125 \\times 27}{q}$ OR $p^{2} = 27 \\times \\frac{125 \\times 27}{p}$\n\n$p = 45, q = 75$ A1A1",
+    "marks_breakdown": [
+      {
+        "desc": "$u_{4} = u_{1} r^{3}$ OR $125 = 27(r)^{3}$ (METHOD 1) / $u_{4} = u_{1}+3d$ OR $\\log_{8} 125 = \\log_{8} 27+3d$ (METHOD 2) / recognizing proportion (METHOD 3)",
+        "note": "M1"
+      },
+      {
+        "desc": "$r = \\frac{5}{3}$ (seen anywhere) (METHOD 1) / $d = \\log_{8}\\left(\\frac{5}{3}\\right)$ (seen anywhere) (METHOD 2) / two correct proportion equations (METHOD 3)",
+        "note": "A1"
+      },
+      {
+        "desc": "$p = 27r$ OR $\\frac{125}{q} = \\frac{5}{3}$ (METHOD 1) / $\\log_{8} p = \\log_{8} 27+\\log_{8}\\left(\\frac{5}{3}\\right)$ OR $\\log_{8} q = \\log_{8} 27+2\\log_{8}\\left(\\frac{5}{3}\\right)$ (METHOD 2) / attempt to eliminate either p or q (METHOD 3)",
+        "note": "M1"
+      },
+      {
+        "desc": "$p = 45$",
+        "note": "A1"
+      },
+      {
+        "desc": "$q = 75$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 5,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 3
+      },
+      {
+        "part_label": "d.i",
+        "marks": 4
+      }
+    ]
+  },
+  {
+    "part_id": "74eda57a-3db0-4715-8793-cb461c3848ec",
+    "paper_label": "SL22NovTZ0P2",
+    "question_number": 8,
+    "question_max_mark": 13,
+    "part_label": "b.ii",
+    "markscheme_text": "valid approach to find the area of $R$\narea of kite – area of sector OR $2(\\text{area of triangle } AOE - 0.5 \\text{ area of sector } OED)$\n$\\text{Area of sector} = \\frac{1}{2}r^2 \\cdot \\widehat{DOE}$ $(=\\frac{1}{2}r^2(\\pi-2\\alpha))$ seen anywhere\n$\\text{Area of } R = \\frac{r^2}{\\tan \\alpha} - \\frac{1}{2}r^2(\\pi-2\\alpha)$\nNote: Accept $\\frac{r^2}{\\tan \\alpha} - \\frac{1}{2}r^2 \\cdot \\widehat{DOE}$.",
+    "marks_breakdown": [
+      {
+        "desc": "valid approach to find the area of $R$",
+        "note": "M1"
+      },
+      {
+        "desc": "$\\text{Area of sector} = \\frac{1}{2}r^2 \\cdot \\widehat{DOE}$ $(=\\frac{1}{2}r^2(\\pi-2\\alpha))$ seen anywhere",
+        "note": "A1"
+      },
+      {
+        "desc": "$\\text{Area of } R = \\frac{r^2}{\\tan \\alpha} - \\frac{1}{2}r^2(\\pi-2\\alpha)$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 4
+      },
+      {
+        "part_label": "b.i",
+        "marks": 2
+      },
+      {
+        "part_label": "c",
+        "marks": 4
+      }
+    ]
+  },
+  {
+    "part_id": "9f2e72e0-e383-470a-aefd-7f09fe0fedc9",
+    "paper_label": "SL22NovTZ0P2",
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "c.ii",
+    "markscheme_text": "recognizing binomial probability\n$X \\sim B(n, p)$\n$n = 10$ and $p = 0.804589...$\n$0.0242111...$, $0.0240188...$ using $p = 0.805$\n$P(X = 5) = 0.0242$",
+    "marks_breakdown": [
+      {
+        "desc": "recognizing binomial probability",
+        "note": "M1"
+      },
+      {
+        "desc": "$n = 10$ and $p = 0.804589...$",
+        "note": "A1"
+      },
+      {
+        "desc": "$P(X=5) = 0.0242$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 4
+      },
+      {
+        "part_label": "d",
+        "marks": 4
+      }
+    ]
+  },
+  {
+    "part_id": "cdd85b42-577b-4521-93f7-992348c85fdf",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 5,
+    "question_max_mark": 7,
+    "part_label": "a.i",
+    "markscheme_text": "attempt to use the binomial expansion of $(x+h)^{8}$ (M1)\n$^{8}C_{0}x^{8}h^{0} + ^{8}C_{1}x^{7}h^{1} + ^{8}C_{2}x^{6}h^{2} + ...$\n\n(i) $a = 8h$ (accept $^{8}C_{1}h$) A1\n[4 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to use the binomial expansion of $(x+h)^{8}$",
+        "note": "M1"
+      },
+      {
+        "desc": "correct value of $a$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "a.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "aecc6556-f674-48af-9c5a-dc473b1f26d6",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 5,
+    "question_max_mark": 7,
+    "part_label": "a.ii",
+    "markscheme_text": "(ii) $b = 28h^{2}$ (accept $^{8}C_{2}h^{2}$) A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct value of $b$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "a.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "82a58e82-cb9f-43ca-8e87-de0933da0a3f",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 5,
+    "question_max_mark": 7,
+    "part_label": "a.iii",
+    "markscheme_text": "(iii) $d = 70h^{4}$ (accept $^{8}C_{4}h^{4}$) A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct value of $d$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "f4afd6e7-fb55-450b-b0b3-6242141db32d",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 7,
+    "question_max_mark": 15,
+    "part_label": "a.i",
+    "markscheme_text": "(i) swapping $x$ and $y$, or $h(h^{-1}(x)) = x$ (M1)\n\n$h^{-1}(x) = \\frac{x^{2} + 2}{4}$ A1\n\nrecognizing range of $h$ is domain of $h^{-1}$ (M1)\n\nDomain: $x \\geq 0$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "swapping $x$ and $y$, or $h(h^{-1}(x)) = x$",
+        "note": "M1"
+      },
+      {
+        "desc": "correct expression for $h^{-1}(x)$",
+        "note": "A1"
+      },
+      {
+        "desc": "recognizing range of $h$ is domain of $h^{-1}$",
+        "note": "M1"
+      },
+      {
+        "desc": "correct domain",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 4,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 2
+      },
+      {
+        "part_label": "e",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "033d2c88-3986-42e0-8f1a-dc32b5fb6e0f",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 7,
+    "question_max_mark": 15,
+    "part_label": "a.ii",
+    "markscheme_text": "(ii) range of $h^{-1}$ is $y \\geq \\frac{1}{2}$ A1\n[5 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "correct range",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 4
+      },
+      {
+        "part_label": "b",
+        "marks": 3
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 2
+      },
+      {
+        "part_label": "e",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "57cc6958-5e54-4079-ba69-0a58ac4fd448",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 8,
+    "question_max_mark": 13,
+    "part_label": "b.i",
+    "markscheme_text": "METHOD 1\n(i) amplitude $= \\frac{\\max - \\min}{2}$ (M1)\n\n$\\frac{1.8-1}{2}$\n$a = -0.4$ A1\n\nMETHOD 2\nattempt to form two simultaneous equations in $a$ and $b$ (M1)\n\n$H(0) = 1 \\Rightarrow a+b=1$, $H\\left(\\frac{\\pi}{7.8}\\right) = 1.8 \\Rightarrow -a+b=1.8$\n\n$a = -0.4$, $b = 1.4$ A1A1\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to find amplitude, or attempt to form two simultaneous equations in $a$ and $b$",
+        "note": "M1"
+      },
+      {
+        "desc": "correct value of $a$ (from either method; if Method 2, A1A1 awarded for both $a$ and $b$ together)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 2
+      },
+      {
+        "part_label": "e",
+        "marks": 4
+      }
+    ]
+  },
+  {
+    "part_id": "9492ea04-9a0b-4d8c-8daa-88a5e0afe473",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 8,
+    "question_max_mark": 13,
+    "part_label": "b.ii",
+    "markscheme_text": "(ii) $b = 1.4$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct value of $b$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b.i",
+        "marks": 2
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 2
+      },
+      {
+        "part_label": "e",
+        "marks": 4
+      }
+    ]
+  },
+  {
+    "part_id": "b380feb0-279c-424f-811d-a12c73aea72d",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 9,
+    "question_max_mark": 15,
+    "part_label": "a.i",
+    "markscheme_text": "(i) $\\frac{10}{n}$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct probability",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 2
+      },
+      {
+        "part_label": "e",
+        "marks": 6
+      }
+    ]
+  },
+  {
+    "part_id": "b750385b-f7b6-4ab0-b7f7-0c47c9e5def5",
+    "paper_label": "SL23MayTZ2P2",
+    "question_number": 9,
+    "question_max_mark": 15,
+    "part_label": "a.ii",
+    "markscheme_text": "(ii) multiplying probabilities for $GG$ (M1)\n\n$P(GG) = \\frac{10}{n} \\times \\frac{9}{n-1}$\n\n$P(GG) = \\frac{90}{n^{2}-n}\\left(\\text{accept} \\frac{90}{n(n-1)}\\right)$ A1\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "multiplying probabilities for $GG$",
+        "note": "M1"
+      },
+      {
+        "desc": "correct expression for $P(GG)$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 2
+      },
+      {
+        "part_label": "c",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 2
+      },
+      {
+        "part_label": "e",
+        "marks": 6
+      }
+    ]
+  },
+  {
+    "part_id": "6ff16367-1a99-4764-8a4b-da81a913a7fb",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 1,
+    "question_max_mark": 7,
+    "part_label": "b.i",
+    "markscheme_text": "period $= \\pi$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct period",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "e6fc0bfc-4beb-4ffc-b69e-87adacb9a376",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 1,
+    "question_max_mark": 7,
+    "part_label": "b.ii",
+    "markscheme_text": "$b = \\frac{2\\pi}{\\pi}$ OR $\\pi = \\frac{2\\pi}{b}$ (A1)\n$= 2$ A1\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "setting up equation for $b$",
+        "note": "A1"
+      },
+      {
+        "desc": "$b = 2$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "b9a1642c-7229-4052-840b-a63a1915eb9f",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "a.i",
+    "markscheme_text": "$p = 9$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$p = 9$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "34c4d860-c898-4c52-a389-4e5999200a3a",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "b.i",
+    "markscheme_text": "median $= 600$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "median $= 600$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "9452a080-0305-4369-9823-4629eca33b6a",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "b.ii",
+    "markscheme_text": "$80\\%$ of $800 = 640$ (A1)\n40 (performances less than 80% of tickets sold) (A1)\n20 (performances) A1\n[4 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$80\\%$ of $800 = 640$",
+        "note": "A1"
+      },
+      {
+        "desc": "$40$ performances less than 80% of tickets sold",
+        "note": "A1"
+      },
+      {
+        "desc": "$20$ performances",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "f0acf9d1-eda8-4200-a3ac-d8b842ed140a",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "c.i",
+    "markscheme_text": "any reasonable answer which suggests a biased sample (must include reason,\ndo not accept reasons such as \"sample size is too small\", or answers that simply\nsay \"not representative of entire audience\" without a valid reason) A1\n\neg likely to come from the same part of the theatre OR be part of same group\nOR be from priority seating OR it is convenience sampling",
+    "marks_breakdown": [
+      {
+        "desc": "valid reason suggesting biased sample",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "33b975d8-7274-4c01-bcea-67935f26caf6",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "c.iii",
+    "markscheme_text": "quota (sampling method) A1\n[4 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "quota sampling method",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "076d7447-d98d-4a5d-9313-c75d538accb1",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "d.i",
+    "markscheme_text": "75% (of 36000 spent between $3 and $25) (M1)\n$= 27000$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$75\\%$ of 36000 spent between \\$3 and \\$25",
+        "note": "M1"
+      },
+      {
+        "desc": "$= 27000$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "cc5e4422-d800-4798-a663-543276469560",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "d.ii",
+    "markscheme_text": "$a = 7$ A1\n[3 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "$a = 7$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "befc61c2-dee7-4f48-a903-1a01f7db7ef4",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "e.i",
+    "markscheme_text": "METHOD 1\nold mean is 600 (tickets) (A1)\nrecognising new mean is old mean + 18 (M1)\n$600 + 18$\n$= 618$ (tickets) A1\n\nMETHOD 2\nnew total number of tickets $= 36000 + 60 \\times 18 (= 37080)$ (A1)\n$$\\text{new mean} = \\frac{36000 + 60 \\times 18}{60} \\left(= \\frac{37080}{60}\\right)$$ (M1)\n$= 618$ (tickets) A1",
+    "marks_breakdown": [
+      {
+        "desc": "old mean is 600 (tickets) / new total number of tickets found",
+        "note": "A1"
+      },
+      {
+        "desc": "recognising new mean is old mean + 18 (or equivalent method)",
+        "note": "M1"
+      },
+      {
+        "desc": "$= 618$ (tickets)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.ii",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "part_id": "7b2fcf10-7faf-4f55-85bf-3e32a392cb5b",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 7,
+    "question_max_mark": 17,
+    "part_label": "e.ii",
+    "markscheme_text": "no effect on the variance A1\n[4 marks]\nTotal [17 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "no effect on the variance",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 1
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 1
+      },
+      {
+        "part_label": "d.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "e.i",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "749410ad-4a85-49d6-8373-f00c3caa04a6",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "b.i",
+    "markscheme_text": "setting $\\ln(2x - 7) = 2\\ln x - \\ln d$ M1\nattempt to use power rule (M1)\n$2\\ln x = \\ln x^{2}$ (seen anywhere)\nattempt to use product/quotient rule for logs (M1)\n$$\\ln(2x-7) = \\ln \\frac{x^{2}}{d}$$ OR $$\\ln \\frac{x^{2}}{2x-7} = \\ln d$$ OR $\\ln(2x-7)d = \\ln x^{2}$\n$$\\frac{x^{2}}{d} = 2x - 7$$ OR $$\\frac{x^{2}}{2x-7} = d$$ OR $(2x-7)d = x^{2}$ A1\n$x^{2} - 2dx + 7d = 0$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "setting $\\ln(2x-7) = 2\\ln x - \\ln d$",
+        "note": "M1"
+      },
+      {
+        "desc": "attempt to use power rule",
+        "note": "M1"
+      },
+      {
+        "desc": "attempt to use product/quotient rule for logs",
+        "note": "M1"
+      },
+      {
+        "desc": "correct equation",
+        "note": "A1"
+      },
+      {
+        "desc": "$x^{2} - 2dx + 7d = 0$",
+        "note": "AG"
+      }
+    ],
+    "currently_stored_marks": 4,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "b.iii",
+        "marks": 2
+      },
+      {
+        "part_label": "c",
+        "marks": 5
+      }
+    ]
+  },
+  {
+    "part_id": "98c05170-9206-41d8-9e1b-554688a46356",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "b.ii",
+    "markscheme_text": "discriminant $= (-2d)^{2} - 4 \\times 7d$ (A1)\nrecognizing discriminant > 0 (M1)\n$(2d)^{2} - 4 \\times 7d > 0$ OR $4d^{2} - 28d > 0$ A1\n$d^{2} - 7d > 0$ AG",
+    "marks_breakdown": [
+      {
+        "desc": "discriminant $= (-2d)^{2} - 4 \\times 7d$",
+        "note": "A1"
+      },
+      {
+        "desc": "recognizing discriminant $> 0$",
+        "note": "M1"
+      },
+      {
+        "desc": "$(2d)^{2} - 4 \\times 7d > 0$",
+        "note": "A1"
+      },
+      {
+        "desc": "$d^{2} - 7d > 0$",
+        "note": "AG"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 4
+      },
+      {
+        "part_label": "b.iii",
+        "marks": 2
+      },
+      {
+        "part_label": "c",
+        "marks": 5
+      }
+    ]
+  },
+  {
+    "part_id": "0821a1f1-8407-452a-929c-4d9534ccf315",
+    "paper_label": "SL23NovTZ1P1",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "b.iii",
+    "markscheme_text": "setting $d(d-7) > 0$ OR $d(d-7) = 0$ OR sketch graph\nOR sign test OR $d^{2} > 7d$ (M1)\n$d < 0$ or $d > 7$, but $d \\in \\mathbb{R}^{+}$\n$d > 7$ (or $]7, \\infty[$) A1\n[9 marks]",
+    "marks_breakdown": [
+      {
+        "desc": "setting $d(d-7) > 0$ or equivalent method",
+        "note": "M1"
+      },
+      {
+        "desc": "$d > 7$ (or $]7, \\infty[$)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 1
+      },
+      {
+        "part_label": "b.i",
+        "marks": 4
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c",
+        "marks": 5
+      }
+    ]
+  },
+  {
+    "part_id": "83a57835-cd45-409f-925f-fedeb46e1a75",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 1,
+    "question_max_mark": 7,
+    "part_label": "a.i",
+    "markscheme_text": "recognizing that $f'$ is needed (M1)\n$(f'(3) = ) -2$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "recognizing that $f'$ is needed",
+        "note": "M1"
+      },
+      {
+        "desc": "finding $f'(3) = -2$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.ii",
+        "marks": 1
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "56e93092-f534-4949-8bb8-830e7003c84e",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 1,
+    "question_max_mark": 7,
+    "part_label": "a.ii",
+    "markscheme_text": "$\\frac{1}{2}$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct gradient of normal",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 1,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "6bbe891c-b5eb-4cab-9e8f-fadd7f5d97de",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 4,
+    "question_max_mark": 7,
+    "part_label": "b.i",
+    "markscheme_text": "$260 - 2.6r^{2} = 64$ (A1)\n$r = 8.68243...$\n$= 8.68$ (cm) $\\left(\\frac{14\\sqrt{65}}{13}\\text{ exact}\\right)$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct equation",
+        "note": "A1"
+      },
+      {
+        "desc": "$r = 8.68$ (cm)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "0d893649-95eb-4f01-97d4-d19deb565459",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 4,
+    "question_max_mark": 7,
+    "part_label": "b.ii",
+    "markscheme_text": "$10\\times5.2$ OR $8.68...\\times5.2$ (A1)\nsubstituting their value of $r$ into $10\\times5.2 + r\\times5.2 + 2(10-r)$ (or equivalent) (M1)\nPerimeter = $10\\times5.2 + 8.68...\\times5.2 + 2(10-8.68...)$ $(= 52 + 45.1486... + 2.63513...)$\n$= 99.7837…$\n$= 99.8$ (cm) A1",
+    "marks_breakdown": [
+      {
+        "desc": "$10\\times5.2$ OR $8.68...\\times5.2$",
+        "note": "A1"
+      },
+      {
+        "desc": "substituting their value of $r$ into the perimeter expression",
+        "note": "M1"
+      },
+      {
+        "desc": "Perimeter $= 99.8$ (cm)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b.i",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "5121b930-070e-4f45-839c-6878a3844b57",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 7,
+    "question_max_mark": 14,
+    "part_label": "b.ii",
+    "markscheme_text": "$\\frac{dS}{dx} = 0$ (M1)\n$-\\frac{90}{a^{2}} + 8\\pi a = 0$ A1\n$(a =)\\left(\\frac{90}{8\\pi}\\right)^{\\frac{1}{3}}$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$\\frac{dS}{dx} = 0$",
+        "note": "M1"
+      },
+      {
+        "desc": "correct equation $-\\frac{90}{a^{2}} + 8\\pi a = 0$",
+        "note": "A1"
+      },
+      {
+        "desc": "$(a=)\\left(\\frac{90}{8\\pi}\\right)^{\\frac{1}{3}}$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 3
+      },
+      {
+        "part_label": "b.i",
+        "marks": 2
+      },
+      {
+        "part_label": "c.i",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      },
+      {
+        "part_label": "c.iii",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "b52b9059-c0a1-4c29-b3b8-c28b31b4b11b",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 7,
+    "question_max_mark": 14,
+    "part_label": "c.iii",
+    "markscheme_text": "attempt to substitute their value of $a$ into $S$ OR use of graph of $S$ (M1)\n$88.2401...$\nminimum surface area = $88.2$ (cm$^{2}$) A1",
+    "marks_breakdown": [
+      {
+        "desc": "attempt to substitute their value of $a$ into $S$ OR use of graph of $S$",
+        "note": "M1"
+      },
+      {
+        "desc": "minimum surface area = $88.2$ (cm$^{2}$)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 3
+      },
+      {
+        "part_label": "b.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "c.i",
+        "marks": 2
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "part_id": "c320f728-4649-442d-8acb-029d57298249",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "a.ii",
+    "markscheme_text": "recognizing sum of a geometric sequence is required (M1)\n$\\frac{2000\\left(1-1.06^{36}\\right)}{1-1.06}$ (A1)\n$= 238241.7333...$\n$= (\\$)238241.73$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "recognizing sum of a geometric sequence is required",
+        "note": "M1"
+      },
+      {
+        "desc": "correct substitution into geometric sum formula",
+        "note": "A1"
+      },
+      {
+        "desc": "$= (\\$)238241.73$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c.i",
+        "marks": 3
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "d",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "ccb722c8-14cb-4762-a108-51d7d7d1d6c0",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "c.i",
+    "markscheme_text": "Sorin's total = $120000\\left(1+\\frac{4}{100\\times12}\\right)^{6} (=122420.09)$ (A1)\n\nDaniela's total = $\\frac{2000\\left(1-1.06^{6}\\right)}{1-1.06} (=13950.64)$ (A1)\n\ntotal value = $(\\$)136370.73$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "Sorin's total $=122420.09$",
+        "note": "A1"
+      },
+      {
+        "desc": "Daniela's total $=13950.64$",
+        "note": "A1"
+      },
+      {
+        "desc": "total value = $(\\$)136370.73$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "d",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "95b5362c-3f0a-4b42-8e06-a8ec3fb5996d",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 8,
+    "question_max_mark": 15,
+    "part_label": "c.ii",
+    "markscheme_text": "EITHER (finding number of months, $m$)\n$120000\\left(1+\\frac{4}{100\\times12}\\right)^{m} + \\frac{2000\\left(1-1.06^{m}\\right)}{1-1.06} (\\geq 250000)$ (A1)\n$m \\geq 26.0905...$ OR $(m=26 \\Rightarrow) 249157...$ AND $(m=27 \\Rightarrow) 258692...$ (A1)\n\nNote: Condone use of an equation or strict inequality.\n\nOR (finding number of years, $n$)\n$120000\\left(1+\\frac{4}{100\\times12}\\right)^{12\\times n} + \\frac{2000\\left(1-1.06^{12\\times n}\\right)}{1-1.06} (\\geq 250000)$ (A1)\n$n \\geq 2.17421...$ (years) (A1)\n\nNote: Condone use of an equation or strict inequality.\n\nTHEN\n$m = 27$ (months) A1",
+    "marks_breakdown": [
+      {
+        "desc": "correct equation/inequality for total value",
+        "note": "A1"
+      },
+      {
+        "desc": "correct value(s) of $m$ or $n$",
+        "note": "A1"
+      },
+      {
+        "desc": "$m = 27$ (months)",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 3,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a.i",
+        "marks": 2
+      },
+      {
+        "part_label": "a.ii",
+        "marks": 3
+      },
+      {
+        "part_label": "b",
+        "marks": 1
+      },
+      {
+        "part_label": "c.i",
+        "marks": 3
+      },
+      {
+        "part_label": "d",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "d904d034-afd5-469f-b6fb-70cfdf234ecf",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "c.i",
+    "markscheme_text": "recognition of Binomial distribution (M1)\n$X \\sim B(100,0.434)$\n$P(X=34) = 0.0133198...$\n$= 0.0133$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "recognition of Binomial distribution",
+        "note": "M1"
+      },
+      {
+        "desc": "$P(X=34) = 0.0133$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 2,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 5
+      },
+      {
+        "part_label": "c.ii",
+        "marks": 4
+      },
+      {
+        "part_label": "d",
+        "marks": 3
+      }
+    ]
+  },
+  {
+    "part_id": "218ab286-fcc9-4ae3-ab61-e0345b48a2d4",
+    "paper_label": "SL23NovTZ2P2",
+    "question_number": 9,
+    "question_max_mark": 16,
+    "part_label": "c.ii",
+    "markscheme_text": "$P(X<49) = 0.848218...$ (seen anywhere) (A1)\nrecognition of conditional probability (M1)\n\nNote: recognition must be shown in context, either in symbols eg $P(X=34 | X<49)$, or in words eg $P(34\\text{ plants} | \\text{less than } 49\\text{ plants})$, not only as $P(A|B)$.\n\n$(P(X=34|X<49)=) \\frac{P(X=34)}{P(X<49)}$ OR $\\frac{P(X=34)}{P(X\\leq48)} \\left(=\\frac{0.0133198...}{0.848218...}\\right)$ (A1)\n$= 0.0157033...$\n$P(X=34|X<49) = 0.0157$ A1",
+    "marks_breakdown": [
+      {
+        "desc": "$P(X<49) = 0.848218...$ (seen anywhere)",
+        "note": "A1"
+      },
+      {
+        "desc": "recognition of conditional probability",
+        "note": "M1"
+      },
+      {
+        "desc": "correct substitution",
+        "note": "A1"
+      },
+      {
+        "desc": "$P(X=34|X<49) = 0.0157$",
+        "note": "A1"
+      }
+    ],
+    "currently_stored_marks": 4,
+    "other_siblings_in_question": [
+      {
+        "part_label": "a",
+        "marks": 2
+      },
+      {
+        "part_label": "b",
+        "marks": 5
+      },
+      {
+        "part_label": "c.i",
+        "marks": 2
+      },
+      {
+        "part_label": "d",
+        "marks": 3
+      }
+    ]
+  }
+]
