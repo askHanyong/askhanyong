@@ -1,0 +1,194 @@
+{
+  "HL2023MayTZ1P3": [
+    {
+      "part_id": "b34a34dd-127a-4198-bd0f-eee7e8154301",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$$\\int_{0}^{b} x e^{-x} \\, dx$$ (A1)\nNote: Award (A1) for correct integrand and limits (which can be seen later in the question)\n\nUse of integration by parts\n$$= \\left[-x e^{-x}\\right]_{0}^{b} + \\int_"
+    }
+  ],
+  "HL2023NovTZ2P2": [
+    {
+      "part_id": "12d07139-c125-4e8a-abad-618f55362f4b",
+      "question_number": 1,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$$BV = \\sqrt{(6-3)^{2} + (8-4)^{2} + (0-9)^{2}}$$ (A1)\n\n$$= 10.2956...$$\n\n$$= 10.3 (=\\sqrt{106})$$ A1\n\nNote: Award SC(A0)A1 for $BV = \\begin{pmatrix} -3 \\\\ -4 \\\\ 9 \\end{pmatrix}$ where a candidate has"
+    }
+  ],
+  "HL2021MayTZ1P1": [
+    {
+      "part_id": "63cadc28-3d09-4de7-a734-40d66f4c7bdf",
+      "question_number": 4,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$f'(x) = -2(x-h)$ A1\n\n[1 mark]"
+    },
+    {
+      "part_id": "17197b33-7bab-45a9-81b4-d16f399f6f1a",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$f(2)=6$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "08bbea32-70be-4179-bbd4-a05bc3da53ab",
+      "question_number": 1,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$(f \\circ f)(2)=-2$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "d6eb3ce8-8000-4d70-97c6-efa074f2b3c5",
+      "question_number": 10,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "$0 \\leq r \\leq 1$ A1"
+    }
+  ],
+  "SL2021MayTZ1P1": [
+    {
+      "part_id": "b4381600-2a59-4285-85c3-32ba83eb77f7",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$3 \\times 10^{4}$ OR $30000$ (km) (accept $3 \\cdot 10^{4}$) A1\n\n[1 mark]"
+    },
+    {
+      "part_id": "85c922b5-f5a1-454b-8712-4175e5376c25",
+      "question_number": 5,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$f'(x) = -2(x - h)$ A1\n\n[1 mark]"
+    },
+    {
+      "part_id": "e25f3031-dd23-46c5-ae87-deb8d7ffaa65",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$f(2) = 6$ A1"
+    },
+    {
+      "part_id": "55e4eb8a-a12e-4422-bb45-4c00a23b4fc7",
+      "question_number": 1,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$(f \\circ f)(2) = -2$ A1"
+    },
+    {
+      "part_id": "832e1c93-ca5c-404e-8da8-ae61b20bd5fc",
+      "question_number": 9,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "$0 \\leq r \\leq 1$ A1"
+    }
+  ],
+  "HL2021MayTZ1P3": [
+    {
+      "part_id": "105ab053-38ce-41fa-b27f-cc780e7b3f0a",
+      "question_number": 2,
+      "part_label": "d",
+      "status": "ok",
+      "new_text_preview": "$A=P \\Rightarrow nA_{T}=ny$ (M1)\n\nNote: Award M1 for equating correct expressions for $A$ and $P$.\n\n$\\frac{1}{2}nx^{2}\\sin\\frac{2\\pi}{n} = 2nx\\sin\\frac{\\pi}{n}$ $\\left(nx^{2}\\sin\\frac{\\pi}{n}\\cos\\frac"
+    },
+    {
+      "part_id": "eac64618-855f-40b5-ae31-4324959fc253",
+      "question_number": 1,
+      "part_label": "f",
+      "status": "ok",
+      "new_text_preview": "case 1:\n$c\\leq 0$ (independent of the value of $d$) A1\n\nEITHER\n$g'(x)=0$ does not have two solutions (has no solutions or 1 solution) R1\nOR\n$\\Rightarrow g'(x)\\geq 0$ for $x\\in\\mathbb{R}$ R1\nOR\nthe gra"
+    },
+    {
+      "part_id": "ac6cfe6e-bfb5-4456-9816-83ac3498d0e9",
+      "question_number": 2,
+      "part_label": "g.i",
+      "status": "ok",
+      "new_text_preview": "using an appropriate method (M1)\n$eg$ substituting values for $b$ or using divisibility properties\n$(5,12,13)$ and $(6,8,10)$ A1A1\n\nNote: Award A1A0 for either one set of three correct side lengths or"
+    },
+    {
+      "part_id": "e9106399-afe4-40a0-adca-2d99da1eaa1b",
+      "question_number": 2,
+      "part_label": "a",
+      "status": "ok",
+      "new_text_preview": "$A=s^{2}$ and $P=4s$ (A1)\n$A=P \\Rightarrow s^{2}=4s$ (M1)\n$s(s-4)=0$\n$\\Rightarrow s=4 (s>0)$ A1\n\nNote: Award A1M1A0 if both $s=4$ and $s=0$ are stated as final answers.\n\n[3 marks]"
+    },
+    {
+      "part_id": "c9f4d87a-4a0e-4c6e-9718-7f8af457af41",
+      "question_number": 2,
+      "part_label": "e.i",
+      "status": "ok",
+      "new_text_preview": "attempts to use the Maclaurin series for $\\tan x$ with $x=\\frac{\\pi}{n}$ (M1)\n$\\tan\\frac{\\pi}{n} = \\frac{\\pi}{n} + \\frac{\\left(\\frac{\\pi}{n}\\right)^{3}}{3} + \\frac{2\\left(\\frac{\\pi}{n}\\right)^{5}}{15}"
+    },
+    {
+      "part_id": "e30ef111-0de3-4572-b871-7a7c5fc8adee",
+      "question_number": 2,
+      "part_label": "f",
+      "status": "ok",
+      "new_text_preview": "$A=\\frac{1}{2}ab$ and $P=a+b+\\sqrt{a^{2}+b^{2}}$ (A1)(A1)\nequates their expressions for $A$ and $P$ M1\n$A=P \\Rightarrow a+b+\\sqrt{a^{2}+b^{2}} = \\frac{1}{2}ab$\n$\\sqrt{a^{2}+b^{2}} = \\frac{1}{2}ab - (a"
+    },
+    {
+      "part_id": "7186c59d-1a04-44d0-abd4-f404c01b381e",
+      "question_number": 1,
+      "part_label": "a.i",
+      "status": "ok",
+      "new_text_preview": "$c=1$: positive cubic with correct $y$-intercept labelled A1\nlocal maximum point correctly labelled A1\nlocal minimum point correctly labelled A1\n[3 marks]"
+    },
+    {
+      "part_id": "490ec4a9-f77f-419e-ac0c-c671fa3cbbee",
+      "question_number": 1,
+      "part_label": "a.ii",
+      "status": "ok",
+      "new_text_preview": "$c=2$: positive cubic with correct $y$-intercept labelled A1\nlocal maximum point correctly labelled A1\nlocal minimum point correctly labelled A1\n\nNote: Accept the following exact answers:\nLocal maximu"
+    },
+    {
+      "part_id": "a8acac4c-da43-41db-ae12-dd94b653bee0",
+      "question_number": 1,
+      "part_label": "b",
+      "status": "ok",
+      "new_text_preview": "$f'(x) = 3x^{2} - 3c$ A1\n\nNote: Accept $3x^{2}-3c$ (an expression).\n\n[1 mark]"
+    },
+    {
+      "part_id": "04b48d09-d79b-4ef3-ac36-47c7ef628ac9",
+      "question_number": 1,
+      "part_label": "c.i",
+      "status": "ok",
+      "new_text_preview": "$c=0$ A1\n[1 mark]"
+    },
+    {
+      "part_id": "2cb4a872-d8f6-46e5-85df-ee963e712172",
+      "question_number": 1,
+      "part_label": "c.ii",
+      "status": "ok",
+      "new_text_preview": "considers the number of solutions to their $f'(x)=0$ (M1)\n$3x^{2}-3c=0$\n$c>0$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "fb4c2e68-cd53-46f9-a87e-55639d5946c2",
+      "question_number": 1,
+      "part_label": "d.ii",
+      "status": "ok",
+      "new_text_preview": "correctly evaluates $f(\\sqrt{c})$ A1\n$f(\\sqrt{c}) = c^{\\frac{3}{2}} - 3c^{\\frac{3}{2}} + 2 \\left(=c\\sqrt{c}-3c\\sqrt{c}+2\\right)$\nthe $y$-coordinate of the local minimum point is $-2c^{\\frac{3}{2}}+2$ "
+    },
+    {
+      "part_id": "0df88c10-cbd2-455a-8d25-473a7f4d386d",
+      "question_number": 1,
+      "part_label": "e.ii",
+      "status": "ok",
+      "new_text_preview": "the graph of $y=f(x)$ will have two $x$-axis intercepts if\nEITHER\n$-2c^{\\frac{3}{2}}+2=0$ (or equivalent reasoning) (M1)\nOR\nevidence from the graph in part(a)(i) (M1)\nTHEN\n$c=1$ A1\n[2 marks]"
+    },
+    {
+      "part_id": "d778e3c0-527a-46f4-b962-89c34c13b5b0",
+      "question_number": 1,
+      "part_label": "e.iii",
+      "status": "ok",
+      "new_text_preview": "the graph of $y=f(x)$ will have three $x$-axis intercepts if\nEITHER\n$-2c^{\\frac{3}{2}}+2<0$ (or equivalent reasoning) (M1)\nOR\nreasoning from the results in both parts (e)(i) and (e)(ii) (M1)\nTHEN\n$c>1"
+    },
+    {
+      "part_id": "c140d196-5813-43e6-8374-51bc485d5ad4",
+      "question_number": 2,
+      "part_label": "c",
+      "status": "ok",
+      "new_text_preview": "METHOD 1\nuses $\\sin\\theta = \\frac{\\text{opp}}{\\text{hyp}}$ (M1)\n$\\frac{\\frac{y}{2}}{x} = \\sin\\frac{\\pi}{n}$ A1\n$y=2x\\sin\\frac{\\pi}{n}$ AG\n[2 marks]\n\nMETHOD 2\nuses Pythagoras' theorem $\\left(\\frac{y}{2"
+    }
+  ]
+}

@@ -1,0 +1,1653 @@
+{
+  "('HL', 2021, 'May', 'TZ1', 2)": {
+    "meta": {
+      "part_id": "c94e398b-b242-44f5-84e7-bb4af8c743b8",
+      "level": "HL",
+      "year": 2021,
+      "session": "May",
+      "paper_number": 2,
+      "time_zone": "TZ1",
+      "paper_file_path": "MAA/HL/2021-May-TZ1-P2/ad90c5fe-M21_MAA_HL_P2_TZ1.pdf",
+      "markscheme_file_path": "MAA/HL/2021-May-TZ1-P2/a0c61473-M21_MAA_HL_P2_TZ1_markscheme.pdf",
+      "question_number": 10,
+      "question_max_mark": 15,
+      "part_label": "d.i",
+      "marks": 1,
+      "markscheme_text": "$x = \\ln45+1$ $(= 4.81)$"
+    },
+    "targets": [
+      {
+        "part_id": "36b3297c-e12e-49cd-877e-544eaa9bc34b",
+        "question_number": 9,
+        "part_label": "b"
+      },
+      {
+        "part_id": "40c2fb78-366b-4eb7-a54d-479eed1c108c",
+        "question_number": 10,
+        "part_label": "b"
+      },
+      {
+        "part_id": "bb378b58-9f59-4ba2-838c-1cecf8acbb42",
+        "question_number": 11,
+        "part_label": "e"
+      },
+      {
+        "part_id": "9e50fc23-bcea-4a09-a762-d53093978ff0",
+        "question_number": 4,
+        "part_label": "a"
+      },
+      {
+        "part_id": "717e9a2a-76c6-45c6-b34e-c893d03dff71",
+        "question_number": 11,
+        "part_label": "b"
+      },
+      {
+        "part_id": "ae0bc75a-6474-4381-9f1b-9068e9e0f79a",
+        "question_number": 12,
+        "part_label": "b"
+      },
+      {
+        "part_id": "becef560-bb8c-42aa-8525-f03c176c6428",
+        "question_number": 12,
+        "part_label": "d"
+      },
+      {
+        "part_id": "4e1e0b79-48e9-45b1-b6e7-0bb5e52c0808",
+        "question_number": 1,
+        "part_label": "a"
+      },
+      {
+        "part_id": "d9b94cd8-8bcd-42da-8e4d-50da9126ac47",
+        "question_number": 1,
+        "part_label": "b"
+      },
+      {
+        "part_id": "e076c649-aec0-46d1-aba7-4a90504893cc",
+        "question_number": 1,
+        "part_label": "c"
+      },
+      {
+        "part_id": "ab9798bb-ef1d-420a-8d9b-d93cafb343bf",
+        "question_number": 2,
+        "part_label": "a"
+      },
+      {
+        "part_id": "786a9230-cc44-4b97-8a9f-5bd78aa48ad6",
+        "question_number": 2,
+        "part_label": "b"
+      },
+      {
+        "part_id": "287c3927-ca46-4572-9cdc-623eb9c05cbf",
+        "question_number": 2,
+        "part_label": "c"
+      },
+      {
+        "part_id": "0677c259-d8a1-4b97-ac8e-b5c61014c9f4",
+        "question_number": 3,
+        "part_label": ""
+      },
+      {
+        "part_id": "ccea405d-3b16-4b68-b295-a77b0d3d8227",
+        "question_number": 4,
+        "part_label": "b"
+      },
+      {
+        "part_id": "3d7d4955-8c49-4998-bb68-c37afab89aca",
+        "question_number": 4,
+        "part_label": "c"
+      },
+      {
+        "part_id": "de4f8f39-0eb8-4071-8ca1-f0ebad7bf9b6",
+        "question_number": 5,
+        "part_label": ""
+      },
+      {
+        "part_id": "56e20406-2699-4c96-9833-a88fd86702eb",
+        "question_number": 6,
+        "part_label": "a"
+      },
+      {
+        "part_id": "f2752d44-52d6-425c-8924-4c8a7aa07d83",
+        "question_number": 6,
+        "part_label": "b"
+      },
+      {
+        "part_id": "d64abda1-9495-454a-8314-324b2c46a317",
+        "question_number": 7,
+        "part_label": "a"
+      },
+      {
+        "part_id": "0d9eb3ab-76a7-4bb4-b06f-2e8541616186",
+        "question_number": 7,
+        "part_label": "b"
+      },
+      {
+        "part_id": "95c1be33-2fc2-4c05-a763-8e98119af480",
+        "question_number": 8,
+        "part_label": "a"
+      },
+      {
+        "part_id": "1e24cd71-106d-4d98-9070-fd488e586824",
+        "question_number": 8,
+        "part_label": "b"
+      },
+      {
+        "part_id": "2d898530-e73f-43dc-b946-05aba558c332",
+        "question_number": 9,
+        "part_label": "a"
+      },
+      {
+        "part_id": "bd9905b0-e718-4916-9a5d-b7ada368d46b",
+        "question_number": 10,
+        "part_label": "a"
+      },
+      {
+        "part_id": "c93c1ad5-bfc3-44e7-935e-68c07d7ec804",
+        "question_number": 10,
+        "part_label": "c"
+      },
+      {
+        "part_id": "6710349c-c9b0-4e76-9c78-a973ff533f74",
+        "question_number": 10,
+        "part_label": "e"
+      },
+      {
+        "part_id": "9d7b9216-cf87-444c-b70a-6640e6e9d69e",
+        "question_number": 11,
+        "part_label": "a"
+      },
+      {
+        "part_id": "d3fed9e4-5e85-4013-9704-87ba691fff00",
+        "question_number": 11,
+        "part_label": "c"
+      },
+      {
+        "part_id": "50a13504-8f84-4932-bf02-e123442b39c4",
+        "question_number": 11,
+        "part_label": "f"
+      },
+      {
+        "part_id": "508bb281-5299-40cb-a083-d02726a00000",
+        "question_number": 12,
+        "part_label": "a"
+      },
+      {
+        "part_id": "76b91df2-626a-4508-9523-c3871f410db2",
+        "question_number": 12,
+        "part_label": "c"
+      },
+      {
+        "part_id": "79da7312-9d51-47f1-9c6b-77ffb94bf785",
+        "question_number": 12,
+        "part_label": "e"
+      },
+      {
+        "part_id": "3963ebc2-e283-4dd3-959b-68f2454d28a8",
+        "question_number": 10,
+        "part_label": "d.ii"
+      },
+      {
+        "part_id": "e73981a0-ace3-4c9d-a198-ed3e343ce2af",
+        "question_number": 8,
+        "part_label": "c.i"
+      },
+      {
+        "part_id": "d49f63d4-e3e7-439e-85ca-7f5c9ffd457b",
+        "question_number": 8,
+        "part_label": "c.ii"
+      },
+      {
+        "part_id": "c94e398b-b242-44f5-84e7-bb4af8c743b8",
+        "question_number": 10,
+        "part_label": "d.i"
+      }
+    ]
+  },
+  "('SL', 2023, 'May', 'TZ2', 2)": {
+    "meta": {
+      "part_id": "b750385b-f7b6-4ab0-b7f7-0c47c9e5def5",
+      "level": "SL",
+      "year": 2023,
+      "session": "May",
+      "paper_number": 2,
+      "time_zone": "TZ2",
+      "paper_file_path": "MAA/SL/2023-May-TZ2-P2/abbc052c-M23_MAASL_P2_TZ2.pdf",
+      "markscheme_file_path": "MAA/SL/2023-May-TZ2-P2/7a4ed177-M23_MAASL_P2_TZ2_markscheme.pdf",
+      "question_number": 9,
+      "question_max_mark": 15,
+      "part_label": "a.ii",
+      "marks": 2,
+      "markscheme_text": "(ii) multiplying probabilities for $GG$\n\n$$P(GG) = \\frac{10}{n} \\times \\frac{9}{n-1}$$\n\n$$P(GG) = \\frac{90}{n^{2}-n} \\left(\\text{accept } \\frac{90}{n(n-1)}\\right)$$"
+    },
+    "targets": [
+      {
+        "part_id": "bc9667d1-25d4-4327-bee8-03638b5d333e",
+        "question_number": 9,
+        "part_label": "e"
+      },
+      {
+        "part_id": "276ebb20-bcb6-459e-8717-95dd25a54dbd",
+        "question_number": 8,
+        "part_label": "e"
+      },
+      {
+        "part_id": "8c15b55a-0f94-4a7a-97c9-55544d95c810",
+        "question_number": 1,
+        "part_label": "a"
+      },
+      {
+        "part_id": "f83583f3-18d8-4104-9d3f-ee03f7eddfa9",
+        "question_number": 1,
+        "part_label": "b"
+      },
+      {
+        "part_id": "9e04b83e-2bf1-4c61-b446-e0a59bdd96a8",
+        "question_number": 1,
+        "part_label": "c"
+      },
+      {
+        "part_id": "5f588143-bd4a-4220-a18f-5d51131d3786",
+        "question_number": 2,
+        "part_label": "a"
+      },
+      {
+        "part_id": "b0b2d255-c79e-4e79-b67b-73dc43f5abfd",
+        "question_number": 2,
+        "part_label": "b"
+      },
+      {
+        "part_id": "095ad91a-f040-4808-b95d-2dff8dad8ab5",
+        "question_number": 3,
+        "part_label": "a"
+      },
+      {
+        "part_id": "6031ced6-81b7-4a8f-9526-78eaa97a4527",
+        "question_number": 3,
+        "part_label": "b"
+      },
+      {
+        "part_id": "20eb39fd-f680-48f9-b8c7-903df30c89ca",
+        "question_number": 3,
+        "part_label": "c"
+      },
+      {
+        "part_id": "999a38d2-b2ea-4593-9eed-cc619a52c631",
+        "question_number": 4,
+        "part_label": "a"
+      },
+      {
+        "part_id": "6a9db3e8-2e6f-4c36-8ac4-f35f8405be6c",
+        "question_number": 4,
+        "part_label": "b"
+      },
+      {
+        "part_id": "d32c52f6-e2ca-4f30-9b9f-08ff9b081a6a",
+        "question_number": 4,
+        "part_label": "c"
+      },
+      {
+        "part_id": "1f0e4c52-01a0-46da-8533-80ddd3bf6496",
+        "question_number": 4,
+        "part_label": "d"
+      },
+      {
+        "part_id": "a941460e-583e-42ef-93f8-9cfc5751929a",
+        "question_number": 5,
+        "part_label": "b"
+      },
+      {
+        "part_id": "017d9fc8-d91b-4855-b878-4ed479a601fa",
+        "question_number": 6,
+        "part_label": "a"
+      },
+      {
+        "part_id": "15d07833-771e-4a9b-82e5-0c47b7db0575",
+        "question_number": 6,
+        "part_label": "b"
+      },
+      {
+        "part_id": "8338489c-805f-4603-918e-7efe8974eb0d",
+        "question_number": 6,
+        "part_label": "c"
+      },
+      {
+        "part_id": "ccc4ea4e-079e-4073-82a3-765da25307ac",
+        "question_number": 7,
+        "part_label": "b"
+      },
+      {
+        "part_id": "1f8f9be0-3bfd-42d3-a3c4-5add40805fb7",
+        "question_number": 7,
+        "part_label": "c"
+      },
+      {
+        "part_id": "c74625fd-af04-40a7-ae6b-48c4f1b85703",
+        "question_number": 7,
+        "part_label": "d"
+      },
+      {
+        "part_id": "e9f18848-1632-419b-bb3b-2712b6f3f189",
+        "question_number": 8,
+        "part_label": "a"
+      },
+      {
+        "part_id": "6df2f0dc-3cb6-41a1-b300-76c4e1225951",
+        "question_number": 8,
+        "part_label": "c"
+      },
+      {
+        "part_id": "9f5e6af9-5f35-4d0c-b4db-af470cf6e196",
+        "question_number": 8,
+        "part_label": "d"
+      },
+      {
+        "part_id": "87e0c426-87ff-42ee-8010-a7f41e698e8d",
+        "question_number": 9,
+        "part_label": "b"
+      },
+      {
+        "part_id": "997a842a-215b-4d12-9042-bb45795c0d22",
+        "question_number": 9,
+        "part_label": "c"
+      },
+      {
+        "part_id": "540fedf7-d269-4df1-92c5-5620c9e594fd",
+        "question_number": 9,
+        "part_label": "d"
+      },
+      {
+        "part_id": "cdd85b42-577b-4521-93f7-992348c85fdf",
+        "question_number": 5,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "aecc6556-f674-48af-9c5a-dc473b1f26d6",
+        "question_number": 5,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "82a58e82-cb9f-43ca-8e87-de0933da0a3f",
+        "question_number": 5,
+        "part_label": "a.iii"
+      },
+      {
+        "part_id": "f4afd6e7-fb55-450b-b0b3-6242141db32d",
+        "question_number": 7,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "033d2c88-3986-42e0-8f1a-dc32b5fb6e0f",
+        "question_number": 7,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "57cc6958-5e54-4079-ba69-0a58ac4fd448",
+        "question_number": 8,
+        "part_label": "b.i"
+      },
+      {
+        "part_id": "9492ea04-9a0b-4d8c-8daa-88a5e0afe473",
+        "question_number": 8,
+        "part_label": "b.ii"
+      },
+      {
+        "part_id": "b380feb0-279c-424f-811d-a12c73aea72d",
+        "question_number": 9,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "b750385b-f7b6-4ab0-b7f7-0c47c9e5def5",
+        "question_number": 9,
+        "part_label": "a.ii"
+      }
+    ]
+  },
+  "('HL', 2021, 'May', 'TZ1', 3)": {
+    "meta": {
+      "part_id": "c140d196-5813-43e6-8374-51bc485d5ad4",
+      "level": "HL",
+      "year": 2021,
+      "session": "May",
+      "paper_number": 3,
+      "time_zone": "TZ1",
+      "paper_file_path": "MAA/HL/2021-May-TZ1-P3/574dc7e2-M21_MAA_HL_P3_TZ1.pdf",
+      "markscheme_file_path": "MAA/HL/2021-May-TZ1-P3/5d921875-M21_MAA_HL_P3_TZ1_markscheme.pdf",
+      "question_number": 2,
+      "question_max_mark": 28,
+      "part_label": "c",
+      "marks": 2,
+      "markscheme_text": "METHOD 1\nuses $\\sin\\theta=\\frac{opp}{hyp}$\n$$\\frac{y/2}{x}=\\sin\\left(\\frac{\\pi}{n}\\right)$$\n$$y=2x\\sin\\left(\\frac{\\pi}{n}\\right)$$\n\nMETHOD 2\nuses Pythagoras' theorem $\\left(\\frac{y}{2}\\right)^{2}+h^{2}=x^{2}$ and $h=x\\cos\\left(\\frac{\\pi}{n}\\right)$\n$$\\left(\\frac{y}{2}\\right)^{2}+\\left(x\\cos\\left(\\frac{\\pi}{n}\\right)\\right)^{2}=x^{2} \\left(y^{2}=4x^{2}(1-\\cos^{2}\\left(\\frac{\\pi}{n}\\right))\\right)$$\n$$=4x^{2}\\sin^{2}\\left(\\frac{\\pi}{n}\\right)$$\n$$y=2x\\sin\\left(\\frac{\\pi}{n}\\right)$$\n\nMETHOD 3\nuses the cosine rule\n$$y^{2}=2x^{2}-2x^{2}\\cos\\left(\\frac{2\\pi}{n}\\right) \\left(=2x^{2}\\left(1-\\cos\\left(\\frac{2\\pi}{n}\\right)\\right)\\right)$$\n$$=4x^{2}\\sin^{2}\\left(\\frac{\\pi}{n}\\right)$$\n$$y=2x\\sin\\left(\\frac{\\pi}{n}\\right)$$\n\nMETHOD 4\nuses the sine rule\n$$\\frac{y}{\\sin\\left(\\frac{2\\pi}{n}\\right)}=\\frac{x}{\\sin\\left(\\frac{\\pi}{2}-\\frac{\\pi}{n}\\right)}$$\n$$y\\cos\\left(\\frac{\\pi}{n}\\right)=2x\\sin\\left(\\frac{\\pi}{n}\\right)\\cos\\left(\\frac{\\pi}{n}\\right)$$\n$$y=2x\\sin\\left(\\frac{\\pi}{n}\\right)$$"
+    },
+    "targets": [
+      {
+        "part_id": "105ab053-38ce-41fa-b27f-cc780e7b3f0a",
+        "question_number": 2,
+        "part_label": "d"
+      },
+      {
+        "part_id": "eac64618-855f-40b5-ae31-4324959fc253",
+        "question_number": 1,
+        "part_label": "f"
+      },
+      {
+        "part_id": "ac6cfe6e-bfb5-4456-9816-83ac3498d0e9",
+        "question_number": 2,
+        "part_label": "g.i"
+      },
+      {
+        "part_id": "e9106399-afe4-40a0-adca-2d99da1eaa1b",
+        "question_number": 2,
+        "part_label": "a"
+      },
+      {
+        "part_id": "c9f4d87a-4a0e-4c6e-9718-7f8af457af41",
+        "question_number": 2,
+        "part_label": "e.i"
+      },
+      {
+        "part_id": "e30ef111-0de3-4572-b871-7a7c5fc8adee",
+        "question_number": 2,
+        "part_label": "f"
+      },
+      {
+        "part_id": "7186c59d-1a04-44d0-abd4-f404c01b381e",
+        "question_number": 1,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "490ec4a9-f77f-419e-ac0c-c671fa3cbbee",
+        "question_number": 1,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "a8acac4c-da43-41db-ae12-dd94b653bee0",
+        "question_number": 1,
+        "part_label": "b"
+      },
+      {
+        "part_id": "04b48d09-d79b-4ef3-ac36-47c7ef628ac9",
+        "question_number": 1,
+        "part_label": "c.i"
+      },
+      {
+        "part_id": "2cb4a872-d8f6-46e5-85df-ee963e712172",
+        "question_number": 1,
+        "part_label": "c.ii"
+      },
+      {
+        "part_id": "fb4c2e68-cd53-46f9-a87e-55639d5946c2",
+        "question_number": 1,
+        "part_label": "d.ii"
+      },
+      {
+        "part_id": "0df88c10-cbd2-455a-8d25-473a7f4d386d",
+        "question_number": 1,
+        "part_label": "e.ii"
+      },
+      {
+        "part_id": "d778e3c0-527a-46f4-b962-89c34c13b5b0",
+        "question_number": 1,
+        "part_label": "e.iii"
+      },
+      {
+        "part_id": "c140d196-5813-43e6-8374-51bc485d5ad4",
+        "question_number": 2,
+        "part_label": "c"
+      }
+    ]
+  },
+  "('SL', 2021, 'Nov', 'TZ1', 1)": {
+    "meta": {
+      "part_id": "0204501f-a451-4dba-ac70-7f7f3088785e",
+      "level": "SL",
+      "year": 2021,
+      "session": "Nov",
+      "paper_number": 1,
+      "time_zone": "TZ1",
+      "paper_file_path": "MAA/SL/2021-Nov-TZ1-P1/665f3da6-N21_MAASL_P1_TZ1.pdf",
+      "markscheme_file_path": "MAA/SL/2021-Nov-TZ1-P1/2324bf68-N21_MAASL_P1_TZ1_markscheme.pdf",
+      "question_number": 8,
+      "question_max_mark": 15,
+      "part_label": "d.ii",
+      "marks": 5,
+      "markscheme_text": "METHOD 1 (geometric, finding r)\n$u_{4} = u_{1} r^{3}$ OR $125 = 27(r)^{3}$\n$r = \\frac{5}{3}$ (seen anywhere)\n$p = 27r$ OR $\\frac{125}{q} = \\frac{5}{3}$\n$p = 45$, $q = 75$\n\nMETHOD 2 (arithmetic)\n$u_{4} = u_{1}+3d$ OR $\\log_{8} 125 = \\log_{8} 27+3d$\n$d = \\log_{8}\\left(\\frac{5}{3}\\right)$ (seen anywhere)\n$\\log_{8} p = \\log_{8} 27 + \\log_{8}\\left(\\frac{5}{3}\\right)$ OR $\\log_{8} q = \\log_{8} 27 + 2\\log_{8}\\left(\\frac{5}{3}\\right)$\n$p = 45$, $q = 75$\n\nMETHOD 3 (geometric using proportion)\nrecognizing proportion\n$pq = 125\\times27$ OR $q^{2} = 125p$ OR $p^{2} = 27q$\ntwo correct proportion equations\nattempt to eliminate either p or q\n$q^{2} = 125\\times\\frac{125\\times27}{q}$ OR $p^{2} = 27\\times\\frac{125\\times27}{p}$\n$p = 45$, $q = 75$"
+    },
+    "targets": [
+      {
+        "part_id": "7aa24e05-53d4-4ade-9faf-d6436a32b7fa",
+        "question_number": 6,
+        "part_label": "b"
+      },
+      {
+        "part_id": "d98c3999-c5bd-4754-8dc5-8ffc41b89550",
+        "question_number": 7,
+        "part_label": "b"
+      },
+      {
+        "part_id": "b90b3a36-ca22-4979-a725-b7f5afed4927",
+        "question_number": 9,
+        "part_label": "a"
+      },
+      {
+        "part_id": "b0957dd7-ea75-4045-82ef-93ce1cbf25eb",
+        "question_number": 1,
+        "part_label": "b"
+      },
+      {
+        "part_id": "f3fad332-f04d-469f-a64f-8c804b1f30d7",
+        "question_number": 2,
+        "part_label": ""
+      },
+      {
+        "part_id": "dff0df0f-0da5-42f9-97b9-06c29d9e4590",
+        "question_number": 4,
+        "part_label": "a"
+      },
+      {
+        "part_id": "7c8f8ef3-8f04-47d6-9986-479e90348a9a",
+        "question_number": 5,
+        "part_label": "a"
+      },
+      {
+        "part_id": "b4fb64ab-a2e2-4a57-9285-f0b8674f9349",
+        "question_number": 5,
+        "part_label": "b"
+      },
+      {
+        "part_id": "bc54602e-ed35-4154-878d-fe526bdb8880",
+        "question_number": 5,
+        "part_label": "c"
+      },
+      {
+        "part_id": "ed253130-27f9-4761-b159-e8564c6abb35",
+        "question_number": 5,
+        "part_label": "d"
+      },
+      {
+        "part_id": "226e4cf4-37b6-4764-88f1-dd24dd82959a",
+        "question_number": 6,
+        "part_label": "a"
+      },
+      {
+        "part_id": "3256fd45-aca7-4de4-8127-1abb51a175f2",
+        "question_number": 7,
+        "part_label": "c"
+      },
+      {
+        "part_id": "e00f1b08-1c93-43ab-b130-71c02cd77531",
+        "question_number": 8,
+        "part_label": "a"
+      },
+      {
+        "part_id": "33211166-703e-4572-ba6d-781b8b5e2984",
+        "question_number": 8,
+        "part_label": "b"
+      },
+      {
+        "part_id": "61ec0c45-12f8-4a75-91eb-567fe4feb971",
+        "question_number": 8,
+        "part_label": "c"
+      },
+      {
+        "part_id": "7c84f4fd-ebd6-48f8-8b30-6fd0043c4707",
+        "question_number": 9,
+        "part_label": "b"
+      },
+      {
+        "part_id": "8b8b6920-dc79-4855-bd65-7a40f66a0bcd",
+        "question_number": 9,
+        "part_label": "d"
+      },
+      {
+        "part_id": "5891bab4-f035-4091-9b83-95687a7d7503",
+        "question_number": 7,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "06b4b189-77b9-46a9-9e27-26e047bcde3e",
+        "question_number": 9,
+        "part_label": "c.ii"
+      },
+      {
+        "part_id": "3c74f95e-bdd1-4360-8d9e-2efda33a5baf",
+        "question_number": 9,
+        "part_label": "c.i"
+      },
+      {
+        "part_id": "1672779a-d8a1-4d56-bb2e-2f283250f363",
+        "question_number": 1,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "df2e6974-6969-463a-86b9-534921b9704c",
+        "question_number": 1,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "772bb8fa-0165-4663-85d3-c2fcdb435364",
+        "question_number": 3,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "84cd0c00-f911-4a18-94f0-ed3e90f698c3",
+        "question_number": 3,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "ae71a1fb-b0a9-4f94-b05e-3127d8e19aed",
+        "question_number": 3,
+        "part_label": "b.i"
+      },
+      {
+        "part_id": "abc288c3-3823-4fbe-8f80-336e58e6ba36",
+        "question_number": 3,
+        "part_label": "b.ii"
+      },
+      {
+        "part_id": "a51170cd-0969-4e15-95da-7011f754a719",
+        "question_number": 7,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "9142f7a1-5728-4139-afb8-70cd8c857ca8",
+        "question_number": 8,
+        "part_label": "d.i"
+      },
+      {
+        "part_id": "0204501f-a451-4dba-ac70-7f7f3088785e",
+        "question_number": 8,
+        "part_label": "d.ii"
+      }
+    ]
+  },
+  "('HL', 2021, 'May', 'TZ2', 2)": {
+    "meta": {
+      "part_id": "23015286-2e2d-4a57-8e35-3f7217cfdd7f",
+      "level": "HL",
+      "year": 2021,
+      "session": "May",
+      "paper_number": 2,
+      "time_zone": "TZ2",
+      "paper_file_path": "MAA/HL/2021-May-TZ2-P2/c03c05be-M21_MAA_HL_P2_TZ2.pdf",
+      "markscheme_file_path": "MAA/HL/2021-May-TZ2-P2/5b37f4c4-M21_MAA_HL_P2_TZ2_markscheme.pdf",
+      "question_number": 12,
+      "question_max_mark": 21,
+      "part_label": "c.i",
+      "marks": 6,
+      "markscheme_text": "attempting to use the quotient rule to find $\\frac{d}{dx}\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)$\n$$\\frac{d}{dx}\\left(\\frac{x^{2}-1}{x^{2}+1}\\right) = \\frac{2x(x^{2}+1)-2x(x^{2}-1)}{(x^{2}+1)^{2}} \\left(= \\frac{4x}{(x^{2}+1)^{2}}\\right)$$\nattempting to use the chain rule to find $\\frac{d}{dx}\\left(\\arcsin\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)\\right)$\nlet $u = \\frac{x^{2}-1}{x^{2}+1}$ and so $y = \\arcsin{u}$ and $\\frac{dy}{du} = \\frac{1}{\\sqrt{1-u^{2}}}$\n$$f'(x) = \\frac{1}{\\sqrt{1-\\left(\\frac{x^{2}-1}{x^{2}+1}\\right)^{2}}} \\times \\frac{4x}{(x^{2}+1)^{2}}$$\n$$= \\frac{4x}{\\sqrt{(x^{2}+1)^{2}-(x^{2}-1)^{2}}} \\times \\frac{1}{(x^{2}+1)}$$\n$$= \\frac{4x}{\\sqrt{4x^{2}}} \\times \\frac{1}{(x^{2}+1)}$$\n$$= \\frac{2x}{\\sqrt{x^{2}}(x^{2}+1)}$$"
+    },
+    "targets": [
+      {
+        "part_id": "ca391c75-146b-4013-ae67-65054fb78635",
+        "question_number": 11,
+        "part_label": "a"
+      },
+      {
+        "part_id": "2a580775-cfc3-498b-8be1-eb450e9c5b62",
+        "question_number": 8,
+        "part_label": ""
+      },
+      {
+        "part_id": "85a49321-7583-4b0d-a88b-0c50921ebdd3",
+        "question_number": 9,
+        "part_label": "c"
+      },
+      {
+        "part_id": "6e93bba2-56e5-4c3a-a5bb-6f0c2c4e8ee0",
+        "question_number": 3,
+        "part_label": "a"
+      },
+      {
+        "part_id": "701edf2a-ee0f-46be-b67d-b457b08ed312",
+        "question_number": 3,
+        "part_label": "d"
+      },
+      {
+        "part_id": "b3e7eb9f-98e6-486d-83f1-75ef58461854",
+        "question_number": 12,
+        "part_label": "d"
+      },
+      {
+        "part_id": "523edc81-b2aa-4bec-abe4-62246633e5b1",
+        "question_number": 1,
+        "part_label": "b"
+      },
+      {
+        "part_id": "d3d4ee91-d171-41ef-b96f-7cd28ad54db7",
+        "question_number": 1,
+        "part_label": "c"
+      },
+      {
+        "part_id": "d262c48d-38c4-4473-9f5c-8c913e163ece",
+        "question_number": 2,
+        "part_label": "a"
+      },
+      {
+        "part_id": "baec497d-9c9a-4726-9100-f79072ab8bc4",
+        "question_number": 2,
+        "part_label": "b"
+      },
+      {
+        "part_id": "1f34a95b-fe59-41a1-b11c-4e46e4f4bc4d",
+        "question_number": 3,
+        "part_label": "b"
+      },
+      {
+        "part_id": "9b2a5b4f-0aec-4ac7-9e42-8a789ee21657",
+        "question_number": 3,
+        "part_label": "c"
+      },
+      {
+        "part_id": "dfe0f2f6-4198-4cc1-8468-6f836aae258a",
+        "question_number": 4,
+        "part_label": "a"
+      },
+      {
+        "part_id": "a2544b4d-6fc6-4702-af88-47ef738bf8f3",
+        "question_number": 4,
+        "part_label": "b"
+      },
+      {
+        "part_id": "a71c38ec-308a-42b1-97d4-0499d0e6ad4f",
+        "question_number": 5,
+        "part_label": "a"
+      },
+      {
+        "part_id": "8a86b1cc-652b-418e-9162-b5d546fdd2c4",
+        "question_number": 5,
+        "part_label": "b"
+      },
+      {
+        "part_id": "3d8f2322-41cf-44da-af5f-cd9789130ca8",
+        "question_number": 5,
+        "part_label": "c"
+      },
+      {
+        "part_id": "100b4b28-889e-4e78-9359-7eba813df310",
+        "question_number": 6,
+        "part_label": "a"
+      },
+      {
+        "part_id": "97651712-7913-4593-8169-0c2a08a0e3b6",
+        "question_number": 6,
+        "part_label": "b"
+      },
+      {
+        "part_id": "8d0f6737-8514-42fa-be42-9cc440597ed4",
+        "question_number": 7,
+        "part_label": "a"
+      },
+      {
+        "part_id": "f3ffd74f-a759-4f5f-a902-d29a35adb931",
+        "question_number": 7,
+        "part_label": "b"
+      },
+      {
+        "part_id": "74d8a632-cc2a-4652-bd33-67417b305ccb",
+        "question_number": 9,
+        "part_label": "a"
+      },
+      {
+        "part_id": "c95b1ddd-9178-49a4-b62c-c70b0ada2bff",
+        "question_number": 9,
+        "part_label": "b"
+      },
+      {
+        "part_id": "c35998dc-17b2-4282-b62d-c960a8d25bc0",
+        "question_number": 10,
+        "part_label": "a"
+      },
+      {
+        "part_id": "b83eb17d-ff57-43a9-a5c4-cfa2bb3fa548",
+        "question_number": 10,
+        "part_label": "b"
+      },
+      {
+        "part_id": "a28d1fda-ac5a-444f-9dbd-dc96b343c283",
+        "question_number": 10,
+        "part_label": "c"
+      },
+      {
+        "part_id": "b118ce19-6e37-468d-b074-263569ed1f3c",
+        "question_number": 10,
+        "part_label": "d"
+      },
+      {
+        "part_id": "e8526e63-77c7-4030-a465-82c3f0902074",
+        "question_number": 10,
+        "part_label": "e"
+      },
+      {
+        "part_id": "57fdfa1e-fd55-4fb6-b7dc-585c549b4846",
+        "question_number": 11,
+        "part_label": "b"
+      },
+      {
+        "part_id": "c6ec0fc9-ae1f-43eb-9fd8-7bee88fafde1",
+        "question_number": 12,
+        "part_label": "a"
+      },
+      {
+        "part_id": "471bc302-ed4c-4ea7-a26b-93dc7565bc21",
+        "question_number": 12,
+        "part_label": "b"
+      },
+      {
+        "part_id": "e610e367-22f3-401b-85f6-8dc38b7db4d1",
+        "question_number": 12,
+        "part_label": "e"
+      },
+      {
+        "part_id": "69b5f12f-fcb0-42ed-ae99-741c42c151ff",
+        "question_number": 11,
+        "part_label": "d.i"
+      },
+      {
+        "part_id": "05b10bc3-f521-45be-9f77-14fd503de111",
+        "question_number": 12,
+        "part_label": "c.ii"
+      },
+      {
+        "part_id": "2ef67f73-b064-4e62-8474-3ee43f643ba5",
+        "question_number": 1,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "1ba775fb-5ef0-4995-af4e-b8aa0c17f720",
+        "question_number": 1,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "89952c7a-cabe-4485-844d-8070025cabd8",
+        "question_number": 11,
+        "part_label": "c.i"
+      },
+      {
+        "part_id": "c959d45b-5720-4d54-a6fe-1f11aa5e3cda",
+        "question_number": 11,
+        "part_label": "c.ii"
+      },
+      {
+        "part_id": "0a21dc51-365d-4660-aff5-b441aea31f1c",
+        "question_number": 11,
+        "part_label": "d.ii"
+      },
+      {
+        "part_id": "23015286-2e2d-4a57-8e35-3f7217cfdd7f",
+        "question_number": 12,
+        "part_label": "c.i"
+      }
+    ]
+  },
+  "('SL', 2023, 'Nov', 'TZ1', 1)": {
+    "meta": {
+      "part_id": "0821a1f1-8407-452a-929c-4d9534ccf315",
+      "level": "SL",
+      "year": 2023,
+      "session": "Nov",
+      "paper_number": 1,
+      "time_zone": "TZ1",
+      "paper_file_path": "MAA/SL/2023-Nov-TZ1-P1/827cdf64-N23_MAASL_P1_TZ1.pdf",
+      "markscheme_file_path": "MAA/SL/2023-Nov-TZ1-P1/b5a6d33e-N23_MAASL_P1_TZ1_markscheme.pdf",
+      "question_number": 8,
+      "question_max_mark": 15,
+      "part_label": "b.iii",
+      "marks": 2,
+      "markscheme_text": "setting $d(d-7) > 0$ OR $d(d-7) = 0$ OR sketch graph OR sign test OR $d^{2} > 7d$\n$d < 0$ or $d > 7$, but $d \\in \\mathbb{R}^{+}$\n$d > 7$ (or $]7, \\infty[$)"
+    },
+    "targets": [
+      {
+        "part_id": "f545a9f4-1b5b-4dff-82b1-11f9482ae101",
+        "question_number": 4,
+        "part_label": "a"
+      },
+      {
+        "part_id": "dbc254c8-b2a4-4f5d-8e1f-0baa4fd79634",
+        "question_number": 9,
+        "part_label": "a"
+      },
+      {
+        "part_id": "f56aa21b-6988-4718-b2c5-41dff1ab0cb8",
+        "question_number": 3,
+        "part_label": "b"
+      },
+      {
+        "part_id": "fe8c1c62-2e96-4e23-b57c-bcd1d6a90fb9",
+        "question_number": 9,
+        "part_label": "b"
+      },
+      {
+        "part_id": "2e8660c0-59d2-46ef-8204-395427b2c566",
+        "question_number": 1,
+        "part_label": "a"
+      },
+      {
+        "part_id": "47550ed9-c216-4fbb-9770-2fb6fa1cf675",
+        "question_number": 1,
+        "part_label": "c"
+      },
+      {
+        "part_id": "60804394-98ff-433b-a65b-5a1bef410d54",
+        "question_number": 2,
+        "part_label": "a"
+      },
+      {
+        "part_id": "bd1e7db1-11f5-4c6d-aefe-267a55cfb5d7",
+        "question_number": 2,
+        "part_label": "b"
+      },
+      {
+        "part_id": "488e379c-2e3f-4254-9a61-9ec8f9f7fc04",
+        "question_number": 3,
+        "part_label": "a"
+      },
+      {
+        "part_id": "9132d9cf-4904-48d9-84f7-01e3a4966705",
+        "question_number": 4,
+        "part_label": "b"
+      },
+      {
+        "part_id": "67c5a3a0-658f-452d-9eee-b6d877f2e258",
+        "question_number": 5,
+        "part_label": ""
+      },
+      {
+        "part_id": "df8b5e64-8aab-4cfe-bcc0-d25e78671576",
+        "question_number": 8,
+        "part_label": "a"
+      },
+      {
+        "part_id": "33b6e2a1-dedf-4a0d-97d0-71e735df8068",
+        "question_number": 8,
+        "part_label": "c"
+      },
+      {
+        "part_id": "034f7ae7-8a0f-459f-b1b4-a3bb75bdb91e",
+        "question_number": 9,
+        "part_label": "c"
+      },
+      {
+        "part_id": "bfc23e4e-da69-46eb-829e-90d47ace44d4",
+        "question_number": 7,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "6ff16367-1a99-4764-8a4b-da81a913a7fb",
+        "question_number": 1,
+        "part_label": "b.i"
+      },
+      {
+        "part_id": "e6fc0bfc-4beb-4ffc-b69e-87adacb9a376",
+        "question_number": 1,
+        "part_label": "b.ii"
+      },
+      {
+        "part_id": "b9a1642c-7229-4052-840b-a63a1915eb9f",
+        "question_number": 7,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "34c4d860-c898-4c52-a389-4e5999200a3a",
+        "question_number": 7,
+        "part_label": "b.i"
+      },
+      {
+        "part_id": "9452a080-0305-4369-9823-4629eca33b6a",
+        "question_number": 7,
+        "part_label": "b.ii"
+      },
+      {
+        "part_id": "f0acf9d1-eda8-4200-a3ac-d8b842ed140a",
+        "question_number": 7,
+        "part_label": "c.i"
+      },
+      {
+        "part_id": "33b975d8-7274-4c01-bcea-67935f26caf6",
+        "question_number": 7,
+        "part_label": "c.iii"
+      },
+      {
+        "part_id": "076d7447-d98d-4a5d-9313-c75d538accb1",
+        "question_number": 7,
+        "part_label": "d.i"
+      },
+      {
+        "part_id": "cc5e4422-d800-4798-a663-543276469560",
+        "question_number": 7,
+        "part_label": "d.ii"
+      },
+      {
+        "part_id": "befc61c2-dee7-4f48-a903-1a01f7db7ef4",
+        "question_number": 7,
+        "part_label": "e.i"
+      },
+      {
+        "part_id": "7b2fcf10-7faf-4f55-85bf-3e32a392cb5b",
+        "question_number": 7,
+        "part_label": "e.ii"
+      },
+      {
+        "part_id": "749410ad-4a85-49d6-8373-f00c3caa04a6",
+        "question_number": 8,
+        "part_label": "b.i"
+      },
+      {
+        "part_id": "98c05170-9206-41d8-9e1b-554688a46356",
+        "question_number": 8,
+        "part_label": "b.ii"
+      },
+      {
+        "part_id": "0821a1f1-8407-452a-929c-4d9534ccf315",
+        "question_number": 8,
+        "part_label": "b.iii"
+      }
+    ]
+  },
+  "('SL', 2023, 'May', 'TZ2', 1)": {
+    "meta": {
+      "part_id": "a1d3562f-99f9-4ab7-b5c6-c841cdb2e56a",
+      "level": "SL",
+      "year": 2023,
+      "session": "May",
+      "paper_number": 1,
+      "time_zone": "TZ2",
+      "paper_file_path": "MAA/SL/2023-May-TZ2-P1/0ece3998-M23_MAASL_P1_TZ2.pdf",
+      "markscheme_file_path": "MAA/SL/2023-May-TZ2-P1/6a34c548-M23_MAASL_P1_TZ2_markscheme.pdf",
+      "question_number": 9,
+      "question_max_mark": 14,
+      "part_label": "c",
+      "marks": 4,
+      "markscheme_text": "attempts to use the product rule to find $\\frac{dA}{dx}$\nattempts to use the chain rule to find $\\frac{d}{dx}\\sqrt{9-x^{2}}$\n$$\\left(\\frac{dA}{dx} = \\right) \\sqrt{9-x^{2}} + (3+x)\\left(\\frac{1}{2}\\right)(9-x^{2})^{-\\frac{1}{2}}(-2x) \\left(= \\sqrt{9-x^{2}} - \\frac{x^{2}+3x}{\\sqrt{9-x^{2}}}\\right)$$\n$$\\left(\\frac{dA}{dx} = \\right) \\frac{9-x^{2}}{\\sqrt{9-x^{2}}} - \\frac{x^{2}+3x}{\\sqrt{9-x^{2}}} \\left(= \\frac{9-x^{2} - (x^{2}+3x)}{\\sqrt{9-x^{2}}}\\right)$$\n$$\\frac{dA}{dx} = \\frac{9-3x-2x^{2}}{\\sqrt{9-x^{2}}}$$"
+    },
+    "targets": [
+      {
+        "part_id": "a9b38425-bd32-4aca-b219-f2e057faee1c",
+        "question_number": 7,
+        "part_label": "d"
+      },
+      {
+        "part_id": "e83a0cfa-dfd0-4b00-bab8-f150c8dd7d6d",
+        "question_number": 9,
+        "part_label": "d"
+      },
+      {
+        "part_id": "be82c92c-4282-42b9-80cb-2a2f96f59f6a",
+        "question_number": 5,
+        "part_label": ""
+      },
+      {
+        "part_id": "15833925-4e37-42df-8911-bf7e5b72707e",
+        "question_number": 8,
+        "part_label": "b"
+      },
+      {
+        "part_id": "ebf14226-7bc4-4dac-a4f8-88dc65915b71",
+        "question_number": 1,
+        "part_label": "a"
+      },
+      {
+        "part_id": "33caa965-4645-4543-ac41-90109dc8e741",
+        "question_number": 1,
+        "part_label": "b"
+      },
+      {
+        "part_id": "b7ea3af7-8baa-4b8c-9d21-d9ede3ff0d2e",
+        "question_number": 1,
+        "part_label": "c"
+      },
+      {
+        "part_id": "7a2fbed4-9157-4966-85be-ddc22bde7f8e",
+        "question_number": 2,
+        "part_label": "a"
+      },
+      {
+        "part_id": "abd12ada-59cc-4a2b-87c7-510f9f1b0167",
+        "question_number": 2,
+        "part_label": "b"
+      },
+      {
+        "part_id": "bbe642d7-db03-46f7-8bb9-919969271ce7",
+        "question_number": 3,
+        "part_label": "a"
+      },
+      {
+        "part_id": "157b83a2-5e4b-4986-99b3-5646807a14c5",
+        "question_number": 3,
+        "part_label": "b"
+      },
+      {
+        "part_id": "46afe2ce-a76c-4e9e-aea2-b0f32f5875ca",
+        "question_number": 3,
+        "part_label": "c"
+      },
+      {
+        "part_id": "97307360-1c69-4527-88c7-63c6a901cc0c",
+        "question_number": 4,
+        "part_label": ""
+      },
+      {
+        "part_id": "8e9757cd-489d-49a8-b594-0e9fa69b69b2",
+        "question_number": 6,
+        "part_label": ""
+      },
+      {
+        "part_id": "50d01ea0-0bcc-447e-b528-3977d09a1716",
+        "question_number": 7,
+        "part_label": "a"
+      },
+      {
+        "part_id": "9cd96dee-8de1-42ee-ba05-d564bbb9f484",
+        "question_number": 7,
+        "part_label": "b"
+      },
+      {
+        "part_id": "3e3c8217-9cfe-4182-adea-a76e33832b13",
+        "question_number": 7,
+        "part_label": "c"
+      },
+      {
+        "part_id": "0559ed83-7618-4f56-8059-0eaeae85b1b0",
+        "question_number": 7,
+        "part_label": "e"
+      },
+      {
+        "part_id": "dc779108-788d-460e-90bc-c5c0fa2bace4",
+        "question_number": 8,
+        "part_label": "a"
+      },
+      {
+        "part_id": "951b1ac6-5097-448a-b0ac-18bd3f60ae91",
+        "question_number": 8,
+        "part_label": "c"
+      },
+      {
+        "part_id": "89439489-7294-44d2-ace2-4efde0db44c9",
+        "question_number": 8,
+        "part_label": "d"
+      },
+      {
+        "part_id": "afc58ed9-e9be-4de3-a688-925083e51cca",
+        "question_number": 9,
+        "part_label": "a"
+      },
+      {
+        "part_id": "df1196fc-78ac-4f9e-abbe-d9c03cc117f5",
+        "question_number": 9,
+        "part_label": "b"
+      },
+      {
+        "part_id": "a1d3562f-99f9-4ab7-b5c6-c841cdb2e56a",
+        "question_number": 9,
+        "part_label": "c"
+      }
+    ]
+  },
+  "('SL', 2023, 'Nov', 'TZ2', 2)": {
+    "meta": {
+      "part_id": "218ab286-fcc9-4ae3-ab61-e0345b48a2d4",
+      "level": "SL",
+      "year": 2023,
+      "session": "Nov",
+      "paper_number": 2,
+      "time_zone": "TZ2",
+      "paper_file_path": "MAA/SL/2023-Nov-TZ2-P2/41048ea9-N23_MAASL_P2_TZ2.pdf",
+      "markscheme_file_path": "MAA/SL/2023-Nov-TZ2-P2/7e7e75f4-N23_MAASL_P2_TZ2_markscheme.pdf",
+      "question_number": 9,
+      "question_max_mark": 16,
+      "part_label": "c.ii",
+      "marks": 4,
+      "markscheme_text": "$$P(X<49) = 0.848218... \\text{ (seen anywhere)}$$\nrecognition of conditional probability\nNote: recognition must be shown in context, either in symbols eg $P(X=34 | X<49)$, or in words eg $P(34\\text{ plants}|\\text{less than }49\\text{ plants})$, not only as $P(A|B)$.\n$$\\left(P(X=34|X<49)=\\right)\\frac{P(X=34)}{P(X<49)} \\text{ OR } \\frac{P(X=34)}{P(X\\leq48)}\\left(=\\frac{0.0133198...}{0.848218...}\\right)$$\n$$= 0.0157033...$$\n$$P(X=34|X<49) = 0.0157$$"
+    },
+    "targets": [
+      {
+        "part_id": "bf55e0d0-24f2-49a9-b68f-b47fae0e1584",
+        "question_number": 9,
+        "part_label": "b"
+      },
+      {
+        "part_id": "7d10e8b2-20f3-4ebb-a38c-768d63f9be6a",
+        "question_number": 7,
+        "part_label": "a"
+      },
+      {
+        "part_id": "faf8210a-c46c-4de1-9074-dc224cb21d2f",
+        "question_number": 4,
+        "part_label": "a"
+      },
+      {
+        "part_id": "36ea4493-be0d-4502-b92a-faf60f736b89",
+        "question_number": 1,
+        "part_label": "c"
+      },
+      {
+        "part_id": "79a50ada-9c29-4bda-b8fc-7c74358bc5c4",
+        "question_number": 1,
+        "part_label": "b"
+      },
+      {
+        "part_id": "1b85bda1-47c7-47e7-ab04-51466d93ce8c",
+        "question_number": 2,
+        "part_label": "a"
+      },
+      {
+        "part_id": "7de5a182-508d-4aa0-a806-2461a57a6cfd",
+        "question_number": 2,
+        "part_label": "b"
+      },
+      {
+        "part_id": "6cec95a8-5030-454e-99cd-434a0566fc77",
+        "question_number": 3,
+        "part_label": "b"
+      },
+      {
+        "part_id": "2897891f-345b-46f3-affe-a91d6394141f",
+        "question_number": 5,
+        "part_label": "a"
+      },
+      {
+        "part_id": "508f3a2a-d481-4573-b8b4-dda0e65ee155",
+        "question_number": 5,
+        "part_label": "b"
+      },
+      {
+        "part_id": "ab58204d-b32d-4aad-8fd5-ca71b787175b",
+        "question_number": 6,
+        "part_label": ""
+      },
+      {
+        "part_id": "8358157f-ba78-4818-82d7-2e0304041ec1",
+        "question_number": 8,
+        "part_label": "b"
+      },
+      {
+        "part_id": "866b0a92-ef82-4b20-abbf-f312b4efeead",
+        "question_number": 9,
+        "part_label": "a"
+      },
+      {
+        "part_id": "6c59c0ed-8198-47d0-bc0c-14e71d722967",
+        "question_number": 9,
+        "part_label": "d"
+      },
+      {
+        "part_id": "468af34e-8a2a-4859-82f8-fa1bb6616cac",
+        "question_number": 7,
+        "part_label": "c.ii"
+      },
+      {
+        "part_id": "c186b7ea-2354-4452-a5f8-033e970db3d3",
+        "question_number": 8,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "83a57835-cd45-409f-925f-fedeb46e1a75",
+        "question_number": 1,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "56e93092-f534-4949-8bb8-830e7003c84e",
+        "question_number": 1,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "6bbe891c-b5eb-4cab-9e8f-fadd7f5d97de",
+        "question_number": 4,
+        "part_label": "b.i"
+      },
+      {
+        "part_id": "0d893649-95eb-4f01-97d4-d19deb565459",
+        "question_number": 4,
+        "part_label": "b.ii"
+      },
+      {
+        "part_id": "5121b930-070e-4f45-839c-6878a3844b57",
+        "question_number": 7,
+        "part_label": "b.ii"
+      },
+      {
+        "part_id": "b52b9059-c0a1-4c29-b3b8-c28b31b4b11b",
+        "question_number": 7,
+        "part_label": "c.iii"
+      },
+      {
+        "part_id": "c320f728-4649-442d-8acb-029d57298249",
+        "question_number": 8,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "ccb722c8-14cb-4762-a108-51d7d7d1d6c0",
+        "question_number": 8,
+        "part_label": "c.i"
+      },
+      {
+        "part_id": "95b5362c-3f0a-4b42-8e06-a8ec3fb5996d",
+        "question_number": 8,
+        "part_label": "c.ii"
+      },
+      {
+        "part_id": "d904d034-afd5-469f-b6fb-70cfdf234ecf",
+        "question_number": 9,
+        "part_label": "c.i"
+      },
+      {
+        "part_id": "218ab286-fcc9-4ae3-ab61-e0345b48a2d4",
+        "question_number": 9,
+        "part_label": "c.ii"
+      }
+    ]
+  },
+  "('HL', 2023, 'May', 'TZ1', 3)": {
+    "meta": {
+      "part_id": "b34a34dd-127a-4198-bd0f-eee7e8154301",
+      "level": "HL",
+      "year": 2023,
+      "session": "May",
+      "paper_number": 3,
+      "time_zone": "TZ1",
+      "paper_file_path": "MAA/HL/2023-May-TZ1-P3/9aa1ce4b-M23_MAAHL_P3_TZ1.pdf",
+      "markscheme_file_path": "MAA/HL/2023-May-TZ1-P3/d500918a-M23_MAAHL_P3_TZ1_markscheme.pdf",
+      "question_number": 1,
+      "question_max_mark": 25,
+      "part_label": "b",
+      "marks": 6,
+      "computed_sum": 3,
+      "gap": 3,
+      "codes_found": [
+        "A1",
+        "A1",
+        "A1",
+        "AG"
+      ],
+      "markscheme_text": "$$\\int_{0}^{b} x e^{-x} \\, dx$$\nNote: Award (A1) for correct integrand and limits (which can be seen later in the question)\n\nUse of integration by parts\n$$= \\left[-x e^{-x}\\right]_{0}^{b} + \\int_{0}^{b} e^{-x} \\, dx$$\nNote: Award A1 for each part (including the correct sign with each)\n$$= \\left[-x e^{-x}\\right]_{0}^{b} - \\left[e^{-x}\\right]_{0}^{b}$$\nNote: Award A1 for correct second term.\nCondone absence of limits to this point\n\nattempt to substitute limits\n$$= -b e^{-b} - e^{-b} + 1$$\n$$= \\frac{e^{b} - b - 1}{e^{b}}$$\nAG\n[6 marks]"
+    },
+    "targets": [
+      {
+        "part_id": "b34a34dd-127a-4198-bd0f-eee7e8154301",
+        "question_number": 1,
+        "part_label": "b"
+      }
+    ]
+  },
+  "('SL', 2021, 'May', 'TZ2', 2)": {
+    "meta": {
+      "part_id": "383c84b7-26c5-4474-a4e1-1275dc469e62",
+      "level": "SL",
+      "year": 2021,
+      "session": "May",
+      "paper_number": 2,
+      "time_zone": "TZ2",
+      "paper_file_path": "MAA/SL/2021-May-TZ2-P2/eb0735f6-M21_MAASL_P2_TZ2.pdf",
+      "markscheme_file_path": "MAA/SL/2021-May-TZ2-P2/be19a640-M21_MAASL_P2_TZ2_markscheme.pdf",
+      "question_number": 1,
+      "question_max_mark": 6,
+      "part_label": "a.ii",
+      "marks": 1,
+      "markscheme_text": "$r = 0.97777...$\n$r = 0.978$"
+    },
+    "targets": [
+      {
+        "part_id": "5291e872-7b3f-4a84-926b-0c2457c3302c",
+        "question_number": 4,
+        "part_label": "a"
+      },
+      {
+        "part_id": "8d7fbe8b-000a-411b-96e1-6bc4eb4ffd4f",
+        "question_number": 4,
+        "part_label": "d"
+      },
+      {
+        "part_id": "83040e53-576f-4614-b547-0d6b9cec4588",
+        "question_number": 1,
+        "part_label": "b"
+      },
+      {
+        "part_id": "2444337b-27f1-4cd4-8372-86904ba66e8a",
+        "question_number": 1,
+        "part_label": "c"
+      },
+      {
+        "part_id": "f3c1944d-0419-447b-950d-4307141127bf",
+        "question_number": 2,
+        "part_label": "b"
+      },
+      {
+        "part_id": "69c96d85-8d95-4df8-8d59-e0ca1be411f5",
+        "question_number": 3,
+        "part_label": "a"
+      },
+      {
+        "part_id": "7127db14-da24-4d99-9ed9-9f17882ff78d",
+        "question_number": 3,
+        "part_label": "b"
+      },
+      {
+        "part_id": "b36f79cd-3686-4a8d-9667-dcaf5097368b",
+        "question_number": 4,
+        "part_label": "b"
+      },
+      {
+        "part_id": "7f098159-67e0-4b74-b3fa-eab29b46de2f",
+        "question_number": 4,
+        "part_label": "c"
+      },
+      {
+        "part_id": "b4c0cae4-6d84-4d29-9b01-5e9b180d6f3c",
+        "question_number": 5,
+        "part_label": "a"
+      },
+      {
+        "part_id": "f1bed0c4-18d0-49b2-a564-a3bf464f78e1",
+        "question_number": 5,
+        "part_label": "b"
+      },
+      {
+        "part_id": "8a3f6a2a-a9f2-49d3-96a1-de3b1297eaff",
+        "question_number": 6,
+        "part_label": "a"
+      },
+      {
+        "part_id": "3eba041a-2d32-4fd4-a95a-bbe515462f31",
+        "question_number": 6,
+        "part_label": "b"
+      },
+      {
+        "part_id": "5757d42f-3c69-44d6-8e13-55924b5b62e3",
+        "question_number": 6,
+        "part_label": "c"
+      },
+      {
+        "part_id": "e22f7b4a-3d14-4291-9f85-e0b1b38e506c",
+        "question_number": 7,
+        "part_label": "a"
+      },
+      {
+        "part_id": "38e5470f-4ca7-4e95-b7d2-4b21e39ea925",
+        "question_number": 7,
+        "part_label": "b"
+      },
+      {
+        "part_id": "77138452-4921-471d-82d0-99805a7bb455",
+        "question_number": 7,
+        "part_label": "c"
+      },
+      {
+        "part_id": "ad79c34e-b53a-4e56-9042-9a705e22c0a4",
+        "question_number": 7,
+        "part_label": "d"
+      },
+      {
+        "part_id": "968496a3-6a40-49a6-9eca-cb85f8dd20b2",
+        "question_number": 7,
+        "part_label": "e"
+      },
+      {
+        "part_id": "32fe8ade-b967-467b-9992-35dad519fb9d",
+        "question_number": 8,
+        "part_label": "a"
+      },
+      {
+        "part_id": "16abec30-46dd-41fb-8461-8eb748354c11",
+        "question_number": 8,
+        "part_label": "b"
+      },
+      {
+        "part_id": "c8c697f7-2546-496f-99da-c32d0dac3a65",
+        "question_number": 8,
+        "part_label": "c"
+      },
+      {
+        "part_id": "c7b286f7-e829-42a9-927b-eec59dbd776b",
+        "question_number": 8,
+        "part_label": "d"
+      },
+      {
+        "part_id": "c97d7245-62b7-4011-acd8-a33b211e8910",
+        "question_number": 8,
+        "part_label": "e"
+      },
+      {
+        "part_id": "ae4302b3-9709-4ecc-b6bb-0556c1916078",
+        "question_number": 9,
+        "part_label": "a"
+      },
+      {
+        "part_id": "edff5336-ebbd-4964-acc6-d048af32896b",
+        "question_number": 9,
+        "part_label": "b"
+      },
+      {
+        "part_id": "396ba89d-5f71-461b-9c51-a9f5a2e26304",
+        "question_number": 9,
+        "part_label": "c"
+      },
+      {
+        "part_id": "21ab7bbb-be44-4c2b-98ef-2cc7e0a47642",
+        "question_number": 9,
+        "part_label": "d"
+      },
+      {
+        "part_id": "ecc3ee84-4fd5-4149-aad6-3b3571c8a70a",
+        "question_number": 1,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "383c84b7-26c5-4474-a4e1-1275dc469e62",
+        "question_number": 1,
+        "part_label": "a.ii"
+      }
+    ]
+  },
+  "('HL', 2023, 'Nov', 'TZ2', 2)": {
+    "meta": {
+      "part_id": "12d07139-c125-4e8a-abad-618f55362f4b",
+      "level": "HL",
+      "year": 2023,
+      "session": "Nov",
+      "paper_number": 2,
+      "time_zone": "TZ2",
+      "paper_file_path": "MAA/HL/2023-Nov-TZ2-P2/b76d68e3-N23_MAAHL_P2_TZ2.pdf",
+      "markscheme_file_path": "MAA/HL/2023-Nov-TZ2-P2/3943d9a4-N23_MAAHL_P2_TZ2_markscheme.pdf",
+      "question_number": 1,
+      "question_max_mark": 6,
+      "part_label": "a",
+      "marks": 2,
+      "computed_sum": 1,
+      "gap": 1,
+      "codes_found": [
+        "A0",
+        "A1"
+      ],
+      "markscheme_text": "$$BV = \\sqrt{(6-3)^{2} + (8-4)^{2} + (0-9)^{2}}$$\n$$=10.2956...$$\n$$=10.3 (=\\sqrt{106})$$\n\nNote: Award SC(A0)A1 for $BV = \\begin{pmatrix} -3 \\\\ -4 \\\\ 9 \\end{pmatrix}$ where a candidate has misinterpreted notation."
+    },
+    "targets": [
+      {
+        "part_id": "12d07139-c125-4e8a-abad-618f55362f4b",
+        "question_number": 1,
+        "part_label": "a"
+      }
+    ]
+  },
+  "('SL', 2021, 'May', 'TZ1', 1)": {
+    "meta": {
+      "part_id": "832e1c93-ca5c-404e-8da8-ae61b20bd5fc",
+      "level": "SL",
+      "year": 2021,
+      "session": "May",
+      "paper_number": 1,
+      "time_zone": "TZ1",
+      "paper_file_path": "MAA/SL/2021-May-TZ1-P1/6005d238-M21_MAASL_P1_TZ1.pdf",
+      "markscheme_file_path": "MAA/SL/2021-May-TZ1-P1/da69f015-M21_MAASL_P1_TZ1_markscheme.pdf",
+      "question_number": 9,
+      "question_max_mark": 16,
+      "part_label": "c.i",
+      "marks": 1,
+      "markscheme_text": "$0 \\leq r \\leq 1$"
+    },
+    "targets": [
+      {
+        "part_id": "b4381600-2a59-4285-85c3-32ba83eb77f7",
+        "question_number": 2,
+        "part_label": "a"
+      },
+      {
+        "part_id": "85c922b5-f5a1-454b-8712-4175e5376c25",
+        "question_number": 5,
+        "part_label": "a"
+      },
+      {
+        "part_id": "e25f3031-dd23-46c5-ae87-deb8d7ffaa65",
+        "question_number": 1,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "55e4eb8a-a12e-4422-bb45-4c00a23b4fc7",
+        "question_number": 1,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "832e1c93-ca5c-404e-8da8-ae61b20bd5fc",
+        "question_number": 9,
+        "part_label": "c.i"
+      }
+    ]
+  },
+  "('HL', 2021, 'May', 'TZ1', 1)": {
+    "meta": {
+      "part_id": "d6eb3ce8-8000-4d70-97c6-efa074f2b3c5",
+      "level": "HL",
+      "year": 2021,
+      "session": "May",
+      "paper_number": 1,
+      "time_zone": "TZ1",
+      "paper_file_path": "MAA/HL/2021-May-TZ1-P1/4ea112e7-M21_MAA_HL_P1_TZ1.pdf",
+      "markscheme_file_path": "MAA/HL/2021-May-TZ1-P1/4389c49b-M21_MAA_HL_P1_TZ1_markscheme.pdf",
+      "question_number": 10,
+      "question_max_mark": 16,
+      "part_label": "c.i",
+      "marks": 1,
+      "markscheme_text": "$0 \\leq r \\leq 1$"
+    },
+    "targets": [
+      {
+        "part_id": "63cadc28-3d09-4de7-a734-40d66f4c7bdf",
+        "question_number": 4,
+        "part_label": "a"
+      },
+      {
+        "part_id": "17197b33-7bab-45a9-81b4-d16f399f6f1a",
+        "question_number": 1,
+        "part_label": "a.i"
+      },
+      {
+        "part_id": "08bbea32-70be-4179-bbd4-a05bc3da53ab",
+        "question_number": 1,
+        "part_label": "a.ii"
+      },
+      {
+        "part_id": "d6eb3ce8-8000-4d70-97c6-efa074f2b3c5",
+        "question_number": 10,
+        "part_label": "c.i"
+      }
+    ]
+  }
+}

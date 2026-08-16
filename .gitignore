@@ -11,3 +11,8 @@ scripts/mark-derivation/node_modules
 scripts/mark-derivation/sample_pdfs/
 scripts/mark-derivation/paper_explicit_rows.json
 scripts/mark-derivation/confirmed_rows.json
+scripts/mark-derivation/may2024_rows.json
+
+# Scratch output overwritten on every backfillMarkschemeText.ts run --
+# per-batch copies are saved deliberately as scripts/mark-derivation/batchN_report.json
+scripts/ingest-paper/backfill_report.json
