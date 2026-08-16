@@ -5,3 +5,8 @@ scripts/mark-derivation/node_modules
 .netlify
 
 .env
+
+# Downloaded exam PDFs and raw DB dumps used for one-off verification --
+# regenerable from Supabase storage / execute_sql, not meant to be vendored.
+scripts/mark-derivation/sample_pdfs/
+scripts/mark-derivation/paper_explicit_rows.json
