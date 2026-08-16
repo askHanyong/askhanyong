@@ -1,0 +1,8 @@
+{
+  "part_id_h": "5694dd32-dd90-429b-b46e-8c15c26b2bf6",
+  "part_id_i": "52a51a25-2759-46bb-b0ce-804c8f45dd1c",
+  "paper": "HL24MayTZ1P3 Q2",
+  "raw_paper_pdf_text": "(h) Show that x_A = m/4 - m/4*sqrt(5).  [7]\n(i) Hence, find the exact value of (x_B-x_A)/(x_C-x_B).  [2]",
+  "raw_markscheme_pdf_text": "(h) METHOD 1: (M1)...(M1)...A1M1A1...M1...A1...AG  [7 marks]\n(i) (A1)...A1  [2 marks]\nTotal [28 marks]",
+  "resolution": "Both raw paper PDF (p.5) and raw markscheme PDF (p.15-16) directly confirm marks=7 for (h) and marks=2 for (i), independent of the previously-shared markscheme_text DB field. Applied as paper_explicit (marks value sourced directly from the paper's own printed [7]/[2] brackets, cross-verified against the markscheme's own printed [7 marks]/[2 marks] labels and matching code counts)."
+}
