@@ -6,13 +6,19 @@ ROMAN_ALT = '|'.join(ROMAN)
 def _is_citation(text, pos):
     """True if the marker at `pos` is a backreference like '...from part (b) (i)...'
     rather than a genuine structural marker. These can land at true line-start
-    after PDF text wrapping, so line-anchoring alone doesn't filter them out."""
-    preceding = text[max(0, pos - 25):pos].lower()
-    return re.search(r'\bparts?\b', preceding) is not None
+    after PDF text wrapping, so line-anchoring alone doesn't filter them out.
+
+    Anchored to END exactly at `pos` (only whitespace, or one "(letter)" hop,
+    between "part" and the marker) -- a wider unanchored window over-matches
+    unrelated prose that merely contains the word "part" earlier in the
+    sentence, e.g. "a part-time employee. (d) Find ...".
+    """
+    preceding = text[max(0, pos - 40):pos]
+    return re.search(r'\bpart\b\s*(\([a-h]\)\s*)?$', preceding, re.IGNORECASE) is not None
 
 def parse_paper(text):
     """Returns {question_number: {'max_mark': int, 'parts': {part_label: {'own_bracket':int|None, 'group_combined_bracket':int|None, 'group_siblings':[labels]}}}}"""
-    q_pattern = re.compile(r'^(\d{1,2})\.\s*\[Maximum mark:\s*(\d+)\]', re.MULTILINE)
+    q_pattern = re.compile(r'^(\d{1,2})\.\s*\[Maximum marks?:\s*(\d+)\]', re.MULTILINE)
     headers = [(m.start(), int(m.group(1)), int(m.group(2))) for m in q_pattern.finditer(text)]
     result = {}
     for idx, (start, qnum, maxmark) in enumerate(headers):

@@ -1,0 +1,104 @@
+{
+  "69b5f12f-fcb0-42ed-ae99-741c42c151ff": [
+    {"note":"(M1)","desc":"recognising to graph $y = f'(x)$ (or $y = f''(x)$), attempting quotient/product rule differentiation"},
+    {"note":"A1","desc":"graph decreasing to the local minimum"},
+    {"note":"A1","desc":"before increasing towards the x-axis"},
+    {"note":"A1","desc":"$x = 1.76$ ($= \\ln(2\\sqrt{2}+3)$)"}
+  ],
+  "f4c16d70-5f77-499c-8094-036529c76b5c": [
+    {"note":"(M1)","desc":"identify $l_1$, $l_2$ parallel and attempt to find vector $AB$ between a point on each line"},
+    {"note":"M1","desc":"attempt to use distance formula $\\frac{|v\\times AB|}{|v|}$"},
+    {"note":"(A1)","desc":"$=\\frac{1}{\\sqrt{3}}|(1,-1,1)\\times(-1,-2,5)|$"},
+    {"note":"A1","desc":"$=\\frac{1}{\\sqrt{3}}|(3,6,3)|$"},
+    {"note":"A1","desc":"minimum distance is $\\sqrt{18}$ $(=3\\sqrt{2})$"}
+  ],
+  "df2e6974-6969-463a-86b9-534921b9704c": [
+    {"note":"A1","desc":"$x = -1$"},
+    {"note":"M1","desc":"substituting their x-coordinate into $f$"},
+    {"note":"A1","desc":"$y = 8$"}
+  ],
+  "04b1aa05-2a0d-46b6-811c-64c99ad2f484": [
+    {"note":"M1","desc":"attempt to use quadratic formula / identify roots of quartic"},
+    {"note":"A1","desc":"correct expression for $\\sin^{2}\\theta$ or roots identified"},
+    {"note":"M1","desc":"attempt to combine/set product of roots"},
+    {"note":"A1","desc":"correct product expression"},
+    {"note":"AG","desc":"correct simplification leading to given result"}
+  ],
+  "f3ffd74f-a759-4f5f-a902-d29a35adb931": [
+    {"note":"(M1)","desc":"the number of ways that Andrea finishes in front of Jack is equal to the number of ways that Jack finishes in front of Andrea"},
+    {"note":"(A1)","desc":"total number of ways is $8!$"},
+    {"note":"A1","desc":"$\\frac{8!}{2}$ (= 20160) ways"}
+  ],
+  "ca391c75-146b-4013-ae67-65054fb78635": [
+    {"note":"M1","desc":"attempt to use $$V = \\pi\\int_{a}^{b} (f(x))^{2} \\, dx$$"},
+    {"note":"A1","desc":"$u = 1+e^{x} \\Rightarrow du = e^{x} dx$ (or equivalent substitution)"},
+    {"note":"M1","desc":"attempt to express the integral in terms of $u$, with correct limits"},
+    {"note":"A1","desc":"$$V = k^{2}\\pi\\int_{2}^{17} \\frac{1}{u^{2}} du$$"},
+    {"note":"A1","desc":"$$= k^{2}\\pi\\left[\\frac{-1}{u}\\right]_{2}^{17}$$"},
+    {"note":"A1","desc":"$$= k^{2}\\pi\\left(\\frac{1}{2} - \\frac{1}{17}\\right)$$"},
+    {"note":"AG","desc":"so the volume of the solid formed is $\\frac{15k^{2}\\pi}{34}$ cubic units"}
+  ],
+  "75835046-91f7-4cd5-b8e8-5d075a25f445": [
+    {"note":"A1","desc":"$P_0P_2 = 2$"},
+    {"note":"M1","desc":"attempts to find either $P_0P_1$ or $P_0P_3$"},
+    {"note":"A1","desc":"$P_0P_1 = \\sqrt{2}$"},
+    {"note":"A1","desc":"$P_0P_3 = \\sqrt{2}$"},
+    {"note":"AG","desc":"$P_0P_1 \\times P_0P_2 \\times P_0P_3 = 4$ shown"}
+  ],
+  "f410aa80-578f-4d9d-a83a-6f92d2701022": [
+    {"note":"(A1)","desc":"$4(u_{1}+8)=8$"},
+    {"note":"A1","desc":"$u_{1}=-6$"},
+    {"note":"(A1)","desc":"$u_{1}+7d=8$ OR $4(2u_{1}+7d)=8$ (may be seen with their value of $u_{1}$)"},
+    {"note":"(M1)","desc":"attempt to substitute their $u_{1}$"},
+    {"note":"A1","desc":"$d=2$"}
+  ],
+  "4a86f9e5-a252-40dd-9cca-f5542a7ec032": [
+    {"note":"(M1)","desc":"$f(3) = g(3)$, giving correct equation in k"},
+    {"note":"A1","desc":"$-(3-\\frac{e+6}{2})^{2}+2k = e^{3-2}+k$"},
+    {"note":"A1","desc":"$k = e+(\\frac{6-e-6}{2})^{2} (=e+(-\\frac{e}{2})^{2})$"},
+    {"note":"AG","desc":"$k = e+\\frac{e^{2}}{4}$"}
+  ],
+  "4574c3a7-1b70-4c80-834c-d87223427ec8": [
+    {"note":"M1","desc":"recognition that $y = \\int \\cos(x - \\frac{\\pi}{4}) \\, dx$"},
+    {"note":"A1","desc":"$y = \\sin(x - \\frac{\\pi}{4})$ (+c)"},
+    {"note":"M1","desc":"substitute both $x$ and $y$ values into their integrated expression including $c$"},
+    {"note":"A1","desc":"$y = \\sin(x - \\frac{\\pi}{4}) + 1$"}
+  ],
+  "838ed0b2-a3a2-4bf4-abe7-f5d90284d087": [
+    {"note":"(M1)","desc":"separating variables and integrating, $\\int \\frac{dy}{y} = \\int dt$"},
+    {"note":"A1A1","desc":"$\\ln y = t+c$ OR $\\ln|y| = t+c$ (A1 for $\\ln y$, A1 for $t$ and $c$)"},
+    {"note":"AG","desc":"$y = Ae^{t}$"}
+  ],
+  "bb5f558a-96f3-485f-93b8-0254dff2061d": [
+    {"note":"M1","desc":"$\\frac{d^2y}{dt^2} = -4 \\frac{dx}{dt} + \\frac{dy}{dt}$ seen anywhere"},
+    {"note":"M1","desc":"attempt to eliminate x"},
+    {"note":"A1","desc":"$= 2\\frac{dy}{dt} + 3y$"},
+    {"note":"AG","desc":"$\\frac{d^2y}{dt^2} - 2\\frac{dy}{dt} - 3y = 0$"}
+  ],
+  "ac989885-1e77-431f-8eaa-fe6a43c3e565": [
+    {"note":"M1","desc":"substituting f and g into $(f(t))^{2}+(g(t))^{2}$"},
+    {"note":"(M1)","desc":"expanding to $\\frac{(e^{t})^{2}+2+(e^{-t})^{2}+(e^{t})^{2}-2+(e^{-t})^{2}}{4}$"},
+    {"note":"A1","desc":"simplifying to $\\frac{(e^{t})^{2}+(e^{-t})^{2}}{2}$ $(= \\frac{e^{2t}+e^{-2t}}{2})$"},
+    {"note":"AG","desc":"$= f(2t)$"}
+  ],
+  "1967aedf-67e7-4016-b1f0-871aae8fd8e1": [
+    {"note":"(M1)","desc":"substituting expressions found in part (c)"},
+    {"note":"A1","desc":"$= \\cos^{2} u - \\sin^{2} u$ $(= \\cos 2u)$"}
+  ],
+  "226e4cf4-37b6-4764-88f1-dd24dd82959a": [
+    {"note":"M1","desc":"attempt to write all LHS terms with a common denominator of $x-1$"},
+    {"note":"A1","desc":"correct combined fraction leading to $\\frac{2x^{2}-5x-3}{x-1}$"},
+    {"note":"AG","desc":"$= \\frac{2x^{2}-5x-3}{x-1}$ as required"}
+  ],
+  "659ddab9-5fde-4637-bf73-30bdc10e5b0d": [
+    {"note":"M1(M1)","desc":"substituting $\\frac{dy}{dt} = Be^{2t}$ and their (iii) into $\\frac{dy}{dt} = -x+y$"},
+    {"note":"A1","desc":"$Be^{2t} = -x + \\frac{B}{2}e^{2t} + C$"},
+    {"note":"AG","desc":"$x = -\\frac{B}{2}e^{2t} + C$"}
+  ],
+  "ef11d57f-7f2c-498b-ab27-e56c61a2da47": [
+    {"note":"(A1)(A1)","desc":"$\\frac{dy}{dt} = 3Fe^{3t} - Ge^{-t}$, $\\frac{d^2y}{dt^2} = 9Fe^{3t} + Ge^{-t}$"},
+    {"note":"M1","desc":"substituting into $\\frac{d^2y}{dt^2} - 2\\frac{dy}{dt} - 3y$"},
+    {"note":"A1","desc":"expanding to $9Fe^{3t}+Ge^{-t} - 6Fe^{3t}+2Ge^{-t} - 3Fe^{3t} - 3Ge^{-t}$"},
+    {"note":"AG","desc":"$= 0$"}
+  ]
+}
