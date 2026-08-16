@@ -24,7 +24,7 @@ def parse_paper(text):
     for idx, (start, qnum, maxmark) in enumerate(headers):
         end = headers[idx+1][0] if idx+1 < len(headers) else len(text)
         chunk = text[start:end]
-        parts = parse_question_chunk(chunk)
+        parts = parse_question_chunk(chunk, maxmark)
         result[qnum] = {'max_mark': maxmark, 'parts': parts}
     return result
 
@@ -37,23 +37,35 @@ def find_sub_markers(tspan):
     the very start of the span — allowing it anywhere later would also match
     backreferences like "...from part (a)(i)." appearing deep inside a
     different part's own prose, which are citations, not structural markers.
+
+    Whitespace is also allowed between the glued marker's own "(" and its
+    roman label, e.g. "(d)(\ni)" -- some PDF extractions line-wrap mid-marker,
+    splitting "(i)" itself across a newline right after the opening paren.
     """
     markers = [(m.start(), m.group(1)) for m in re.finditer(r'^\((' + ROMAN_ALT + r')\)', tspan, re.MULTILINE)
                if not _is_citation(tspan, m.start())]
 
-    glued = re.match(r'^\([a-h]\)\s*\((' + ROMAN_ALT + r')\)', tspan)
+    glued = re.match(r'^\([a-h]\)\s*(\(\s*(' + ROMAN_ALT + r')\))', tspan)
     if glued:
-        pos = glued.start(1) - 1  # position of the "(" before the roman numeral
+        pos = glued.start(1)  # position of the "(" before the roman numeral
+        label = glued.group(2)
         if not markers or pos < markers[0][0]:
-            markers.insert(0, (pos, glued.group(1)))
+            markers.insert(0, (pos, label))
 
     markers.sort(key=lambda t: t[0])
     return markers
 
-def parse_question_chunk(chunk):
+def parse_question_chunk(chunk, maxmark=None):
     top_pattern = re.compile(r'^\(([a-h])\)', re.MULTILINE)
     top_matches = [m for m in top_pattern.finditer(chunk) if not _is_citation(chunk, m.start())]
     parts = {}
+    if not top_matches:
+        # Undivided question -- no lettered sub-parts at all, so the DB stores
+        # this question as a single part with a bare "" label. There's no
+        # per-part bracket to find since the question's own header mark IS
+        # the part's mark.
+        parts[''] = {'own_bracket': maxmark, 'group_combined_bracket': None, 'group_siblings': ['']}
+        return parts
     for i, tm in enumerate(top_matches):
         letter = tm.group(1)
         tstart = tm.start()

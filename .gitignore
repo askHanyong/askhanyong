@@ -1,4 +1,5 @@
 node_modules/
+scripts/mark-derivation/node_modules
 
 # Local Netlify folder
 .netlify
