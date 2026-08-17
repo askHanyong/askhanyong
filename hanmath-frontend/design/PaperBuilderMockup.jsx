@@ -1,3 +1,13 @@
+// SUPERSEDED: this file is kept only as the original design reference.
+// The real, deployed version is app/paper-builder/page.tsx -- built from
+// this file, then corrected in one significant way: this file's Tailwind
+// utility classes (grid, sm:grid-cols-2, etc.) are silent no-ops, since
+// hanmath-frontend has no Tailwind dependency anywhere (confirmed: no
+// config, no @tailwind directive, not in package.json). The deployed page
+// uses plain CSS classes in app/globals.css (.pb-*) instead. If you start
+// a new mockup from this file, convert its layout classes before assuming
+// they'll render as shown here.
+
 import React, { useState, useMemo, useEffect } from "react";
 import { Check, Calculator, Clock, Sparkles, Lock, Shuffle, ChevronRight } from "lucide-react";
 import { fetchThemes, assembleQuestions } from "../lib/paperAssembly";

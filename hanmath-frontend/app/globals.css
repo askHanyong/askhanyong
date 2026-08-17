@@ -13,6 +13,13 @@
   --hm-body: #444444;
   --hm-muted: #707070;
   --hm-radius: 10px;
+  /* Derived, not from the live site directly (hanmath.com never puts gold on
+     navy or uses a pale-gold fill) -- computed from the real design system's
+     own HSL chart tokens. Used by the paper-builder page for contrast on
+     navy backgrounds and a pale-gold checkbox row. */
+  --hm-navy-soft: #3d5f8f;
+  --hm-gold-light: #d9bc7a;
+  --hm-gold-pale: #f4eddd;
   --hm-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --hm-font-serif: 'Cormorant Garamond', serif;
 }
@@ -229,4 +236,133 @@ body {
   .hm-nav-inner {
     padding: 12px 16px;
   }
+}
+
+/* ---- Paper builder (/paper-builder) ---- */
+/* This page has no Tailwind CSS dependency (the project doesn't use
+   Tailwind anywhere else -- see .topic-btn/.question-card above), so its
+   layout is plain flex/grid CSS, same convention as the rest of the site. */
+
+.pb-container {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+.pb-section {
+  margin-bottom: 2.25rem;
+}
+
+.pb-pill-track {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--hm-border);
+  border: 1px solid var(--hm-border);
+  border-radius: var(--hm-radius);
+}
+.pb-pill-btn {
+  padding: 0.5rem 1.25rem;
+  font-family: var(--hm-font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--hm-radius);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+/* Paper/topic option cards: same flex-basis wrapping pattern as .topic-btn
+   above (self-sizing up to a max, wraps to fewer per row on narrow
+   viewports, no media query needed). */
+.pb-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.pb-paper-card {
+  flex: 1 1 180px;
+  min-width: 0;
+  text-align: left;
+  padding: 1rem;
+  border-radius: var(--hm-radius);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.pb-topic-card {
+  flex: 1 1 320px;
+  min-width: 0;
+  text-align: left;
+  padding: 1rem;
+  border-radius: var(--hm-radius);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.pb-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.pb-flex-gap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pb-weighted-row {
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--hm-radius);
+  cursor: pointer;
+}
+
+.pb-difficulty-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.pb-difficulty-btn {
+  padding: 0.5rem 1rem;
+  font-family: var(--hm-font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--hm-radius);
+  cursor: pointer;
+}
+
+.pb-summary-bar {
+  padding: 1.25rem;
+  border-radius: var(--hm-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .pb-summary-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.pb-generate-btn {
+  padding: 0.75rem 1.5rem;
+  font-family: var(--hm-font-sans);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--hm-radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: opacity 0.15s;
+}
+
+.pb-result-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  background: #fff;
+  border: 1px solid var(--hm-border);
+  border-radius: var(--hm-radius);
 }
