@@ -70,15 +70,39 @@ CRITICAL for @@@MARK <note> <marks>@@@ lines specifically: <note> must be ONLY a
 Correct:   @@@MARK M1A1 2@@@ then on the next line: Correct method (Pythagorean form) leading to the modulus of z
 WRONG:     @@@MARK M1A1 modulus of z 2@@@ then: Correct method...   <- description leaked into the marker line itself, this breaks parsing`;
 
+// Scope fidelity is deliberately a GLOBAL rule, not a per-topic patch --
+// TOPIC_CONSTRAINTS above still exists for specific confirmed drift patterns
+// (AA3.13, AA4.1), but every topic is exposed to the same failure mode
+// (inventing a scenario/technique the syllabus point doesn't actually cover),
+// so the general guard belongs in the shared prompt, checked against
+// whatever real reference examples are available for THIS call.
+const SCOPE_FIDELITY_RULE =
+  '- Scope fidelity: this question must test ONLY what the primary topic\'s syllabus point actually examines. Use the reference examples below (real exam parts already tagged to this topic) as your guide to what is actually in scope, not just format -- if you find yourself reaching for a technique, framing, or scenario type that isn\'t reflected in those real examples (e.g. introducing time-dependence/motion into a topic that is inherently static, or a quantitative correction formula where real papers only ask for a qualitative explanation), stop and choose a scenario that stays within the topic\'s real content instead. When zero reference examples are available, be conservative: prefer the most literal reading of the syllabus point\'s name over an inventive scenario.';
+
+// Given values and equation targets/RHS -- numbers the question-writer
+// chooses, as opposed to numbers the student computes -- must be clean.
+// Distinct from final-answer precision instructions (e.g. "correct to 3
+// s.f."), which stay correct when the answer itself is a genuine GDC output.
+const CLEAN_NUMBERS_RULE =
+  '- Numbers YOU choose (given data, an equation\'s target/RHS -- anything that is not a value the student computes) must be clean: integers or simple fractions, never an arbitrary decimal like 0.147 or 2.87. If you want the underlying algebra to factor cleanly, choose the exact fraction/integer that produces that clean algebra -- do not invent a rounded decimal and then wave away the rounding. This does NOT apply to a genuinely GDC-computed final answer correctly reported to a stated precision (e.g. "x = 10.4 (3 s.f.)") -- that is the answer, not a value you invented.';
+
+// Real IB papers state the goal, never the method -- choosing the approach
+// is part of what is being assessed.
+const NO_METHOD_HINTS_RULE =
+  '- Never give a parenthetical method hint in question_text -- no "(for example, by graphing...)", "(hint: ...)", "(you may wish to...)", or similar. State the goal only; let the student choose the approach.';
+
 const SYSTEM_PROMPT = `You write original IB Diploma Programme Mathematics: Analysis and Approaches (AA) exam-style questions.
 
 Rules:
 - This is an ORIGINAL question -- never copy, paraphrase closely, or reuse specific numbers/context from any reference material you are given. References are for FORMAT and TYPICAL MARK ALLOCATION only.
 - Section A questions are short and single-skill: one command term chain testing the primary topic directly, no blending of unrelated topics.
-- Section B questions are longer and multi-part (use part labels like (a), (b)(i), (b)(ii) inside question_text): they may blend in ONE OR TWO closely related secondary topics the way real IB Section B questions do, building toward a final part that draws on earlier results.
+- Section B questions are longer and multi-part (use part labels like (a), (b)(i), (b)(ii) inside question_text): they may blend in ONE OR TWO closely related secondary topics the way real IB Section B questions do, building toward a final part that draws on earlier results. When the question genuinely spans another syllabus point (not just borrows a number from it), name that topic's real code in secondary_topic_codes -- don't leave it empty just because it wasn't suggested to you.
 - marks_breakdown marks must sum to the total marks implied by the question's difficulty/section (Section A: 3-6 total; Section B: 12-20 total).
 - proposed_solution must show full working consistent with marks_breakdown, ending in a value that matches final_answer exactly.
 - calculator_allowed governs the correct SOLUTION PATH, not just a label: if false (non-calculator/Paper 1 style), every intermediate and final value must be exact and reachable by hand (clean factorisations, standard exact angles/logs, no numerical root-finding unless it reduces to something factorable) -- do not require a GDC anywhere. If true (calculator/Paper 2 style), numerical methods are expected and should be used where they are the natural approach (solving equations numerically, numerical integration, decimal answers given to a stated degree of accuracy e.g. "correct to 3 s.f.") -- do not force an unnecessary exact hand-derivation where a direct GDC step is the real exam technique. Calibrate difficulty RELATIVE to calculator_allowed: a step that is hard by hand (e.g. splitting a distance integral around sign changes and evaluating exactly in terms of e) can be a single easy GDC step once calculator_allowed is true -- do not keep the hand-derivation's difficulty rating once the calculator makes it trivial.
+${SCOPE_FIDELITY_RULE}
+${CLEAN_NUMBERS_RULE}
+${NO_METHOD_HINTS_RULE}
 
 ${MATH_NOTATION_RULES}
 
@@ -113,8 +137,8 @@ function buildUserPrompt(
     spec.section === 'A'
       ? `This is Section A: primary_topic_code must be ${topic.code} and secondary_topic_codes must be (none).`
       : secondaryCandidates.length > 0
-        ? `You may blend in 0-2 of these closely related topics if it makes for a natural multi-part question (use their exact codes in secondary_topic_codes if used, else leave empty): ${secondaryCandidates.map((t) => `${t.code} (${t.subtopic_name})`).join('; ')}.`
-        : `No pre-approved secondary topics are available for this Section B question -- primary_topic_code must be ${topic.code} and secondary_topic_codes must be (none).`,
+        ? `You may blend in 0-2 of these closely related topics if it makes for a natural multi-part question (use their exact codes in secondary_topic_codes if used, else leave empty): ${secondaryCandidates.map((t) => `${t.code} (${t.subtopic_name})`).join('; ')}. This list is a starting suggestion, not exhaustive -- if the question you write naturally spans a different closely-related syllabus point instead, use that real topic code rather than forcing in one of these.`
+        : `No pre-curated secondary-topic suggestions exist for ${topic.code} yet -- that does not mean this question must stay single-topic. If it naturally spans another closely-related IB AA syllabus point (not just borrows a number from it), name that topic's real code (the same AA<n>.<n> format as ${topic.code}) in secondary_topic_codes. Only use a code you are confident is real; when unsure, leave secondary_topic_codes empty rather than guess.`,
     `Target total marks: ${spec.marksRange[0]}-${spec.marksRange[1]}.`,
     referenceSummary(topic, refs),
   ];

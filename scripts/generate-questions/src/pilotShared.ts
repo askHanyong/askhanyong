@@ -86,10 +86,18 @@ export async function runOne(
     const status: 'verified' | 'flagged' =
       sympyCheck.passed && independentCheck.passed && diagram.passed ? 'verified' : 'flagged';
 
-    const allowedSecondaryCodes = new Set(secondaryCandidateRows.map((t) => t.code));
-    const usedSecondaryCodes = question.secondary_topic_codes.filter((c) => allowedSecondaryCodes.has(c));
-    const secondaryIdMap = await fetchTopicIdsByCode(usedSecondaryCodes);
-    const secondaryIds = usedSecondaryCodes.map((c) => secondaryIdMap.get(c)).filter((v): v is string => !!v);
+    // secondaryCandidateRows (from SECONDARY_CANDIDATES) is a prompt-time
+    // suggestion only, not a hard post-hoc allowlist -- gating accepted
+    // codes to that curated list silently dropped legitimate secondary tags
+    // on any topic without a curated entry (found in teacher review: a
+    // question that genuinely covered AA4.2/AA4.3 content had empty
+    // secondary_topic_ids because AA4.1 had no SECONDARY_CANDIDATES entry).
+    // Any code the model returns is accepted as long as it resolves to a
+    // real syllabus_topics row; runCheapChecks already caps Section A to 0
+    // and Section B to 2, and buildUserPrompt tells the model to leave this
+    // empty rather than guess an invalid code.
+    const secondaryIdMap = await fetchTopicIdsByCode(question.secondary_topic_codes);
+    const secondaryIds = question.secondary_topic_codes.map((c) => secondaryIdMap.get(c)).filter((v): v is string => !!v);
 
     const totalMarks = question.marks_breakdown.reduce((acc, m) => acc + m.marks, 0);
 
