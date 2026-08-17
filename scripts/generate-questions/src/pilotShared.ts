@@ -14,6 +14,14 @@ export const SECONDARY_CANDIDATES: Record<string, string[]> = {
   'AA5.8': ['AA5.6', 'AA5.4', 'AA2.4'],
   'AA5.9': ['AA5.11', 'AA5.6', 'AA5.7'],
   'AA1.13': ['AA1.14', 'AA1.12'],
+  // AA4.1 (sampling/bias) is never a standalone exam question -- it's always
+  // folded into a broader stats question testing central tendency/dispersion
+  // (see TOPIC_CONSTRAINTS['AA4.1'] in generate.ts). Without an entry here,
+  // buildUserPrompt's allowedSecondaryCodes filter silently discarded any
+  // AA4.2/AA4.3 tagging the model correctly proposed -- root cause of
+  // 878ca3a5's missing secondary_topic_ids despite genuinely covering that
+  // content (found in teacher review).
+  'AA4.1': ['AA4.2', 'AA4.3'],
 };
 
 const NOT_ATTEMPTED_DIAGRAM: DiagramResult = { attempted: false, passed: true, svg: null, note: 'not needed' };

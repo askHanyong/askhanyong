@@ -10,7 +10,28 @@ const MATH_NOTATION_RULES = [
   '- Regular prose -- the words of the question itself -- stays plain text, NOT wrapped in math delimiters. Only the mathematical expressions go inside $...$ or $$...$$.',
   '- This applies to question_text, proposed_solution, final_answer, and every marks_breakdown desc.',
   '- Write every backslash literally, single, exactly as a LaTeX command needs it (\\frac, not \\\\frac) -- the output format below is plain text, not JSON, so no escaping of any kind is needed or wanted.',
+  '- Complements: always use IB\'s standard prime notation for "not A" -- $A\'$ -- never $\\overline{A}$ or other overline notation.',
 ].join('\n');
+
+// Real papers never spell out calculator use ("use technology/a GDC to find...")
+// -- it's implied by which paper the question is on. Found baked into generic
+// generation output across unrelated topics (AA1.9, AA5.8), so this is a
+// global phrasing rule, not a topic-specific fix.
+const PHRASING_RULES = [
+  'Phrasing style -- match how real IB papers write numeric-answer steps:',
+  '- NEVER write "use technology to find...", "use your GDC to find...", "using a calculator, find..." or similar -- real papers never spell out calculator use, it\'s implied by the paper (P1 = no calculator, P2/P3 = calculator). Phrase the step the way real papers do: "Find, correct to <n> decimal places/significant figures, ..." or just "Find ..." when no rounding is needed.',
+].join('\n');
+
+// Per-topic guardrails for scope drift the generic prompt doesn't otherwise
+// prevent -- each entry was added after a specific confirmed drift pattern
+// found in review, not speculative. Keep entries narrow and evidence-based;
+// this is not a place to pre-emptively constrain every topic.
+const TOPIC_CONSTRAINTS: Record<string, string> = {
+  'AA3.13':
+    'TOPIC-SPECIFIC CONSTRAINT: stay strictly within the static scalar (dot) product / angle-between-vectors syllabus point -- vectors here are fixed, not moving. Do NOT use vector-valued functions of time, relative velocity, minimum-distance-via-calculus, or any other relative-motion framing; that content belongs to kinematics (AA5.9), not this topic.',
+  'AA4.1':
+    "TOPIC-SPECIFIC CONSTRAINT: real AA4.1 exam content is never a standalone question -- it always appears folded into a broader statistics question that also tests central tendency/dispersion (AA4.3: mean, median, standard deviation; AA4.2: box-and-whisker/histograms). Build this question around such a broader scenario, with the sampling/bias content as one or more parts within it, not the whole question -- and tag AA4.2/AA4.3 in secondary_topic_codes since the question genuinely covers that content. Any part on bias or data reliability must stay qualitative: name the bias and explain its likely direction/effect on the data or conclusion. Never invent a quantitative bias-correction formula or calculation -- that is not examined at this level.",
+};
 
 const OUTPUT_FORMAT_SPEC = `Return your answer in this exact delimited plain-text format -- NOT JSON, no markdown fences, no prose outside the markers:
 
@@ -61,6 +82,8 @@ Rules:
 
 ${MATH_NOTATION_RULES}
 
+${PHRASING_RULES}
+
 ${OUTPUT_FORMAT_SPEC}`;
 
 function referenceSummary(topic: TopicRow, refs: ReferencePart[]): string {
@@ -95,6 +118,8 @@ function buildUserPrompt(
     `Target total marks: ${spec.marksRange[0]}-${spec.marksRange[1]}.`,
     referenceSummary(topic, refs),
   ];
+  const topicConstraint = TOPIC_CONSTRAINTS[topic.code];
+  if (topicConstraint) parts.push(topicConstraint);
   if (regenerationFeedback) {
     parts.push(`\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION -- fix these issues and regenerate from scratch:\n${regenerationFeedback}`);
   }
