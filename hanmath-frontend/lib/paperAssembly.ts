@@ -77,6 +77,8 @@ export interface AssembleParams {
 export interface CandidateQuestion {
   id: string;
   primary_topic_id: string;
+  topic_code: string;
+  topic_name: string;
   section: 'A' | 'B';
   difficulty: Difficulty;
   level: 'SL' | 'HL';
@@ -88,6 +90,25 @@ export interface CandidateQuestion {
   marks_breakdown: MarksBreakdownItem[];
   needs_diagram: boolean;
   diagram_svg: string | null;
+}
+
+// Raw shape of one generated_questions row with its embedded topic, as
+// returned by the Supabase client before we flatten it into CandidateQuestion.
+interface RawCandidateRow {
+  id: string;
+  primary_topic_id: string;
+  section: 'A' | 'B';
+  difficulty: Difficulty;
+  level: 'SL' | 'HL';
+  calculator_allowed: boolean;
+  question_text: string;
+  proposed_solution: string;
+  final_answer: string;
+  total_marks: number;
+  marks_breakdown: MarksBreakdownItem[];
+  needs_diagram: boolean;
+  diagram_svg: string | null;
+  syllabus_topics: { code: string; subtopic_name: string } | null;
 }
 
 export interface AssembledPaper {
@@ -121,14 +142,18 @@ export async function fetchCandidateQuestions(params: AssembleParams): Promise<C
   const { data, error } = await supabase
     .from('generated_questions')
     .select(
-      'id, primary_topic_id, section, difficulty, level, calculator_allowed, question_text, proposed_solution, final_answer, total_marks, marks_breakdown, needs_diagram, diagram_svg'
+      'id, primary_topic_id, section, difficulty, level, calculator_allowed, question_text, proposed_solution, final_answer, total_marks, marks_breakdown, needs_diagram, diagram_svg, syllabus_topics(code, subtopic_name)'
     )
     .in('primary_topic_id', topicIds)
     .eq('status', 'published')
     .eq('calculator_allowed', calculatorAllowed)
     .in('level', allowedLevels);
   if (error) throw new Error(`Failed to fetch candidate questions: ${error.message}`);
-  return (data ?? []) as CandidateQuestion[];
+
+  return ((data ?? []) as unknown as RawCandidateRow[]).map((row) => {
+    const { syllabus_topics, ...rest } = row;
+    return { ...rest, topic_code: syllabus_topics?.code ?? '?', topic_name: syllabus_topics?.subtopic_name ?? 'Unknown topic' };
+  });
 }
 
 export async function assembleQuestions(params: AssembleParams): Promise<AssembledPaper> {

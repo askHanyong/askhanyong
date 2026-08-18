@@ -8,8 +8,8 @@ import {
   type Theme,
   type DifficultyMix,
   type PaperCode,
-  type AssembledPaper,
 } from '@/lib/paperAssembly';
+import { ResultsView, type PaperKey, type GenerateRow } from './ResultsView';
 
 // Colors/fonts/layout below reference the brand CSS custom properties and
 // .pb-* classes defined in app/globals.css (pulled from hanmath.com's live
@@ -68,12 +68,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   return <h2 className="hm-overline">{children}</h2>;
 }
 
-type PaperKey = 'P1' | 'P2' | 'P3';
-type GenerateRow =
-  | { paper: PaperKey; skipped: true }
-  | ({ paper: PaperKey; skipped?: false } & AssembledPaper)
-  | { error: string };
-
 export default function PaperBuilderPage() {
   const [level, setLevel] = useState<Level>('SL');
   const [papers, setPapers] = useState<Record<PaperKey, boolean>>({ P1: true, P2: false, P3: false });
@@ -85,6 +79,7 @@ export default function PaperBuilderPage() {
   const [difficulty, setDifficulty] = useState<DifficultyMix>('balanced');
   const [generating, setGenerating] = useState(false);
   const [generateResult, setGenerateResult] = useState<GenerateRow[] | null>(null);
+  const [view, setView] = useState<'builder' | 'results'>('builder');
 
   useEffect(() => {
     fetchThemes()
@@ -144,11 +139,31 @@ export default function PaperBuilderPage() {
         results.push({ paper, ...assembled });
       }
       setGenerateResult(results);
+      setView('results');
     } catch (err) {
       setGenerateResult([{ error: (err as Error).message }]);
+      setView('results');
     } finally {
       setGenerating(false);
     }
+  }
+
+  const paperMeta: Record<PaperKey, { minutes: number; calculatorAllowed: boolean }> = {
+    P1: { minutes: PAPER_INFO[level].P1?.minutes ?? 0, calculatorAllowed: false },
+    P2: { minutes: PAPER_INFO[level].P2?.minutes ?? 0, calculatorAllowed: true },
+    P3: { minutes: PAPER_INFO[level].P3?.minutes ?? 0, calculatorAllowed: true },
+  };
+
+  if (view === 'results' && generateResult) {
+    return (
+      <ResultsView
+        results={generateResult}
+        paperMeta={paperMeta}
+        level={level}
+        onBack={() => setView('builder')}
+        onRegenerate={handleGenerate}
+      />
+    );
   }
 
   return (
