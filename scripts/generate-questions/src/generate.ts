@@ -46,7 +46,9 @@ true or false
 @@@PRIMARY_TOPIC@@@
 <topic code>
 @@@SECONDARY_TOPICS@@@
-<comma-separated topic codes, or (none)>
+<(none), OR one block per proposed secondary topic in this exact form:>
+<@@@SECONDARY <topic code>@@@>
+<<one sentence naming the specific step in proposed_solution (e.g. "part (c)") and the specific technique from that topic's own syllabus point actually used there -- not the topic's name alone and not shared vocabulary. See the secondary-topic justification rule for the bar this must clear. Repeat the @@@SECONDARY ...@@@ + justification pair for each additional code.>>
 @@@QUESTION_TEXT@@@
 <the full question text, LaTeX included>
 @@@PROPOSED_SOLUTION@@@
@@ -68,7 +70,11 @@ Every marker line must appear exactly once (except @@@MARK ...@@@, one per marks
 
 CRITICAL for @@@MARK <note> <marks>@@@ lines specifically: <note> must be ONLY a short IB mark code with no spaces and no description -- M1, A1, R1, AG, G1, or a combined code like M1A1 if one point genuinely covers both a method and answer mark. <marks> must be ONLY the integer point value. The description of what earns the mark goes on the line(s) AFTER the marker, never inside the marker line itself.
 Correct:   @@@MARK M1A1 2@@@ then on the next line: Correct method (Pythagorean form) leading to the modulus of z
-WRONG:     @@@MARK M1A1 modulus of z 2@@@ then: Correct method...   <- description leaked into the marker line itself, this breaks parsing`;
+WRONG:     @@@MARK M1A1 modulus of z 2@@@ then: Correct method...   <- description leaked into the marker line itself, this breaks parsing
+
+CRITICAL for @@@SECONDARY_TOPICS@@@: the marker name after "SECONDARY" is ONLY the topic code, no other text -- @@@SECONDARY AA4.8@@@, never @@@SECONDARY AA4.8 binomial distribution@@@. The justification sentence goes on the line(s) after the marker, same pattern as @@@MARK@@@ above. If you have nothing specific enough to write there, do not open a @@@SECONDARY ...@@@ block at all -- write (none) instead.
+Correct:   @@@SECONDARY AA4.8@@@ then on the next line: part (c) computes $P(W>7)$ using the binomial probability formula.
+WRONG:     @@@SECONDARY AA4.8@@@ then: this question involves probability.   <- true but generic, names no specific step or technique, not acceptable`;
 
 // Scope fidelity is deliberately a GLOBAL rule, not a per-topic patch --
 // TOPIC_CONSTRAINTS above still exists for specific confirmed drift patterns
@@ -91,18 +97,38 @@ const CLEAN_NUMBERS_RULE =
 const NO_METHOD_HINTS_RULE =
   '- Never give a parenthetical method hint in question_text -- no "(for example, by graphing...)", "(hint: ...)", "(you may wish to...)", or similar. State the goal only; let the student choose the approach.';
 
+// Refines the secondary-topic mechanism above (the ONLY prior gate was "the
+// code resolves to a real syllabus_topics row"). Manual review of a pilot
+// batch found that gate let through a 50% false-positive rate: real topics
+// that share surface vocabulary or a similar-looking shape with the question,
+// but whose own defining technique never actually appears in the solution.
+// A bare "be careful" instruction did not close this kind of gap in an
+// earlier prompt fix this session (sympy-tolerance rule) -- concrete
+// right/wrong worked examples did, so that's the approach here too.
+const SECONDARY_TOPIC_JUSTIFICATION_RULE = `- Secondary-topic justification: every code you propose in secondary_topic_codes must come with a justification that names the SPECIFIC STEP in proposed_solution (e.g. "part (c)") AND the specific technique from that topic's own syllabus point that step genuinely uses -- not the topic's name alone, and not a word the question merely shares with that topic. If you cannot point to a specific step that actually executes the technique, do not propose the code at all -- leave it out rather than force a tag. A missing secondary tag costs almost nothing; a wrong one actively misleads anyone using it for topic-targeted practice. When in doubt, leave secondary_topic_codes empty.
+
+Legitimate examples (the technique is genuinely present, not just implied):
+- A discrete-probability question (primary AA4.7) whose part (c) states $W \\sim B(12, 0.4)$ and computes a binomial probability -- correctly tagged AA4.8 (Binomial distribution), justification: "part (c) computes $P(W>7)$ using the binomial probability formula."
+- A question comparing an arithmetic salary scheme against a geometric one, with both sequences explicit and both formulas actually used in the solution -- correctly tagged AA1.3 (Geometric sequences) alongside primary AA1.2, justification: "part (b) models the second scheme as a geometric sequence and applies the geometric sum formula to it."
+
+Wrong examples (a loose thematic link, not the topic's actual technique -- never do this):
+- A quadratics/discriminant question (primary AA2.7) tagged with AA1.9 (Binomial theorem) or AA1.10 (Counting principles) with no connection anywhere in the question or solution -- complete mismatch.
+- A calculus optimization question (primary AA3.4) that justifies a local maximum using the second-derivative test, tagged AA5.2 (Increasing and decreasing functions) -- WRONG: the solution never analyzes sign/intervals of increase-decrease, which is what AA5.2 actually teaches. The second-derivative test is a different technique that happens to solve a similar-looking problem.
+- A sector-geometry question (primary AA3.4) that solves a quadratic via the formula and rejects one root on a domain constraint, tagged AA2.7 (Discriminant and nature of roots) -- WRONG: using the quadratic formula to get numeric roots is not AA2.7's actual content (analyzing the discriminant to determine the nature of roots). "This uses a quadratic equation" is too generic to justify AA2.7 -- almost any AA2.x question could claim it; "this explicitly uses the discriminant to determine whether roots are real, complex, or repeated" is the specific bar AA2.7 requires.`;
+
 const SYSTEM_PROMPT = `You write original IB Diploma Programme Mathematics: Analysis and Approaches (AA) exam-style questions.
 
 Rules:
 - This is an ORIGINAL question -- never copy, paraphrase closely, or reuse specific numbers/context from any reference material you are given. References are for FORMAT and TYPICAL MARK ALLOCATION only.
 - Section A questions are short and single-skill: one command term chain testing the primary topic directly, no blending of unrelated topics.
-- Section B questions are longer and multi-part (use part labels like (a), (b)(i), (b)(ii) inside question_text): they may blend in ONE OR TWO closely related secondary topics the way real IB Section B questions do, building toward a final part that draws on earlier results. When the question genuinely spans another syllabus point (not just borrows a number from it), name that topic's real code in secondary_topic_codes -- don't leave it empty just because it wasn't suggested to you.
+- Section B questions are longer and multi-part (use part labels like (a), (b)(i), (b)(ii) inside question_text): they may blend in ONE OR TWO closely related secondary topics the way real IB Section B questions do, building toward a final part that draws on earlier results. When the question genuinely spans another syllabus point (not just borrows a number from it), name that topic's real code in secondary_topic_codes -- don't leave it empty just because it wasn't suggested to you. See the secondary-topic justification rule below for exactly what "genuinely spans" requires and the format for stating it.
 - marks_breakdown marks must sum to the total marks implied by the question's difficulty/section (Section A: 3-6 total; Section B: 12-20 total).
 - proposed_solution must show full working consistent with marks_breakdown, ending in a value that matches final_answer exactly.
 - calculator_allowed governs the correct SOLUTION PATH, not just a label: if false (non-calculator/Paper 1 style), every intermediate and final value must be exact and reachable by hand (clean factorisations, standard exact angles/logs, no numerical root-finding unless it reduces to something factorable) -- do not require a GDC anywhere. If true (calculator/Paper 2 style), numerical methods are expected and should be used where they are the natural approach (solving equations numerically, numerical integration, decimal answers given to a stated degree of accuracy e.g. "correct to 3 s.f.") -- do not force an unnecessary exact hand-derivation where a direct GDC step is the real exam technique. Calibrate difficulty RELATIVE to calculator_allowed: a step that is hard by hand (e.g. splitting a distance integral around sign changes and evaluating exactly in terms of e) can be a single easy GDC step once calculator_allowed is true -- do not keep the hand-derivation's difficulty rating once the calculator makes it trivial.
 ${SCOPE_FIDELITY_RULE}
 ${CLEAN_NUMBERS_RULE}
 ${NO_METHOD_HINTS_RULE}
+${SECONDARY_TOPIC_JUSTIFICATION_RULE}
 
 ${MATH_NOTATION_RULES}
 
@@ -137,8 +163,8 @@ function buildUserPrompt(
     spec.section === 'A'
       ? `This is Section A: primary_topic_code must be ${topic.code} and secondary_topic_codes must be (none).`
       : secondaryCandidates.length > 0
-        ? `You may blend in 0-2 of these closely related topics if it makes for a natural multi-part question (use their exact codes in secondary_topic_codes if used, else leave empty): ${secondaryCandidates.map((t) => `${t.code} (${t.subtopic_name})`).join('; ')}. This list is a starting suggestion, not exhaustive -- if the question you write naturally spans a different closely-related syllabus point instead, use that real topic code rather than forcing in one of these.`
-        : `No pre-curated secondary-topic suggestions exist for ${topic.code} yet -- that does not mean this question must stay single-topic. If it naturally spans another closely-related IB AA syllabus point (not just borrows a number from it), name that topic's real code (the same AA<n>.<n> format as ${topic.code}) in secondary_topic_codes. Only use a code you are confident is real; when unsure, leave secondary_topic_codes empty rather than guess.`,
+        ? `You may blend in 0-2 of these closely related topics if it makes for a natural multi-part question: ${secondaryCandidates.map((t) => `${t.code} (${t.subtopic_name})`).join('; ')}. This list is a starting suggestion, not exhaustive -- if the question you write naturally spans a different closely-related syllabus point instead, use that real topic code rather than forcing in one of these. Only tag a code if you can name the specific step in proposed_solution that genuinely uses that topic's own technique (see the secondary-topic justification rule and its worked examples in the system prompt) -- default to leaving secondary_topic_codes empty when uncertain rather than forcing a loose thematic connection.`
+        : `No pre-curated secondary-topic suggestions exist for ${topic.code} yet -- that does not mean this question must stay single-topic. If it naturally spans another closely-related IB AA syllabus point (not just borrows a number from it) AND you can name the specific step in proposed_solution that genuinely uses that topic's own technique, name that topic's real code (the same AA<n>.<n> format as ${topic.code}) with its justification. Default to leaving secondary_topic_codes empty rather than guess or force a loose thematic connection.`,
     `Target total marks: ${spec.marksRange[0]}-${spec.marksRange[1]}.`,
     referenceSummary(topic, refs),
   ];
@@ -181,6 +207,35 @@ function splitCommaList(s: string): string[] {
   const trimmed = s.trim();
   if (trimmed === '' || /^\(none\)$/i.test(trimmed)) return [];
   return trimmed.split(',').map((v) => v.trim()).filter(Boolean);
+}
+
+interface SecondaryTopicEntry {
+  code: string;
+  justification: string;
+}
+
+// Mirrors parseMarksBreakdown's sub-entry pattern (@@@SECONDARY <code>@@@
+// followed by free text, repeated) rather than a comma-separated list --
+// a bare code list has no room for the justification the technique-level
+// relevance check requires (see SECONDARY_TOPIC_JUSTIFICATION_RULE).
+function parseSecondaryTopics(text: string): SecondaryTopicEntry[] {
+  const trimmed = text.trim();
+  if (trimmed === '' || /^\(none\)$/i.test(trimmed)) return [];
+
+  const markerRe = /@@@SECONDARY ([^\s@]+)@@@\r?\n/g;
+  const found: { code: string; matchStart: number; contentStart: number }[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = markerRe.exec(text)) !== null) {
+    found.push({ code: m[1], matchStart: m.index, contentStart: m.index + m[0].length });
+  }
+  if (found.length === 0) {
+    throw new Error(`@@@SECONDARY_TOPICS@@@ was non-empty but had no @@@SECONDARY <code>@@@ blocks:\n${text.slice(0, 1500)}`);
+  }
+  return found.map((f, i) => {
+    const end = i + 1 < found.length ? found[i + 1].matchStart : text.length;
+    const justification = text.slice(f.contentStart, end).replace(/\r?\n+$/, '').trim();
+    return { code: f.code, justification };
+  });
 }
 
 function parseMarksBreakdown(text: string): MarksBreakdownItem[] {
@@ -228,13 +283,16 @@ function parseGeneratedQuestion(raw: string): GeneratedQuestionJson {
   const diagramDescRaw = section(raw, 'DIAGRAM_DESCRIPTION').trim();
   const needsDiagram = needsDiagramVal === 'true';
 
+  const secondaryTopics = parseSecondaryTopics(section(raw, 'SECONDARY_TOPICS'));
+
   return {
     section: sectionVal,
     difficulty: difficultyVal,
     level: levelVal,
     calculator_allowed: calcVal === 'true',
     primary_topic_code: section(raw, 'PRIMARY_TOPIC').trim(),
-    secondary_topic_codes: splitCommaList(section(raw, 'SECONDARY_TOPICS')),
+    secondary_topic_codes: secondaryTopics.map((e) => e.code),
+    secondary_topic_justifications: Object.fromEntries(secondaryTopics.map((e) => [e.code, e.justification])),
     question_text: section(raw, 'QUESTION_TEXT'),
     proposed_solution: section(raw, 'PROPOSED_SOLUTION'),
     final_answer: section(raw, 'FINAL_ANSWER'),
@@ -275,6 +333,24 @@ export function runCheapChecks(q: GeneratedQuestionJson, spec: QuestionSpec): Ch
   }
   if (spec.section === 'B' && q.secondary_topic_codes.length > 2) {
     notes.push('Section B question blends more than 2 secondary topics.');
+  }
+
+  // Defensive backstop only -- catches an empty/placeholder justification
+  // outright. It cannot verify the justification is actually TRUE (that a
+  // model-authored justification actually holds up against the real
+  // solution text is exactly what the manual spot-check after the next
+  // batch is for); it only enforces that one exists and clears a minimal
+  // specificity bar, per the "name a specific step, not just the topic
+  // name" requirement in SECONDARY_TOPIC_JUSTIFICATION_RULE.
+  for (const code of q.secondary_topic_codes) {
+    const justification = (q.secondary_topic_justifications ?? {})[code];
+    if (!justification || justification.trim().length === 0) {
+      notes.push(`secondary_topic_codes includes ${code} with no justification -- either name the specific step/technique or drop the tag.`);
+      continue;
+    }
+    if (justification.trim().split(/\s+/).length < 8) {
+      notes.push(`Justification for secondary topic ${code} is too short to name a specific step and technique ("${justification}") -- either be specific or drop the tag.`);
+    }
   }
 
   if (q.calculator_allowed !== spec.calculatorAllowed) {

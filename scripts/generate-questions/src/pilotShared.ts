@@ -177,7 +177,10 @@ export function renderMarkdown(results: PilotResult[]): string {
       const g = r.generated;
       lines.push(`### Section ${r.spec.section} / ${r.spec.difficulty} / ${r.spec.level} / ${g.calculator_allowed ? 'calculator (P2-style)' : 'non-calculator (P1-style)'} -- status: **${r.status}**`, '');
       if (r.error) lines.push(`> Error: ${r.error}`, '');
-      lines.push(`**Primary topic:** ${g.primary_topic_code}${g.secondary_topic_codes.length ? ` | **Secondary:** ${g.secondary_topic_codes.join(', ')}` : ''}`);
+      const secondaryWithJustification = g.secondary_topic_codes
+        .map((c) => `${c} (${(g.secondary_topic_justifications ?? {})[c] ?? 'no justification recorded'})`)
+        .join('; ');
+      lines.push(`**Primary topic:** ${g.primary_topic_code}${g.secondary_topic_codes.length ? ` | **Secondary:** ${secondaryWithJustification}` : ''}`);
       lines.push(`**Marks:** ${g.marks_breakdown.reduce((a, m) => a + m.marks, 0)}  |  **Generated question id:** ${r.generatedQuestionId ?? 'not inserted'}`, '');
       lines.push('**Question:**', '', '```', g.question_text, '```', '');
       lines.push('**Proposed solution:**', '', '```', g.proposed_solution, '```', '');

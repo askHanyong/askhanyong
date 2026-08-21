@@ -22,6 +22,11 @@ export interface GeneratedQuestionJson {
   calculator_allowed: boolean;
   primary_topic_code: string;
   secondary_topic_codes: string[];
+  /** code -> the model's justification for that code, keyed by secondary_topic_codes entries.
+   *  Optional so call sites that never populate secondary topics (reverify.ts, rerunSympy.ts,
+   *  retrySympyOne.ts) don't need updating -- absent/missing entries just mean "no justification
+   *  on record", read via `?? {}` / `?.[code]` at call sites. */
+  secondary_topic_justifications?: Record<string, string>;
   question_text: string;
   proposed_solution: string;
   final_answer: string;
