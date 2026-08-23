@@ -108,13 +108,39 @@ export async function runOne(
       };
     }
 
-    const [sympyCheck, independentCheck, diagram] = await Promise.all([
+    // Promise.all here previously meant ANY rejection from these three calls
+    // -- not just a normal {passed:false} result, an actual thrown exception
+    // -- skipped straight to runOne's outer catch block, which discards the
+    // already-generated `question` (it replaces it with a synthetic
+    // '(generation failed)' placeholder) and never calls
+    // insertGeneratedQuestion. Found via a second batch/DB row-count
+    // mismatch after the cheap-check-failure fix above: verifyWithSympy and
+    // verifyIndependently each have an UNGUARDED first API call (only their
+    // second call is wrapped in try/catch) -- a truncated response there
+    // throws straight out. A question that already passed cheap checks has
+    // real content worth keeping a record of even if verification itself
+    // couldn't complete, so Promise.allSettled converts a thrown rejection
+    // into the same {passed:false, note: ...} shape a normal verification
+    // failure already produces, and the insert below always runs.
+    const settled = await Promise.allSettled([
       verifyWithSympy(question),
       verifyIndependently(question),
       question.needs_diagram
         ? generateDiagram(question.diagram_description ?? '', question.question_text)
         : Promise.resolve(NOT_ATTEMPTED_DIAGRAM),
     ]);
+    const sympyCheck =
+      settled[0].status === 'fulfilled'
+        ? settled[0].value
+        : { passed: false, script: '', stdout: '', stderr: '', note: `Sympy verification call threw: ${(settled[0].reason as Error).message}` };
+    const independentCheck =
+      settled[1].status === 'fulfilled'
+        ? settled[1].value
+        : { passed: false, independentAnswer: '', note: `Independent-LLM verification call threw: ${(settled[1].reason as Error).message}` };
+    const diagram =
+      settled[2].status === 'fulfilled'
+        ? settled[2].value
+        : { attempted: true, passed: false, svg: null, note: `Diagram generation call threw: ${(settled[2].reason as Error).message}` };
 
     // A missing/malformed diagram is a review-worthy gap, not a math error --
     // it doesn't affect mathematical status, but it does mean the question
@@ -138,21 +164,34 @@ export async function runOne(
     // name for each code against that code's real subtopic_name and drops
     // the code deterministically on a mismatch, without trusting another
     // round of model output to get it right.
-    const secondaryTopicRows = await fetchTopicsByCode(question.secondary_topic_codes);
+    // Same reasoning as the Promise.allSettled above: this is another DB
+    // call sitting between "cheap checks passed" and "insert" that could
+    // throw (a transient network/DB error) and, if unguarded, would destroy
+    // the whole question the same way the verification calls did.
     const secondaryIds: string[] = [];
     const secondaryCrossCheckNotes: string[] = [];
-    for (const code of question.secondary_topic_codes) {
-      const row = secondaryTopicRows.get(code);
-      if (!row) {
-        secondaryCrossCheckNotes.push(`${code}: does not resolve to a real syllabus_topics row -- dropped.`);
-        continue;
+    let secondaryLookupFailed = false;
+    let secondaryTopicRows = new Map<string, { id: string; subtopic_name: string }>();
+    try {
+      secondaryTopicRows = await fetchTopicsByCode(question.secondary_topic_codes);
+    } catch (err) {
+      secondaryLookupFailed = true;
+      secondaryCrossCheckNotes.push(`Secondary-topic cross-check could not run (topic lookup failed: ${(err as Error).message}) -- all proposed codes dropped rather than trusted unchecked.`);
+    }
+    if (!secondaryLookupFailed) {
+      for (const code of question.secondary_topic_codes) {
+        const row = secondaryTopicRows.get(code);
+        if (!row) {
+          secondaryCrossCheckNotes.push(`${code}: does not resolve to a real syllabus_topics row -- dropped.`);
+          continue;
+        }
+        const statedName = (question.secondary_topic_stated_names ?? {})[code] ?? '';
+        if (!stateAndCodeAgree(statedName, row.subtopic_name)) {
+          secondaryCrossCheckNotes.push(`${code}: stated name "${statedName}" does not match real topic name "${row.subtopic_name}" -- dropped (deterministic cross-check).`);
+          continue;
+        }
+        secondaryIds.push(row.id);
       }
-      const statedName = (question.secondary_topic_stated_names ?? {})[code] ?? '';
-      if (!stateAndCodeAgree(statedName, row.subtopic_name)) {
-        secondaryCrossCheckNotes.push(`${code}: stated name "${statedName}" does not match real topic name "${row.subtopic_name}" -- dropped (deterministic cross-check).`);
-        continue;
-      }
-      secondaryIds.push(row.id);
     }
 
     const totalMarks = question.marks_breakdown.reduce((acc, m) => acc + m.marks, 0);
