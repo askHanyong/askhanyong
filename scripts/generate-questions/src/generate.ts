@@ -33,6 +33,25 @@ const TOPIC_CONSTRAINTS: Record<string, string> = {
     "TOPIC-SPECIFIC CONSTRAINT: real AA4.1 exam content is never a standalone question -- it always appears folded into a broader statistics question that also tests central tendency/dispersion (AA4.3: mean, median, standard deviation; AA4.2: box-and-whisker/histograms). Build this question around such a broader scenario, with the sampling/bias content as one or more parts within it, not the whole question -- and tag AA4.2/AA4.3 in secondary_topic_codes since the question genuinely covers that content. Any part on bias or data reliability must stay qualitative: name the bias and explain its likely direction/effect on the data or conclusion. Never invent a quantitative bias-correction formula or calculation -- that is not examined at this level.",
 };
 
+// Extracted from OUTPUT_FORMAT_SPEC (below) so standalone re-tagging tools
+// that only need the secondary-topic step -- not a full question generation
+// -- can reuse the exact production format instead of retyping it (a
+// retyped copy is exactly the kind of thing that silently drifts from the
+// merged mechanism, which is what a re-tagging tool exists to test against).
+export const SECONDARY_TOPICS_FORMAT_BLOCK = `@@@SECONDARY_TOPICS@@@
+<(none), OR one triplet per proposed secondary topic, in EXACTLY this order -- justification and name FIRST, code LAST:>
+<@@@SECONDARY_JUSTIFICATION@@@>
+<<one sentence naming the specific step in proposed_solution (e.g. "part (c)") and the specific technique that step actually uses -- not a topic name and not shared vocabulary. Write this BEFORE you have decided on a code -- reason your way to the topic, don't justify a code you've already picked. See the secondary-topic justification rule for the bar this must clear.>>
+<@@@SECONDARY_NAME@@@>
+<<the syllabus topic's name, in your own words, e.g. "Binomial distribution" -- the specific topic the justification above actually points to.>>
+<@@@SECONDARY_CODE@@@>
+<<that topic's real code, e.g. AA4.8 -- must be the code for the topic named directly above, not a different one. Repeat the JUSTIFICATION/NAME/CODE triplet for a second topic if used.>>`;
+
+export const SECONDARY_TOPICS_CRITICAL_NOTE = `CRITICAL for @@@SECONDARY_TOPICS@@@: the three sub-markers must appear in this exact order -- JUSTIFICATION, then NAME, then CODE -- for every proposed topic. This order is deliberate: write the justification and name the topic BEFORE typing its code, so the code is the last thing you commit to, not the first thing you justify after the fact. If you have nothing specific enough to write for JUSTIFICATION, do not open a @@@SECONDARY_JUSTIFICATION@@@ block at all -- write (none) instead. The code in @@@SECONDARY_CODE@@@ must be the real code for the exact topic named in the immediately preceding @@@SECONDARY_NAME@@@ -- if you are unsure of the precise code for that topic, do not guess a nearby one.
+Correct:   @@@SECONDARY_JUSTIFICATION@@@ then on the next line: part (c) computes $P(W>7)$ using the binomial probability formula. Then @@@SECONDARY_NAME@@@ then: Binomial distribution. Then @@@SECONDARY_CODE@@@ then: AA4.8
+WRONG:     @@@SECONDARY_CODE@@@ opened before @@@SECONDARY_JUSTIFICATION@@@ -- code before justification defeats the whole point of this ordering.
+WRONG:     @@@SECONDARY_JUSTIFICATION@@@ then: this question involves probability.   <- true but generic, names no specific step or technique, not acceptable`;
+
 const OUTPUT_FORMAT_SPEC = `Return your answer in this exact delimited plain-text format -- NOT JSON, no markdown fences, no prose outside the markers:
 
 @@@SECTION@@@
@@ -45,14 +64,7 @@ SL or HL
 true or false
 @@@PRIMARY_TOPIC@@@
 <topic code>
-@@@SECONDARY_TOPICS@@@
-<(none), OR one triplet per proposed secondary topic, in EXACTLY this order -- justification and name FIRST, code LAST:>
-<@@@SECONDARY_JUSTIFICATION@@@>
-<<one sentence naming the specific step in proposed_solution (e.g. "part (c)") and the specific technique that step actually uses -- not a topic name and not shared vocabulary. Write this BEFORE you have decided on a code -- reason your way to the topic, don't justify a code you've already picked. See the secondary-topic justification rule for the bar this must clear.>>
-<@@@SECONDARY_NAME@@@>
-<<the syllabus topic's name, in your own words, e.g. "Binomial distribution" -- the specific topic the justification above actually points to.>>
-<@@@SECONDARY_CODE@@@>
-<<that topic's real code, e.g. AA4.8 -- must be the code for the topic named directly above, not a different one. Repeat the JUSTIFICATION/NAME/CODE triplet for a second topic if used.>>
+${SECONDARY_TOPICS_FORMAT_BLOCK}
 @@@QUESTION_TEXT@@@
 <the full question text, LaTeX included>
 @@@PROPOSED_SOLUTION@@@
@@ -76,10 +88,7 @@ CRITICAL for @@@MARK <note> <marks>@@@ lines specifically: <note> must be ONLY a
 Correct:   @@@MARK M1A1 2@@@ then on the next line: Correct method (Pythagorean form) leading to the modulus of z
 WRONG:     @@@MARK M1A1 modulus of z 2@@@ then: Correct method...   <- description leaked into the marker line itself, this breaks parsing
 
-CRITICAL for @@@SECONDARY_TOPICS@@@: the three sub-markers must appear in this exact order -- JUSTIFICATION, then NAME, then CODE -- for every proposed topic. This order is deliberate: write the justification and name the topic BEFORE typing its code, so the code is the last thing you commit to, not the first thing you justify after the fact. If you have nothing specific enough to write for JUSTIFICATION, do not open a @@@SECONDARY_JUSTIFICATION@@@ block at all -- write (none) instead. The code in @@@SECONDARY_CODE@@@ must be the real code for the exact topic named in the immediately preceding @@@SECONDARY_NAME@@@ -- if you are unsure of the precise code for that topic, do not guess a nearby one.
-Correct:   @@@SECONDARY_JUSTIFICATION@@@ then on the next line: part (c) computes $P(W>7)$ using the binomial probability formula. Then @@@SECONDARY_NAME@@@ then: Binomial distribution. Then @@@SECONDARY_CODE@@@ then: AA4.8
-WRONG:     @@@SECONDARY_CODE@@@ opened before @@@SECONDARY_JUSTIFICATION@@@ -- code before justification defeats the whole point of this ordering.
-WRONG:     @@@SECONDARY_JUSTIFICATION@@@ then: this question involves probability.   <- true but generic, names no specific step or technique, not acceptable`;
+${SECONDARY_TOPICS_CRITICAL_NOTE}`;
 
 // Scope fidelity is deliberately a GLOBAL rule, not a per-topic patch --
 // TOPIC_CONSTRAINTS above still exists for specific confirmed drift patterns
@@ -125,7 +134,7 @@ const NO_METHOD_HINTS_RULE =
 // syllabus_topics.subtopic_name for that code -- catching the case where the
 // reasoning/name is right but the final code is mistyped, deterministically,
 // without trusting another round of model output to get it right.
-const SECONDARY_TOPIC_JUSTIFICATION_RULE = `- Secondary-topic justification: every topic you propose as a secondary topic must be REASONED TO, not reasoned FROM. Follow the output format's JUSTIFICATION -> NAME -> CODE order exactly: first write a justification that names the SPECIFIC STEP in proposed_solution (e.g. "part (c)") AND the specific technique from that topic's own syllabus point that step genuinely uses -- not the topic's name alone, and not a word the question merely shares with that topic -- then name the topic, then and only then commit to its code. Do not decide on a code first and write a justification to fit it. If you cannot point to a specific step that actually executes the technique, do not open a secondary-topic block at all -- leave it out rather than force a tag. A missing secondary tag costs almost nothing; a wrong one actively misleads anyone using it for topic-targeted practice. When in doubt, leave secondary_topic_codes empty. The code you type for @@@SECONDARY_CODE@@@ must be the actual code for the topic you just named in @@@SECONDARY_NAME@@@ -- if you are not confident of the exact code for that topic, do not guess a nearby one.
+export const SECONDARY_TOPIC_JUSTIFICATION_RULE = `- Secondary-topic justification: every topic you propose as a secondary topic must be REASONED TO, not reasoned FROM. Follow the output format's JUSTIFICATION -> NAME -> CODE order exactly: first write a justification that names the SPECIFIC STEP in proposed_solution (e.g. "part (c)") AND the specific technique from that topic's own syllabus point that step genuinely uses -- not the topic's name alone, and not a word the question merely shares with that topic -- then name the topic, then and only then commit to its code. Do not decide on a code first and write a justification to fit it. If you cannot point to a specific step that actually executes the technique, do not open a secondary-topic block at all -- leave it out rather than force a tag. A missing secondary tag costs almost nothing; a wrong one actively misleads anyone using it for topic-targeted practice. When in doubt, leave secondary_topic_codes empty. The code you type for @@@SECONDARY_CODE@@@ must be the actual code for the topic you just named in @@@SECONDARY_NAME@@@ -- if you are not confident of the exact code for that topic, do not guess a nearby one.
 
 Legitimate examples (the technique is genuinely present, not just implied):
 - A discrete-probability question (primary AA4.7) whose part (c) states $W \\sim B(12, 0.4)$ and computes a binomial probability -- correctly tagged AA4.8 (Binomial distribution), justification: "part (c) computes $P(W>7)$ using the binomial probability formula."
