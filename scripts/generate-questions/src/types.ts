@@ -27,6 +27,12 @@ export interface GeneratedQuestionJson {
    *  retrySympyOne.ts) don't need updating -- absent/missing entries just mean "no justification
    *  on record", read via `?? {}` / `?.[code]` at call sites. */
   secondary_topic_justifications?: Record<string, string>;
+  /** code -> the topic name the model stated for that code, in its own words. Used by
+   *  stateAndCodeAgree() in generate.ts to deterministically cross-check the code against
+   *  the real syllabus_topics.subtopic_name -- catches a code mistyped after otherwise
+   *  correct reasoning, which the JUSTIFICATION -> NAME -> CODE ordering alone can't catch.
+   *  Optional for the same reason as secondary_topic_justifications above. */
+  secondary_topic_stated_names?: Record<string, string>;
   question_text: string;
   proposed_solution: string;
   final_answer: string;
@@ -62,4 +68,7 @@ export interface PilotResult {
   status: 'verified' | 'flagged';
   generatedQuestionId: string | null;
   error: string | null;
+  /** Codes the model proposed but the deterministic stateAndCodeAgree cross-check dropped
+   *  before insertion (see runOne in pilotShared.ts) -- empty when nothing was dropped. */
+  secondaryCrossCheckNotes: string[];
 }

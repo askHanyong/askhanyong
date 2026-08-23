@@ -46,9 +46,13 @@ true or false
 @@@PRIMARY_TOPIC@@@
 <topic code>
 @@@SECONDARY_TOPICS@@@
-<(none), OR one block per proposed secondary topic in this exact form:>
-<@@@SECONDARY <topic code>@@@>
-<<one sentence naming the specific step in proposed_solution (e.g. "part (c)") and the specific technique from that topic's own syllabus point actually used there -- not the topic's name alone and not shared vocabulary. See the secondary-topic justification rule for the bar this must clear. Repeat the @@@SECONDARY ...@@@ + justification pair for each additional code.>>
+<(none), OR one triplet per proposed secondary topic, in EXACTLY this order -- justification and name FIRST, code LAST:>
+<@@@SECONDARY_JUSTIFICATION@@@>
+<<one sentence naming the specific step in proposed_solution (e.g. "part (c)") and the specific technique that step actually uses -- not a topic name and not shared vocabulary. Write this BEFORE you have decided on a code -- reason your way to the topic, don't justify a code you've already picked. See the secondary-topic justification rule for the bar this must clear.>>
+<@@@SECONDARY_NAME@@@>
+<<the syllabus topic's name, in your own words, e.g. "Binomial distribution" -- the specific topic the justification above actually points to.>>
+<@@@SECONDARY_CODE@@@>
+<<that topic's real code, e.g. AA4.8 -- must be the code for the topic named directly above, not a different one. Repeat the JUSTIFICATION/NAME/CODE triplet for a second topic if used.>>
 @@@QUESTION_TEXT@@@
 <the full question text, LaTeX included>
 @@@PROPOSED_SOLUTION@@@
@@ -72,9 +76,10 @@ CRITICAL for @@@MARK <note> <marks>@@@ lines specifically: <note> must be ONLY a
 Correct:   @@@MARK M1A1 2@@@ then on the next line: Correct method (Pythagorean form) leading to the modulus of z
 WRONG:     @@@MARK M1A1 modulus of z 2@@@ then: Correct method...   <- description leaked into the marker line itself, this breaks parsing
 
-CRITICAL for @@@SECONDARY_TOPICS@@@: the marker name after "SECONDARY" is ONLY the topic code, no other text -- @@@SECONDARY AA4.8@@@, never @@@SECONDARY AA4.8 binomial distribution@@@. The justification sentence goes on the line(s) after the marker, same pattern as @@@MARK@@@ above. If you have nothing specific enough to write there, do not open a @@@SECONDARY ...@@@ block at all -- write (none) instead.
-Correct:   @@@SECONDARY AA4.8@@@ then on the next line: part (c) computes $P(W>7)$ using the binomial probability formula.
-WRONG:     @@@SECONDARY AA4.8@@@ then: this question involves probability.   <- true but generic, names no specific step or technique, not acceptable`;
+CRITICAL for @@@SECONDARY_TOPICS@@@: the three sub-markers must appear in this exact order -- JUSTIFICATION, then NAME, then CODE -- for every proposed topic. This order is deliberate: write the justification and name the topic BEFORE typing its code, so the code is the last thing you commit to, not the first thing you justify after the fact. If you have nothing specific enough to write for JUSTIFICATION, do not open a @@@SECONDARY_JUSTIFICATION@@@ block at all -- write (none) instead. The code in @@@SECONDARY_CODE@@@ must be the real code for the exact topic named in the immediately preceding @@@SECONDARY_NAME@@@ -- if you are unsure of the precise code for that topic, do not guess a nearby one.
+Correct:   @@@SECONDARY_JUSTIFICATION@@@ then on the next line: part (c) computes $P(W>7)$ using the binomial probability formula. Then @@@SECONDARY_NAME@@@ then: Binomial distribution. Then @@@SECONDARY_CODE@@@ then: AA4.8
+WRONG:     @@@SECONDARY_CODE@@@ opened before @@@SECONDARY_JUSTIFICATION@@@ -- code before justification defeats the whole point of this ordering.
+WRONG:     @@@SECONDARY_JUSTIFICATION@@@ then: this question involves probability.   <- true but generic, names no specific step or technique, not acceptable`;
 
 // Scope fidelity is deliberately a GLOBAL rule, not a per-topic patch --
 // TOPIC_CONSTRAINTS above still exists for specific confirmed drift patterns
@@ -105,7 +110,22 @@ const NO_METHOD_HINTS_RULE =
 // A bare "be careful" instruction did not close this kind of gap in an
 // earlier prompt fix this session (sympy-tolerance rule) -- concrete
 // right/wrong worked examples did, so that's the approach here too.
-const SECONDARY_TOPIC_JUSTIFICATION_RULE = `- Secondary-topic justification: every code you propose in secondary_topic_codes must come with a justification that names the SPECIFIC STEP in proposed_solution (e.g. "part (c)") AND the specific technique from that topic's own syllabus point that step genuinely uses -- not the topic's name alone, and not a word the question merely shares with that topic. If you cannot point to a specific step that actually executes the technique, do not propose the code at all -- leave it out rather than force a tag. A missing secondary tag costs almost nothing; a wrong one actively misleads anyone using it for topic-targeted practice. When in doubt, leave secondary_topic_codes empty.
+//
+// A first version of this rule required a justification but put it AFTER
+// the code in the output format (@@@SECONDARY <code>@@@ then justification).
+// Blind re-test against 8 already-reviewed questions found that ordering is
+// a structural setup for post-hoc rationalization: because generation is
+// autoregressive, the code is necessarily committed before the justification
+// is written, so the justification explains a decision already locked in
+// rather than gating it. This version fixes that two ways in the same call:
+// (1) the output format now requires JUSTIFICATION, then NAME, then CODE, in
+// that order, so the model has to articulate the topic before it can name a
+// code for it; (2) the model also states the topic's name in its own words,
+// which pilotShared.ts's runOne() cross-checks server-side against the real
+// syllabus_topics.subtopic_name for that code -- catching the case where the
+// reasoning/name is right but the final code is mistyped, deterministically,
+// without trusting another round of model output to get it right.
+const SECONDARY_TOPIC_JUSTIFICATION_RULE = `- Secondary-topic justification: every topic you propose as a secondary topic must be REASONED TO, not reasoned FROM. Follow the output format's JUSTIFICATION -> NAME -> CODE order exactly: first write a justification that names the SPECIFIC STEP in proposed_solution (e.g. "part (c)") AND the specific technique from that topic's own syllabus point that step genuinely uses -- not the topic's name alone, and not a word the question merely shares with that topic -- then name the topic, then and only then commit to its code. Do not decide on a code first and write a justification to fit it. If you cannot point to a specific step that actually executes the technique, do not open a secondary-topic block at all -- leave it out rather than force a tag. A missing secondary tag costs almost nothing; a wrong one actively misleads anyone using it for topic-targeted practice. When in doubt, leave secondary_topic_codes empty. The code you type for @@@SECONDARY_CODE@@@ must be the actual code for the topic you just named in @@@SECONDARY_NAME@@@ -- if you are not confident of the exact code for that topic, do not guess a nearby one.
 
 Legitimate examples (the technique is genuinely present, not just implied):
 - A discrete-probability question (primary AA4.7) whose part (c) states $W \\sim B(12, 0.4)$ and computes a binomial probability -- correctly tagged AA4.8 (Binomial distribution), justification: "part (c) computes $P(W>7)$ using the binomial probability formula."
@@ -209,33 +229,90 @@ function splitCommaList(s: string): string[] {
   return trimmed.split(',').map((v) => v.trim()).filter(Boolean);
 }
 
-interface SecondaryTopicEntry {
-  code: string;
+export interface SecondaryTopicEntry {
   justification: string;
+  statedName: string;
+  code: string;
 }
 
-// Mirrors parseMarksBreakdown's sub-entry pattern (@@@SECONDARY <code>@@@
-// followed by free text, repeated) rather than a comma-separated list --
-// a bare code list has no room for the justification the technique-level
-// relevance check requires (see SECONDARY_TOPIC_JUSTIFICATION_RULE).
-function parseSecondaryTopics(text: string): SecondaryTopicEntry[] {
+const SECONDARY_SUBMARKER_RE = /@@@SECONDARY_(JUSTIFICATION|NAME|CODE)@@@\r?\n/g;
+
+// Parses the JUSTIFICATION -> NAME -> CODE triplet format (see
+// SECONDARY_TOPIC_JUSTIFICATION_RULE for why this order, not a comma-separated
+// code list or a single code+justification pair): reasoning and the topic's
+// name must appear before the code that's supposedly for that topic, so the
+// code can't be decided first and rationalized afterward. Exported so
+// standalone re-tagging/spot-check tools (re-run just this step against
+// existing question/solution text) reuse the real parser instead of
+// re-implementing it.
+export function parseSecondaryTopics(text: string): SecondaryTopicEntry[] {
   const trimmed = text.trim();
   if (trimmed === '' || /^\(none\)$/i.test(trimmed)) return [];
 
-  const markerRe = /@@@SECONDARY ([^\s@]+)@@@\r?\n/g;
-  const found: { code: string; matchStart: number; contentStart: number }[] = [];
+  SECONDARY_SUBMARKER_RE.lastIndex = 0;
+  const found: { kind: 'JUSTIFICATION' | 'NAME' | 'CODE'; matchStart: number; contentStart: number }[] = [];
   let m: RegExpExecArray | null;
-  while ((m = markerRe.exec(text)) !== null) {
-    found.push({ code: m[1], matchStart: m.index, contentStart: m.index + m[0].length });
+  while ((m = SECONDARY_SUBMARKER_RE.exec(text)) !== null) {
+    found.push({ kind: m[1] as 'JUSTIFICATION' | 'NAME' | 'CODE', matchStart: m.index, contentStart: m.index + m[0].length });
   }
   if (found.length === 0) {
-    throw new Error(`@@@SECONDARY_TOPICS@@@ was non-empty but had no @@@SECONDARY <code>@@@ blocks:\n${text.slice(0, 1500)}`);
+    throw new Error(`@@@SECONDARY_TOPICS@@@ was non-empty but had no @@@SECONDARY_JUSTIFICATION/NAME/CODE@@@ blocks:\n${text.slice(0, 1500)}`);
   }
-  return found.map((f, i) => {
+  if (found.length % 3 !== 0) {
+    throw new Error(`@@@SECONDARY_TOPICS@@@ sub-markers did not come in complete JUSTIFICATION/NAME/CODE triplets (found ${found.length}):\n${text.slice(0, 1500)}`);
+  }
+
+  const values = found.map((f, i) => {
     const end = i + 1 < found.length ? found[i + 1].matchStart : text.length;
-    const justification = text.slice(f.contentStart, end).replace(/\r?\n+$/, '').trim();
-    return { code: f.code, justification };
+    return text.slice(f.contentStart, end).replace(/\r?\n+$/, '').trim();
   });
+
+  const entries: SecondaryTopicEntry[] = [];
+  for (let i = 0; i < found.length; i += 3) {
+    if (found[i].kind !== 'JUSTIFICATION' || found[i + 1].kind !== 'NAME' || found[i + 2].kind !== 'CODE') {
+      throw new Error(`@@@SECONDARY_TOPICS@@@ sub-markers out of order -- expected JUSTIFICATION, NAME, CODE in that order:\n${text.slice(0, 1500)}`);
+    }
+    // Defensive: the CODE field is free text (not embedded in a marker name
+    // like the old format), so a model that adds trailing commentary
+    // ("AA4.8 (Binomial distribution)") shouldn't corrupt the code lookup --
+    // take the first whitespace-delimited token.
+    const code = values[i + 2].split(/\s+/)[0] ?? '';
+    entries.push({ justification: values[i], statedName: values[i + 1], code });
+  }
+  return entries;
+}
+
+function normalizeTopicName(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+const TOPIC_NAME_STOPWORDS = new Set(['the', 'a', 'an', 'of', 'and', 'to', 'in', 'for', 'using', 'with', 'on', 'by']);
+
+function significantWords(s: string): string[] {
+  return normalizeTopicName(s).split(' ').filter((w) => w.length > 0 && !TOPIC_NAME_STOPWORDS.has(w));
+}
+
+// Deterministic cross-check, not another model call: reordering the prompt
+// (justification -> name -> code) fixes post-hoc rationalization of the
+// CHOICE of topic, but it doesn't stop the model mistyping the CODE for a
+// topic it named correctly -- the last token in the triplet can still slip.
+// Since the model already stated the topic's name in its own words
+// (secondary_topic_stated_names), that name can be checked mechanically
+// against the real syllabus_topics.subtopic_name for the code it typed --
+// no further model output is trusted for this check. Word-overlap, not exact
+// match, since "in your own words" won't equal the DB string verbatim;
+// checked against the REAL name's significant words specifically (not the
+// stated name's) so a stated name that's a superset of the real name still
+// passes, but a stated name missing the real name's defining words fails.
+// Exported so pilotShared.ts's runOne() (where the equivalent "resolves to a
+// real row" check already lived) and standalone re-tagging tools share one
+// implementation.
+export function stateAndCodeAgree(statedName: string, realName: string): boolean {
+  const stated = new Set(significantWords(statedName));
+  const real = significantWords(realName);
+  if (real.length === 0) return false;
+  const overlap = real.filter((w) => stated.has(w)).length;
+  return overlap / real.length >= 0.5;
 }
 
 function parseMarksBreakdown(text: string): MarksBreakdownItem[] {
@@ -293,6 +370,7 @@ function parseGeneratedQuestion(raw: string): GeneratedQuestionJson {
     primary_topic_code: section(raw, 'PRIMARY_TOPIC').trim(),
     secondary_topic_codes: secondaryTopics.map((e) => e.code),
     secondary_topic_justifications: Object.fromEntries(secondaryTopics.map((e) => [e.code, e.justification])),
+    secondary_topic_stated_names: Object.fromEntries(secondaryTopics.map((e) => [e.code, e.statedName])),
     question_text: section(raw, 'QUESTION_TEXT'),
     proposed_solution: section(raw, 'PROPOSED_SOLUTION'),
     final_answer: section(raw, 'FINAL_ANSWER'),

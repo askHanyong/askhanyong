@@ -40,6 +40,19 @@ export async function fetchTopicIdsByCode(codes: string[]): Promise<Map<string, 
   return new Map((data ?? []).map((r) => [r.code as string, r.id as string]));
 }
 
+/**
+ * Like fetchTopicIdsByCode but also returns subtopic_name -- used by the
+ * secondary-topic deterministic cross-check (stateAndCodeAgree in
+ * generate.ts), which needs the real topic name to compare against what the
+ * model stated for that code, not just whether the code resolves at all.
+ */
+export async function fetchTopicsByCode(codes: string[]): Promise<Map<string, { id: string; subtopic_name: string }>> {
+  if (codes.length === 0) return new Map();
+  const { data, error } = await supabase.from('syllabus_topics').select('id, code, subtopic_name').in('code', codes);
+  if (error) throw new Error(`Failed to resolve topic codes ${codes.join(', ')}: ${error.message}`);
+  return new Map((data ?? []).map((r) => [r.code as string, { id: r.id as string, subtopic_name: r.subtopic_name as string }]));
+}
+
 export interface ReferencePart {
   part_text: string;
   marks: number;

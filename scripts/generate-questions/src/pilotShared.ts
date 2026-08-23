@@ -1,10 +1,10 @@
 import {
-  fetchTopicIdsByCode,
+  fetchTopicsByCode,
   insertGeneratedQuestion,
   type TopicRow,
   type ReferencePart,
 } from './db.js';
-import { generateQuestion } from './generate.js';
+import { generateQuestion, stateAndCodeAgree } from './generate.js';
 import { verifyWithSympy } from './verifySympy.js';
 import { verifyIndependently } from './verifyIndependent.js';
 import { generateDiagram } from './diagram.js';
@@ -57,7 +57,8 @@ export async function runOne(
     status: 'flagged',
     generatedQuestionId: null,
     error: null,
-  } as PilotResult;
+    secondaryCrossCheckNotes: [],
+  };
 
   try {
     const { question, cheapChecks, regenerated } = await generateQuestion(spec, topic, secondaryCandidateRows, refs);
@@ -92,12 +93,32 @@ export async function runOne(
     // on any topic without a curated entry (found in teacher review: a
     // question that genuinely covered AA4.2/AA4.3 content had empty
     // secondary_topic_ids because AA4.1 had no SECONDARY_CANDIDATES entry).
-    // Any code the model returns is accepted as long as it resolves to a
-    // real syllabus_topics row; runCheapChecks already caps Section A to 0
-    // and Section B to 2, and buildUserPrompt tells the model to leave this
-    // empty rather than guess an invalid code.
-    const secondaryIdMap = await fetchTopicIdsByCode(question.secondary_topic_codes);
-    const secondaryIds = question.secondary_topic_codes.map((c) => secondaryIdMap.get(c)).filter((v): v is string => !!v);
+    // runCheapChecks already caps Section A to 0 and Section B to 2, and
+    // buildUserPrompt tells the model to leave this empty rather than guess.
+    //
+    // A code resolving to a real syllabus_topics row is necessary but not
+    // sufficient -- it doesn't catch a code mistyped after otherwise correct
+    // reasoning (the model names the right topic, then types the wrong
+    // number for it). stateAndCodeAgree cross-checks the model's own stated
+    // name for each code against that code's real subtopic_name and drops
+    // the code deterministically on a mismatch, without trusting another
+    // round of model output to get it right.
+    const secondaryTopicRows = await fetchTopicsByCode(question.secondary_topic_codes);
+    const secondaryIds: string[] = [];
+    const secondaryCrossCheckNotes: string[] = [];
+    for (const code of question.secondary_topic_codes) {
+      const row = secondaryTopicRows.get(code);
+      if (!row) {
+        secondaryCrossCheckNotes.push(`${code}: does not resolve to a real syllabus_topics row -- dropped.`);
+        continue;
+      }
+      const statedName = (question.secondary_topic_stated_names ?? {})[code] ?? '';
+      if (!stateAndCodeAgree(statedName, row.subtopic_name)) {
+        secondaryCrossCheckNotes.push(`${code}: stated name "${statedName}" does not match real topic name "${row.subtopic_name}" -- dropped (deterministic cross-check).`);
+        continue;
+      }
+      secondaryIds.push(row.id);
+    }
 
     const totalMarks = question.marks_breakdown.reduce((acc, m) => acc + m.marks, 0);
 
@@ -133,6 +154,7 @@ export async function runOne(
       diagram,
       status,
       generatedQuestionId,
+      secondaryCrossCheckNotes,
     };
   } catch (err) {
     return {
@@ -181,6 +203,9 @@ export function renderMarkdown(results: PilotResult[]): string {
         .map((c) => `${c} (${(g.secondary_topic_justifications ?? {})[c] ?? 'no justification recorded'})`)
         .join('; ');
       lines.push(`**Primary topic:** ${g.primary_topic_code}${g.secondary_topic_codes.length ? ` | **Secondary:** ${secondaryWithJustification}` : ''}`);
+      if (r.secondaryCrossCheckNotes.length > 0) {
+        lines.push(`**Secondary-topic cross-check dropped:** ${r.secondaryCrossCheckNotes.join(' | ')}`);
+      }
       lines.push(`**Marks:** ${g.marks_breakdown.reduce((a, m) => a + m.marks, 0)}  |  **Generated question id:** ${r.generatedQuestionId ?? 'not inserted'}`, '');
       lines.push('**Question:**', '', '```', g.question_text, '```', '');
       lines.push('**Proposed solution:**', '', '```', g.proposed_solution, '```', '');
