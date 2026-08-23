@@ -64,11 +64,46 @@ export async function runOne(
     const { question, cheapChecks, regenerated } = await generateQuestion(spec, topic, secondaryCandidateRows, refs);
 
     if (!cheapChecks.passed) {
+      // Previously returned here without ever calling insertGeneratedQuestion
+      // -- every OTHER failure mode (sympy mismatch, independent-LLM
+      // disagreement, sympy timeout, bad diagram) happens after cheap checks
+      // pass and goes through the normal insert path below with
+      // status='flagged', but a cheap-check failure that survives
+      // generateQuestion's one internal retry silently produced no DB row at
+      // all. Found via a batch/DB row-count mismatch (49 rows for 50
+      // attempted specs) -- the spec was silently dropped with only the
+      // markdown report (not durable storage) as any record it was ever
+      // attempted. Insert it too, with status='flagged' and empty
+      // verifications (sympy/independent checks never ran on content that
+      // already failed structurally), so every attempted spec leaves a row
+      // and per-topic/per-batch row counts stay predictable.
+      const cheapFailTotalMarks = question.marks_breakdown.reduce((acc, m) => acc + m.marks, 0);
+      const generatedQuestionId = await insertGeneratedQuestion({
+        subject_id: subjectId,
+        primary_topic_id: topic.id,
+        secondary_topic_ids: [],
+        level: question.level,
+        section: question.section,
+        difficulty: question.difficulty,
+        calculator_allowed: question.calculator_allowed,
+        question_text: question.question_text,
+        proposed_solution: question.proposed_solution,
+        final_answer: question.final_answer,
+        total_marks: cheapFailTotalMarks,
+        marks_breakdown: question.marks_breakdown,
+        needs_diagram: question.needs_diagram,
+        diagram_description: question.diagram_description,
+        diagram_svg: null,
+        status: 'flagged',
+        verifications: [],
+      });
+
       return {
         ...base,
         generated: question,
         cheapChecks: { ...cheapChecks, regenerated },
         status: 'flagged',
+        generatedQuestionId,
         error: `Cheap checks failed after ${regenerated ? 'one regeneration' : 'generation'}: ${cheapChecks.notes.join(' | ')}`,
       };
     }
