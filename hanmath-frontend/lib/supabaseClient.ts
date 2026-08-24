@@ -23,6 +23,10 @@ export interface SyllabusTopic {
   code: string;
   subtopic_name: string;
   topic_name: string;
+  /** The AA course's fixed 1-5 theme ordering (1 = Number and Algebra ... 5 = Calculus)
+   *  -- used to sort themes into the canonical syllabus order, since `topic_name` sorts
+   *  alphabetically instead ("Calculus" before "Functions"). */
+  topic_number: number;
   level_scope: 'SL' | 'AHL';
 }
 
@@ -50,8 +54,9 @@ export interface GeneratedQuestion {
 export async function fetchEnabledTopics(): Promise<SyllabusTopic[]> {
   const { data, error } = await supabase
     .from('syllabus_topics')
-    .select('id, code, subtopic_name, topic_name, level_scope')
+    .select('id, code, subtopic_name, topic_name, topic_number, level_scope')
     .eq('topics_enabled', true)
+    .order('topic_number')
     .order('code');
   if (error) throw new Error(`Failed to fetch topics: ${error.message}`);
   return data ?? [];

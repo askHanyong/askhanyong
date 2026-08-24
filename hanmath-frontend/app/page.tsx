@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ChevronDown, ChevronRight, Search } from 'lucide-react';
 import {
   fetchEnabledTopics,
   fetchPublishedQuestionsForTopic,
@@ -11,16 +12,47 @@ import { useMathJaxTypeset } from '@/lib/useMathJaxTypeset';
 
 // syllabus_topics.level_scope is stored as 'SL' | 'AHL' (unchanged) --
 // this only maps it to the label shown in the UI. SL content is studied by
-// both SL and HL students, so 'SL' reads as "HL/SL"; 'AHL' (additional HL
-// content) reads as "HL only".
+// both SL and HL students, so 'SL' reads as "SL/HL"; 'AHL' (additional HL
+// content) reads as "HL ONLY".
 function levelScopeLabel(levelScope: SyllabusTopic['level_scope']): string {
-  return levelScope === 'AHL' ? 'HL only' : 'HL/SL';
+  return levelScope === 'AHL' ? 'HL ONLY' : 'SL/HL';
+}
+
+interface Theme {
+  name: string;
+  topics: SyllabusTopic[];
+}
+
+// Groups already-topic_number-sorted topics (see fetchEnabledTopics) by
+// topic_name -- Map preserves insertion order, so the theme order here
+// matches the query's order without re-sorting or hardcoding theme names.
+function groupByTheme(topics: SyllabusTopic[]): Theme[] {
+  const byTheme = new Map<string, SyllabusTopic[]>();
+  for (const t of topics) {
+    const list = byTheme.get(t.topic_name) ?? [];
+    list.push(t);
+    byTheme.set(t.topic_name, list);
+  }
+  return Array.from(byTheme.entries()).map(([name, topicsInTheme]) => ({ name, topics: topicsInTheme }));
+}
+
+// Cosmetic only (matches the approved mockup's "&" style) -- the underlying
+// grouping key is still the live topic_name from the database, never a
+// hardcoded theme list.
+function formatThemeName(name: string): string {
+  return name.replace(/ and /g, ' & ');
 }
 
 export default function Home() {
   const [topics, setTopics] = useState<SyllabusTopic[]>([]);
   const [topicsError, setTopicsError] = useState<string | null>(null);
   const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
+
+  const [search, setSearch] = useState('');
+  // null = not yet initialized. Once themes load, the first theme (by
+  // topic_number) opens by default -- set once, then behaves as a normal
+  // toggle set. Avoids hardcoding which theme name should start open.
+  const [openThemes, setOpenThemes] = useState<Set<string> | null>(null);
 
   const [questions, setQuestions] = useState<GeneratedQuestion[]>([]);
   const [questionsLoading, setQuestionsLoading] = useState(false);
@@ -33,6 +65,35 @@ export default function Home() {
       .then(setTopics)
       .catch((err) => setTopicsError(err.message));
   }, []);
+
+  const themes = useMemo(() => groupByTheme(topics), [topics]);
+
+  useEffect(() => {
+    if (openThemes === null && themes.length > 0) {
+      setOpenThemes(new Set([themes[0].name]));
+    }
+  }, [themes, openThemes]);
+
+  const toggleTheme = (name: string) => {
+    setOpenThemes((prev) => {
+      const next = new Set(prev ?? []);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+  };
+
+  const query = search.trim().toLowerCase();
+  const filteredThemes = themes
+    .map((theme) => ({
+      ...theme,
+      topics: query
+        ? theme.topics.filter(
+            (t) => t.subtopic_name.toLowerCase().includes(query) || t.code.toLowerCase().includes(query)
+          )
+        : theme.topics,
+    }))
+    .filter((theme) => theme.topics.length > 0);
 
   useEffect(() => {
     if (!selectedTopicId) {
@@ -81,22 +142,69 @@ export default function Home() {
       <section style={{ marginBottom: '2.5rem' }}>
         <h2 className="hm-overline">Pick a topic</h2>
         {topicsError && <p style={{ color: 'crimson' }}>Failed to load topics: {topicsError}</p>}
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          {topics.map((t) => (
-            <button
-              key={t.id}
-              className="topic-btn"
-              data-selected={t.id === selectedTopicId}
-              onClick={() => setSelectedTopicId(t.id)}
-            >
-              <div className="topic-btn-name">{t.subtopic_name}</div>
-              <div className="topic-btn-meta">
-                {t.code} &middot; {levelScopeLabel(t.level_scope)}
-              </div>
-            </button>
-          ))}
-          {topics.length === 0 && !topicsError && <p>Loading topics&hellip;</p>}
-        </div>
+
+        {topics.length === 0 && !topicsError && <p>Loading topics&hellip;</p>}
+
+        {topics.length > 0 && (
+          <>
+            <div className="pq-search-bar">
+              <Search size={16} color="var(--hm-muted)" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={`Search all ${topics.length} topics (e.g. "vectors", "binomial", "AA2.7")`}
+                className="pq-search-input"
+              />
+            </div>
+
+            {filteredThemes.map((theme) => {
+              const isOpen = query.length > 0 || (openThemes?.has(theme.name) ?? false);
+              return (
+                <div key={theme.name} className="pq-theme-section">
+                  <button
+                    className="pq-theme-header"
+                    data-open={isOpen}
+                    onClick={() => toggleTheme(theme.name)}
+                    aria-expanded={isOpen}
+                  >
+                    <span className="pq-theme-header-left">
+                      {isOpen ? (
+                        <ChevronDown size={18} color="var(--hm-navy)" />
+                      ) : (
+                        <ChevronRight size={18} color="var(--hm-navy)" />
+                      )}
+                      <span className="pq-theme-name">{formatThemeName(theme.name)}</span>
+                    </span>
+                    <span className="pq-theme-count">
+                      {theme.topics.length} topic{theme.topics.length !== 1 ? 's' : ''}
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="pq-theme-body">
+                      {theme.topics.map((t) => (
+                        <button
+                          key={t.id}
+                          className="topic-btn"
+                          data-selected={t.id === selectedTopicId}
+                          onClick={() => setSelectedTopicId(t.id)}
+                        >
+                          <div className="topic-btn-name">{t.subtopic_name}</div>
+                          <div className="topic-btn-meta">
+                            {t.code} &middot; {levelScopeLabel(t.level_scope)}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {filteredThemes.length === 0 && (
+              <p className="pq-no-results">No topics match &ldquo;{search}&rdquo; &mdash; try a different search term.</p>
+            )}
+          </>
+        )}
       </section>
 
       {selectedTopicId && (

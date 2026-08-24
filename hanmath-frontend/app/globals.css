@@ -366,3 +366,87 @@ body {
   border: 1px solid var(--hm-border);
   border-radius: var(--hm-radius);
 }
+
+/* ---- Practice Questions homepage: grouped theme accordion ---- */
+/* Topic cards inside each theme reuse .topic-btn/.topic-btn-name/.topic-btn-meta
+   above rather than a parallel set of classes -- same card, just nested under a
+   theme header instead of shown flat. Only the accordion/search chrome below is
+   new. */
+
+.pq-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  border: 1px solid var(--hm-border);
+  border-radius: var(--hm-radius);
+}
+.pq-search-input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--hm-font-sans);
+  font-size: 0.9rem;
+  color: var(--hm-body);
+}
+
+.pq-theme-section {
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--hm-border);
+  border-radius: var(--hm-radius);
+  overflow: hidden;
+  background: #fff;
+}
+.pq-theme-header {
+  width: 100%;
+  min-height: 44px; /* comfortable tap target, matches .topic-btn */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s;
+}
+.pq-theme-header[data-open='true'] {
+  background: var(--hm-gold-pale);
+}
+.pq-theme-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+.pq-theme-name {
+  font-family: var(--hm-font-serif);
+  font-weight: 700;
+  color: var(--hm-navy);
+  font-size: 1.15rem;
+}
+.pq-theme-count {
+  font-family: var(--hm-font-sans);
+  font-size: 0.82rem;
+  color: var(--hm-muted);
+  white-space: nowrap;
+}
+.pq-theme-body {
+  padding: 0.9rem 1.1rem 1.1rem;
+  background: var(--hm-cream);
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pq-no-results {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--hm-muted);
+  font-size: 0.9rem;
+}
