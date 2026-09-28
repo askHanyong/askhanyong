@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Official IB Math AA HL and SL grade boundaries from 2021 to 2026, with paper-by-paper marks needed for a 7 and a calculator.">
+  <title>IB Math AA Grade Boundaries 2021–2026: What It Really Takes to Get a 7</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: #f8f9fa;
+    }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --success: #10b981;
+      --accent: #f59e0b;
+      --neutral-light: #f3f4f6;
+      --border: #e5e7eb;
+      --text-muted: #6b7280;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #60a5fa;
+        --primary-dark: #3b82f6;
+        --success: #34d399;
+        --accent: #fbbf24;
+        --neutral-light: #1f2937;
+        --border: #374151;
+        --text-muted: #9ca3af;
+      }
+      body {
+        color: #e5e7eb;
+        background: #111827;
+      }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      margin-bottom: 40px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .byline {
+      font-size: 0.95em;
+      color: var(--text-muted);
+    }
+
+    section {
+      margin-bottom: 40px;
+      background: var(--neutral-light);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      margin-bottom: 16px;
+      color: var(--primary);
+    }
+
+    h3 {
+      font-size: 1.1em;
+      margin-top: 16px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    p {
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
+    .page-timezone {
+      background: var(--primary);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-timezone label {
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0;
+    }
+
+    .page-timezone select {
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-weight: 600;
+      min-width: 120px;
+    }
+
+    .page-timezone select option {
+      background: var(--primary-dark);
+      color: white;
+    }
+
+    .tz-help {
+      font-size: 0.85em;
+      color: rgba(255,255,255,0.8);
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .controls {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9em;
+      color: var(--text-muted);
+    }
+
+    select, input {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1em;
+      background: var(--neutral-light);
+      color: inherit;
+      min-width: 180px;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--primary);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      table {
+        background: transparent;
+      }
+    }
+
+    thead {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    th {
+      padding: 12px;
+      text-align: left;
+      font-size: 0.9em;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--neutral-light);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td.grade-7 {
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .note {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.05);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .note {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin: 30px 0;
+    }
+
+    .grade-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .grade-button {
+      padding: 8px 14px;
+      border: 2px solid var(--border);
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+
+    .grade-button.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .grade-button:hover {
+      border-color: var(--primary);
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 600px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .calc-input {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .calc-result {
+      grid-column: 1 / -1;
+      background: var(--success);
+      color: white;
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .calc-result.show {
+      display: block;
+    }
+
+    .calc-result h4 {
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+
+    .calc-result p {
+      margin-bottom: 6px;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .cta-box {
+      background: var(--primary);
+      color: white;
+      padding: 24px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .cta-box h3 {
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .cta-box a {
+      color: white;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    .source {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>IB Math AA Grade Boundaries 2021–2026: What It Really Takes to Get a 7</h1>
+      <p class="byline">By Hanyong, former IB Examiner and DP Coordinator</p>
+    </header>
+
+    <!-- Page-level timezone setting -->
+    <div class="page-timezone">
+      <div>
+        <label for="page-timezone">Your timezone:</label>
+        <select id="page-timezone">
+          <option value="1">TZ1</option>
+          <option value="2">TZ2</option>
+          <option value="3">TZ3</option>
+        </select>
+        <p class="tz-help">Not sure? Ask your IB Coordinator.</p>
+      </div>
+    </div>
+
+    <!-- Intro -->
+    <section>
+      <h2>Why Grade Boundaries Matter</h2>
+      <p>
+        Your final IB grade, that all-important 1 to 7, isn't read straight off your raw marks.
+        Your paper and IA marks are weighted into a total out of 100, and the IB sets grade
+        boundaries that turn that total into your grade. And these boundaries change every
+        session, depending on how difficult the papers were and the quality of work examiners saw.
+      </p>
+      <p>
+        This post pulls data from the official IB Mathematics AA grade boundary documents,
+        covering every May session from 2021 to 2026 and every November session from 2021 to 2025.
+      </p>
+    </section>
+
+    <!-- How Your Grade is Worked Out -->
+    <section>
+      <h2>How Your Grade is Worked Out</h2>
+      <p>
+        Your final IB grade is based on a weighted total out of 100 marks:
+      </p>
+      <h3>Higher Level (HL)</h3>
+      <p>
+        Paper 1: <strong>30%</strong> (110 marks) + Paper 2: <strong>30%</strong> (110 marks) + Paper 3: <strong>20%</strong> (55 marks) + Internal Assessment: <strong>20%</strong> (20 marks)
+      </p>
+      <h3>Standard Level (SL)</h3>
+      <p>
+        Paper 1: <strong>40%</strong> (80 marks) + Paper 2: <strong>40%</strong> (80 marks) + Internal Assessment: <strong>20%</strong> (20 marks)
+      </p>
+      <p>
+        Your weighted total out of 100 is then compared against the Overall grade boundary. A score of 70 out of 100 might be a 7 in May 2023 but a 6 in another session. The boundary moves because the cohort changes.
+      </p>
+    </section>
+
+    <!-- Interactive Boundary Table -->
+    <section>
+      <h2>Grade Boundary Tables (Paper-by-Paper)</h2>
+      <div class="controls">
+        <div class="control-group">
+          <label for="level">Level</label>
+          <select id="level">
+            <option value="HL">Higher Level (HL)</option>
+            <option value="SL">Standard Level (SL)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="session">Session</label>
+          <select id="session"></select>
+        </div>
+      </div>
+
+      <div id="covid-note" class="note" style="display:none;"></div>
+      <div id="tz-note" class="note" style="display:none;"></div>
+
+      <div class="table-wrapper">
+        <table id="boundary-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Grade 7</th>
+              <th>Grade 6</th>
+              <th>Grade 5</th>
+              <th>Grade 4</th>
+              <th>Grade 3</th>
+              <th>Grade 2</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Trend Chart -->
+    <section>
+      <h2 id="chart-title">Minimum overall % for a grade 7 — HL, TZ1</h2>
+      <p>
+        May and November grade boundaries for your timezone, tracking how they change year by year.
+      </p>
+
+      <div class="controls">
+        <div class="control-group">
+          <label>Level</label>
+          <div style="display:flex;gap:8px;">
+            <button class="grade-button active" onclick="switchLevel('HL')" style="width:auto;">HL</button>
+            <button class="grade-button" onclick="switchLevel('SL')" style="width:auto;">SL</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin:20px 0;">
+        <p style="font-size:0.9em;color:var(--text-muted);margin-bottom:12px;">Grade:</p>
+        <div class="grade-buttons" id="grade-buttons"></div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="trend-chart"></canvas>
+      </div>
+    </section>
+
+    <!-- "What Do I Need?" Calculator -->
+    <section>
+      <h2>Calculator: What Marks Do You Need?</h2>
+      <p>
+        Use this to figure out your target. Pick your level, target grade, and expected IA mark. The calculator tells you what weighted percentage you need on the papers—then converts it to raw marks per paper.
+      </p>
+
+      <div class="calculator-grid">
+        <div class="calc-input">
+          <label for="calc-level">Level</label>
+          <select id="calc-level">
+            <option value="HL">Higher Level (HL)</option>
+            <option value="SL">Standard Level (SL)</option>
+          </select>
+        </div>
+
+        <div class="calc-input">
+          <label for="calc-target">Target Grade</label>
+          <select id="calc-target">
+            <option value="7">7 (Excellence)</option>
+            <option value="6">6 (Strong)</option>
+            <option value="5">5 (Good)</option>
+          </select>
+        </div>
+
+        <div class="calc-input">
+          <label for="calc-ia">Expected IA Mark (/20)</label>
+          <input type="number" id="calc-ia" min="0" max="20" value="17" step="1">
+        </div>
+
+        <div class="calc-input">
+          <label for="calc-session">Base Boundary On</label>
+          <select id="calc-session"></select>
+        </div>
+
+        <button onclick="calculateNeeded()" style="grid-column:1/-1;">Calculate</button>
+
+        <div class="calc-result" id="calc-result">
+          <h4>Your Target</h4>
+          <p id="result-percentage"></p>
+          <p id="result-paper-marks"></p>
+          <p style="font-size:0.9em;margin-top:12px;opacity:0.9;">✓ Based on past boundaries. Future sessions will differ.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Closing + CTA -->
+    <section>
+      <h2>Aim High</h2>
+      <p>
+        Grade boundaries are a guide, not a target. They're set after each exam, based on how
+        difficult the papers were and the quality of work examiners saw, so you can't predict
+        them in advance. Aim above the boundary. If a grade 7 typically sits around 70%, target
+        75–80% to give yourself a buffer for exam-day nerves or a tougher paper.
+      </p>
+
+      <div class="cta-box">
+        <h3>Ready to practise?</h3>
+        <p>Use the AI tutor on askhanyong.com to work through past papers and refine your technique.</p>
+        <div class="button-group" style="justify-content:center;">
+          <a href="https://askhanyong.com/app" style="color:white;text-decoration:none;">Open AI Tutor</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="source">
+      <p><strong>Source:</strong> International Baccalaureate Organization grade boundary documents, 2021 – 2026.</p>
+    </div>
+  </div>
+
+  <script>
+    let csvData = [];
+    let trendChart = null;
+    let currentLevel = 'HL';
+    let currentGrade = 7;
+    let currentTimezone = 1;
+
+    async function loadCSV() {
+      try {
+        const response = await fetch('/blog/data/ib_maa_grade_boundaries_2021-2026.csv');
+        const text = await response.text();
+        const lines = text.trim().split('\n');
+        const headers = lines[0].split(',');
+
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',');
+          const row = {};
+          headers.forEach((h, idx) => {
+            const val = values[idx]?.trim();
+            row[h.trim()] = isNaN(val) ? val : parseInt(val);
+          });
+          csvData.push(row);
+        }
+
+        initPage();
+      } catch (e) {
+        console.error('Failed to load CSV:', e);
+      }
+    }
+
+    function initPage() {
+      populateSessions();
+      populateGradeButtons();
+      updateTable();
+      drawTrendChart();
+
+      document.getElementById('page-timezone').addEventListener('change', (e) => {
+        currentTimezone = parseInt(e.target.value);
+        updateTable();
+        drawTrendChart();
+        updateChartTitle();
+      });
+
+      document.getElementById('level').addEventListener('change', (e) => {
+        currentLevel = e.target.value;
+        updateTable();
+      });
+
+      document.getElementById('session').addEventListener('change', updateTable);
+    }
+
+    function populateSessions() {
+      const sessions = [...new Set(csvData.map(d => d.session))];
+      const sessionSelect = document.getElementById('session');
+      sessionSelect.innerHTML = '';
+      sessions.reverse().forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        sessionSelect.appendChild(opt);
+      });
+
+      document.getElementById('calc-session').innerHTML = sessionSelect.innerHTML;
+    }
+
+    function populateGradeButtons() {
+      const container = document.getElementById('grade-buttons');
+      container.innerHTML = '';
+      for (let g = 7; g >= 2; g--) {
+        const btn = document.createElement('button');
+        btn.className = 'grade-button' + (g === 7 ? ' active' : '');
+        btn.textContent = g;
+        btn.onclick = () => switchGrade(g);
+        container.appendChild(btn);
+      }
+      const allBtn = document.createElement('button');
+      allBtn.className = 'grade-button';
+      allBtn.textContent = 'All grades';
+      allBtn.onclick = () => switchGrade('all');
+      container.appendChild(allBtn);
+    }
+
+    function updateTable() {
+      const level = document.getElementById('level').value;
+      const session = document.getElementById('session').value;
+      const tz = currentTimezone;
+
+      // Check for TZ0 (one paper for all timezones)
+      const tz0Rows = csvData.filter(d => d.level === level && d.session === session && d.timezone === 0);
+      let rows;
+      let isTz0 = false;
+
+      if (tz0Rows.length > 0) {
+        rows = tz0Rows;
+        isTz0 = true;
+      } else {
+        rows = csvData.filter(d => d.level === level && d.session === session && d.timezone === tz);
+      }
+
+      // Check for COVID note
+      const covidRow = rows.find(d => d.note && d.note.includes('COVID'));
+      const noteDiv = document.getElementById('covid-note');
+      if (covidRow) {
+        noteDiv.innerHTML = `⚠️ <strong>${covidRow.note}</strong>`;
+        noteDiv.style.display = 'block';
+      } else {
+        noteDiv.style.display = 'none';
+      }
+
+      // Check for TZ0 note
+      const tzNoteDiv = document.getElementById('tz-note');
+      if (isTz0) {
+        tzNoteDiv.innerHTML = `ℹ️ <strong>One paper for all timezones</strong> — this session had the same paper across all timezones.`;
+        tzNoteDiv.style.display = 'block';
+      } else if (rows.length === 0) {
+        tzNoteDiv.innerHTML = `ℹ️ <strong>No TZ${tz} paper this session</strong> — this timezone was not offered.`;
+        tzNoteDiv.style.display = 'block';
+      } else {
+        tzNoteDiv.style.display = 'none';
+      }
+
+      const components = level === 'HL' ? ['Paper 1', 'Paper 2', 'Paper 3', 'IA', 'Overall'] : ['Paper 1', 'Paper 2', 'IA', 'Overall'];
+      const tbody = document.querySelector('#boundary-table tbody');
+      tbody.innerHTML = '';
+
+      components.forEach(comp => {
+        const compRows = rows.filter(d => d.component === comp);
+        if (!compRows.length) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><strong>${comp}</strong></td><td colspan="6" style="text-align:center;color:var(--text-muted);">—</td>`;
+          tbody.appendChild(tr);
+          return;
+        }
+
+        const tr = document.createElement('tr');
+        const maxMarks = compRows[0].component_max;
+        let html = `<td><strong>${comp}</strong> (/${maxMarks})</td>`;
+
+        for (let grade = 7; grade >= 2; grade--) {
+          const row = compRows.find(d => d.grade === grade);
+          if (row) {
+            html += `<td${grade === 7 ? ' class="grade-7"' : ''}>${row.min_mark}</td>`;
+          } else {
+            html += '<td>—</td>';
+          }
+        }
+
+        tr.innerHTML = html;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function switchLevel(level) {
+      currentLevel = level;
+      document.querySelectorAll('.controls > .control-group:last-child .grade-button').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      drawTrendChart();
+      updateChartTitle();
+    }
+
+    function switchGrade(grade) {
+      currentGrade = grade;
+      document.querySelectorAll('.grade-buttons .grade-button').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      drawTrendChart();
+      updateChartTitle();
+    }
+
+    function updateChartTitle() {
+      const gradeText = currentGrade === 'all' ? 'All grades' : `grade ${currentGrade}`;
+      const title = `Minimum overall % for a ${gradeText} — ${currentLevel}, TZ${currentTimezone}`;
+      document.getElementById('chart-title').textContent = title;
+    }
+
+    function drawTrendChart() {
+      const sessions = [...new Set(csvData.filter(d => d.level === currentLevel && d.component === 'Overall').map(d => d.session))];
+      const years = [2021, 2022, 2023, 2024, 2025, 2026];
+
+      if (currentGrade === 'all') {
+        drawAllGradesChart(sessions, years);
+      } else {
+        drawSingleGradeChart(sessions, years);
+      }
+    }
+
+    function getTZValue(session, tz, grade) {
+      // If TZ0 exists, use it. Otherwise use selected TZ.
+      let rows = csvData.filter(d => d.session === session && d.level === currentLevel && d.component === 'Overall' && d.grade === grade && d.timezone === 0);
+      if (rows.length > 0) return rows[0].min_mark;
+
+      rows = csvData.filter(d => d.session === session && d.level === currentLevel && d.component === 'Overall' && d.grade === grade && d.timezone === tz);
+      return rows.length > 0 ? rows[0].min_mark : null;
+    }
+
+    function drawSingleGradeChart(sessions, years) {
+      const mayData = [];
+      const novData = [];
+
+      years.forEach(year => {
+        const maySess = sessions.find(s => s.includes('May') && s.includes(year));
+        const novSess = sessions.find(s => s.includes('Nov') && s.includes(year));
+
+        if (maySess) {
+          mayData.push(getTZValue(maySess, currentTimezone, currentGrade));
+        } else {
+          mayData.push(null);
+        }
+
+        if (novSess) {
+          novData.push(getTZValue(novSess, currentTimezone, currentGrade));
+        } else {
+          novData.push(null);
+        }
+      });
+
+      if (trendChart) trendChart.destroy();
+
+      const ctx = document.getElementById('trend-chart').getContext('2d');
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: 'May',
+              data: mayData,
+              borderColor: '#3b82f6',
+              backgroundColor: '#3b82f620',
+              spanGaps: false,
+              tension: 0,
+              borderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7
+            },
+            {
+              label: 'November',
+              data: novData,
+              borderColor: '#ef4444',
+              backgroundColor: '#ef444420',
+              spanGaps: false,
+              tension: 0,
+              borderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'top' },
+            tooltip: {
+              backgroundColor: '#000',
+              padding: 12,
+              titleFont: { size: 12, weight: 'bold' },
+              callbacks: {
+                title: function(context) {
+                  const year = context[0].label;
+                  const month = context[0].datasetIndex === 0 ? 'May' : 'Nov';
+                  return `${month} ${year} · ${currentLevel} · Grade ${currentGrade} · TZ${currentTimezone}`;
+                },
+                label: function(context) {
+                  if (context.parsed.y === null) return 'No data';
+                  return `Minimum: ${context.parsed.y}%`;
+                },
+                afterLabel: function(context) {
+                  const year = context.label;
+                  const month = context.datasetIndex === 0 ? 'May' : 'Nov';
+                  const sessFull = [...new Set(csvData.map(d => d.session))].find(s => s.includes(month) && s.includes(year));
+                  if (sessFull && sessFull.includes('COVID')) return 'COVID-adjusted session';
+                  return '';
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { stepSize: 10 },
+              title: { display: true, text: `Grade ${currentGrade} boundary (%)` }
+            }
+          }
+        }
+      });
+    }
+
+    function drawAllGradesChart() {
+      // Show all grades for May only, with TZ-specific data
+      const sessions = [...new Set(csvData.filter(d => d.level === currentLevel && d.component === 'Overall').map(d => d.session))];
+      const maySessions = sessions.filter(s => s.includes('May')).sort();
+      const years = maySessions.map(s => parseInt(s.split(' ')[1]));
+
+      const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+      const datasets = [];
+
+      for (let grade = 7; grade >= 2; grade--) {
+        const gradeData = [];
+        maySessions.forEach(sess => {
+          gradeData.push(getTZValue(sess, currentTimezone, grade));
+        });
+
+        datasets.push({
+          label: 'Grade ' + grade,
+          data: gradeData,
+          borderColor: colors[7 - grade],
+          backgroundColor: colors[7 - grade] + '20',
+          spanGaps: false,
+          tension: 0,
+          borderWidth: 2,
+          pointRadius: 4
+        });
+      }
+
+      if (trendChart) trendChart.destroy();
+
+      const ctx = document.getElementById('trend-chart').getContext('2d');
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: years, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'top' },
+            title: { display: true, text: `All grades — ${currentLevel} May sessions, TZ${currentTimezone}` }
+          },
+          scales: { y: { beginAtZero: true, max: 100 } }
+        }
+      });
+    }
+
+    function calculateNeeded() {
+      const level = document.getElementById('calc-level').value;
+      const target = parseInt(document.getElementById('calc-target').value);
+      const iaExpected = parseInt(document.getElementById('calc-ia').value);
+      const session = document.getElementById('calc-session').value;
+
+      const allOverall = csvData.filter(d => d.component === 'Overall' && d.level === level && d.session === session);
+      if (!allOverall.length) {
+        alert('No data for this session');
+        return;
+      }
+
+      const avgBoundary = Math.round(allOverall.reduce((sum, d) => sum + d.min_mark, 0) / allOverall.length);
+      const targetBoundary = allOverall.find(d => d.grade === target)?.min_mark || avgBoundary;
+
+      const iaWeighted = (iaExpected / 20) * 20;
+      const paperNeeded = targetBoundary - iaWeighted;
+      const paperPercent = Math.round((paperNeeded / 80) * 100);
+
+      let result = '';
+      if (level === 'HL') {
+        const p1 = Math.round((paperPercent / 100) * 110);
+        const p2 = Math.round((paperPercent / 100) * 110);
+        const p3 = Math.round((paperPercent / 100) * 55);
+        result = `<strong>${paperPercent}% on papers</strong><br>
+          Paper 1: ${p1}/110 | Paper 2: ${p2}/110 | Paper 3: ${p3}/55`;
+      } else {
+        const p1 = Math.round((paperPercent / 100) * 80);
+        const p2 = Math.round((paperPercent / 100) * 80);
+        result = `<strong>${paperPercent}% on papers</strong><br>
+          Paper 1: ${p1}/80 | Paper 2: ${p2}/80`;
+      }
+
+      document.getElementById('result-percentage').innerHTML = `To reach a <strong>${target}</strong> overall, you need <strong>${targetBoundary}/100</strong> weighted.`;
+      document.getElementById('result-paper-marks').innerHTML = result;
+      document.getElementById('calc-result').classList.add('show');
+    }
+
+    loadCSV();
+  </script>
+</body>
+</html>
