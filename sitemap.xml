@@ -12,8 +12,14 @@
   </url>
   <url>
     <loc>https://askhanyong.com/blog</loc>
-    <lastmod>2026-03-21</lastmod>
+    <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://askhanyong.com/blog/ib-math-aa-grade-boundaries</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
