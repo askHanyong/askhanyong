@@ -94,6 +94,46 @@
       line-height: 1.7;
     }
 
+    .page-timezone {
+      background: var(--primary);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-timezone label {
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0;
+    }
+
+    .page-timezone select {
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-weight: 600;
+      min-width: 120px;
+    }
+
+    .page-timezone select option {
+      background: var(--primary-dark);
+      color: white;
+    }
+
+    .tz-help {
+      font-size: 0.85em;
+      color: rgba(255,255,255,0.8);
+      margin-top: 8px;
+      width: 100%;
+    }
+
     .controls {
       display: flex;
       gap: 16px;
@@ -338,6 +378,19 @@
       <p class="byline">By Hanyong, former IB Examiner and DP Coordinator</p>
     </header>
 
+    <!-- Page-level timezone setting -->
+    <div class="page-timezone">
+      <div>
+        <label for="page-timezone">Your timezone:</label>
+        <select id="page-timezone">
+          <option value="1">TZ1</option>
+          <option value="2">TZ2</option>
+          <option value="3">TZ3</option>
+        </select>
+        <p class="tz-help">Not sure? Ask your IB Coordinator.</p>
+      </div>
+    </div>
+
     <!-- Intro -->
     <section>
       <h2>Why Grade Boundaries Matter</h2>
@@ -387,13 +440,10 @@
           <label for="session">Session</label>
           <select id="session"></select>
         </div>
-        <div class="control-group">
-          <label for="timezone">Timezone</label>
-          <select id="timezone"></select>
-        </div>
       </div>
 
       <div id="covid-note" class="note" style="display:none;"></div>
+      <div id="tz-note" class="note" style="display:none;"></div>
 
       <div class="table-wrapper">
         <table id="boundary-table">
@@ -415,9 +465,9 @@
 
     <!-- Trend Chart -->
     <section>
-      <h2>Grade Boundary Trend (2021–2026)</h2>
+      <h2 id="chart-title">Minimum overall % for a grade 7 — HL, TZ1</h2>
       <p>
-        Which sessions have easier or harder grade 7 boundaries? Here's the grade 7 minimum mark for Overall, tracked across all sessions and timezones.
+        May and November grade boundaries for your timezone, tracking how they change year by year.
       </p>
 
       <div class="controls">
@@ -438,9 +488,6 @@
       <div class="chart-container">
         <canvas id="trend-chart"></canvas>
       </div>
-      <p style="font-size:0.9em; color:var(--text-muted); margin-top:16px;">
-        <em>Each point = average across all timezones for that session. Hover for timezone details.</em>
-      </p>
     </section>
 
     <!-- "What Do I Need?" Calculator -->
@@ -518,8 +565,8 @@
     let trendChart = null;
     let currentLevel = 'HL';
     let currentGrade = 7;
+    let currentTimezone = 1;
 
-    // Load CSV on page load
     async function loadCSV() {
       try {
         const response = await fetch('/blog/data/ib_maa_grade_boundaries_2021-2026.csv');
@@ -546,7 +593,22 @@
     function initPage() {
       populateSessions();
       populateGradeButtons();
-      getTimezones();
+      updateTable();
+      drawTrendChart();
+
+      document.getElementById('page-timezone').addEventListener('change', (e) => {
+        currentTimezone = parseInt(e.target.value);
+        updateTable();
+        drawTrendChart();
+        updateChartTitle();
+      });
+
+      document.getElementById('level').addEventListener('change', (e) => {
+        currentLevel = e.target.value;
+        updateTable();
+      });
+
+      document.getElementById('session').addEventListener('change', updateTable);
     }
 
     function populateSessions() {
@@ -559,9 +621,7 @@
         opt.textContent = s;
         sessionSelect.appendChild(opt);
       });
-      sessionSelect.addEventListener('change', getTimezones);
 
-      // Also populate calculator session
       document.getElementById('calc-session').innerHTML = sessionSelect.innerHTML;
     }
 
@@ -571,43 +631,36 @@
       for (let g = 7; g >= 2; g--) {
         const btn = document.createElement('button');
         btn.className = 'grade-button' + (g === 7 ? ' active' : '');
-        btn.textContent = '[' + g + ']';
+        btn.textContent = g;
         btn.onclick = () => switchGrade(g);
         container.appendChild(btn);
       }
       const allBtn = document.createElement('button');
       allBtn.className = 'grade-button';
-      allBtn.textContent = '[All]';
+      allBtn.textContent = 'All grades';
       allBtn.onclick = () => switchGrade('all');
       container.appendChild(allBtn);
-    }
-
-    function getTimezones() {
-      const level = document.getElementById('level').value;
-      const session = document.getElementById('session').value;
-      const tzs = [...new Set(csvData.filter(d => d.level === level && d.session === session && d.component === 'Overall').map(d => d.timezone))].sort((a, b) => a - b);
-
-      const tzSelect = document.getElementById('timezone');
-      tzSelect.innerHTML = '';
-      tzs.forEach(tz => {
-        const opt = document.createElement('option');
-        opt.value = tz;
-        opt.textContent = tz === 0 ? 'All Timezones' : 'TZ' + tz;
-        tzSelect.appendChild(opt);
-      });
-
-      tzSelect.addEventListener('change', updateTable);
-      updateTable();
     }
 
     function updateTable() {
       const level = document.getElementById('level').value;
       const session = document.getElementById('session').value;
-      const timezone = parseInt(document.getElementById('timezone').value);
-      const filtered = csvData.filter(d => d.level === level && d.session === session && d.timezone === timezone);
+      const tz = currentTimezone;
+
+      // Check for TZ0 (one paper for all timezones)
+      const tz0Rows = csvData.filter(d => d.level === level && d.session === session && d.timezone === 0);
+      let rows;
+      let isTz0 = false;
+
+      if (tz0Rows.length > 0) {
+        rows = tz0Rows;
+        isTz0 = true;
+      } else {
+        rows = csvData.filter(d => d.level === level && d.session === session && d.timezone === tz);
+      }
 
       // Check for COVID note
-      const covidRow = filtered.find(d => d.note && d.note.includes('COVID'));
+      const covidRow = rows.find(d => d.note && d.note.includes('COVID'));
       const noteDiv = document.getElementById('covid-note');
       if (covidRow) {
         noteDiv.innerHTML = `⚠️ <strong>${covidRow.note}</strong>`;
@@ -616,20 +669,37 @@
         noteDiv.style.display = 'none';
       }
 
+      // Check for TZ0 note
+      const tzNoteDiv = document.getElementById('tz-note');
+      if (isTz0) {
+        tzNoteDiv.innerHTML = `ℹ️ <strong>One paper for all timezones</strong> — this session had the same paper across all timezones.`;
+        tzNoteDiv.style.display = 'block';
+      } else if (rows.length === 0) {
+        tzNoteDiv.innerHTML = `ℹ️ <strong>No TZ${tz} paper this session</strong> — this timezone was not offered.`;
+        tzNoteDiv.style.display = 'block';
+      } else {
+        tzNoteDiv.style.display = 'none';
+      }
+
       const components = level === 'HL' ? ['Paper 1', 'Paper 2', 'Paper 3', 'IA', 'Overall'] : ['Paper 1', 'Paper 2', 'IA', 'Overall'];
       const tbody = document.querySelector('#boundary-table tbody');
       tbody.innerHTML = '';
 
       components.forEach(comp => {
-        const rows = filtered.filter(d => d.component === comp);
-        if (!rows.length) return;
+        const compRows = rows.filter(d => d.component === comp);
+        if (!compRows.length) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><strong>${comp}</strong></td><td colspan="6" style="text-align:center;color:var(--text-muted);">—</td>`;
+          tbody.appendChild(tr);
+          return;
+        }
 
         const tr = document.createElement('tr');
-        const maxMarks = rows[0].component_max;
+        const maxMarks = compRows[0].component_max;
         let html = `<td><strong>${comp}</strong> (/${maxMarks})</td>`;
 
         for (let grade = 7; grade >= 2; grade--) {
-          const row = rows.find(d => d.grade === grade);
+          const row = compRows.find(d => d.grade === grade);
           if (row) {
             html += `<td${grade === 7 ? ' class="grade-7"' : ''}>${row.min_mark}</td>`;
           } else {
@@ -644,9 +714,10 @@
 
     function switchLevel(level) {
       currentLevel = level;
-      document.querySelectorAll('.controls > .control-group:first-child .grade-button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.controls > .control-group:last-child .grade-button').forEach(b => b.classList.remove('active'));
       event.target.classList.add('active');
       drawTrendChart();
+      updateChartTitle();
     }
 
     function switchGrade(grade) {
@@ -654,6 +725,13 @@
       document.querySelectorAll('.grade-buttons .grade-button').forEach(b => b.classList.remove('active'));
       event.target.classList.add('active');
       drawTrendChart();
+      updateChartTitle();
+    }
+
+    function updateChartTitle() {
+      const gradeText = currentGrade === 'all' ? 'All grades' : `grade ${currentGrade}`;
+      const title = `Minimum overall % for a ${gradeText} — ${currentLevel}, TZ${currentTimezone}`;
+      document.getElementById('chart-title').textContent = title;
     }
 
     function drawTrendChart() {
@@ -661,14 +739,22 @@
       const years = [2021, 2022, 2023, 2024, 2025, 2026];
 
       if (currentGrade === 'all') {
-        drawAllGradesChart(sessions);
+        drawAllGradesChart(sessions, years);
       } else {
         drawSingleGradeChart(sessions, years);
       }
     }
 
+    function getTZValue(session, tz, grade) {
+      // If TZ0 exists, use it. Otherwise use selected TZ.
+      let rows = csvData.filter(d => d.session === session && d.level === currentLevel && d.component === 'Overall' && d.grade === grade && d.timezone === 0);
+      if (rows.length > 0) return rows[0].min_mark;
+
+      rows = csvData.filter(d => d.session === session && d.level === currentLevel && d.component === 'Overall' && d.grade === grade && d.timezone === tz);
+      return rows.length > 0 ? rows[0].min_mark : null;
+    }
+
     function drawSingleGradeChart(sessions, years) {
-      const datasets = [];
       const mayData = [];
       const novData = [];
 
@@ -677,17 +763,13 @@
         const novSess = sessions.find(s => s.includes('Nov') && s.includes(year));
 
         if (maySess) {
-          const tzData = csvData.filter(d => d.session === maySess && d.level === currentLevel && d.component === 'Overall' && d.grade === currentGrade);
-          const avg = tzData.length ? (tzData.reduce((sum, d) => sum + d.min_mark, 0) / tzData.length).toFixed(1) : null;
-          mayData.push(avg ? parseFloat(avg) : null);
+          mayData.push(getTZValue(maySess, currentTimezone, currentGrade));
         } else {
           mayData.push(null);
         }
 
         if (novSess) {
-          const tzData = csvData.filter(d => d.session === novSess && d.level === currentLevel && d.component === 'Overall' && d.grade === currentGrade);
-          const avg = tzData.length ? (tzData.reduce((sum, d) => sum + d.min_mark, 0) / tzData.length).toFixed(1) : null;
-          novData.push(avg ? parseFloat(avg) : null);
+          novData.push(getTZValue(novSess, currentTimezone, currentGrade));
         } else {
           novData.push(null);
         }
@@ -706,6 +788,7 @@
               data: mayData,
               borderColor: '#3b82f6',
               backgroundColor: '#3b82f620',
+              spanGaps: false,
               tension: 0,
               borderWidth: 2,
               pointRadius: 5,
@@ -716,6 +799,7 @@
               data: novData,
               borderColor: '#ef4444',
               backgroundColor: '#ef444420',
+              spanGaps: false,
               tension: 0,
               borderWidth: 2,
               pointRadius: 5,
@@ -728,24 +812,26 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: true, position: 'top' },
-            title: {
-              display: true,
-              text: `Minimum overall % for a grade ${currentGrade} — ${currentLevel}`
-            },
             tooltip: {
               backgroundColor: '#000',
               padding: 12,
               titleFont: { size: 12, weight: 'bold' },
               callbacks: {
-                afterTitle: function(context) {
+                title: function(context) {
                   const year = context[0].label;
-                  const session = context[0].datasetIndex === 0 ? 'May' : 'Nov';
-                  const sessFull = sessions.find(s => s.includes(session) && s.includes(year));
-                  if (sessFull && sessFull.includes('COVID')) return 'COVID-adjusted session';
-                  return '';
+                  const month = context[0].datasetIndex === 0 ? 'May' : 'Nov';
+                  return `${month} ${year} · ${currentLevel} · Grade ${currentGrade} · TZ${currentTimezone}`;
                 },
                 label: function(context) {
-                  return `Average: ${context.parsed.y}%`;
+                  if (context.parsed.y === null) return 'No data';
+                  return `Minimum: ${context.parsed.y}%`;
+                },
+                afterLabel: function(context) {
+                  const year = context.label;
+                  const month = context.datasetIndex === 0 ? 'May' : 'Nov';
+                  const sessFull = [...new Set(csvData.map(d => d.session))].find(s => s.includes(month) && s.includes(year));
+                  if (sessFull && sessFull.includes('COVID')) return 'COVID-adjusted session';
+                  return '';
                 }
               }
             }
@@ -755,7 +841,7 @@
               beginAtZero: true,
               max: 100,
               ticks: { stepSize: 10 },
-              title: { display: true, text: 'Grade ' + currentGrade + ' boundary (%)' }
+              title: { display: true, text: `Grade ${currentGrade} boundary (%)` }
             }
           }
         }
@@ -763,8 +849,7 @@
     }
 
     function drawAllGradesChart() {
-      // Simplified: show May/Nov toggle
-      // For now, show May with all grades
+      // Show all grades for May only, with TZ-specific data
       const sessions = [...new Set(csvData.filter(d => d.level === currentLevel && d.component === 'Overall').map(d => d.session))];
       const maySessions = sessions.filter(s => s.includes('May')).sort();
       const years = maySessions.map(s => parseInt(s.split(' ')[1]));
@@ -774,11 +859,8 @@
 
       for (let grade = 7; grade >= 2; grade--) {
         const gradeData = [];
-        years.forEach(year => {
-          const sess = maySessions.find(s => s.includes(year));
-          const tzData = csvData.filter(d => d.session === sess && d.level === currentLevel && d.component === 'Overall' && d.grade === grade);
-          const avg = tzData.length ? (tzData.reduce((sum, d) => sum + d.min_mark, 0) / tzData.length).toFixed(1) : null;
-          gradeData.push(avg ? parseFloat(avg) : null);
+        maySessions.forEach(sess => {
+          gradeData.push(getTZValue(sess, currentTimezone, grade));
         });
 
         datasets.push({
@@ -786,6 +868,7 @@
           data: gradeData,
           borderColor: colors[7 - grade],
           backgroundColor: colors[7 - grade] + '20',
+          spanGaps: false,
           tension: 0,
           borderWidth: 2,
           pointRadius: 4
@@ -803,7 +886,7 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: true, position: 'top' },
-            title: { display: true, text: `All grades — ${currentLevel} May sessions` }
+            title: { display: true, text: `All grades — ${currentLevel} May sessions, TZ${currentTimezone}` }
           },
           scales: { y: { beginAtZero: true, max: 100 } }
         }
@@ -848,7 +931,6 @@
       document.getElementById('calc-result').classList.add('show');
     }
 
-    // Init
     loadCSV();
   </script>
 </body>
