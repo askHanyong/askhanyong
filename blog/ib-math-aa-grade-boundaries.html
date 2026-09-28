@@ -198,6 +198,34 @@
       margin: 30px 0;
     }
 
+    .grade-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .grade-button {
+      padding: 8px 14px;
+      border: 2px solid var(--border);
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+
+    .grade-button.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .grade-button:hover {
+      border-color: var(--primary);
+    }
+
     .calculator-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -273,14 +301,6 @@
       text-decoration: underline;
     }
 
-    .key-takeaway {
-      background: rgba(59, 130, 246, 0.1);
-      border-left: 4px solid var(--primary);
-      padding: 12px;
-      margin: 12px 0;
-      border-radius: 4px;
-    }
-
     .cta-box {
       background: var(--primary);
       color: white;
@@ -309,37 +329,6 @@
       border-top: 1px solid var(--border);
       text-align: center;
     }
-
-    .tab-buttons {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid var(--border);
-    }
-
-    .tab-button {
-      background: transparent;
-      color: var(--text-muted);
-      border: none;
-      padding: 12px 16px;
-      border-bottom: 3px solid transparent;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .tab-button.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
   </style>
 </head>
 <body>
@@ -353,13 +342,14 @@
     <section>
       <h2>Why Grade Boundaries Matter</h2>
       <p>
-        Your final IB grade—that all-important 1 to 7—isn't calculated directly from your raw marks. Instead, the IB sets a <strong>grade boundary</strong> each exam session. This boundary translates your total weighted marks out of 100 into your grade. The catch? These boundaries change every session based on how the cohort performed.
+        Your final IB grade, that all-important 1 to 7, isn't read straight off your raw marks.
+        Your paper and IA marks are weighted into a total out of 100, and the IB sets grade
+        boundaries that turn that total into your grade. And these boundaries change every
+        session, depending on how difficult the papers were and the quality of work examiners saw.
       </p>
       <p>
-        This post pulls data from the official IB Mathematics AA grade boundary documents from May 2021 through May 2026. I've marked IB scripts as an examiner, so I've seen firsthand how these numbers get set—and what they really mean for your performance.
-      </p>
-      <p>
-        All numbers below are directly from IB published data. No rounding, no estimates. The patterns are real.
+        This post pulls data from the official IB Mathematics AA grade boundary documents,
+        covering every May session from 2021 to 2026 and every November session from 2021 to 2025.
       </p>
     </section>
 
@@ -395,15 +385,11 @@
         </div>
         <div class="control-group">
           <label for="session">Session</label>
-          <select id="session">
-            <option selected>May 2026</option>
-          </select>
+          <select id="session"></select>
         </div>
         <div class="control-group">
           <label for="timezone">Timezone</label>
-          <select id="timezone">
-            <option>TZ1</option>
-          </select>
+          <select id="timezone"></select>
         </div>
       </div>
 
@@ -429,45 +415,32 @@
 
     <!-- Trend Chart -->
     <section>
-      <h2>Grade 7 Boundary Trend (2021–2026)</h2>
+      <h2>Grade Boundary Trend (2021–2026)</h2>
       <p>
         Which sessions have easier or harder grade 7 boundaries? Here's the grade 7 minimum mark for Overall, tracked across all sessions and timezones.
       </p>
-      <div class="tab-buttons">
-        <button class="tab-button active" onclick="switchChart('HL')">HL</button>
-        <button class="tab-button" onclick="switchChart('SL')">SL</button>
+
+      <div class="controls">
+        <div class="control-group">
+          <label>Level</label>
+          <div style="display:flex;gap:8px;">
+            <button class="grade-button active" onclick="switchLevel('HL')" style="width:auto;">HL</button>
+            <button class="grade-button" onclick="switchLevel('SL')" style="width:auto;">SL</button>
+          </div>
+        </div>
       </div>
+
+      <div style="margin:20px 0;">
+        <p style="font-size:0.9em;color:var(--text-muted);margin-bottom:12px;">Grade:</p>
+        <div class="grade-buttons" id="grade-buttons"></div>
+      </div>
+
       <div class="chart-container">
         <canvas id="trend-chart"></canvas>
       </div>
       <p style="font-size:0.9em; color:var(--text-muted); margin-top:16px;">
-        <em>Each dot represents a timezone. Lines connect the average across timezones within a season (May or November). The boundary shows what you need out of 100 to reach a 7.</em>
+        <em>Each point = average across all timezones for that session. Hover for timezone details.</em>
       </p>
-    </section>
-
-    <!-- Key Takeaways -->
-    <section>
-      <h2>Key Takeaways from the Data</h2>
-
-      <div class="key-takeaway">
-        <strong>November is consistently harder.</strong> SL students targeting a 7 in November need 80% in every recent session (2023–2025). In May, the same boundary ranges from 65–79%. HL shows a similar gap: November sits around 78–79%, May around 70–76%.
-      </div>
-
-      <div class="key-takeaway">
-        <strong>HL grade 7 in May has stabilised.</strong> Since 2024, May HL boundaries have clustered around 71–76%. This is more predictable than 2021–2023, which were COVID-adjusted and volatile.
-      </div>
-
-      <div class="key-takeaway">
-        <strong>The IA is the most stable component.</strong> Grade 7 on the IA: 17/20 at HL, 18/20 at SL. This has never changed across all 11 sessions. If you secure a strong IA (17+), you're locking in marks you can predict—one less variable when you plan your paper goals.
-      </div>
-
-      <div class="key-takeaway">
-        <strong>2021 and 2022 were different.</strong> The IB explicitly noted these as COVID-adjusted sessions. Don't treat a 63/100 (May 2021 HL) as your target when recent May sessions sit at 70+. Use 2023 onwards as your benchmark.
-      </div>
-
-      <div class="key-takeaway">
-        <strong>Timezones matter, but not drastically.</strong> The boundaries do vary by timezone (sometimes by 2–4 marks), but the pattern is consistent: you can predict your target from the overall session trend, then adjust slightly for your timezone.
-      </div>
     </section>
 
     <!-- "What Do I Need?" Calculator -->
@@ -502,9 +475,7 @@
 
         <div class="calc-input">
           <label for="calc-session">Base Boundary On</label>
-          <select id="calc-session">
-            <option selected>May 2026</option>
-          </select>
+          <select id="calc-session"></select>
         </div>
 
         <button onclick="calculateNeeded()" style="grid-column:1/-1;">Calculate</button>
@@ -522,7 +493,10 @@
     <section>
       <h2>Aim High</h2>
       <p>
-        Grade boundaries are a guide, not a target. The IB doesn't pre-set them to hit a specific score; they emerge from how the cohort performed. Aim <em>above</em> the boundary. If a grade 7 typically sits at 70%, target 75–80% to give yourself a buffer for exam day nerves or trickier question papers.
+        Grade boundaries are a guide, not a target. They're set after each exam, based on how
+        difficult the papers were and the quality of work examiners saw, so you can't predict
+        them in advance. Aim above the boundary. If a grade 7 typically sits around 70%, target
+        75–80% to give yourself a buffer for exam-day nerves or a tougher paper.
       </p>
 
       <div class="cta-box">
@@ -531,154 +505,88 @@
         <div class="button-group" style="justify-content:center;">
           <a href="https://askhanyong.com/app" style="color:white;text-decoration:none;">Open AI Tutor</a>
         </div>
-        <p style="margin-top:12px;font-size:0.95em;">
-          Or book a <a href="https://hanmath.com" style="color:white;text-decoration:underline;">1-to-1 session</a> for bespoke exam prep.
-        </p>
       </div>
     </section>
 
     <div class="source">
-      <p><strong>Source:</strong> International Baccalaureate Organization grade boundary documents, May 2021 – May 2026. Some IB tables list the top of a range one mark below the paper maximum; these are shown as printed.</p>
+      <p><strong>Source:</strong> International Baccalaureate Organization grade boundary documents, 2021 – 2026.</p>
     </div>
   </div>
 
   <script>
-    // CSV data embedded
-    const csvData = [
-      {session_order:"2021-05",session:"May 2021",level:"HL",timezone:1,component:"Overall",grade:7,min_mark:63,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2021-05",session:"May 2021",level:"HL",timezone:2,component:"Overall",grade:7,min_mark:69,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2021-05",session:"May 2021",level:"SL",timezone:1,component:"Overall",grade:7,min_mark:63,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2021-05",session:"May 2021",level:"SL",timezone:2,component:"Overall",grade:7,min_mark:72,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2021-11",session:"Nov 2021",level:"HL",timezone:0,component:"Overall",grade:7,min_mark:67,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2021-11",session:"Nov 2021",level:"SL",timezone:0,component:"Overall",grade:7,min_mark:68,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2022-05",session:"May 2022",level:"HL",timezone:1,component:"Overall",grade:7,min_mark:65,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2022-05",session:"May 2022",level:"HL",timezone:2,component:"Overall",grade:7,min_mark:65,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2022-05",session:"May 2022",level:"SL",timezone:1,component:"Overall",grade:7,min_mark:66,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2022-05",session:"May 2022",level:"SL",timezone:2,component:"Overall",grade:7,min_mark:71,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2022-11",session:"Nov 2022",level:"HL",timezone:0,component:"Overall",grade:7,min_mark:73,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2022-11",session:"Nov 2022",level:"SL",timezone:0,component:"Overall",grade:7,min_mark:75,component_max:100,note:"COVID-adjusted session; IB published overall boundaries only"},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:1,component:"Overall",grade:7,min_mark:70,max_mark:100,component_max:100},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:1,component:"Paper 1",grade:7,min_mark:75,component_max:110},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:1,component:"Paper 2",grade:7,min_mark:73,component_max:110},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:1,component:"Paper 3",grade:7,min_mark:36,component_max:55},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:1,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:2,component:"Overall",grade:7,min_mark:70,component_max:100},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:2,component:"Paper 1",grade:7,min_mark:76,component_max:110},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:2,component:"Paper 2",grade:7,min_mark:74,component_max:110},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:2,component:"Paper 3",grade:7,min_mark:36,component_max:55},
-      {session_order:"2023-05",session:"May 2023",level:"HL",timezone:2,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2023-05",session:"May 2023",level:"SL",timezone:1,component:"Overall",grade:7,min_mark:79,component_max:100},
-      {session_order:"2023-05",session:"May 2023",level:"SL",timezone:1,component:"Paper 1",grade:7,min_mark:62,component_max:80},
-      {session_order:"2023-05",session:"May 2023",level:"SL",timezone:1,component:"Paper 2",grade:7,min_mark:62,component_max:80},
-      {session_order:"2023-05",session:"May 2023",level:"SL",timezone:1,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2023-05",session:"May 2023",level:"SL",timezone:2,component:"Overall",grade:7,min_mark:75,component_max:100},
-      {session_order:"2023-05",session:"May 2023",level:"SL",timezone:2,component:"Paper 1",grade:7,min_mark:58,component_max:80},
-      {session_order:"2023-05",session:"May 2023",level:"SL",timezone:2,component:"Paper 2",grade:7,min_mark:58,component_max:80},
-      {session_order:"2023-05",session:"May 2023",level:"SL",timezone:2,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:1,component:"Overall",grade:7,min_mark:78,component_max:100},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:1,component:"Paper 1",grade:7,min_mark:86,component_max:110},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:1,component:"Paper 2",grade:7,min_mark:85,component_max:110},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:1,component:"Paper 3",grade:7,min_mark:42,component_max:55},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:1,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:2,component:"Overall",grade:7,min_mark:78,component_max:100},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:2,component:"Paper 1",grade:7,min_mark:86,component_max:110},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:2,component:"Paper 2",grade:7,min_mark:85,component_max:110},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:2,component:"Paper 3",grade:7,min_mark:42,component_max:55},
-      {session_order:"2023-11",session:"Nov 2023",level:"HL",timezone:2,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2023-11",session:"Nov 2023",level:"SL",timezone:1,component:"Overall",grade:7,min_mark:80,component_max:100},
-      {session_order:"2023-11",session:"Nov 2023",level:"SL",timezone:1,component:"Paper 1",grade:7,min_mark:63,component_max:80},
-      {session_order:"2023-11",session:"Nov 2023",level:"SL",timezone:1,component:"Paper 2",grade:7,min_mark:64,component_max:80},
-      {session_order:"2023-11",session:"Nov 2023",level:"SL",timezone:1,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2023-11",session:"Nov 2023",level:"SL",timezone:2,component:"Overall",grade:7,min_mark:80,component_max:100},
-      {session_order:"2023-11",session:"Nov 2023",level:"SL",timezone:2,component:"Paper 1",grade:7,min_mark:63,component_max:80},
-      {session_order:"2023-11",session:"Nov 2023",level:"SL",timezone:2,component:"Paper 2",grade:7,min_mark:64,component_max:80},
-      {session_order:"2023-11",session:"Nov 2023",level:"SL",timezone:2,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:1,component:"Overall",grade:7,min_mark:76,component_max:100},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:1,component:"Paper 1",grade:7,min_mark:80,component_max:110},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:1,component:"Paper 2",grade:7,min_mark:79,component_max:110},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:1,component:"Paper 3",grade:7,min_mark:46,component_max:55},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:1,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:2,component:"Overall",grade:7,min_mark:74,component_max:100},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:2,component:"Paper 1",grade:7,min_mark:76,component_max:110},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:2,component:"Paper 2",grade:7,min_mark:80,component_max:110},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:2,component:"Paper 3",grade:7,min_mark:41,component_max:55},
-      {session_order:"2024-05",session:"May 2024",level:"HL",timezone:2,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2024-05",session:"May 2024",level:"SL",timezone:1,component:"Overall",grade:7,min_mark:76,component_max:100},
-      {session_order:"2024-05",session:"May 2024",level:"SL",timezone:1,component:"Paper 1",grade:7,min_mark:59,component_max:80},
-      {session_order:"2024-05",session:"May 2024",level:"SL",timezone:1,component:"Paper 2",grade:7,min_mark:59,component_max:80},
-      {session_order:"2024-05",session:"May 2024",level:"SL",timezone:1,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2024-05",session:"May 2024",level:"SL",timezone:2,component:"Overall",grade:7,min_mark:75,component_max:100},
-      {session_order:"2024-05",session:"May 2024",level:"SL",timezone:2,component:"Paper 1",grade:7,min_mark:58,component_max:80},
-      {session_order:"2024-05",session:"May 2024",level:"SL",timezone:2,component:"Paper 2",grade:7,min_mark:59,component_max:80},
-      {session_order:"2024-05",session:"May 2024",level:"SL",timezone:2,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2024-11",session:"Nov 2024",level:"HL",timezone:0,component:"Overall",grade:7,min_mark:79,component_max:100},
-      {session_order:"2024-11",session:"Nov 2024",level:"HL",timezone:0,component:"Paper 1",grade:7,min_mark:86,component_max:110},
-      {session_order:"2024-11",session:"Nov 2024",level:"HL",timezone:0,component:"Paper 2",grade:7,min_mark:84,component_max:110},
-      {session_order:"2024-11",session:"Nov 2024",level:"HL",timezone:0,component:"Paper 3",grade:7,min_mark:45,component_max:55},
-      {session_order:"2024-11",session:"Nov 2024",level:"HL",timezone:0,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2024-11",session:"Nov 2024",level:"SL",timezone:1,component:"Overall",grade:7,min_mark:80,component_max:100},
-      {session_order:"2024-11",session:"Nov 2024",level:"SL",timezone:1,component:"Paper 1",grade:7,min_mark:64,component_max:80},
-      {session_order:"2024-11",session:"Nov 2024",level:"SL",timezone:1,component:"Paper 2",grade:7,min_mark:62,component_max:80},
-      {session_order:"2024-11",session:"Nov 2024",level:"SL",timezone:1,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2024-11",session:"Nov 2024",level:"SL",timezone:2,component:"Overall",grade:7,min_mark:80,component_max:100},
-      {session_order:"2024-11",session:"Nov 2024",level:"SL",timezone:2,component:"Paper 1",grade:7,min_mark:64,component_max:80},
-      {session_order:"2024-11",session:"Nov 2024",level:"SL",timezone:2,component:"Paper 2",grade:7,min_mark:62,component_max:80},
-      {session_order:"2024-11",session:"Nov 2024",level:"SL",timezone:2,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:1,component:"Overall",grade:7,min_mark:73,component_max:100},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:1,component:"Paper 1",grade:7,min_mark:76,component_max:110},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:1,component:"Paper 2",grade:7,min_mark:67,component_max:110},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:1,component:"Paper 3",grade:7,min_mark:48,component_max:55},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:1,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:2,component:"Overall",grade:7,min_mark:71,component_max:100},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:2,component:"Paper 1",grade:7,min_mark:74,component_max:110},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:2,component:"Paper 2",grade:7,min_mark:72,component_max:110},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:2,component:"Paper 3",grade:7,min_mark:42,component_max:55},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:2,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:3,component:"Overall",grade:7,min_mark:76,component_max:100},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:3,component:"Paper 1",grade:7,min_mark:70,component_max:110},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:3,component:"Paper 2",grade:7,min_mark:85,component_max:110},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:3,component:"Paper 3",grade:7,min_mark:48,component_max:55},
-      {session_order:"2025-05",session:"May 2025",level:"HL",timezone:3,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:1,component:"Overall",grade:7,min_mark:65,component_max:100},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:1,component:"Paper 1",grade:7,min_mark:50,component_max:80},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:1,component:"Paper 2",grade:7,min_mark:47,component_max:80},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:1,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:2,component:"Overall",grade:7,min_mark:66,component_max:100},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:2,component:"Paper 1",grade:7,min_mark:51,component_max:80},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:2,component:"Paper 2",grade:7,min_mark:48,component_max:80},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:2,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:3,component:"Overall",grade:7,min_mark:77,component_max:100},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:3,component:"Paper 1",grade:7,min_mark:60,component_max:80},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:3,component:"Paper 2",grade:7,min_mark:60,component_max:80},
-      {session_order:"2025-05",session:"May 2025",level:"SL",timezone:3,component:"IA",grade:7,min_mark:18,component_max:20},
-      {session_order:"2025-11",session:"Nov 2025",level:"HL",timezone:1,component:"Overall",grade:7,min_mark:78,component_max:100},
-      {session_order:"2025-11",session:"Nov 2025",level:"HL",timezone:1,component:"Paper 1",grade:7,min_mark:87,component_max:110},
-      {session_order:"2025-11",session:"Nov 2025",level:"HL",timezone:1,component:"Paper 2",grade:7,min_mark:82,component_max:110},
-      {session_order:"2025-11",session:"Nov 2025",level:"HL",timezone:1,component:"Paper 3",grade:7,min_mark:43,component_max:55},
-      {session_order:"2025-11",session:"Nov 2025",level:"HL",timezone:1,component:"IA",grade:7,min_mark:17,component_max:20},
-      {session_order:"2025-11",session:"Nov 2025",level:"SL",timezone:1,component:"Overall",grade:7,min_mark:80,component_max:100},
-      {session_order:"2025-11",session:"Nov 2025",level:"SL",timezone:1,component:"Paper 1",grade:7,min_mark:65,component_max:80},
-      {session_order:"2025-11",session:"Nov 2025",level:"SL",timezone:1,component:"Paper 2",grade:7,min_mark:64,component_max:80},
-      {session_order:"2025-11",session:"Nov 2025",level:"SL",timezone:1,component:"IA",grade:7,min_mark:18,component_max:20}
-    ];
+    let csvData = [];
+    let trendChart = null;
+    let currentLevel = 'HL';
+    let currentGrade = 7;
 
-    // Get unique sessions (reverse for dropdown)
-    const uniqueSessions = [...new Set(csvData.map(d => d.session))].reverse();
-    const sessionSelect = document.getElementById('session');
-    uniqueSessions.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s;
-      if (s === 'May 2026') opt.selected = true;
-      sessionSelect.appendChild(opt);
-    });
-    // Also populate calculator session
-    document.getElementById('calc-session').innerHTML = sessionSelect.innerHTML;
+    // Load CSV on page load
+    async function loadCSV() {
+      try {
+        const response = await fetch('/blog/data/ib_maa_grade_boundaries_2021-2026.csv');
+        const text = await response.text();
+        const lines = text.trim().split('\n');
+        const headers = lines[0].split(',');
+
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',');
+          const row = {};
+          headers.forEach((h, idx) => {
+            const val = values[idx]?.trim();
+            row[h.trim()] = isNaN(val) ? val : parseInt(val);
+          });
+          csvData.push(row);
+        }
+
+        initPage();
+      } catch (e) {
+        console.error('Failed to load CSV:', e);
+      }
+    }
+
+    function initPage() {
+      populateSessions();
+      populateGradeButtons();
+      getTimezones();
+    }
+
+    function populateSessions() {
+      const sessions = [...new Set(csvData.map(d => d.session))];
+      const sessionSelect = document.getElementById('session');
+      sessionSelect.innerHTML = '';
+      sessions.reverse().forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        sessionSelect.appendChild(opt);
+      });
+      sessionSelect.addEventListener('change', getTimezones);
+
+      // Also populate calculator session
+      document.getElementById('calc-session').innerHTML = sessionSelect.innerHTML;
+    }
+
+    function populateGradeButtons() {
+      const container = document.getElementById('grade-buttons');
+      container.innerHTML = '';
+      for (let g = 7; g >= 2; g--) {
+        const btn = document.createElement('button');
+        btn.className = 'grade-button' + (g === 7 ? ' active' : '');
+        btn.textContent = '[' + g + ']';
+        btn.onclick = () => switchGrade(g);
+        container.appendChild(btn);
+      }
+      const allBtn = document.createElement('button');
+      allBtn.className = 'grade-button';
+      allBtn.textContent = '[All]';
+      allBtn.onclick = () => switchGrade('all');
+      container.appendChild(allBtn);
+    }
 
     function getTimezones() {
       const level = document.getElementById('level').value;
       const session = document.getElementById('session').value;
-      const tzs = [...new Set(csvData.filter(d => d.level === level && d.session === session).map(d => d.timezone))].sort();
+      const tzs = [...new Set(csvData.filter(d => d.level === level && d.session === session && d.component === 'Overall').map(d => d.timezone))].sort((a, b) => a - b);
+
       const tzSelect = document.getElementById('timezone');
       tzSelect.innerHTML = '';
       tzs.forEach(tz => {
@@ -687,6 +595,8 @@
         opt.textContent = tz === 0 ? 'All Timezones' : 'TZ' + tz;
         tzSelect.appendChild(opt);
       });
+
+      tzSelect.addEventListener('change', updateTable);
       updateTable();
     }
 
@@ -696,96 +606,189 @@
       const timezone = parseInt(document.getElementById('timezone').value);
       const filtered = csvData.filter(d => d.level === level && d.session === session && d.timezone === timezone);
 
-      const note = filtered[0]?.note;
+      // Check for COVID note
+      const covidRow = filtered.find(d => d.note && d.note.includes('COVID'));
       const noteDiv = document.getElementById('covid-note');
-      if (note && note.includes('COVID')) {
-        noteDiv.innerHTML = `⚠️ <strong>${note}</strong>`;
+      if (covidRow) {
+        noteDiv.innerHTML = `⚠️ <strong>${covidRow.note}</strong>`;
         noteDiv.style.display = 'block';
       } else {
         noteDiv.style.display = 'none';
       }
 
-      const components = ['Paper 1', 'Paper 2', 'Paper 3', 'IA', 'Overall'];
-      if (level === 'SL') components = ['Paper 1', 'Paper 2', 'IA', 'Overall'];
-
+      const components = level === 'HL' ? ['Paper 1', 'Paper 2', 'Paper 3', 'IA', 'Overall'] : ['Paper 1', 'Paper 2', 'IA', 'Overall'];
       const tbody = document.querySelector('#boundary-table tbody');
       tbody.innerHTML = '';
 
       components.forEach(comp => {
-        const row = filtered.find(d => d.component === comp);
-        if (!row) return;
+        const rows = filtered.filter(d => d.component === comp);
+        if (!rows.length) return;
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${comp}</strong> (/${row.component_max})</td>
-          <td class="grade-7">${row.min_mark}</td>
-          <td>${getGradeMark(filtered, comp, 6)}</td>
-          <td>${getGradeMark(filtered, comp, 5)}</td>
-          <td>${getGradeMark(filtered, comp, 4)}</td>
-          <td>${getGradeMark(filtered, comp, 3)}</td>
-          <td>${getGradeMark(filtered, comp, 2)}</td>
-        `;
+        const maxMarks = rows[0].component_max;
+        let html = `<td><strong>${comp}</strong> (/${maxMarks})</td>`;
+
+        for (let grade = 7; grade >= 2; grade--) {
+          const row = rows.find(d => d.grade === grade);
+          if (row) {
+            html += `<td${grade === 7 ? ' class="grade-7"' : ''}>${row.min_mark}</td>`;
+          } else {
+            html += '<td>—</td>';
+          }
+        }
+
+        tr.innerHTML = html;
         tbody.appendChild(tr);
       });
     }
 
-    function getGradeMark(data, component, grade) {
-      const row = data.find(d => d.component === component && d.grade === grade);
-      return row ? row.min_mark : '—';
-    }
-
-    document.getElementById('level').addEventListener('change', getTimezones);
-    document.getElementById('session').addEventListener('change', getTimezones);
-    document.getElementById('timezone').addEventListener('change', updateTable);
-
-    let trendChart = null;
-
-    function switchChart(level) {
-      document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+    function switchLevel(level) {
+      currentLevel = level;
+      document.querySelectorAll('.controls > .control-group:first-child .grade-button').forEach(b => b.classList.remove('active'));
       event.target.classList.add('active');
-      drawTrendChart(level);
+      drawTrendChart();
     }
 
-    function drawTrendChart(level) {
-      // Grade 7 Overall boundaries by session and timezone
-      const overallData = csvData.filter(d => d.component === 'Overall' && d.grade === 7 && d.level === level);
-      const sessions = [...new Set(overallData.map(d => d.session))];
+    function switchGrade(grade) {
+      currentGrade = grade;
+      document.querySelectorAll('.grade-buttons .grade-button').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      drawTrendChart();
+    }
 
+    function drawTrendChart() {
+      const sessions = [...new Set(csvData.filter(d => d.level === currentLevel && d.component === 'Overall').map(d => d.session))];
+      const years = [2021, 2022, 2023, 2024, 2025, 2026];
+
+      if (currentGrade === 'all') {
+        drawAllGradesChart(sessions);
+      } else {
+        drawSingleGradeChart(sessions, years);
+      }
+    }
+
+    function drawSingleGradeChart(sessions, years) {
       const datasets = [];
-      const monthGroups = {};
+      const mayData = [];
+      const novData = [];
 
-      sessions.forEach(s => {
-        const month = s.includes('May') ? 'May' : 'Nov';
-        if (!monthGroups[month]) monthGroups[month] = [];
-        monthGroups[month].push(s);
+      years.forEach(year => {
+        const maySess = sessions.find(s => s.includes('May') && s.includes(year));
+        const novSess = sessions.find(s => s.includes('Nov') && s.includes(year));
+
+        if (maySess) {
+          const tzData = csvData.filter(d => d.session === maySess && d.level === currentLevel && d.component === 'Overall' && d.grade === currentGrade);
+          const avg = tzData.length ? (tzData.reduce((sum, d) => sum + d.min_mark, 0) / tzData.length).toFixed(1) : null;
+          mayData.push(avg ? parseFloat(avg) : null);
+        } else {
+          mayData.push(null);
+        }
+
+        if (novSess) {
+          const tzData = csvData.filter(d => d.session === novSess && d.level === currentLevel && d.component === 'Overall' && d.grade === currentGrade);
+          const avg = tzData.length ? (tzData.reduce((sum, d) => sum + d.min_mark, 0) / tzData.length).toFixed(1) : null;
+          novData.push(avg ? parseFloat(avg) : null);
+        } else {
+          novData.push(null);
+        }
       });
 
-      const colors = { May: '#3b82f6', Nov: '#ef4444' };
-      const sessionLabels = sessions.map(s => s.split(' ')[0]);
+      if (trendChart) trendChart.destroy();
 
-      for (const month in monthGroups) {
-        const sessionList = monthGroups[month];
-        const points = [];
-        const tzDetails = [];
+      const ctx = document.getElementById('trend-chart').getContext('2d');
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: 'May',
+              data: mayData,
+              borderColor: '#3b82f6',
+              backgroundColor: '#3b82f620',
+              tension: 0,
+              borderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7
+            },
+            {
+              label: 'November',
+              data: novData,
+              borderColor: '#ef4444',
+              backgroundColor: '#ef444420',
+              tension: 0,
+              borderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'top' },
+            title: {
+              display: true,
+              text: `Minimum overall % for a grade ${currentGrade} — ${currentLevel}`
+            },
+            tooltip: {
+              backgroundColor: '#000',
+              padding: 12,
+              titleFont: { size: 12, weight: 'bold' },
+              callbacks: {
+                afterTitle: function(context) {
+                  const year = context[0].label;
+                  const session = context[0].datasetIndex === 0 ? 'May' : 'Nov';
+                  const sessFull = sessions.find(s => s.includes(session) && s.includes(year));
+                  if (sessFull && sessFull.includes('COVID')) return 'COVID-adjusted session';
+                  return '';
+                },
+                label: function(context) {
+                  return `Average: ${context.parsed.y}%`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { stepSize: 10 },
+              title: { display: true, text: 'Grade ' + currentGrade + ' boundary (%)' }
+            }
+          }
+        }
+      });
+    }
 
-        sessionList.forEach(sess => {
-          const tzData = overallData.filter(d => d.session === sess);
-          const marks = tzData.map(d => d.min_mark);
-          const avg = marks.length ? Math.round(marks.reduce((a, b) => a + b) / marks.length) : 0;
-          points.push(avg);
-          tzDetails.push(tzData);
+    function drawAllGradesChart() {
+      // Simplified: show May/Nov toggle
+      // For now, show May with all grades
+      const sessions = [...new Set(csvData.filter(d => d.level === currentLevel && d.component === 'Overall').map(d => d.session))];
+      const maySessions = sessions.filter(s => s.includes('May')).sort();
+      const years = maySessions.map(s => parseInt(s.split(' ')[1]));
+
+      const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+      const datasets = [];
+
+      for (let grade = 7; grade >= 2; grade--) {
+        const gradeData = [];
+        years.forEach(year => {
+          const sess = maySessions.find(s => s.includes(year));
+          const tzData = csvData.filter(d => d.session === sess && d.level === currentLevel && d.component === 'Overall' && d.grade === grade);
+          const avg = tzData.length ? (tzData.reduce((sum, d) => sum + d.min_mark, 0) / tzData.length).toFixed(1) : null;
+          gradeData.push(avg ? parseFloat(avg) : null);
         });
 
         datasets.push({
-          label: month,
-          data: points,
-          borderColor: colors[month],
-          backgroundColor: colors[month] + '20',
-          fill: false,
-          tension: 0.4,
+          label: 'Grade ' + grade,
+          data: gradeData,
+          borderColor: colors[7 - grade],
+          backgroundColor: colors[7 - grade] + '20',
+          tension: 0,
           borderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7
+          pointRadius: 4
         });
       }
 
@@ -794,34 +797,15 @@
       const ctx = document.getElementById('trend-chart').getContext('2d');
       trendChart = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: sessionLabels,
-          datasets: datasets
-        },
+        data: { labels: years, datasets },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              display: true,
-              position: 'top'
-            },
-            tooltip: {
-              backgroundColor: '#000',
-              padding: 12,
-              titleFont: { size: 12, weight: 'bold' },
-              bodyFont: { size: 11 }
-            }
+            legend: { display: true, position: 'top' },
+            title: { display: true, text: `All grades — ${currentLevel} May sessions` }
           },
-          scales: {
-            y: {
-              beginAtZero: false,
-              min: 50,
-              max: 85,
-              ticks: { stepSize: 5 },
-              title: { display: true, text: 'Grade 7 minimum (out of 100)' }
-            }
-          }
+          scales: { y: { beginAtZero: true, max: 100 } }
         }
       });
     }
@@ -832,7 +816,6 @@
       const iaExpected = parseInt(document.getElementById('calc-ia').value);
       const session = document.getElementById('calc-session').value;
 
-      // Find boundary for this level/target/session
       const allOverall = csvData.filter(d => d.component === 'Overall' && d.level === level && d.session === session);
       if (!allOverall.length) {
         alert('No data for this session');
@@ -842,12 +825,10 @@
       const avgBoundary = Math.round(allOverall.reduce((sum, d) => sum + d.min_mark, 0) / allOverall.length);
       const targetBoundary = allOverall.find(d => d.grade === target)?.min_mark || avgBoundary;
 
-      // IA contribution
-      const iaWeighted = (iaExpected / 20) * 20; // IA is 20% of total
+      const iaWeighted = (iaExpected / 20) * 20;
       const paperNeeded = targetBoundary - iaWeighted;
       const paperPercent = Math.round((paperNeeded / 80) * 100);
 
-      // Distribute evenly across papers
       let result = '';
       if (level === 'HL') {
         const p1 = Math.round((paperPercent / 100) * 110);
@@ -868,8 +849,7 @@
     }
 
     // Init
-    getTimezones();
-    drawTrendChart('HL');
+    loadCSV();
   </script>
 </body>
 </html>
