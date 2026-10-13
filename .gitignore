@@ -22,3 +22,6 @@ scripts/mark-derivation/may2024_all_parts.json
 # regenerable from bank.db via question-bank/generate_review_sheet.py, not
 # meant to be vendored. The source tool and bank.db itself are tracked.
 question-bank/review_output/
+
+__pycache__/
+*.pyc
