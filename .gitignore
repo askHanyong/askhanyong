@@ -17,3 +17,8 @@ scripts/mark-derivation/may2024_rows.json
 # per-batch copies are saved deliberately as scripts/mark-derivation/batchN_report.json
 scripts/ingest-paper/backfill_report.json
 scripts/mark-derivation/may2024_all_parts.json
+
+# Generated review sheets (review.html + review.csv + bundled KaTeX assets) --
+# regenerable from bank.db via question-bank/generate_review_sheet.py, not
+# meant to be vendored. The source tool and bank.db itself are tracked.
+question-bank/review_output/
