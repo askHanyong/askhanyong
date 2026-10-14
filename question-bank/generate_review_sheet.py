@@ -301,21 +301,29 @@ def render_question(q: dict, counter: list) -> tuple[str, list[dict]]:
 def main():
     if len(sys.argv) < 2:
         print("Usage: python3 -I generate_review_sheet.py <batch_id> [--out-dir DIR]")
+        print("       python3 -I generate_review_sheet.py topic:<TOPIC_CODE> [--out-dir DIR]  (spans all batches)")
         sys.exit(1)
-    batch_id = sys.argv[1]
-    out_dir = ROOT / "review_output" / batch_id
+    selector = sys.argv[1]
+    is_topic = selector.startswith("topic:")
+    key = selector.split(":", 1)[1] if is_topic else selector
+    out_dir = ROOT / "review_output" / (f"topic_{key}" if is_topic else key)
     if "--out-dir" in sys.argv:
         out_dir = Path(sys.argv[sys.argv.index("--out-dir") + 1])
 
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    rows = conn.execute(
-        "select * from questions where batch_id = ? order by topic_code, blueprint_cell, id", (batch_id,)
-    ).fetchall()
+    if is_topic:
+        rows = conn.execute(
+            "select * from questions where topic_code = ? order by level, calculator, mode, blueprint_cell, id", (key,)
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "select * from questions where batch_id = ? order by topic_code, blueprint_cell, id", (key,)
+        ).fetchall()
     conn.close()
 
     if not rows:
-        print(f"No questions found in bank.db for batch_id='{batch_id}'. Nothing to render.")
+        print(f"No questions found in bank.db for {selector!r}. Nothing to render.")
         sys.exit(1)
 
     counter = [0]
@@ -339,17 +347,18 @@ def main():
         shutil.rmtree(fonts_dest)
     shutil.copytree(KATEX_FONTS_SRC, fonts_dest)
 
+    label = f"topic {key}" if is_topic else f"batch {key}"
     html_doc = f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Review sheet -- batch {html.escape(batch_id)}</title>
+<title>Review sheet -- {html.escape(label)}</title>
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 <style>{PRINT_CSS}</style>
 </head>
 <body>
 <div class="batch-header">
-  <h1>Review sheet &mdash; batch {html.escape(batch_id)}</h1>
+  <h1>Review sheet &mdash; {html.escape(label)}</h1>
   <p>{len(rows)} question(s). Self-contained: open this file directly, no network needed. One question per printed page.</p>
 </div>
 {"".join(final_blocks)}
