@@ -25,7 +25,10 @@ TOOL_DIR = ROOT / "review_sheet_tool"
 KATEX_CSS_SRC = TOOL_DIR / "node_modules" / "katex" / "dist" / "katex.min.css"
 KATEX_FONTS_SRC = TOOL_DIR / "node_modules" / "katex" / "dist" / "fonts"
 
-MATH_SPAN_RE = re.compile(r"\$\$(.+?)\$\$|\$(.+?)\$", re.DOTALL)
+# Delimiters must not be preceded by a backslash, so an escaped literal dollar
+# sign (e.g. the currency amount in "$\$215$") is never mistaken for a span
+# boundary -- without this, "$\$215$" splits as span="\" + stray literal "215$".
+MATH_SPAN_RE = re.compile(r"(?<!\\)\$\$(.+?)(?<!\\)\$\$|(?<!\\)\$(.+?)(?<!\\)\$", re.DOTALL)
 
 
 def split_math_spans(text: str, counter: list) -> tuple[str, list[dict]]:
@@ -254,7 +257,19 @@ def render_question(q: dict, counter: list) -> tuple[str, list[dict]]:
             rows = "".join(f"<tr><td>{html.escape(str(k))}</td><td>{html.escape(str(v))}</td></tr>" for k, v in params.items())
             params_html = f'<div class="q-section"><div class="label">Template parameters</div><table class="q-params-table">{rows}</table></div>'
 
-    check_log_html = f'<div class="q-section"><div class="label">Check log</div><div class="q-check-log">{html.escape(q["check_log"] or "(none)")}</div></div>'
+    check_log_text = "(none)"
+    if q["check_log"]:
+        try:
+            parsed_log = json.loads(q["check_log"])
+        except (json.JSONDecodeError, TypeError):
+            parsed_log = None
+        if isinstance(parsed_log, dict) and q["mode"] == "bespoke" and "detail" in parsed_log:
+            check_log_text = parsed_log["detail"]
+        elif isinstance(parsed_log, dict) and q["mode"] == "template":
+            check_log_text = f"stdout: {parsed_log.get('stdout', '').strip()}\nstderr: {parsed_log.get('stderr', '').strip() or '(none)'}"
+        else:
+            check_log_text = q["check_log"]
+    check_log_html = f'<div class="q-section"><div class="label">Check result (independent for bespoke; self-reported for template)</div><div class="q-check-log">{html.escape(check_log_text)}</div></div>'
 
     block = f"""
 <section class="question-page">
