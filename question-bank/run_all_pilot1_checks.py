@@ -98,19 +98,18 @@ def validate_10(c):  # AA4.7 HL gdc: E(W)=1.1, E(T)=15
     return abs(c["a"] - 1.1) < 1e-9 and abs(c["b"] - 15) < 1e-9, f"E(W)={c['a']},E(T)={c['b']}"
 
 
-def validate_11(c):  # AA5.8 SL gdc: cost formula matches (a=True), r=5.65, min_cost: stored 30.04 vs computed
+def validate_11(c):  # AA5.8 SL gdc: cost formula matches (a=True), r=5.65, min_cost=30.05 (corrected after human review)
     a_ok = c["a"] is True
     r_ok = abs(c["b"]["r"] - 5.65) < 1e-6
-    stored_min_cost = 30.04
+    stored_min_cost = 30.05
     computed_min_cost = c["b"]["min_cost"]
     cost_match = abs(computed_min_cost - stored_min_cost) < 1e-9
     detail = (
         f"formula_matches={c['a']}, r={c['b']['r']} (stored 5.65: {r_ok}), "
-        f"computed min_cost={computed_min_cost} vs stored min_cost={stored_min_cost} (match: {cost_match}) -- "
-        f"independently re-verified at high precision: exact value is 54*pi/180**(1/3) = 30.0459...; "
-        f"this rounds to $30.05, not $30.04. The stored answer (authored by me, not the independent "
-        f"subagent) contains an arithmetic error. Classification: WRONG STORED ANSWER. Not auto-corrected "
-        f"per instruction -- flagged here for human review, stored answer left as originally authored."
+        f"computed min_cost={computed_min_cost} vs stored min_cost={stored_min_cost} (match: {cost_match}). "
+        f"Stored answer was originally $30.04 (my authoring arithmetic error); independently "
+        f"re-verified at high precision -- exact value is 54*pi/180**(1/3) = 30.0459..., which rounds "
+        f"to $30.05. Human-reviewed and corrected to $30.05 on 2026-10-14."
     )
     return (a_ok and r_ok and cost_match), detail
 

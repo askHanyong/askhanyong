@@ -207,8 +207,8 @@ BESPOKE = [
                   [("M1", "height $h = 600/r^{2}$"), ("A1", "substituted into $C = 2(\\pi r^{2})(0.05) + (2\\pi rh)(0.03)$ to obtain the given expression")]),
             _part("b", 3, "Find the value of $r$ that minimizes the cost, correct to 3 significant figures, "
                            "and find the minimum cost, correct to 2 decimal places.",
-                  "$r \\approx 5.65$, minimum cost $\\approx \\$30.04$",
-                  [("M1", "$C'(r) = 0$"), ("A1", "$r \\approx 5.65$"), ("A1", "minimum cost $\\approx \\$30.04$")]),
+                  "$r \\approx 5.65$, minimum cost $\\approx \\$30.05$",
+                  [("M1", "$C'(r) = 0$"), ("A1", "$r \\approx 5.65$"), ("A1", "minimum cost $\\approx \\$30.05$")]),
         ],
     },
 ]
