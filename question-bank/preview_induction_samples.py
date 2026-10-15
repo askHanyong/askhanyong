@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from templates_aa1_2 import aa1_2_proof_by_induction
+from templates_aa1_15 import aa1_15_series_sum_induction as aa1_2_proof_by_induction
 from generate_review_sheet import render_question, render_all_math, substitute_tokens, PRINT_CSS
 import html
 import shutil

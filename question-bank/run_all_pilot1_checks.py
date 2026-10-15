@@ -19,6 +19,7 @@ each -- it does not special-case away the one real discrepancy found
 """
 import json
 import sqlite3
+from datetime import datetime, timezone
 from pathlib import Path
 
 from sympy import Rational, simplify, sympify
@@ -139,6 +140,7 @@ def main():
         f"expected 8 template + 12 bespoke, found {len(template_rows)} + {len(bespoke_rows)}"
     rows = template_rows + bespoke_rows
 
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     bespoke_idx = 0
     results = []
     for row in rows:
@@ -151,8 +153,8 @@ def main():
             except (json.JSONDecodeError, TypeError):
                 old_params = {}
             conn.execute(
-                "update questions set check_status=?, check_log=? where id=?",
-                (result["status"], json.dumps({"params": old_params, "stdout": result["stdout"], "stderr": result["stderr"]}), row["id"]),
+                "update questions set check_status=?, check_log=?, last_checked_at=? where id=?",
+                (result["status"], json.dumps({"params": old_params, "stdout": result["stdout"], "stderr": result["stderr"]}), now, row["id"]),
             )
             results.append((row["mode"], row["blueprint_cell"], result["status"], result["stdout"].strip().split("\n")[-1] if result["stdout"].strip() else ""))
         else:
@@ -171,8 +173,8 @@ def main():
                     detail = f"validator raised {type(e).__name__}: {e}"
             bespoke_idx += 1
             conn.execute(
-                "update questions set check_status=?, check_log=? where id=?",
-                (status, json.dumps({"detail": detail}), row["id"]),
+                "update questions set check_status=?, check_log=?, last_checked_at=? where id=?",
+                (status, json.dumps({"detail": detail}), now, row["id"]),
             )
             results.append((row["mode"], row["blueprint_cell"], status, detail))
 

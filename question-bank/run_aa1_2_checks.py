@@ -8,6 +8,7 @@ stored answer happens here via an explicit per-question validator.
 """
 import json
 import sqlite3
+from datetime import datetime, timezone
 from pathlib import Path
 
 from sympy import Rational, simplify, sympify
@@ -126,6 +127,7 @@ def main():
     assert len(template_rows) == 24 and len(bespoke_rows) == 15, \
         f"expected 24 template (post-cap) + 15 bespoke, found {len(template_rows)} + {len(bespoke_rows)}"
 
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     results = []
     for row in template_rows:
         result = run_check(row["check_code"])
@@ -136,8 +138,8 @@ def main():
         except (json.JSONDecodeError, TypeError):
             old_params = {}
         conn.execute(
-            "update questions set check_status=?, check_log=? where id=?",
-            (result["status"], json.dumps({"params": old_params, "stdout": result["stdout"], "stderr": result["stderr"]}), row["id"]),
+            "update questions set check_status=?, check_log=?, last_checked_at=? where id=?",
+            (result["status"], json.dumps({"params": old_params, "stdout": result["stdout"], "stderr": result["stderr"]}), now, row["id"]),
         )
         results.append(("template", row["blueprint_cell"], result["status"], ""))
 
@@ -153,8 +155,8 @@ def main():
             except Exception as e:
                 status, detail = "error", f"validator raised {type(e).__name__}: {e}"
         conn.execute(
-            "update questions set check_status=?, check_log=? where id=?",
-            (status, json.dumps({"detail": detail}), row["id"]),
+            "update questions set check_status=?, check_log=?, last_checked_at=? where id=?",
+            (status, json.dumps({"detail": detail}), now, row["id"]),
         )
         results.append(("bespoke", row["blueprint_cell"], status, detail))
 
