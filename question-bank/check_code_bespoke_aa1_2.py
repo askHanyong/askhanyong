@@ -91,26 +91,45 @@ result = {
 
 print(result)
 """,
-# 3: two-sum condition -- S6=72, S10=200
+# 3: two-sum condition -- S6=72, S10=200 (part (b) rewritten from the
+# redundant "find u1" to "find u15", re-verified by a fresh independent
+# subagent against the rewritten part (b); an earlier subagent attempt
+# crashed on a symbols() unpacking mismatch and was discarded rather
+# than patched)
 """
-from sympy import symbols, Eq, solve
+import sympy as sp
 
-u1, d = symbols('u1 d')
+u1, d, n = sp.symbols('u1 d n')
 
 def S(n_val):
-    return n_val * (2*u1 + (n_val - 1)*d) / 2
+    return n_val * (2*u1 + (n_val - 1) * d) / 2
 
-eq1 = Eq(S(6), 72)
-eq2 = Eq(S(10), 200)
+eq1 = sp.Eq(S(6), 72)
+eq2 = sp.Eq(S(10), 200)
 
-sol = solve([eq1, eq2], [u1, d], dict=True)[0]
+sol = sp.solve([eq1, eq2], [u1, d], dict=True)
 
-u1_val = sol[u1]
-d_val = sol[d]
+sol0 = sol[0]
+u1_val = sol0[u1]
+d_val = sol0[d]
+
+u1_val = sp.nsimplify(u1_val)
+d_val = sp.nsimplify(d_val)
+
+u15_val = u1_val + 14 * d_val
+u15_val = sp.nsimplify(u15_val)
+
+def to_native(x):
+    x = sp.simplify(x)
+    if x.is_Integer:
+        return int(x)
+    if x.is_Rational:
+        return float(x)
+    return float(x)
 
 result = {
-    "a": {"u1": u1_val, "d": d_val},
-    "b": u1_val
+    "a": {"u1": to_native(u1_val), "d": to_native(d_val)},
+    "b": to_native(u15_val)
 }
 
 print(result)
@@ -160,7 +179,8 @@ result = {
 }
 print(result)
 """,
-# 5: first negative term -- u1=45,d=-4
+# 5: first negative term -- u1=45,d=-4 (retagged calculator gdc->none: a
+# linear u_n<0 inequality doesn't genuinely need a GDC; code unchanged)
 """
 from sympy import symbols, simplify, Eq, solve, ceiling, Rational
 
@@ -227,34 +247,32 @@ part_b = {
 result = {"a": part_a, "b": part_b}
 print(result)
 """,
-# 7: non-integer d threshold -- u1=12,u11=35
+# 7: integer d threshold -- u1=10,u11=50 (was u1=12,u11=35,d=2.3; replaced
+# with integer-d values and retagged calculator gdc->none, since a linear
+# u_n threshold doesn't genuinely need a GDC regardless of d)
 """
-from fractions import Fraction
-import math
+from sympy import symbols, Eq, solve, Rational
+from math import ceil, floor
 
-u1 = Fraction(12)
-u11 = Fraction(35)
-n1 = 1
-n11 = 11
+n, d = symbols('n d')
 
-d = (u11 - u1) / (n11 - n1)
+u1 = 10
+u11 = 50
 
-threshold = Fraction(60)
-rhs = (threshold - u1) / d
-n_minus_1 = math.floor(rhs) + 1
-n = n_minus_1 + 1
+d_val = solve(Eq(u1 + (11 - 1) * d, u11), d)[0]
 
-def u(k):
-    return u1 + (k - 1) * d
+n_sym = symbols('n_sym', positive=True)
+expr = u1 + (n_sym - 1) * d_val
+boundary = solve(Eq(expr, 75), n_sym)[0]
 
-assert u(n) > threshold
-assert u(n - 1) <= threshold
+candidate = floor(boundary) + 1
+if u1 + (candidate - 1) * d_val <= 75:
+    candidate += 1
 
-d_val = float(d) if d.denominator != 1 else int(d)
-n_val = int(n)
+a_ans = d_val
+b_ans = candidate
 
-result = {"a": d_val, "b": n_val}
-print(result)
+print({"a": a_ans, "b": b_ans})
 """,
 # 8: odd number sum proof
 """
@@ -451,31 +469,37 @@ result = {
 
 print(result)
 """,
-# 14: fractional d sum threshold -- u1=10,u11=35
+# 14: integer d sum threshold -- u1=8,u11=68 (was u1=10,u11=35,d=2.5;
+# replaced with integer-d values; still genuinely GDC-necessitating since
+# the threshold is on S_n, quadratic in n)
 """
-from sympy import symbols, Eq, solve, Rational, nsimplify
+from fractions import Fraction
 
-u1 = Rational(10)
-u11 = Rational(35)
-n_terms_to_11 = 11 - 1
+u1 = Fraction(8)
+n_ref = 11
+u_ref = Fraction(68)
 
-d = symbols('d')
-d_sol = solve(Eq(u1 + n_terms_to_11 * d, u11), d)[0]
+d = (u_ref - u1) / (n_ref - 1)
 
-n = symbols('n', positive=True, integer=True)
+def S(n):
+    return Fraction(n, 2) * (2 * u1 + (n - 1) * d)
 
-def S(n_val):
-    return Rational(n_val, 2) * (2 * u1 + (n_val - 1) * d_sol)
+n = 1
+while S(n) <= 900:
+    n += 1
 
-n_val = 1
-while S(n_val) <= 900:
-    n_val += 1
+smallest_n = n
 
-smallest_n = n_val
+def simplify_value(x):
+    if isinstance(x, Fraction):
+        if x.denominator == 1:
+            return int(x)
+        return float(x)
+    return x
 
 result = {
-    "a": float(d_sol),
-    "b": int(smallest_n)
+    "a": simplify_value(d),
+    "b": simplify_value(smallest_n),
 }
 
 print(result)

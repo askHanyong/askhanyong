@@ -74,9 +74,9 @@ BESPOKE = [
         "topic_code": "AA1.2", "level": "HL", "paper_type": "P2", "calculator": "gdc",
         "section": "A", "total_marks": 5, "difficulty": "medium",
         "blueprint_cell": "AA1.2|HL|gdc|bespoke",
-        "stem_latex": "Hanyong saves money each month. In the first month he saves $\\$50$, and each following month he saves $\\$15$ more than the previous month.",
+        "stem_latex": "A saver deposits money into an account each month. In the first month they deposit $\\$50$, and each following month they deposit $\\$15$ more than the previous month.",
         "parts": [
-            _part("a", 2, "Find the amount Hanyong saves in the 12th month.", "$\\$215$",
+            _part("a", 2, "Find the amount deposited in the 12th month.", "$\\$215$",
                   [("M1", "correct substitution into $u_n = u_1+(n-1)d$"), ("A1", "$u_{12} = 215$")]),
             _part("b", 3, "Find the smallest value of $n$ for which the total amount saved after $n$ months first exceeds $\\$3000$.",
                   "$n = 18$",
@@ -96,8 +96,8 @@ BESPOKE = [
                   [("M1", "$u_1 = S_1$, $u_2 = S_2 - S_1$"), ("A1", "$u_1=4$, $u_2=6$, $d=2$")]),
             _part("b", 2, "Find $u_{10}$.", "$u_{10} = 22$",
                   [("M1", "$u_{10} = S_{10}-S_9$ or $u_1+9d$"), ("A1", "$u_{10} = 22$")]),
-            _part("c", 2, "Find the smallest value of $n$ for which $u_n$ first exceeds $50$.", "$n = 25$",
-                  [("M1", "solving/trialling $u_n > 50$ (e.g. via GDC)"), ("A1", "$n = 25$")]),
+            _part("c", 2, "Find the smallest value of $n$ for which $S_n$ first exceeds $300$.", "$n = 16$",
+                  [("M1", "solving/trialling $S_n > 300$ (e.g. via GDC)"), ("A1", "$n = 16$")]),
         ],
     },
     # ---- AA2.7 (Functions -- Quadratics), 1 question ----

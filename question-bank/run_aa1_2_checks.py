@@ -36,9 +36,9 @@ def validate_2(c):  # ratio condition: d=4, u1=6, u15=62
     return a["d"] == 4 and a["u1"] == 6 and c["b"] == 62, f"d={a['d']}, u1={a['u1']}, u15={c['b']}"
 
 
-def validate_3(c):  # two-sum: u1=2, d=4
+def validate_3(c):  # two-sum: u1=2, d=4, u15=58
     a = c["a"]
-    return a["u1"] == 2 and a["d"] == 4 and c["b"] == 2, f"u1={a['u1']}, d={a['d']}, (b) u1={c['b']}"
+    return a["u1"] == 2 and a["d"] == 4 and c["b"] == 58, f"u1={a['u1']}, d={a['d']}, u15={c['b']}"
 
 
 def validate_4(c):  # theatre seats: u25=66, total=1050, n0(S_n>1200)=28
@@ -58,8 +58,8 @@ def validate_6(c):  # simultaneous sums: u1=6, d=5
     return b["u1"] == 6 and b["d"] == 5, f"u1={b['u1']}, d={b['d']}"
 
 
-def validate_7(c):  # non-integer d: d=2.3, n=22
-    return _num_eq(c["a"], 2.3) and c["b"] == 22, f"d={c['a']}, n={c['b']}"
+def validate_7(c):  # integer d: d=4, n=18 (was d=2.3, n=22; retagged gdc->none)
+    return c["a"] == 4 and c["b"] == 18, f"d={c['a']}, n={c['b']}"
 
 
 def validate_8(c):  # odd sum proof: True, 900
@@ -100,8 +100,8 @@ def validate_13(c):  # savings crossing: SA=50n^2+450n, SB=10n^2+990n, n=14
         f"SA={a['SA']} (match: {sa_match}), SB={a['SB']} (match: {sb_match}), n={c['b']}"
 
 
-def validate_14(c):  # fractional d: d=2.5, n=24
-    return _num_eq(c["a"], 2.5) and c["b"] == 24, f"d={c['a']}, n={c['b']}"
+def validate_14(c):  # integer d: d=6, n=17 (was d=2.5, n=24)
+    return c["a"] == 6 and c["b"] == 17, f"d={c['a']}, n={c['b']}"
 
 
 VALIDATORS = [

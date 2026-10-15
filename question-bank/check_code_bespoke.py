@@ -122,40 +122,40 @@ b = n_val
 
 print({"a": a12, "b": b})
 """,
-# 4: AA1.2 HL gdc -- Sn=n^2+3n (extended with part (c): smallest n with u_n>50,
-# re-verified by a fresh independent subagent after the GDC-necessity fix added part (c))
+# 4: AA1.2 HL gdc -- Sn=n^2+3n (part (c) rewritten from a u_n threshold to
+# an S_n threshold, since a u_n threshold is always linear in n for an AP
+# and so doesn't genuinely need a GDC regardless of how the sequence was
+# defined; re-verified by a fresh independent subagent against the
+# rewritten part (c), after an earlier subagent attempt crashed on a
+# sympy Union-type .start attribute error and was discarded rather than
+# patched)
 """
-from sympy import symbols, solve, Eq, S, ceiling
-from fractions import Fraction
+import sympy as sp
 
-n = symbols('n', positive=True, integer=True)
+n = sp.symbols('n', positive=True, integer=True)
 
-def Sn(k):
+def S(k):
     return k**2 + 3*k
 
-u1 = Sn(1)
-u2 = Sn(2) - Sn(1)
+u1 = S(1)
+u2 = S(2) - S(1)
 d = u2 - u1
 
-nn = symbols('nn', positive=True, integer=True)
-Sn_expr = nn**2 + 3*nn
-Sn_prev_expr = (nn-1)**2 + 3*(nn-1)
-un_expr = (Sn_expr - Sn_prev_expr).expand()
+u10 = S(10) - S(9)
 
-u10 = un_expr.subs(nn, 10)
+k = sp.symbols('k', positive=True, integer=True)
+u_k_general = sp.simplify(S(k) - S(k-1))
+expected_general = u1 + (k - 1) * d
+assert sp.simplify(u_k_general - expected_general) == 0
 
-sol = solve(Eq(2*n + 2, 50), n)
-boundary = sol[0]
-if un_expr.subs(nn, boundary) > 50:
-    smallest_n = boundary
-else:
-    smallest_n = boundary + 1
-
-smallest_n = int(smallest_n)
-while un_expr.subs(nn, smallest_n) <= 50:
-    smallest_n += 1
-while un_expr.subs(nn, smallest_n - 1) > 50:
-    smallest_n -= 1
+target = 300
+smallest_n = None
+candidate = 1
+while True:
+    if S(candidate) > target:
+        smallest_n = candidate
+        break
+    candidate += 1
 
 result = {
     "a": {"u1": int(u1), "u2": int(u2), "d": int(d)},

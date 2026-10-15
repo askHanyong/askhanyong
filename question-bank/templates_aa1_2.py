@@ -203,16 +203,24 @@ print("PASS")
 # ---------------------------------------------------------------------------
 # AA1.2 | SL | gdc -- Shape B: Sn = An^2+Bn given -> find a1, d, u_k
 # ---------------------------------------------------------------------------
-def aa1_2_sum_quadratic_reverse(A: int, B: int, k: int, threshold: int) -> dict:
+def aa1_2_sum_quadratic_reverse(A: int, B: int, k: int, target_S: int) -> dict:
     assert A != 0 and k > 0
     a1 = A + B
     d = 2 * A
     u_k = a1 + (k - 1) * d
 
-    n_search = 1
-    while a1 + (n_search - 1) * d <= threshold:
-        n_search += 1
-    n0 = n_search
+    def S(n):
+        return a1 * n + d * n * (n - 1) // 2
+
+    # Threshold is on S_n (quadratic in n), not u_n (always linear in n for
+    # an AP) -- a u_n threshold is solvable by inspection/mental arithmetic
+    # regardless of how the sequence was defined, so it doesn't genuinely
+    # need a GDC. target_S is chosen directly (not via a "+1" boundary
+    # trick) and checked not to land exactly on a term's running total.
+    n0 = 1
+    while S(n0) <= target_S:
+        n0 += 1
+    assert S(n0 - 1) != target_S, f"internal: target_S={target_S} lands exactly on S({n0-1}) -- boundary-hugging"
 
     # Build "A n^2 + B n" with proper omission of bare coefficient 1 and sign handling.
     a_term = "n^{2}" if A == 1 else ("-n^{2}" if A == -1 else f"{A}n^{{2}}")
@@ -236,7 +244,7 @@ assert int(u1) == {a1}, f"computed u1={{u1}}, expected {a1}"
 assert int(d) == {d}, f"computed d={{d}}, expected {d}"
 assert int(u_k) == {u_k}, f"computed u_k={{u_k}}, expected {u_k}"
 n_val = 1
-while int(u1) + (n_val-1)*int(d) <= {threshold}:
+while int(S_at(n_val)) <= {target_S}:
     n_val += 1
 assert n_val == {n0}, f"computed smallest n={{n_val}}, expected {n0}"
 print("PASS")
@@ -267,16 +275,16 @@ print("PASS")
             },
             {
                 "label": "c", "marks": 2,
-                "text": f"Find the smallest value of $n$ for which $u_n$ first exceeds ${threshold}$.",
+                "text": f"Find the smallest value of $n$ for which $S_n$ first exceeds ${target_S}$.",
                 "answer": f"$n = {n0}$",
                 "markscheme_lines": _marks_breakdown([
-                    ("M1", f"solving/trialling $u_n > {threshold}$ (e.g. via GDC)"),
+                    ("M1", f"solving/trialling $S_n > {target_S}$ (e.g. via GDC)"),
                     ("A1", f"$n = {n0}$"),
                 ]),
             },
         ]),
         "check_code": check_code.strip(),
-        "params": {"A": A, "B": B, "k": k, "threshold": threshold, "u1": a1, "d": d, "u_k": u_k, "n0": n0},
+        "params": {"A": A, "B": B, "k": k, "target_S": target_S, "u1": a1, "d": d, "u_k": u_k, "n0": n0},
     }
 
 
@@ -284,11 +292,20 @@ print("PASS")
 # AA1.2 | HL | none -- Shape A: sigma notation, show closed form, solve n
 # ---------------------------------------------------------------------------
 def aa1_2_sigma_notation(p: int, q: int, target_n: int) -> dict:
+    import sympy as sp
     assert p > 0 and target_n > 0
     target_S = sum(p * r + q for r in range(1, target_n + 1))
     first_term = p + q
     b_term = f" + {q}" if q > 0 else (f" - {abs(q)}" if q < 0 else "")
-    closed_form_numerator = _signed_term(p, "n", p + 2 * q)
+
+    # Always display the fully simplified/factored closed form (e.g. "2n(n+1)"
+    # or "3n^2", not an unreduced "n(4n+4)/2" or "n(6n)/2") -- delegated to
+    # SymPy's own simplification rather than hand-built string templating,
+    # which previously left fractions like n(4n+0)/2 unreduced.
+    n_display = sp.symbols('n', positive=True, integer=True)
+    closed_form_rhs = sp.factor(sp.expand(sp.Rational(1, 2) * n_display * (p * n_display + p + 2 * q)))
+    closed_form_latex = sp.latex(closed_form_rhs)
+    closed_form_latex_k = closed_form_latex.replace("n", "k")
 
     stem = f"Consider the arithmetic series $\\sum_{{r=1}}^{{n}} ({p}r{b_term})$."
     check_code = f"""
@@ -329,7 +346,7 @@ print("PASS")
             },
             {
                 "label": "b", "marks": 2,
-                "text": f"Show that $\\sum_{{r=1}}^{{n}}({p}r{b_term}) = \\dfrac{{n({closed_form_numerator})}}{{2}}$.",
+                "text": f"Show that $\\sum_{{r=1}}^{{n}}({p}r{b_term}) = {closed_form_latex}$.",
                 "answer": "shown",
                 "markscheme_lines": _marks_breakdown([
                     ("M1", "correct use of $S_n = \\frac{n}{2}(2u_1+(n-1)d)$"),
@@ -410,15 +427,22 @@ print("PASS")
 # ---------------------------------------------------------------------------
 # AA1.2 | HL | gdc -- Shape A: savings/threshold word problem -> u_k, smallest n
 # ---------------------------------------------------------------------------
-def aa1_2_savings_threshold(a1: int, d: int, k: int, n0: int, context: dict) -> dict:
-    assert a1 > 0 and d > 0 and n0 >= 2
+def aa1_2_savings_threshold(a1: int, d: int, k: int, target_S: int, context: dict) -> dict:
+    assert a1 > 0 and d > 0
     u_k = a1 + (k - 1) * d
 
     def S(n):
         return n * (2 * a1 + (n - 1) * d) // 2
 
-    target_S = S(n0 - 1) + 1
-    assert S(n0 - 1) <= target_S < S(n0), "internal: target_S does not isolate n0"
+    # target_S is chosen directly (a round number) rather than derived from
+    # a boundary (e.g. "previous total + 1") -- n0 is computed forward from
+    # it. Assert it doesn't land exactly on a term's running total either
+    # (a genuine "strict inequality" ambiguity), since that wasn't a
+    # deliberately-designed trap here.
+    n0 = 1
+    while S(n0) <= target_S:
+        n0 += 1
+    assert S(n0 - 1) != target_S, f"internal: target_S={target_S} lands exactly on S({n0-1}) -- boundary-hugging"
 
     time_unit = context["time_unit"]
     time_unit_plural = context["time_unit_plural"]
@@ -524,14 +548,21 @@ SAVINGS_CONTEXTS = [
 # AA1.2 | HL | gdc -- Shape B: Sn = An^2+Bn (word-dressed) -> a1, d, then
 # smallest n with u_n > threshold (GDC)
 # ---------------------------------------------------------------------------
-def aa1_2_sum_quadratic_word(A: int, B: int, threshold: int) -> dict:
+def aa1_2_sum_quadratic_word(A: int, B: int, target_S: int) -> dict:
     assert A > 0
     a1 = A + B
     d = 2 * A
-    n = 1
-    while a1 + (n - 1) * d <= threshold:
-        n += 1
-    n0 = n
+
+    def S(n):
+        return A * n * n + B * n
+
+    # Threshold on S_n (cumulative/total production), not u_n (daily
+    # production, always linear in n for an AP and so solvable without a
+    # GDC regardless of how the sequence was defined).
+    n0 = 1
+    while S(n0) <= target_S:
+        n0 += 1
+    assert S(n0 - 1) != target_S, f"internal: target_S={target_S} lands exactly on S({n0-1}) -- boundary-hugging"
 
     a_term = "n^{2}" if A == 1 else ("-n^{2}" if A == -1 else f"{A}n^{{2}}")
     b_term = f" + {B}n" if B > 1 else (
@@ -553,7 +584,7 @@ d = u2 - u1
 assert int(u1) == {a1}, f"computed u1={{u1}}, expected {a1}"
 assert int(d) == {d}, f"computed d={{d}}, expected {d}"
 n_val = 1
-while int(u1) + (n_val-1)*int(d) <= {threshold}:
+while int(S.subs(n, n_val)) <= {target_S}:
     n_val += 1
 assert n_val == {n0}, f"computed smallest n={{n_val}}, expected {n0}"
 print("PASS")
@@ -574,17 +605,17 @@ print("PASS")
             },
             {
                 "label": "b", "marks": 3,
-                "text": f"Find the smallest value of $n$ for which daily production first exceeds ${threshold}$ units.",
+                "text": f"Find the smallest value of $n$ for which the total (cumulative) production first exceeds ${target_S}$ units.",
                 "answer": f"$n = {n0}$",
                 "markscheme_lines": _marks_breakdown([
-                    ("M1", "correct expression for $u_n$"),
-                    ("M1", f"solving/trialling $u_n > {threshold}$ (e.g. via GDC)"),
+                    ("M1", "correct expression for $S_n$"),
+                    ("M1", f"solving/trialling $S_n > {target_S}$ (e.g. via GDC)"),
                     ("A1", f"$n = {n0}$"),
                 ]),
             },
         ]),
         "check_code": check_code.strip(),
-        "params": {"A": A, "B": B, "threshold": threshold, "u1": a1, "d": d, "n0": n0},
+        "params": {"A": A, "B": B, "target_S": target_S, "u1": a1, "d": d, "n0": n0},
     }
 
 
@@ -625,9 +656,9 @@ def build_all_aa1_2_templates() -> list[dict]:
         specs.append((aa1_2_sum_solve_n, kwargs, "AA1.2|SL|gdc|template|low"))
 
     sl_gdc_b = [
-        dict(A=2, B=5, k=8, threshold=60),
-        dict(A=1, B=-3, k=12, threshold=30),
-        dict(A=3, B=1, k=6, threshold=70),
+        dict(A=2, B=5, k=8, target_S=120),
+        dict(A=1, B=-3, k=12, target_S=60),
+        dict(A=4, B=-1, k=7, target_S=100),  # was A=3,B=1 (a1=4,d=6) -- duplicated pilot1_bespoke_3c160636
     ]
     for kwargs in sl_gdc_b:
         specs.append((aa1_2_sum_quadratic_reverse, kwargs, "AA1.2|SL|gdc|template|low"))
@@ -649,17 +680,17 @@ def build_all_aa1_2_templates() -> list[dict]:
         specs.append((aa1_2_equally_spaced_terms, kwargs, "AA1.2|HL|none|template|mid"))
 
     hl_gdc_a = [
-        dict(a1=50, d=15, k=10, n0=16, context=SAVINGS_CONTEXTS[0]),
-        dict(a1=20, d=8, k=7, n0=20, context=SAVINGS_CONTEXTS[2]),  # km context -- exercises the leakage fix
-        dict(a1=100, d=25, k=5, n0=14, context=SAVINGS_CONTEXTS[7]),  # kg context -- exercises the leakage fix
+        dict(a1=40, d=20, k=7, target_S=600, context=SAVINGS_CONTEXTS[0]),  # was a1=50,d=15 -- duplicated pilot1_bespoke_b4e45bf7
+        dict(a1=20, d=8, k=7, target_S=350, context=SAVINGS_CONTEXTS[2]),  # km context -- exercises the leakage fix
+        dict(a1=100, d=25, k=5, target_S=500, context=SAVINGS_CONTEXTS[7]),  # kg context -- exercises the leakage fix
     ]
     for kwargs in hl_gdc_a:
         specs.append((aa1_2_savings_threshold, kwargs, "AA1.2|HL|gdc|template|mid"))
 
     hl_gdc_b = [
-        dict(A=3, B=2, threshold=100),
-        dict(A=1, B=3, threshold=50),  # A=1 case -- exercises the bare-"1n" fix
-        dict(A=4, B=5, threshold=200),
+        dict(A=3, B=2, target_S=150),
+        dict(A=1, B=5, target_S=90),  # A=1 case -- exercises the bare-"1n" fix; was B=3 (a1=4,d=2) -- duplicated pilot1_bespoke_4a6da53a
+        dict(A=4, B=5, target_S=250),
     ]
     for kwargs in hl_gdc_b:
         specs.append((aa1_2_sum_quadratic_word, kwargs, "AA1.2|HL|gdc|template|mid"))
