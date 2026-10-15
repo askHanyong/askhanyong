@@ -97,3 +97,49 @@ def pattern_id_for(row_id: str, mode: str, rowid_index_within_template_batch: in
         return BESPOKE_PATTERN[row_id]
     fn = _TEMPLATE_FN_ORDER[rowid_index_within_template_batch]
     return _FN_TO_PATTERN[fn]
+
+
+# ---------------------------------------------------------------------------
+# AA5.6 pattern catalog (prod_aa5_6 batch, 30 rows = 9 template functions x
+# their variant counts, in templates_aa5_6.build_all_aa5_6_templates()
+# insertion order -- confirmed against that function's spec-list order).
+# ---------------------------------------------------------------------------
+PATTERNS.update({
+    "AA5.6-P01": "power_rule_gradient",
+    "AA5.6-P02": "chain_rule_linear_power",
+    "AA5.6-P03": "chain_rule_exponential",
+    "AA5.6-P04": "chain_rule_trig_second_derivative",
+    "AA5.6-P05": "product_rule_poly_times_trig",
+    "AA5.6-P06": "quotient_rule_linear_over_linear",
+    "AA5.6-P07": "sectionB_product_chain_stationary_points",
+    "AA5.6-P08": "sectionB_quotient_rule_tangent_line",
+    "AA5.6-P09": "sectionB_chain_rule_double_angle",
+})
+
+_AA5_6_FN_ORDER = (
+    ["aa5_6_power_rule_gradient"] * 4
+    + ["aa5_6_chain_power"] * 4
+    + ["aa5_6_chain_exp"] * 4
+    + ["aa5_6_chain_trig"] * 4
+    + ["aa5_6_product_rule_poly_trig"] * 4
+    + ["aa5_6_quotient_rule_linear"] * 4
+    + ["aa5_6_sectionB_product_stationary"] * 2
+    + ["aa5_6_sectionB_quotient_tangent"] * 2
+    + ["aa5_6_sectionB_double_angle"] * 2
+)
+_AA5_6_FN_TO_PATTERN = {
+    "aa5_6_power_rule_gradient": "AA5.6-P01",
+    "aa5_6_chain_power": "AA5.6-P02",
+    "aa5_6_chain_exp": "AA5.6-P03",
+    "aa5_6_chain_trig": "AA5.6-P04",
+    "aa5_6_product_rule_poly_trig": "AA5.6-P05",
+    "aa5_6_quotient_rule_linear": "AA5.6-P06",
+    "aa5_6_sectionB_product_stationary": "AA5.6-P07",
+    "aa5_6_sectionB_quotient_tangent": "AA5.6-P08",
+    "aa5_6_sectionB_double_angle": "AA5.6-P09",
+}
+
+
+def pattern_id_for_aa5_6(rowid_index_within_batch: int) -> str:
+    fn = _AA5_6_FN_ORDER[rowid_index_within_batch]
+    return _AA5_6_FN_TO_PATTERN[fn]

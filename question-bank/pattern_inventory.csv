@@ -17,3 +17,12 @@ AA1.2-P22,odd_sum_proof,AA1.2,SL,A,1
 AA1.2-P23,product_condition,AA1.2,SL,A,1
 AA1.2-P24,symmetric_three_term,AA1.2,SL,A,1
 AA1.2-P25,two_sequence_crossing_linear,AA1.2,SL,A,2
+AA5.6-P01,power_rule_gradient,AA5.6,SL+HL,A,4
+AA5.6-P02,chain_rule_linear_power,AA5.6,SL+HL,A,4
+AA5.6-P03,chain_rule_exponential,AA5.6,SL+HL,A,4
+AA5.6-P04,chain_rule_trig_second_derivative,AA5.6,SL+HL,A,4
+AA5.6-P05,product_rule_poly_times_trig,AA5.6,SL+HL,A,4
+AA5.6-P06,quotient_rule_linear_over_linear,AA5.6,SL+HL,A,4
+AA5.6-P07,sectionB_product_chain_stationary_points,AA5.6,SL+HL,B,2
+AA5.6-P08,sectionB_quotient_rule_tangent_line,AA5.6,SL+HL,B,2
+AA5.6-P09,sectionB_chain_rule_double_angle,AA5.6,SL+HL,B,2
