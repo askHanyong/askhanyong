@@ -203,14 +203,25 @@ print("PASS")
 # ---------------------------------------------------------------------------
 # AA1.2 | SL | gdc -- Shape B: Sn = An^2+Bn given -> find a1, d, u_k
 # ---------------------------------------------------------------------------
-def aa1_2_sum_quadratic_reverse(A: int, B: int, k: int) -> dict:
+def aa1_2_sum_quadratic_reverse(A: int, B: int, k: int, threshold: int) -> dict:
     assert A != 0 and k > 0
     a1 = A + B
     d = 2 * A
     u_k = a1 + (k - 1) * d
 
-    b_term = f" + {B}n" if B > 0 else (f" - {abs(B)}n" if B < 0 else "")
-    stem = f"For an arithmetic sequence, $S_n = {A}n^{{2}}{b_term}$ for all positive integers $n$, where $S_n$ denotes the sum of the first $n$ terms."
+    n_search = 1
+    while a1 + (n_search - 1) * d <= threshold:
+        n_search += 1
+    n0 = n_search
+
+    # Build "A n^2 + B n" with proper omission of bare coefficient 1 and sign handling.
+    a_term = "n^{2}" if A == 1 else ("-n^{2}" if A == -1 else f"{A}n^{{2}}")
+    b_term = f" + {B}n" if B > 1 else (
+        " + n" if B == 1 else (
+            f" - {abs(B)}n" if B < -1 else (" - n" if B == -1 else "")
+        )
+    )
+    stem = f"For an arithmetic sequence, $S_n = {a_term}{b_term}$ for all positive integers $n$, where $S_n$ denotes the sum of the first $n$ terms."
     check_code = f"""
 import sympy as sp
 n = sp.symbols('n', positive=True, integer=True)
@@ -224,11 +235,15 @@ u_k = u1 + ({k}-1)*d
 assert int(u1) == {a1}, f"computed u1={{u1}}, expected {a1}"
 assert int(d) == {d}, f"computed d={{d}}, expected {d}"
 assert int(u_k) == {u_k}, f"computed u_k={{u_k}}, expected {u_k}"
+n_val = 1
+while int(u1) + (n_val-1)*int(d) <= {threshold}:
+    n_val += 1
+assert n_val == {n0}, f"computed smallest n={{n_val}}, expected {n0}"
 print("PASS")
 """
     return {
         "level": "SL", "paper_type": "P2", "calculator": "gdc", "section": "A",
-        "total_marks": 4, "topic_code": "AA1.2",
+        "total_marks": 6, "topic_code": "AA1.2",
         "mode": "template", "difficulty": "medium",
         "stem_latex": stem,
         "parts_json": json.dumps([
@@ -250,9 +265,18 @@ print("PASS")
                     ("A1", f"$u_{{{k}}} = {u_k}$"),
                 ]),
             },
+            {
+                "label": "c", "marks": 2,
+                "text": f"Find the smallest value of $n$ for which $u_n$ first exceeds ${threshold}$.",
+                "answer": f"$n = {n0}$",
+                "markscheme_lines": _marks_breakdown([
+                    ("M1", f"solving/trialling $u_n > {threshold}$ (e.g. via GDC)"),
+                    ("A1", f"$n = {n0}$"),
+                ]),
+            },
         ]),
         "check_code": check_code.strip(),
-        "params": {"A": A, "B": B, "k": k, "u1": a1, "d": d, "u_k": u_k},
+        "params": {"A": A, "B": B, "k": k, "threshold": threshold, "u1": a1, "d": d, "u_k": u_k, "n0": n0},
     }
 
 
@@ -264,6 +288,7 @@ def aa1_2_sigma_notation(p: int, q: int, target_n: int) -> dict:
     target_S = sum(p * r + q for r in range(1, target_n + 1))
     first_term = p + q
     b_term = f" + {q}" if q > 0 else (f" - {abs(q)}" if q < 0 else "")
+    closed_form_numerator = _signed_term(p, "n", p + 2 * q)
 
     stem = f"Consider the arithmetic series $\\sum_{{r=1}}^{{n}} ({p}r{b_term})$."
     check_code = f"""
@@ -304,7 +329,7 @@ print("PASS")
             },
             {
                 "label": "b", "marks": 2,
-                "text": f"Show that $\\sum_{{r=1}}^{{n}}({p}r{b_term}) = \\dfrac{{n({p}n+{p+2*q})}}{{2}}$.",
+                "text": f"Show that $\\sum_{{r=1}}^{{n}}({p}r{b_term}) = \\dfrac{{n({closed_form_numerator})}}{{2}}$.",
                 "answer": "shown",
                 "markscheme_lines": _marks_breakdown([
                     ("M1", "correct use of $S_n = \\frac{n}{2}(2u_1+(n-1)d)$"),
@@ -331,7 +356,7 @@ print("PASS")
 # averaging, then d and u1
 # ---------------------------------------------------------------------------
 def aa1_2_equally_spaced_terms(u1: int, d: int, a_idx: int, mid_idx: int) -> dict:
-    assert a_idx < mid_idx
+    assert 1 < a_idx < mid_idx, "a_idx must be >= 2: a_idx=1 means u_{a_idx} IS u_1, which part (b) then asks to 'find' again"
     b_idx = 2 * mid_idx - a_idx
     u_a_val = u1 + (a_idx - 1) * d
     u_mid_val = u1 + (mid_idx - 1) * d
@@ -429,7 +454,7 @@ print("PASS")
             },
             {
                 "label": "b", "marks": 3,
-                "text": f"Find the smallest value of $n$ for which the running total after $n$ {time_unit_plural} first exceeds {value_fmt(target_S)}.",
+                "text": f"Find the smallest value of $n$ for which the running total after $n$ {time_unit_plural} first exceeds ${value_fmt(target_S)}$.",
                 "answer": f"$n = {n0}$",
                 "markscheme_lines": _marks_breakdown([
                     ("M1", "correct expression for $S_n$"),
@@ -457,7 +482,7 @@ SAVINGS_CONTEXTS = [
         "value_fmt": lambda v: f"{v}",
     },
     {
-        "stem": "A runner's weekly distance (in km) forms an arithmetic sequence. In week 1 she runs {a1}\\text{{ km}}, and each following week she runs {d}\\text{{ km}} more than the previous week.",
+        "stem": "A runner's weekly distance (in km) forms an arithmetic sequence. In week 1 she runs ${a1}\\text{{ km}}$, and each following week she runs ${d}\\text{{ km}}$ more than the previous week.",
         "time_unit": "week", "time_unit_plural": "weeks",
         "quantity_label": "the distance run (in km)",
         "value_fmt": lambda v: f"{v}\\text{{ km}}",
@@ -487,7 +512,7 @@ SAVINGS_CONTEXTS = [
         "value_fmt": lambda v: f"{v}",
     },
     {
-        "stem": "A school's monthly recycling (in kg) forms an arithmetic sequence. In month 1 it collects {a1}\\text{{ kg}}, and each following month it collects {d}\\text{{ kg}} more than the previous month.",
+        "stem": "A school's monthly recycling (in kg) forms an arithmetic sequence. In month 1 it collects ${a1}\\text{{ kg}}$, and each following month it collects ${d}\\text{{ kg}}$ more than the previous month.",
         "time_unit": "month", "time_unit_plural": "months",
         "quantity_label": "the mass of recycling collected (in kg)",
         "value_fmt": lambda v: f"{v}\\text{{ kg}}",
@@ -508,10 +533,15 @@ def aa1_2_sum_quadratic_word(A: int, B: int, threshold: int) -> dict:
         n += 1
     n0 = n
 
-    b_term = f" + {B}n" if B > 0 else (f" - {abs(B)}n" if B < 0 else "")
+    a_term = "n^{2}" if A == 1 else ("-n^{2}" if A == -1 else f"{A}n^{{2}}")
+    b_term = f" + {B}n" if B > 1 else (
+        " + n" if B == 1 else (
+            f" - {abs(B)}n" if B < -1 else (" - n" if B == -1 else "")
+        )
+    )
     stem = (
         f"The total number of items produced by a factory in the first $n$ days is given by "
-        f"$S_n = {A}n^{{2}}{b_term}$, where $S_n$ is measured in units."
+        f"$S_n = {a_term}{b_term}$, where $S_n$ is measured in units."
     )
     check_code = f"""
 import sympy as sp
@@ -558,18 +588,22 @@ print("PASS")
     }
 
 
+MAX_VARIANTS_PER_TEMPLATE = 3
+
+
 def build_all_aa1_2_templates() -> list[dict]:
     specs = []
+
+    # Capped at 3 variants per template function (MAX_VARIANTS_PER_TEMPLATE).
+    # Each group below is hand-checked for distinct final answers across its
+    # variants -- e.g. sl_none_b previously had two variants that both
+    # produced x=6, d=11 (b_off=1,d_off=0,f_off=5 and b_off=0,d_off=-1,f_off=4);
+    # the second was swapped out for b_off=5,d_off=2,f_off=-3 (x=-2, d=-7).
 
     sl_none_a = [
         dict(u1=5, d=3, idx_a=2, idx_b=6, idx_target=15),
         dict(u1=-2, d=5, idx_a=4, idx_b=9, idx_target=25),
         dict(u1=10, d=-2, idx_a=3, idx_b=8, idx_target=12),
-        dict(u1=1, d=6, idx_a=2, idx_b=5, idx_target=10),
-        dict(u1=7, d=4, idx_a=5, idx_b=10, idx_target=18),
-        dict(u1=-5, d=3, idx_a=2, idx_b=7, idx_target=20),
-        dict(u1=4, d=-3, idx_a=3, idx_b=9, idx_target=15),
-        dict(u1=2, d=7, idx_a=4, idx_b=8, idx_target=12),
     ]
     for kwargs in sl_none_a:
         specs.append((aa1_2_two_terms_given, kwargs, "AA1.2|SL|none|template|low"))
@@ -577,11 +611,7 @@ def build_all_aa1_2_templates() -> list[dict]:
     sl_none_b = [
         dict(b_off=1, d_off=0, f_off=5),
         dict(b_off=-2, d_off=3, f_off=7),
-        dict(b_off=0, d_off=-1, f_off=4),
         dict(b_off=5, d_off=2, f_off=-3),
-        dict(b_off=-4, d_off=1, f_off=9),
-        dict(b_off=3, d_off=-2, f_off=1),
-        dict(b_off=-1, d_off=4, f_off=-6),
     ]
     for kwargs in sl_none_b:
         specs.append((aa1_2_three_terms_ap_linear, kwargs, "AA1.2|SL|none|template|low"))
@@ -590,23 +620,14 @@ def build_all_aa1_2_templates() -> list[dict]:
         dict(a1=5, d=4, target_n=12),
         dict(a1=2, d=7, target_n=9),
         dict(a1=10, d=3, target_n=14),
-        dict(a1=1, d=8, target_n=10),
-        dict(a1=6, d=5, target_n=16),
-        dict(a1=3, d=9, target_n=7),
-        dict(a1=8, d=2, target_n=20),
-        dict(a1=4, d=10, target_n=11),
     ]
     for kwargs in sl_gdc_a:
         specs.append((aa1_2_sum_solve_n, kwargs, "AA1.2|SL|gdc|template|low"))
 
     sl_gdc_b = [
-        dict(A=2, B=5, k=8),
-        dict(A=1, B=-3, k=12),
-        dict(A=3, B=1, k=6),
-        dict(A=1, B=4, k=15),
-        dict(A=4, B=-2, k=9),
-        dict(A=2, B=0, k=11),
-        dict(A=5, B=3, k=7),
+        dict(A=2, B=5, k=8, threshold=60),
+        dict(A=1, B=-3, k=12, threshold=30),
+        dict(A=3, B=1, k=6, threshold=70),
     ]
     for kwargs in sl_gdc_b:
         specs.append((aa1_2_sum_quadratic_reverse, kwargs, "AA1.2|SL|gdc|template|low"))
@@ -615,11 +636,6 @@ def build_all_aa1_2_templates() -> list[dict]:
         dict(p=3, q=-1, target_n=14),
         dict(p=4, q=-2, target_n=10),
         dict(p=2, q=1, target_n=18),
-        dict(p=6, q=-4, target_n=9),
-        dict(p=3, q=2, target_n=12),
-        dict(p=5, q=-3, target_n=8),
-        dict(p=2, q=-1, target_n=20),
-        dict(p=4, q=1, target_n=11),
     ]
     for kwargs in hl_none_a:
         specs.append((aa1_2_sigma_notation, kwargs, "AA1.2|HL|none|template|mid"))
@@ -628,35 +644,22 @@ def build_all_aa1_2_templates() -> list[dict]:
         dict(u1=4, d=3, a_idx=2, mid_idx=5),
         dict(u1=-1, d=5, a_idx=3, mid_idx=6),
         dict(u1=10, d=-2, a_idx=2, mid_idx=4),
-        dict(u1=0, d=7, a_idx=1, mid_idx=5),
-        dict(u1=6, d=4, a_idx=4, mid_idx=9),
-        dict(u1=-3, d=6, a_idx=2, mid_idx=7),
-        dict(u1=8, d=-3, a_idx=3, mid_idx=5),
     ]
     for kwargs in hl_none_b:
         specs.append((aa1_2_equally_spaced_terms, kwargs, "AA1.2|HL|none|template|mid"))
 
     hl_gdc_a = [
         dict(a1=50, d=15, k=10, n0=16, context=SAVINGS_CONTEXTS[0]),
-        dict(a1=20, d=8, k=7, n0=20, context=SAVINGS_CONTEXTS[1]),
-        dict(a1=100, d=25, k=5, n0=14, context=SAVINGS_CONTEXTS[2]),
-        dict(a1=10, d=5, k=12, n0=25, context=SAVINGS_CONTEXTS[3]),
-        dict(a1=30, d=12, k=9, n0=18, context=SAVINGS_CONTEXTS[4]),
-        dict(a1=15, d=6, k=11, n0=22, context=SAVINGS_CONTEXTS[5]),
-        dict(a1=40, d=10, k=6, n0=16, context=SAVINGS_CONTEXTS[6]),
-        dict(a1=25, d=9, k=14, n0=19, context=SAVINGS_CONTEXTS[7]),
+        dict(a1=20, d=8, k=7, n0=20, context=SAVINGS_CONTEXTS[2]),  # km context -- exercises the leakage fix
+        dict(a1=100, d=25, k=5, n0=14, context=SAVINGS_CONTEXTS[7]),  # kg context -- exercises the leakage fix
     ]
     for kwargs in hl_gdc_a:
         specs.append((aa1_2_savings_threshold, kwargs, "AA1.2|HL|gdc|template|mid"))
 
     hl_gdc_b = [
         dict(A=3, B=2, threshold=100),
-        dict(A=2, B=-1, threshold=75),
+        dict(A=1, B=3, threshold=50),  # A=1 case -- exercises the bare-"1n" fix
         dict(A=4, B=5, threshold=200),
-        dict(A=1, B=3, threshold=50),
-        dict(A=5, B=-2, threshold=150),
-        dict(A=3, B=7, threshold=120),
-        dict(A=2, B=4, threshold=90),
     ]
     for kwargs in hl_gdc_b:
         specs.append((aa1_2_sum_quadratic_word, kwargs, "AA1.2|HL|gdc|template|mid"))
@@ -665,8 +668,32 @@ def build_all_aa1_2_templates() -> list[dict]:
     for fn, kwargs, blueprint_cell in specs:
         q = fn(**kwargs)
         q["blueprint_cell"] = blueprint_cell
+        q["_template_fn"] = fn.__name__
         out.append(q)
+
+    # Flag (not silently drop) any two variants of the SAME template function
+    # that land on an identical final answer -- the symptom the cap is meant
+    # to prevent from going unnoticed (e.g. two variants both giving d=11).
+    seen = {}
+    for q in out:
+        answer_fp = _answer_fingerprint(q)
+        key = (q["_template_fn"], answer_fp)
+        if key in seen:
+            raise AssertionError(
+                f"duplicate final answer within template {q['_template_fn']!r}: "
+                f"{seen[key]['params']} and {q['params']} both give {answer_fp}"
+            )
+        seen[key] = q
+    for q in out:
+        del q["_template_fn"]
     return out
+
+
+def _answer_fingerprint(q: dict) -> tuple:
+    """A tuple of every part's `answer` string, used to detect two variants
+    of the same template landing on an identical final answer."""
+    parts = json.loads(q["parts_json"])
+    return tuple(p["answer"] for p in parts)
 
 
 if __name__ == "__main__":

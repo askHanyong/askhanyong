@@ -41,8 +41,9 @@ def validate_3(c):  # two-sum: u1=2, d=4
     return a["u1"] == 2 and a["d"] == 4 and c["b"] == 2, f"u1={a['u1']}, d={a['d']}, (b) u1={c['b']}"
 
 
-def validate_4(c):  # theatre seats: u25=66, total=1050
-    return c["a"] == 66 and c["b"] == 1050, f"u25={c['a']}, total={c['b']}"
+def validate_4(c):  # theatre seats: u25=66, total=1050, n0(S_n>1200)=28
+    return c["a"] == 66 and c["b"] == 1050 and c.get("c") == 28, \
+        f"u25={c['a']}, total={c['b']}, n0={c.get('c')}"
 
 
 def validate_5(c):  # first negative term: expr equiv to 45-4(n-1), n=13, value=-3
@@ -122,8 +123,8 @@ def main():
         "where batch_id=? and mode='bespoke' order by rowid",
         (BATCH_ID,),
     ).fetchall()
-    assert len(template_rows) == 60 and len(bespoke_rows) == 15, \
-        f"expected 60 template + 15 bespoke, found {len(template_rows)} + {len(bespoke_rows)}"
+    assert len(template_rows) == 24 and len(bespoke_rows) == 15, \
+        f"expected 24 template (post-cap) + 15 bespoke, found {len(template_rows)} + {len(bespoke_rows)}"
 
     results = []
     for row in template_rows:

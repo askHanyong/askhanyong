@@ -122,29 +122,45 @@ b = n_val
 
 print({"a": a12, "b": b})
 """,
-# 4: AA1.2 HL gdc -- Sn=n^2+3n
+# 4: AA1.2 HL gdc -- Sn=n^2+3n (extended with part (c): smallest n with u_n>50,
+# re-verified by a fresh independent subagent after the GDC-necessity fix added part (c))
 """
-import sympy as sp
+from sympy import symbols, solve, Eq, S, ceiling
+from fractions import Fraction
 
-n = sp.symbols('n', positive=True, integer=True)
+n = symbols('n', positive=True, integer=True)
 
-S = n**2 + 3*n
+def Sn(k):
+    return k**2 + 3*k
 
-def S_at(k):
-    return S.subs(n, k)
-
-u1 = sp.nsimplify(S_at(1))
-
-S2 = sp.nsimplify(S_at(2))
-u2 = S2 - u1
-
+u1 = Sn(1)
+u2 = Sn(2) - Sn(1)
 d = u2 - u1
 
-u10 = u1 + (10 - 1) * d
+nn = symbols('nn', positive=True, integer=True)
+Sn_expr = nn**2 + 3*nn
+Sn_prev_expr = (nn-1)**2 + 3*(nn-1)
+un_expr = (Sn_expr - Sn_prev_expr).expand()
+
+u10 = un_expr.subs(nn, 10)
+
+sol = solve(Eq(2*n + 2, 50), n)
+boundary = sol[0]
+if un_expr.subs(nn, boundary) > 50:
+    smallest_n = boundary
+else:
+    smallest_n = boundary + 1
+
+smallest_n = int(smallest_n)
+while un_expr.subs(nn, smallest_n) <= 50:
+    smallest_n += 1
+while un_expr.subs(nn, smallest_n - 1) > 50:
+    smallest_n -= 1
 
 result = {
     "a": {"u1": int(u1), "u2": int(u2), "d": int(d)},
     "b": int(u10),
+    "c": int(smallest_n)
 }
 
 print(result)

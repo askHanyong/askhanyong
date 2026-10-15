@@ -57,10 +57,10 @@ def validate_3(c):  # AA1.2 HL gdc: Hanyong savings -> u12=215, n=18
     return c["a"] == 215 and c["b"] == 18, f"u12={c['a']},n={c['b']}"
 
 
-def validate_4(c):  # AA1.2 HL gdc: Sn=n^2+3n -> u1=4,u2=6,d=2,u10=22
+def validate_4(c):  # AA1.2 HL gdc: Sn=n^2+3n -> u1=4,u2=6,d=2,u10=22,n0(u_n>50)=25
     a = c["a"]
-    return a["u1"] == 4 and a["u2"] == 6 and a["d"] == 2 and c["b"] == 22, \
-        f"u1={a['u1']},u2={a['u2']},d={a['d']},u10={c['b']}"
+    return a["u1"] == 4 and a["u2"] == 6 and a["d"] == 2 and c["b"] == 22 and c.get("c") == 25, \
+        f"u1={a['u1']},u2={a['u2']},d={a['d']},u10={c['b']},n0={c.get('c')}"
 
 
 def validate_5(c):  # AA2.7 SL gdc: discriminant=17, real distinct

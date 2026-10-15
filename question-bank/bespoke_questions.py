@@ -87,7 +87,7 @@ BESPOKE = [
     },
     {
         "topic_code": "AA1.2", "level": "HL", "paper_type": "P2", "calculator": "gdc",
-        "section": "A", "total_marks": 4, "difficulty": "medium",
+        "section": "A", "total_marks": 6, "difficulty": "medium",
         "blueprint_cell": "AA1.2|HL|gdc|bespoke",
         "stem_latex": "For an arithmetic sequence, $S_n = n^{2} + 3n$ for all positive integers $n$, where $S_n$ denotes the sum of the first $n$ terms.",
         "parts": [
@@ -96,6 +96,8 @@ BESPOKE = [
                   [("M1", "$u_1 = S_1$, $u_2 = S_2 - S_1$"), ("A1", "$u_1=4$, $u_2=6$, $d=2$")]),
             _part("b", 2, "Find $u_{10}$.", "$u_{10} = 22$",
                   [("M1", "$u_{10} = S_{10}-S_9$ or $u_1+9d$"), ("A1", "$u_{10} = 22$")]),
+            _part("c", 2, "Find the smallest value of $n$ for which $u_n$ first exceeds $50$.", "$n = 25$",
+                  [("M1", "solving/trialling $u_n > 50$ (e.g. via GDC)"), ("A1", "$n = 25$")]),
         ],
     },
     # ---- AA2.7 (Functions -- Quadratics), 1 question ----

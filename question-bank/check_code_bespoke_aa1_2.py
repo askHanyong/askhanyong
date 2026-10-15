@@ -115,19 +115,49 @@ result = {
 
 print(result)
 """,
-# 4: theatre seats -- u1=18,d=2,n=25
+# 4: theatre seats -- u1=18,d=2,n=25 (extended with part (c): smallest n with
+# S_n>1200, re-verified by a fresh independent subagent after the
+# GDC-necessity fix added part (c))
 """
-from sympy import symbols, Eq, solve, Rational
+from sympy import symbols, Eq, solve, nsimplify
 
 a1 = 18
 d = 2
-n = 25
 
-a_25 = a1 + (n - 1) * d
+n = symbols('n', positive=True, integer=True)
 
-S_n = Rational(n, 2) * (2 * a1 + (n - 1) * d)
+def nth_term(k):
+    return a1 + (k - 1) * d
 
-result = {"a": int(a_25), "b": int(S_n)}
+row25_seats = nth_term(25)
+
+def sum_n_terms(k):
+    return k * (2 * a1 + (k - 1) * d) / 2
+
+total_25_rows = sum_n_terms(25)
+total_25_rows = int(total_25_rows) if float(total_25_rows).is_integer() else total_25_rows
+
+S_expr = n * (2 * a1 + (n - 1) * d) / 2
+
+n_sym = symbols('x', positive=True, real=True)
+S_real = n_sym * (2 * a1 + (n_sym - 1) * d) / 2
+solutions = solve(Eq(S_real, 1200), n_sym)
+positive_roots = [sol for sol in solutions if sol.is_real and sol > 0]
+bound = max(positive_roots) if positive_roots else 0
+
+candidate = max(1, int(bound) - 2)
+while True:
+    total = candidate * (2 * a1 + (candidate - 1) * d) / 2
+    if total > 1200:
+        smallest_n = candidate
+        break
+    candidate += 1
+
+result = {
+    "a": int(row25_seats),
+    "b": int(total_25_rows),
+    "c": int(smallest_n),
+}
 print(result)
 """,
 # 5: first negative term -- u1=45,d=-4

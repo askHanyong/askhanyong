@@ -82,14 +82,22 @@ BESPOKE_AA1_2 = [
     # ======================= SL | gdc (4) =======================
     {
         "topic_code": "AA1.2", "level": "SL", "paper_type": "P2", "calculator": "gdc",
-        "section": "A", "total_marks": 4, "difficulty": "medium",
+        "section": "A", "total_marks": 7, "difficulty": "medium",
         "blueprint_cell": "AA1.2|SL|gdc|bespoke",
-        "stem_latex": "A theatre has $25$ rows of seats. Row $1$ (nearest the stage) has $18$ seats, and each row behind it has $2$ more seats than the row in front.",
+        "stem_latex": (
+            "A theatre has $25$ rows of seats. Row $1$ (nearest the stage) has $18$ seats, and each row behind it "
+            "has $2$ more seats than the row in front. The theatre is planning to extend by adding further rows "
+            "behind row $25$, continuing the same pattern."
+        ),
         "parts": [
             _part("a", 1, "Find the number of seats in row $25$.", "$66$",
                   [("A1", "$u_{25} = 18+24(2) = 66$")]),
-            _part("b", 3, "Find the total number of seats in the theatre.", "$1050$",
+            _part("b", 3, "Find the total number of seats in the original $25$-row theatre.", "$1050$",
                   [("M1", "correct use of $S_n = \\frac{n}{2}(2u_1+(n-1)d)$"), ("A1", "correct substitution"), ("A1", "$1050$")]),
+            _part("c", 3, "Find the smallest total number of rows, $n$, for which the theatre's total seating capacity first exceeds $1200$.", "$n = 28$",
+                  [("M1", "correct expression for $S_n$ extended beyond row 25"),
+                   ("M1", "solving/trialling $S_n > 1200$ (e.g. via GDC)"),
+                   ("A1", "$n = 28$")]),
         ],
     },
     {
@@ -140,8 +148,10 @@ BESPOKE_AA1_2 = [
         "stem_latex": "The positive odd integers $1, 3, 5, 7, \\ldots$ form an arithmetic sequence with first term $1$ and common difference $2$.",
         "parts": [
             _part("a", 4, "Show that the sum of the first $n$ positive odd integers is $n^{2}$.", "shown",
-                  [("M1", "correct use of $S_n = \\frac{n}{2}(2u_1+(n-1)d)$ with $u_1=1,d=2$"),
-                   ("A1", "algebra simplifying to $n^{2}$ (AG)")]),
+                  [("M1", "correct use of $S_n = \\frac{n}{2}(2u_1+(n-1)d)$"),
+                   ("A1", "correct substitution of $u_1=1$, $d=2$"),
+                   ("M1", "expanding and simplifying $\\frac{n}{2}(2+2(n-1))$"),
+                   ("A1", "simplifies to $n^{2}$ (AG)")]),
             _part("b", 2, "Hence find the sum of the first $30$ positive odd integers.", "$900$",
                   [("M1", "substituting $n=30$ into the result from (a)"), ("A1", "$900$")]),
         ],
@@ -195,15 +205,15 @@ BESPOKE_AA1_2 = [
         "section": "A", "total_marks": 5, "difficulty": "medium",
         "blueprint_cell": "AA1.2|HL|gdc|bespoke",
         "stem_latex": (
-            "Deborah's and Edward's annual salaries (in dollars) both increase arithmetically. In year $1$, "
-            "Deborah earns $\\$2000$ and her salary increases by $\\$300$ each year. In year $1$, Edward earns "
-            "$\\$2800$ and his salary increases by $\\$150$ each year."
+            "Two employees' annual salaries (in dollars) both increase arithmetically. In year $1$, "
+            "Employee A earns $\\$2000$ and their salary increases by $\\$300$ each year. In year $1$, Employee B earns "
+            "$\\$2800$ and their salary increases by $\\$150$ each year."
         ),
         "parts": [
-            _part("a", 2, "Write down expressions for Deborah's and Edward's salary in year $n$.",
-                  "Deborah: $2000+300(n-1)$; Edward: $2800+150(n-1)$",
-                  [("A1", "both expressions correct")]),
-            _part("b", 3, "Find the first year in which Deborah's salary exceeds Edward's salary.", "Year $7$",
+            _part("a", 2, "Write down expressions for Employee A's and Employee B's salary in year $n$.",
+                  "Employee A: $2000+300(n-1)$; Employee B: $2800+150(n-1)$",
+                  [("A1", "Employee A's expression correct"), ("A1", "Employee B's expression correct")]),
+            _part("b", 3, "Find the first year in which Employee A's salary exceeds Employee B's salary.", "Year $7$",
                   [("M1", "setting $2000+300(n-1) > 2800+150(n-1)$"),
                    ("M1", "solving/trialling (e.g. via GDC)"),
                    ("A1", "$n = 7$")]),
@@ -221,7 +231,7 @@ BESPOKE_AA1_2 = [
         "parts": [
             _part("a", 2, "Write down expressions for the total amount saved under each plan after $n$ months.",
                   "Plan A: $S_n^{A} = 50n^{2}+450n$; Plan B: $S_n^{B}=10n^{2}+990n$",
-                  [("A1", "both expressions correct")]),
+                  [("A1", "Plan A's expression correct"), ("A1", "Plan B's expression correct")]),
             _part("b", 3, "Find the first month in which the total saved under Plan A exceeds the total saved under Plan B.",
                   "Month $14$",
                   [("M1", "setting $S_n^{A} > S_n^{B}$"),
