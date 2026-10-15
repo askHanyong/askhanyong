@@ -176,6 +176,11 @@ def check_gdc_necessity(q: dict) -> tuple[bool, str]:
     solver_markers = ["solve(", "solve_univariate_inequality", "nsolve("]
     search_markers = ["while ", "floor(", "ceiling("]
     found_markers = [m for m in (solver_markers + search_markers) if m in code]
+    # A trial-search loop can also be written as "for k in range(...)"
+    # rather than "while" -- catch that form too.
+    has_for_range_search = bool(re.search(r"for\s+\w+\s+in\s+range\(", code))
+    if has_for_range_search:
+        found_markers.append("for ... in range(")
 
     # A 2-equation-in-2-unknowns linear system (solve([eq1, eq2], [x, y]))
     # is conventional GDC territory in IB practice even though each
@@ -199,8 +204,11 @@ def check_gdc_necessity(q: dict) -> tuple[bool, str]:
     # Inline formulas (no wrapping function -- e.g. a bare sympy Symbol
     # used directly: "n/2*(2*a1+(n-1)*d)") won't match the function-param
     # check above; catch those via the same identifier appearing both
-    # right before "*(" and again inside the parens.
-    has_inline_quadratic = bool(re.search(r"(\w+)\s*\*\s*\([^\n]*?\1", code))
+    # before a "*"/"/" operator and again inside the parens that follow.
+    # Requires an actual operator (not just "(") right after the
+    # identifier, so a function signature like "def u(k): return ..."
+    # doesn't false-positive on "k" appearing twice.
+    has_inline_quadratic = bool(re.search(r"\b(\w+)\b\s*[/*][^\n(]{0,15}\([^\n]*?\b\1\b", code))
     has_nonlinear = has_explicit_power or has_quadratic_function or has_inline_quadratic
 
     if has_system_solve:

@@ -199,11 +199,12 @@ BESPOKE_AA1_2 = [
                   [("M1", "setting $u_n^{A} = u_n^{B}$"), ("A1", "$4n=8$"), ("A1", "$n = 2$")]),
         ],
     },
-    # ======================= HL | gdc (3) =======================
+    # Retagged HL|gdc -> HL|none: comparing two individual (linear) salaries
+    # is a one-step linear inequality, not genuinely GDC-necessitating.
     {
-        "topic_code": "AA1.2", "level": "HL", "paper_type": "P2", "calculator": "gdc",
-        "section": "A", "total_marks": 5, "difficulty": "medium",
-        "blueprint_cell": "AA1.2|HL|gdc|bespoke",
+        "topic_code": "AA1.2", "level": "HL", "paper_type": "P1", "calculator": "none",
+        "section": "A", "total_marks": 4, "difficulty": "medium",
+        "blueprint_cell": "AA1.2|HL|none|bespoke",
         "stem_latex": (
             "Two employees' annual salaries (in dollars) both increase arithmetically. In year $1$, "
             "Employee A earns $\\$2000$ and their salary increases by $\\$300$ each year. In year $1$, Employee B earns "
@@ -213,9 +214,8 @@ BESPOKE_AA1_2 = [
             _part("a", 2, "Write down expressions for Employee A's and Employee B's salary in year $n$.",
                   "Employee A: $2000+300(n-1)$; Employee B: $2800+150(n-1)$",
                   [("A1", "Employee A's expression correct"), ("A1", "Employee B's expression correct")]),
-            _part("b", 3, "Find the first year in which Employee A's salary exceeds Employee B's salary.", "Year $7$",
+            _part("b", 2, "Find the first year in which Employee A's salary exceeds Employee B's salary.", "Year $7$",
                   [("M1", "setting $2000+300(n-1) > 2800+150(n-1)$"),
-                   ("M1", "solving/trialling (e.g. via GDC)"),
                    ("A1", "$n = 7$")]),
         ],
     },

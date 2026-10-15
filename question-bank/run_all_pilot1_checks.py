@@ -37,20 +37,22 @@ def _req(d, *path):
     return cur
 
 
-def validate_0(c):  # AA1.2 SL none: u3=11,u7=27 -> d=4,u1=3,u20=79
+def validate_0(c):  # AA1.2 SL none: u1=5,d=3,last=86 -> n=28, sum=1274
+    return c["a"] == 28 and c["b"] == 1274, f"n={c['a']},sum={c['b']}"
+
+
+def validate_1(c):  # AA1.2 SL gdc: two-company revenue crossing -> A=25n^2+175n,B=10n^2+390n,n=15
     a = c["a"]
-    return a["d"] == 4 and a["u1"] == 3 and c["b"] == 79, f"d={a['d']},u1={a['u1']},u20={c['b']}"
+    a_match = simplify(sympify(a["A"]) - sympify("25*n**2+175*n")) == 0
+    b_match = simplify(sympify(a["B"]) - sympify("10*n**2+390*n")) == 0
+    return a_match and b_match and c["b"] == 15, \
+        f"A={a['A']} (match: {a_match}), B={a['B']} (match: {b_match}), n={c['b']}"
 
 
-def validate_1(c):  # AA1.2 SL gdc: a1=4,d=6 -> Sn=3n^2+n, n=15
-    sn_match = simplify(sympify(c["a"]) - sympify("3*n**2 + n")) == 0
-    return sn_match and c["b"] == 15, f"Sn={c['a']} (matches 3n^2+n: {sn_match}), n={c['b']}"
-
-
-def validate_2(c):  # AA1.2 HL none: sum(5r-3) -> first=2,d=5,formula True,n=16
+def validate_2(c):  # AA1.2 HL none: multiples of 7 in [100,300] -> smallest=105,largest=294,n=28,sum=5586
     a = c["a"]
-    return a["first_term"] == 2 and a["common_difference"] == 5 and c["b"] is True and c["c"] == 16, \
-        f"first_term={a['first_term']},d={a['common_difference']},formula_holds={c['b']},n={c['c']}"
+    return a["smallest"] == 105 and a["largest"] == 294 and c["b"] == 28 and c["c"] == 5586, \
+        f"smallest={a['smallest']},largest={a['largest']},n={c['b']},sum={c['c']}"
 
 
 def validate_3(c):  # AA1.2 HL gdc: Hanyong savings -> u12=215, n=18

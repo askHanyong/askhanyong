@@ -656,9 +656,12 @@ def build_all_aa1_2_templates() -> list[dict]:
         specs.append((aa1_2_sum_solve_n, kwargs, "AA1.2|SL|gdc|template|low"))
 
     sl_gdc_b = [
-        dict(A=2, B=5, k=8, target_S=120),
-        dict(A=1, B=-3, k=12, target_S=60),
-        dict(A=4, B=-1, k=7, target_S=100),  # was A=3,B=1 (a1=4,d=6) -- duplicated pilot1_bespoke_3c160636
+        # Targets raised so n lands roughly 10-20 (all three originally gave
+        # n=6-10, below the target range) with >=5% margin above the
+        # previous running total.
+        dict(A=2, B=5, k=8, target_S=280),
+        dict(A=1, B=-3, k=12, target_S=150),
+        dict(A=4, B=-1, k=7, target_S=550),  # was A=3,B=1 (a1=4,d=6) -- duplicated pilot1_bespoke_3c160636
     ]
     for kwargs in sl_gdc_b:
         specs.append((aa1_2_sum_quadratic_reverse, kwargs, "AA1.2|SL|gdc|template|low"))
@@ -680,17 +683,20 @@ def build_all_aa1_2_templates() -> list[dict]:
         specs.append((aa1_2_equally_spaced_terms, kwargs, "AA1.2|HL|none|template|mid"))
 
     hl_gdc_a = [
-        dict(a1=40, d=20, k=7, target_S=600, context=SAVINGS_CONTEXTS[0]),  # was a1=50,d=15 -- duplicated pilot1_bespoke_b4e45bf7
-        dict(a1=20, d=8, k=7, target_S=350, context=SAVINGS_CONTEXTS[2]),  # km context -- exercises the leakage fix
-        dict(a1=100, d=25, k=5, target_S=500, context=SAVINGS_CONTEXTS[7]),  # kg context -- exercises the leakage fix
+        # Targets chosen so n lands roughly 10-20 and target_S is >=5% above
+        # the previous running total (was a1=50,d=15 -- duplicated
+        # pilot1_bespoke_b4e45bf7; targets originally landed n=7-8, too low).
+        dict(a1=40, d=20, k=7, target_S=2900, context=SAVINGS_CONTEXTS[0]),
+        dict(a1=20, d=8, k=7, target_S=1100, context=SAVINGS_CONTEXTS[2]),  # km context -- exercises the leakage fix
+        dict(a1=100, d=25, k=5, target_S=3500, context=SAVINGS_CONTEXTS[7]),  # kg context -- exercises the leakage fix
     ]
     for kwargs in hl_gdc_a:
         specs.append((aa1_2_savings_threshold, kwargs, "AA1.2|HL|gdc|template|mid"))
 
     hl_gdc_b = [
-        dict(A=3, B=2, target_S=150),
-        dict(A=1, B=5, target_S=90),  # A=1 case -- exercises the bare-"1n" fix; was B=3 (a1=4,d=2) -- duplicated pilot1_bespoke_4a6da53a
-        dict(A=4, B=5, target_S=250),
+        dict(A=3, B=2, target_S=700),  # target raised 150->700: n was 7, below the 10-20 target range
+        dict(A=1, B=5, target_S=290),  # A=1 case -- exercises the bare-"1n" fix; was B=3 (a1=4,d=2) -- duplicated pilot1_bespoke_4a6da53a
+        dict(A=4, B=5, target_S=950),
     ]
     for kwargs in hl_gdc_b:
         specs.append((aa1_2_sum_quadratic_word, kwargs, "AA1.2|HL|gdc|template|mid"))

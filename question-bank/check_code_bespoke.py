@@ -11,91 +11,90 @@ edit to the code's logic. No other changes were made to any of the 12.
 """
 
 CHECK_CODE = [
-# 0: AA1.2 SL none -- u3=11, u7=27
+# 0: AA1.2 SL none -- u1=5,d=3,last=86 -> n, sum (replaces the original
+# u3=11,u7=27 question, which duplicated the aa1_2_two_terms_given
+# template family's structure once bespoke questions were counted toward
+# the per-template variant cap; re-verified by a fresh independent
+# subagent against the new stem/parts)
 """
-from sympy import Rational, Eq, solve, symbols
+from fractions import Fraction
 
-u1, d = symbols('u1 d')
+a = Fraction(5)
+d = Fraction(3)
+l = Fraction(86)
 
-u3_val = Rational(11)
-u7_val = Rational(27)
+n = (l - a) / d + 1
+if n != int(n):
+    raise ValueError("Number of terms is not an integer; check stem values.")
+n = int(n)
 
-eq1 = Eq(u1 + 2*d, u3_val)
-eq2 = Eq(u1 + 6*d, u7_val)
+S = Fraction(n, 2) * (a + l)
+if S.denominator != 1:
+    raise ValueError("Sum is not an integer; check stem values.")
+S = int(S)
 
-sol = solve([eq1, eq2], [u1, d])
-u1_sol = sol[u1]
-d_sol = sol[d]
-
-u20 = u1_sol + 19*d_sol
-
-def to_plain(x):
-    if x.is_Integer:
-        return int(x)
-    return str(x)
-
-result = {
-    "a": {"d": to_plain(d_sol), "u1": to_plain(u1_sol)},
-    "b": to_plain(u20)
-}
-
-print(result)
+print({"a": n, "b": S})
 """,
-# 1: AA1.2 SL gdc -- a1=4,d=6, Sn=690
+# 1: AA1.2 SL gdc -- two-company cumulative revenue crossing (replaces the
+# original a1=4,d=6,Sn=690 question, which duplicated the
+# aa1_2_sum_solve_n template family's structure once bespoke questions
+# were counted toward the per-template variant cap; re-verified by a
+# fresh independent subagent against the new stem/parts)
 """
 import sympy as sp
 
-n = sp.symbols('n')
-a1 = sp.Integer(4)
-d = sp.Integer(6)
+n = sp.symbols('n', positive=True, integer=True)
 
-Sn_expr = sp.expand(n / 2 * (2 * a1 + (n - 1) * d))
-Sn_str = str(Sn_expr)
+a1_A = 200
+d_A = 50
+a1_B = 400
+d_B = 20
 
-solutions = sp.solve(sp.Eq(Sn_expr, 690), n)
-positive_int_solutions = [s for s in solutions if s.is_real and s > 0 and s == sp.floor(s)]
-n_value = int(positive_int_solutions[0])
+total_A = sp.expand(n/2 * (2*a1_A + (n-1)*d_A))
+total_B = sp.expand(n/2 * (2*a1_B + (n-1)*d_B))
 
-result = {
-    "a": Sn_str,
-    "b": n_value
-}
-print(result)
-""",
-# 2: AA1.2 HL none -- sum(5r-3), sigma notation
-"""
-import sympy as sp
+expr_A = sp.simplify(total_A)
+expr_B = sp.simplify(total_B)
 
-r, n = sp.symbols('r n', positive=True, integer=True)
-
-term = lambda k: 5*k - 3
-
-first_term = sp.Rational(term(1))
-second_term = sp.Rational(term(2))
-common_difference = sp.simplify(second_term - first_term)
-
-sum_expr = sp.summation(5*r - 3, (r, 1, n))
-sum_expr = sp.simplify(sum_expr)
-
-claimed_formula = sp.Rational(1, 2) * n * (5*n - 1)
-
-difference = sp.simplify(sum_expr - claimed_formula)
-formula_holds = (difference == 0)
-
-n_sym = sp.symbols('n_sym')
-equation = sp.Eq(sp.Rational(1, 2) * n_sym * (5*n_sym - 1), 632)
-solutions = sp.solve(equation, n_sym)
-
-n_value = None
-for sol in solutions:
-    if sol.is_real and sol > 0 and sol == sp.floor(sol):
-        n_value = int(sol)
+answer_b = None
+for k in range(1, 100000):
+    val_A = expr_A.subs(n, k)
+    val_B = expr_B.subs(n, k)
+    if val_A > val_B:
+        answer_b = k
         break
 
 result = {
-    "a": {"first_term": int(first_term), "common_difference": int(common_difference)},
-    "b": bool(formula_holds),
-    "c": n_value,
+    "a": {"A": str(expr_A), "B": str(expr_B)},
+    "b": answer_b
+}
+
+print(result)
+""",
+# 2: AA1.2 HL none -- multiples of 7 between 100 and 300 (replaces the
+# original sum(5r-3) sigma-notation question, which duplicated the
+# aa1_2_sigma_notation template family's structure once bespoke
+# questions were counted toward the per-template variant cap;
+# re-verified by a fresh independent subagent against the new
+# stem/parts)
+"""
+from sympy import symbols, Eq, solve, ceiling, floor, Rational
+
+LOW, HIGH, DIV = 100, 300, 7
+
+smallest = DIV * ceiling(Rational(LOW, DIV))
+largest = DIV * floor(Rational(HIGH, DIV))
+smallest = int(smallest)
+largest = int(largest)
+
+n = (largest - smallest) // DIV + 1
+
+total_sum = n * (smallest + largest) // 2
+
+result = {
+    "a": {"smallest": smallest, "largest": largest},
+    "b": int(n),
+    "c": int(total_sum),
 }
 
 print(result)
