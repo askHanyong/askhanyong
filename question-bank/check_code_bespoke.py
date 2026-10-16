@@ -11,62 +11,79 @@ edit to the code's logic. No other changes were made to any of the 12.
 """
 
 CHECK_CODE = [
-# 0: AA1.2 SL none -- u1=5,d=3,last=86 -> n, sum (replaces the original
-# u3=11,u7=27 question, which duplicated the aa1_2_two_terms_given
-# template family's structure once bespoke questions were counted toward
-# the per-template variant cap; re-verified by a fresh independent
-# subagent against the new stem/parts)
-"""
-from fractions import Fraction
-
-a = Fraction(5)
-d = Fraction(3)
-l = Fraction(86)
-
-n = (l - a) / d + 1
-if n != int(n):
-    raise ValueError("Number of terms is not an integer; check stem values.")
-n = int(n)
-
-S = Fraction(n, 2) * (a + l)
-if S.denominator != 1:
-    raise ValueError("Sum is not an integer; check stem values.")
-S = int(S)
-
-print({"a": n, "b": S})
-""",
-# 1: AA1.2 SL gdc -- two-company cumulative revenue crossing (replaces the
-# original a1=4,d=6,Sn=690 question, which duplicated the
-# aa1_2_sum_solve_n template family's structure once bespoke questions
-# were counted toward the per-template variant cap; re-verified by a
-# fresh independent subagent against the new stem/parts)
+# 0: AA1.2 SL none -- u1=7,d=4, smallest n with u_n>100 (replaces the
+# original u1=5,d=3,last=86 question, which duplicated b55c448c's
+# "given terms -> find n, sum" shape once AA1.2-P01 was found over its
+# 3-per-pattern cap; re-verified by a fresh independent subagent against
+# the new stem/parts)
 """
 import sympy as sp
 
 n = sp.symbols('n', positive=True, integer=True)
+u1, d = 7, 4
+u_n_expr = sp.expand(u1 + (n - 1) * d)
 
-a1_A = 200
-d_A = 50
-a1_B = 400
-d_B = 20
+n_real = sp.symbols('n_real', real=True)
+u_n_real = u1 + (n_real - 1) * d
+solution_set = sp.solve_univariate_inequality(sp.Gt(u_n_real, 100), n_real, relational=False)
+boundary_value = sp.solve(sp.Eq(u_n_real, 100), n_real)[0]
 
-total_A = sp.expand(n/2 * (2*a1_A + (n-1)*d_A))
-total_B = sp.expand(n/2 * (2*a1_B + (n-1)*d_B))
+candidate = sp.ceiling(boundary_value)
+smallest_n = int(candidate) if candidate in solution_set else int(candidate) + 1
 
-expr_A = sp.simplify(total_A)
-expr_B = sp.simplify(total_B)
+def term(k):
+    return u1 + (k - 1) * d
 
-answer_b = None
-for k in range(1, 100000):
-    val_A = expr_A.subs(n, k)
-    val_B = expr_B.subs(n, k)
-    if val_A > val_B:
-        answer_b = k
-        break
+assert term(smallest_n) > 100
+assert term(smallest_n - 1) <= 100
+
+print({"a": str(u_n_expr), "b": smallest_n})
+""",
+# 1: AA1.2 SL gdc -- two-company cumulative revenue crossing, rewritten
+# with a one-time setup cost on Company A so the crossing genuinely
+# needs a GDC (the original numbers made the difference factor as
+# n*(linear), which -- since n>0 -- reduced to a linear inequality
+# solvable by inspection; re-verified by a fresh independent subagent
+# against the new stem/parts)
+"""
+import sympy as sp
+
+n = sp.symbols('n', positive=True, integer=True)
+x = sp.symbols('x', real=True)
+
+a1_A, d_A = sp.Integer(200), sp.Integer(50)
+S_A_raw = sp.Rational(1, 2) * n * (2 * a1_A + (n - 1) * d_A)
+setup_cost = sp.Integer(300)
+S_A = sp.expand(S_A_raw - setup_cost)
+
+a1_B, d_B = sp.Integer(400), sp.Integer(20)
+S_B_raw = sp.Rational(1, 2) * n * (2 * a1_B + (n - 1) * d_B)
+S_B = sp.expand(S_B_raw)
+
+diff_expr_n = sp.expand(S_A - S_B)
+diff_expr_x = diff_expr_n.subs(n, x)
+diff_poly = sp.Poly(diff_expr_x, x)
+real_roots = sorted([r for r in sp.solve(sp.Eq(diff_expr_x, 0), x) if r.is_real])
+assert diff_poly.degree() == 2 and len(real_roots) == 2 and diff_poly.LC() > 0
+
+crossing = real_roots[1]
+candidate = sp.ceiling(crossing)
+if candidate < 1:
+    candidate = 1
+
+def diff_at(k):
+    return diff_expr_n.subs(n, k)
+
+k = candidate
+while diff_at(k) <= 0:
+    k += 1
+while k - 1 >= 1 and diff_at(k - 1) > 0:
+    k -= 1
+first_month = int(k)
 
 result = {
-    "a": {"A": str(expr_A), "B": str(expr_B)},
-    "b": answer_b
+    "a": {"A": str(sp.expand(S_A)), "B": str(sp.expand(S_B))},
+    "b": first_month
 }
 
 print(result)

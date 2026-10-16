@@ -206,7 +206,7 @@ BESPOKE_AA1_2 = [
         "section": "A", "total_marks": 4, "difficulty": "medium",
         "blueprint_cell": "AA1.2|HL|none|bespoke",
         "stem_latex": (
-            "Two employees' annual salaries (in dollars) both increase arithmetically. In year $1$, "
+            "Two employees' annual salaries (in dollars) both increase arithmetically each year. In year $1$, "
             "Employee A earns $\\$2000$ and their salary increases by $\\$300$ each year. In year $1$, Employee B earns "
             "$\\$2800$ and their salary increases by $\\$150$ each year."
         ),
@@ -219,26 +219,13 @@ BESPOKE_AA1_2 = [
                    ("A1", "$n = 7$")]),
         ],
     },
-    {
-        "topic_code": "AA1.2", "level": "HL", "paper_type": "P2", "calculator": "gdc",
-        "section": "A", "total_marks": 5, "difficulty": "medium",
-        "blueprint_cell": "AA1.2|HL|gdc|bespoke",
-        "stem_latex": (
-            "Two savings plans accumulate arithmetically. Plan A deposits $\\$500$ in month $1$ and increases "
-            "the monthly deposit by $\\$100$ each month thereafter. Plan B deposits $\\$1000$ in month $1$ and "
-            "increases the monthly deposit by $\\$20$ each month thereafter."
-        ),
-        "parts": [
-            _part("a", 2, "Write down expressions for the total amount saved under each plan after $n$ months.",
-                  "Plan A: $S_n^{A} = 50n^{2}+450n$; Plan B: $S_n^{B}=10n^{2}+990n$",
-                  [("A1", "Plan A's expression correct"), ("A1", "Plan B's expression correct")]),
-            _part("b", 3, "Find the first month in which the total saved under Plan A exceeds the total saved under Plan B.",
-                  "Month $14$",
-                  [("M1", "setting $S_n^{A} > S_n^{B}$"),
-                   ("M1", "solving/trialling (e.g. via GDC)"),
-                   ("A1", "$n = 14$")]),
-        ],
-    },
+    # cb9e2803 ("Two savings plans...", Plan A/Plan B crossing, month 14)
+    # was DELETED (not just retagged): it was both (1) over the AA1.2-P08
+    # pattern cap of 3 per pattern per level_scope (3 template + 2 bespoke
+    # = 5, needed to shed 2), and (2) a near-twin of 3c160636's "A
+    # overtakes B" quadratic-Sn-crossing shape -- "keep one A-overtakes-B
+    # question per level_scope" means 3c160636 (now genuinely GDC-necessary
+    # after its own fix) is the sole survivor of that narrative, not both.
     {
         "topic_code": "AA1.2", "level": "HL", "paper_type": "P2", "calculator": "gdc",
         "section": "A", "total_marks": 5, "difficulty": "medium",

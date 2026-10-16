@@ -38,15 +38,23 @@ def _req(d, *path):
     return cur
 
 
-def validate_0(c):  # AA1.2 SL none: u1=5,d=3,last=86 -> n=28, sum=1274
-    return c["a"] == 28 and c["b"] == 1274, f"n={c['a']},sum={c['b']}"
+def validate_0(c):  # AA1.2 SL none: u1=7,d=4 -> u_n=4n+3, smallest n with u_n>100 is 25
+    # (was u1=5,d=3,last=86 -> n=28,sum=1274; replaced -- duplicated
+    # b55c448c's "given terms -> find n, sum" shape once AA1.2-P01 was
+    # found over its 3-per-pattern cap)
+    expr_match = simplify(sympify(c["a"]) - sympify("4*n+3")) == 0
+    return expr_match and c["b"] == 25, f"u_n={c['a']} (==4n+3: {expr_match}), n={c['b']}"
 
 
-def validate_1(c):  # AA1.2 SL gdc: two-company revenue crossing -> A=25n^2+175n,B=10n^2+390n,n=15
+def validate_1(c):  # AA1.2 SL gdc: two-company revenue crossing, rewritten with a
+    # one-time $300 setup cost on Company A -> A=25n^2+175n-300, B=10n^2+390n, n=16
+    # (was A=25n^2+175n,B=10n^2+390n,n=15; the original numbers made the
+    # difference factor as n*(linear), which reduced to a linear
+    # inequality for n>0 -- not genuinely GDC-necessitating)
     a = c["a"]
-    a_match = simplify(sympify(a["A"]) - sympify("25*n**2+175*n")) == 0
+    a_match = simplify(sympify(a["A"]) - sympify("25*n**2+175*n-300")) == 0
     b_match = simplify(sympify(a["B"]) - sympify("10*n**2+390*n")) == 0
-    return a_match and b_match and c["b"] == 15, \
+    return a_match and b_match and c["b"] == 16, \
         f"A={a['A']} (match: {a_match}), B={a['B']} (match: {b_match}), n={c['b']}"
 
 

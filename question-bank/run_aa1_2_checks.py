@@ -93,21 +93,18 @@ def validate_12(c):  # salary crossing: Deborah=300n+1700, Edward=150n+2650, n=7
         f"Deborah={a['Deborah']} (match: {d_match}), Edward={a['Edward']} (match: {e_match}), n={c['b']}"
 
 
-def validate_13(c):  # savings crossing: SA=50n^2+450n, SB=10n^2+990n, n=14
-    a = c["a"]
-    sa_match = simplify(sympify(a["SA"]) - sympify("50*n**2+450*n")) == 0
-    sb_match = simplify(sympify(a["SB"]) - sympify("10*n**2+990*n")) == 0
-    return sa_match and sb_match and c["b"] == 14, \
-        f"SA={a['SA']} (match: {sa_match}), SB={a['SB']} (match: {sb_match}), n={c['b']}"
-
-
-def validate_14(c):  # integer d: d=6, n=17 (was d=2.5, n=24)
+def validate_13(c):  # integer d: d=6, n=17 (was d=2.5, n=24)
     return c["a"] == 6 and c["b"] == 17, f"d={c['a']}, n={c['b']}"
 
 
+# validate_13 was "savings crossing: SA=50n^2+450n, SB=10n^2+990n, n=14"
+# for cb9e2803, which was DELETED (over the AA1.2-P08 pattern cap, and a
+# near-twin of 3c160636's "A overtakes B" shape -- see
+# bespoke_questions_aa1_2.py's comment). Everything after it shifted down
+# by one index to match the remaining 14 bespoke rows.
 VALIDATORS = [
     validate_0, validate_1, validate_2, validate_3, validate_4, validate_5, validate_6,
-    validate_7, validate_8, validate_9, validate_10, validate_11, validate_12, validate_13, validate_14,
+    validate_7, validate_8, validate_9, validate_10, validate_11, validate_12, validate_13,
 ]
 
 
@@ -124,8 +121,8 @@ def main():
         "where batch_id=? and mode='bespoke' order by rowid",
         (BATCH_ID,),
     ).fetchall()
-    assert len(template_rows) == 24 and len(bespoke_rows) == 15, \
-        f"expected 24 template (post-cap) + 15 bespoke, found {len(template_rows)} + {len(bespoke_rows)}"
+    assert len(template_rows) == 19 and len(bespoke_rows) == 14, \
+        f"expected 19 template (post pattern-cap trim) + 14 bespoke (cb9e2803 deleted), found {len(template_rows)} + {len(bespoke_rows)}"
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     results = []

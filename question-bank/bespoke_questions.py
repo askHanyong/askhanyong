@@ -23,36 +23,56 @@ def _part(label, marks, text, answer, markscheme_lines):
 
 BESPOKE = [
     # ---- AA1.2 (Number and Algebra -- Arithmetic sequences), 5 questions ----
+    # d89f3d18 was replaced (not just retagged): it duplicated
+    # b55c448c's "given terms -> find n and sum" shape (pattern
+    # AA1.2-P01, which was over its 3-per-pattern cap). New shape: a
+    # plain nth-term threshold search -- previously uncovered in this
+    # bank, and deliberately non-GDC (u_n is linear in n).
     {
         "topic_code": "AA1.2", "level": "SL", "paper_type": "P1", "calculator": "none",
         "section": "A", "total_marks": 5, "difficulty": "easy",
         "blueprint_cell": "AA1.2|SL|none|bespoke",
-        "stem_latex": "An arithmetic sequence has first term $5$, common difference $3$, and last term $86$.",
+        "stem_latex": "An arithmetic sequence has first term $u_1 = 7$ and common difference $d = 4$.",
         "parts": [
-            _part("a", 3, "Find the number of terms in the sequence.", "$n = 28$",
-                  [("M1", "setting $86 = 5+(n-1)(3)$"), ("M1", "solving for $n$"), ("A1", "$n = 28$")]),
-            _part("b", 2, "Find the sum of the sequence.", "$1274$",
-                  [("M1", "correct use of $S_n = \\frac{n}{2}(u_1+u_n)$"), ("A1", "$1274$")]),
+            _part("a", 2, "Find an expression for $u_n$ in terms of $n$.", "$u_n = 4n+3$",
+                  [("M1", "substituting into $u_n = u_1 + (n-1)d$"), ("A1", "$u_n = 4n+3$")]),
+            _part("b", 3, "Find the smallest value of $n$ for which $u_n$ exceeds $100$.", "$n = 25$",
+                  [("M1", "setting up the inequality $4n+3 > 100$"),
+                   ("M1", "solving the inequality"),
+                   ("A1", "$n = 25$")]),
         ],
     },
+    # 3c160636 was rewritten: the original numbers made Company A's total
+    # minus Company B's total factor as n*(linear in n), so -- since
+    # n>0 -- the crossing condition reduced to a LINEAR inequality,
+    # solvable by inspection without a GDC despite the superficially
+    # quadratic S_n expressions. Adding a one-time setup cost to Company
+    # A breaks that common factor of n, so the crossing genuinely
+    # requires solving a quadratic with irrational roots. Also fixes the
+    # stem's "(in thousands of dollars)" vs "$200" unit conflict, and
+    # gives part (a) an M1 (not just a bare A1).
     {
         "topic_code": "AA1.2", "level": "SL", "paper_type": "P2", "calculator": "gdc",
-        "section": "A", "total_marks": 4, "difficulty": "medium",
+        "section": "A", "total_marks": 5, "difficulty": "medium",
         "blueprint_cell": "AA1.2|SL|gdc|bespoke",
         "stem_latex": (
-            "Company A's and Company B's total (cumulative) revenues (in thousands of dollars) both form "
-            "arithmetic series. Company A's monthly revenue starts at $\\$200$ and increases by $\\$50$ each "
-            "month. Company B's monthly revenue starts at $\\$400$ and increases by $\\$20$ each month."
+            "Company A's and Company B's monthly revenues (in dollars) both increase arithmetically, so "
+            "their total (cumulative) revenues after $n$ months form quadratic expressions in $n$. Company "
+            "A's monthly revenue starts at $\\$200$ in month $1$ and increases by $\\$50$ each month; in "
+            "addition, Company A incurs a one-time setup cost of $\\$300$, deducted from its cumulative total "
+            "in month $1$. Company B's monthly revenue starts at $\\$400$ in month $1$ and increases by "
+            "$\\$20$ each month."
         ),
         "parts": [
-            _part("a", 1, "Write down expressions for the total (cumulative) revenue of each company after $n$ months.",
-                  "Company A: $25n^{2}+175n$; Company B: $10n^{2}+390n$",
-                  [("A1", "both expressions correct")]),
+            _part("a", 2, "Write down expressions for the total (cumulative) revenue of each company after $n$ months.",
+                  "Company A: $S_n^{A} = 25n^{2}+175n-300$; Company B: $S_n^{B}=10n^{2}+390n$",
+                  [("M1", "setting up each company's cumulative-total expression, including Company A's setup-cost deduction"),
+                   ("A1", "both expressions correct")]),
             _part("b", 3, "Find the first month in which Company A's total cumulative revenue exceeds Company B's.",
-                  "Month $15$",
+                  "Month $16$",
                   [("M1", "setting (total A) $>$ (total B)"),
                    ("M1", "solving/trialling (e.g. via GDC)"),
-                   ("A1", "$n = 15$")]),
+                   ("A1", "$n = 16$")]),
         ],
     },
     {

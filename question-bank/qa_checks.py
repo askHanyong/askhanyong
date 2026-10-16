@@ -44,10 +44,19 @@ def _non_math_text(text: str) -> str:
 
 def _math_spans_text(text: str) -> list[str]:
     """Returns the content of every $...$/$$...$$ span in `text` (the
-    parts that actually get typeset as math), as separate strings."""
+    parts that actually get typeset as math), as separate strings.
+
+    Bug fixed here: `re.findall` on an alternation returns '' (empty
+    string), not None, for the group that didn't participate in a given
+    match. The original `g1 if g1 is not None else g2` therefore always
+    picked g1 and returned '' for every single-$...$ span (the common
+    case, since only the $$...$$ branch ever leaves g1 non-empty) --
+    silently neutering every check built on this helper
+    (check_formatting_patterns and, now, check_template_leakage) for
+    anything other than rare $$...$$ display-math spans."""
     if not text:
         return []
-    return [g1 if g1 is not None else g2 for g1, g2 in MATH_SPAN_RE.findall(text)]
+    return [g1 if g1 else g2 for g1, g2 in MATH_SPAN_RE.findall(text)]
 
 
 def _all_text_blobs(q: dict) -> list[str]:
@@ -222,6 +231,8 @@ def check_gdc_necessity(q: dict) -> tuple[bool, str]:
 
 
 SECTION_A_MARK_CEILING = 6
+SECTION_B_MARK_MIN = 15
+SECTION_B_MARK_MAX = 20
 
 
 def check_section_a_mark_ceiling(q: dict) -> tuple[bool, str]:
@@ -233,6 +244,135 @@ def check_section_a_mark_ceiling(q: dict) -> tuple[bool, str]:
     return (total <= SECTION_A_MARK_CEILING), f"total_marks={total} (ceiling={SECTION_A_MARK_CEILING})"
 
 
+def check_section_b_mark_range(q: dict) -> tuple[bool, str]:
+    """Section B questions must be genuine multi-part structures, not a
+    padded Section A question -- enforce a floor as well as a ceiling
+    (currently 15-20 marks)."""
+    if q.get("section") != "B":
+        return True, "not a Section B question"
+    total = q.get("total_marks", 0)
+    ok = SECTION_B_MARK_MIN <= total <= SECTION_B_MARK_MAX
+    return ok, f"total_marks={total} (range={SECTION_B_MARK_MIN}-{SECTION_B_MARK_MAX})"
+
+
+# Rule 6: a Section A stem/part must say WHAT to find, never HOW. Method
+# naming is allowed only inside an explicit scaffold (scaffold=true),
+# which a Section A question can never be (see check_scaffold_section_a).
+# Only stem_latex and part "text" are checked -- NOT answer or
+# markscheme_lines, which may legitimately name the method (e.g.
+# "M1 recognising the quotient rule"). A plain "Hence ..." does not name
+# a method and is always fine.
+METHOD_NAMING_RE = re.compile(
+    r"\busing\s+the\s+\w+(\s+\w+){0,2}\s+(rule|method|formula|identity)\b"
+    r"|\bby\s+(differentiating|using|applying|completing)\b"
+    r"|\buse\s+the\s+\w+(\s+\w+){0,2}\s+(rule|method|formula|identity)\s+to\b"
+    r"|\bapplying\s+the\s+\w+(\s+\w+){0,2}\s+(rule|method|formula)\b",
+    re.IGNORECASE,
+)
+
+
+def check_method_naming(q: dict) -> tuple[bool, str]:
+    """Rule 6.1/6.3: fails any stem or part `text` containing a
+    method-naming phrase ("using the quotient/product/chain rule", "by
+    differentiating using...", "use the formula for...", "by completing
+    the square", "by applying...") when scaffold is not true."""
+    if q.get("scaffold"):
+        return True, "scaffold=true -- method-naming permitted"
+    hits = []
+    stem = q.get("stem_latex", "") or ""
+    if METHOD_NAMING_RE.search(stem):
+        hits.append(f"stem: {METHOD_NAMING_RE.search(stem).group(0)!r}")
+    for p in q["parts"]:
+        text = p.get("text", "") or ""
+        m = METHOD_NAMING_RE.search(text)
+        if m:
+            hits.append(f"part ({p['label']}): {m.group(0)!r}")
+    return (len(hits) == 0), "; ".join(hits) if hits else "no method-naming phrases"
+
+
+def check_scaffold_section_a(q: dict) -> tuple[bool, str]:
+    """Rule 6.2: scaffold=true is invalid on a Section A question -- a
+    scaffold (method-naming permitted because an earlier part sets up the
+    method for a later one, or the stem says the question is guided) only
+    makes sense for a Section B multi-part structure."""
+    if q.get("section") == "A" and q.get("scaffold"):
+        return False, "scaffold=true on a Section A question"
+    return True, "ok"
+
+
+# Rule: never claim a function is "increasing/decreasing for all x in its
+# domain" when the domain has a gap (e.g. an excluded point from a
+# quotient's denominator) -- the claim is only true per-interval, since a
+# vertical asymptote can make the function's values jump across the gap.
+# Heuristic: a domain exclusion ("x \neq ...") anywhere in the stem, paired
+# with an unqualified global monotonicity claim (no "on each interval" /
+# "on each piece" qualifier) anywhere in the question's text.
+DOMAIN_GAP_RE = re.compile(r"x\s*\\neq")
+GLOBAL_MONOTONICITY_RE = re.compile(
+    r"(increasing|decreasing)\s+(for\s+all\s+\$?x\$?\s+in\s+its\s+domain|on\s+its\s+domain)",
+    re.IGNORECASE,
+)
+QUALIFIED_MONOTONICITY_RE = re.compile(r"on\s+each\s+(interval|piece)", re.IGNORECASE)
+
+
+def check_monotonicity_domain_gap(q: dict) -> tuple[bool, str]:
+    has_gap = bool(DOMAIN_GAP_RE.search(q.get("stem_latex", "") or ""))
+    if not has_gap:
+        return True, "no domain exclusion in stem"
+    hits = []
+    for blob in _all_text_blobs(q):
+        m = GLOBAL_MONOTONICITY_RE.search(blob)
+        if m and not QUALIFIED_MONOTONICITY_RE.search(blob):
+            hits.append(f"{m.group(0)!r} in {blob[:60]!r}")
+    return (len(hits) == 0), "; ".join(hits) if hits else "no unqualified global monotonicity claim"
+
+
+# Template leaks: an unsubstituted generic symbol (a stray literal 'a' or
+# 'k' meant to have been replaced by a concrete number), a double sign
+# ('+ -', ASCII or Unicode minus U+2212), or a degenerate power/coefficient
+# artifact (x^1, x^0, 1x) surviving into rendered text.
+#
+# The generic-symbol check is scoped to markscheme_lines ONLY (not stem or
+# part text): a bare "a"/"k" in a STEM can legitimately be the unknown the
+# student is asked to solve for (e.g. AA1.2's symmetric-AP stems "the
+# first three terms are $a-d$, $a$, $a+d$"), but a mark scheme always
+# states the final concrete numeric answer, so a stray "a"/"k" there is
+# unambiguously an unsubstituted template placeholder, never a legitimate
+# unknown. The other three leak patterns are never legitimate anywhere, so
+# they're checked across every text blob.
+GENERIC_SYMBOL_RE = re.compile(r"(?<![a-zA-Z0-9_\\])[ak](?=e\^|\^|[\s)}$,.]|x(?![a-zA-Z])|$)")
+DOUBLE_SIGN_RE = re.compile(r"[+\-]\s*[\-−]")
+DEGENERATE_POWER_RE = re.compile(r"\^\{?1\}?(?![0-9])|\^\{?0\}?(?![0-9])")
+BARE_ONE_COEFF_RE = re.compile(r"(?<![a-zA-Z0-9_{])1([a-zA-Z])\b")
+
+
+def check_template_leakage(q: dict) -> tuple[bool, str]:
+    hits = []
+    # A symbol legitimately named as an unknown/parameter in the STEM (e.g.
+    # "where $k$ is a constant", or AA1.2's symmetric-AP "$a-d$, $a$, $a+d$")
+    # is not a leak when that same symbol then appears in the mark scheme
+    # (that's the question consistently referring to its own named
+    # unknown) -- only flag a symbol that never appears in the stem at all.
+    stem_symbols = set()
+    for span in _math_spans_text(q.get("stem_latex", "") or ""):
+        stem_symbols.update(m.group(0) for m in GENERIC_SYMBOL_RE.finditer(span))
+    for p in q["parts"]:
+        for line in p.get("markscheme_lines", []) or []:
+            for span in _math_spans_text(line.get("desc", "")):
+                for m in GENERIC_SYMBOL_RE.finditer(span):
+                    if m.group(0) not in stem_symbols:
+                        hits.append(f"generic symbol in markscheme {span[:50]!r}")
+    for t in _all_text_blobs(q):
+        for span in _math_spans_text(t):
+            if DOUBLE_SIGN_RE.search(span):
+                hits.append(f"double sign in {span[:50]!r}")
+            if DEGENERATE_POWER_RE.search(span):
+                hits.append(f"degenerate power (x^1/x^0) in {span[:50]!r}")
+            if BARE_ONE_COEFF_RE.search(span):
+                hits.append(f"bare '1<var>' coefficient in {span[:50]!r}")
+    return (len(hits) == 0), "; ".join(hits) if hits else "no template leaks"
+
+
 ALL_CHECKS = [
     ("marks_sum", check_marks_sum),
     ("stem_unknown_overlap", check_stem_unknown_overlap),
@@ -241,6 +381,11 @@ ALL_CHECKS = [
     ("name_blocklist", check_name_blocklist),
     ("gdc_necessity", check_gdc_necessity),
     ("section_a_mark_ceiling", check_section_a_mark_ceiling),
+    ("section_b_mark_range", check_section_b_mark_range),
+    ("method_naming", check_method_naming),
+    ("scaffold_section_a", check_scaffold_section_a),
+    ("monotonicity_domain_gap", check_monotonicity_domain_gap),
+    ("template_leakage", check_template_leakage),
 ]
 
 

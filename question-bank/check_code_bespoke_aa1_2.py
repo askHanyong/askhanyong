@@ -427,49 +427,11 @@ result = {
 
 print(result)
 """,
-# 13: savings plan crossing -- Plan A a1=500,d=100 vs Plan B a1=1000,d=20
-"""
-import sympy as sp
-
-n = sp.symbols('n', positive=True, integer=True)
-
-a1_A, d_A = sp.Integer(500), sp.Integer(100)
-a1_B, d_B = sp.Integer(1000), sp.Integer(20)
-
-S_A = sp.expand(n * (2 * a1_A + (n - 1) * d_A) / 2)
-S_B = sp.expand(n * (2 * a1_B + (n - 1) * d_B) / 2)
-
-S_A = sp.simplify(S_A)
-S_B = sp.simplify(S_B)
-
-part_a = {
-    "SA": str(S_A),
-    "SB": str(S_B),
-}
-
-diff = sp.expand(S_A - S_B)
-solution_set = sp.solve_univariate_inequality(diff > 0, n, relational=False, domain=sp.S.Reals)
-
-real_roots = sp.solve(sp.Eq(diff, 0), n)
-real_roots = [r for r in real_roots if r.is_real]
-upper_bound = int(sp.ceiling(max(real_roots))) + 5 if real_roots else 1000
-
-first_month = None
-for candidate in range(1, upper_bound + 1):
-    if candidate in solution_set:
-        first_month = candidate
-        break
-
-part_b = first_month
-
-result = {
-    "a": part_a,
-    "b": part_b,
-}
-
-print(result)
-""",
-# 14: integer d sum threshold -- u1=8,u11=68 (was u1=10,u11=35,d=2.5;
+# (index 13 was cb9e2803's "savings plan crossing" check_code -- removed
+# along with the question: it was both over the P08 pattern cap and a
+# near-twin of 3c160636's "A overtakes B" shape. See
+# bespoke_questions_aa1_2.py's comment at the same spot.)
+# 14 (now 13): integer d sum threshold -- u1=8,u11=68 (was u1=10,u11=35,d=2.5;
 # replaced with integer-d values; still genuinely GDC-necessitating since
 # the threshold is on S_n, quadratic in n)
 """
