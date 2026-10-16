@@ -18,6 +18,12 @@ AA1.2-P23,product_condition,AA1.2,SL+HL,A,1
 AA1.2-P24,symmetric_three_term,AA1.2,SL+HL,A,1
 AA1.2-P25,two_sequence_crossing_linear,AA1.2,SL+HL,A,2
 AA1.2-P26,nth_term_exceeds_threshold,AA1.2,SL+HL,A,1
+AHL-P01,lhopital_rule_exp_limit,AA5.13,HL-only,A,2
+AHL-P02,maclaurin_series_ln,AA5.13,HL-only,A,2
+AHL-P03,implicit_differentiation_point,AA5.14,HL-only,A,2
+AHL-P04,related_rates_sphere,AA5.14,HL-only,A,2
+AHL-P05,chain_rule_arctan,AA5.15,HL-only,A,2
+AHL-P06,sectionB_arcsin_derivative_proof,AA5.15,HL-only,B,1
 AA5.6-P01,power_rule_stationary_point,AA5.6,SL+HL,A,1
 AA5.6-P02,chain_rule_linear_power,AA5.6,SL+HL,A,1
 AA5.6-P03,chain_rule_exponential_tangent,AA5.6,SL+HL,A,1

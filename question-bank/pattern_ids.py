@@ -47,6 +47,15 @@ PATTERNS = {
     "AA5.6-P07": "sectionB_product_chain_stationary_points",
     "AA5.6-P08": "sectionB_quotient_rule_stationary_tangent",
     "AA5.6-P09": "sectionB_chain_rule_double_angle",
+
+    # ---- AHL-only differentiation (11 rows: AA5.13/AA5.14/AA5.15, 2 variants
+    # per Section A pattern + 1 Section B bespoke scaffold) ----
+    "AHL-P01": "lhopital_rule_exp_limit",               # AA5.13
+    "AHL-P02": "maclaurin_series_ln",                   # AA5.13
+    "AHL-P03": "implicit_differentiation_point",        # AA5.14
+    "AHL-P04": "related_rates_sphere",                   # AA5.14
+    "AHL-P05": "chain_rule_arctan",                      # AA5.15
+    "AHL-P06": "sectionB_arcsin_derivative_proof",       # AA5.15, scaffold
 }
 
 # AA1.2 template rows: 19 rows (after the pattern-cap trim), in
