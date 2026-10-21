@@ -1,0 +1,5 @@
+data/
+out/
+tests/mock_raw/
+tests/mock_out/
+__pycache__/
